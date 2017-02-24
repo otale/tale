@@ -15,4 +15,20 @@ public class TaleConst {
     public static Config OPTIONS = new Config();
     public static boolean INSTALL = false;
     public static Config BCONF = null;
+
+    /**
+     * 最大页码
+     */
+    public static final int MAX_PAGE = 100;
+
+    /**
+     * 最大获取文章条数
+     */
+    public static final int MAX_POSTS = 9999;
+
+    /**
+     * 点击次数超过多少更新到数据库
+     */
+    public static final int HIT_EXCEED = 10;
+
 }

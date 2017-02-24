@@ -10,6 +10,7 @@ import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.init.TaleConst;
 import com.tale.model.Contents;
 import com.tale.model.Users;
 import com.tale.service.ContentsService;
@@ -33,7 +34,7 @@ public class PageController extends BaseController {
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
-        Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.PAGE).page(1, 999, "created desc"));
+        Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.PAGE).page(1, TaleConst.MAX_POSTS, "created desc"));
         request.attribute("articles", contentsPaginator);
         return "admin/page_list";
     }

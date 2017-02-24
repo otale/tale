@@ -15,6 +15,7 @@ import com.tale.dto.Comment;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
 import com.tale.model.Metas;
@@ -66,13 +67,25 @@ public class IndexController extends BaseController {
             Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 15);
             request.attribute("comments", commentsPaginator);
         }
+        Integer hits = cache.hget("article", "hits");
+        if (null == hits) {
+            hits = 1;
+            cache.hset("article", "hits", 1);
+        }
+        if (hits >= TaleConst.HIT_EXCEED) {
+            Contents temp = new Contents();
+            temp.setCid(contents.getCid());
+            temp.setHits(contents.getHits() + hits);
+            contentsService.update(temp);
+            cache.hset("page", "hits", 0);
+        }
         request.attribute("article", contents);
         return this.render("page");
     }
 
     @Route(value = "page/:p", method = HttpMethod.GET)
     public String index(Request request, @PathParam int p, @QueryParam(value = "limit", defaultValue = "12") int limit) {
-        p = p < 0 || p > 999 ? 1 : p;
+        p = p < 0 || p > TaleConst.MAX_PAGE ? 1 : p;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE)
                 .eq("status", Types.PUBLISH).page(p, limit, "created desc");
         Paginator<Contents> articles = contentsService.getArticles(take);
@@ -99,6 +112,18 @@ public class IndexController extends BaseController {
             Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 15);
             request.attribute("comments", commentsPaginator);
         }
+        Integer hits = cache.hget("article", "hits");
+        if (null == hits) {
+            hits = 1;
+            cache.hset("article", "hits", 1);
+        }
+        if (hits >= TaleConst.HIT_EXCEED) {
+            Contents temp = new Contents();
+            temp.setCid(contents.getCid());
+            temp.setHits(contents.getHits() + hits);
+            contentsService.update(temp);
+            cache.hset("article", "hits", 0);
+        }
         return this.render("post");
     }
 
@@ -115,7 +140,7 @@ public class IndexController extends BaseController {
     @Route(value = "category/:keyword/:page", method = HttpMethod.GET)
     public String categories(Request request, @PathParam String keyword,
                              @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
-        page = page < 0 || page > 999 ? 1 : page;
+        page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         MetaDto metaDto = metasService.getMeta(Types.CATEGORY, keyword);
         if (null == metaDto) {
             return this.render_404();
@@ -145,7 +170,7 @@ public class IndexController extends BaseController {
     @Route(value = "tag/:name/:page", method = HttpMethod.GET)
     public String tags(Request request, @PathParam String name, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
 
-        page = page < 0 || page > 999 ? 1 : page;
+        page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         MetaDto metaDto = metasService.getMeta(Types.TAG, name);
         if (null == metaDto) {
             return this.render_404();
@@ -174,7 +199,7 @@ public class IndexController extends BaseController {
     @Route(value = "search/:keyword/:page", method = HttpMethod.GET)
     public String search(Request request, @PathParam String keyword, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
 
-        page = page < 0 || page > 999 ? 1 : page;
+        page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH)
                 .like("title", "%" + keyword + "%").page(page, limit, "created desc");
 
@@ -218,7 +243,7 @@ public class IndexController extends BaseController {
     @Route(value = {"feed", "feed.xml"}, method = HttpMethod.GET)
     public void feed(Response response) {
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class)
-                .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, 9999, "created desc"));
+                .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, TaleConst.MAX_POSTS, "created desc"));
         try {
             String xml = TaleUtils.getRssXml(contentsPaginator.getList());
             response.xml(xml);

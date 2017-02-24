@@ -31,6 +31,9 @@ public class Contents implements Serializable {
     // 内容所属用户id
     private Integer author_id;
 
+    // 点击次数
+    private Integer hits;
+
     // 内容类别
     private String type;
 
@@ -176,5 +179,13 @@ public class Contents implements Serializable {
 
     public void setAllow_feed(Boolean allow_feed) {
         this.allow_feed = allow_feed;
+    }
+
+    public Integer getHits() {
+        return hits;
+    }
+
+    public void setHits(Integer hits) {
+        this.hits = hits;
     }
 }
