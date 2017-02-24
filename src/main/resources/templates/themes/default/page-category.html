@@ -1,11 +1,14 @@
 #include('./header.html', {title: keyword })
-
 <div class="main-content common-page clearfix">
     <div class="categorys-item">
         <div class="common-title">
             ${type}：${keyword}
         </div>
-        #if(null != articles)
+        #if(is_empty(articles))
+        <div>
+            <p>抱歉，还没有相关文章.</p>
+        </div>
+        #else
         <div class="post-lists">
             <div class="post-lists-body">
                 #for(article : articles.list)
@@ -13,7 +16,7 @@
                     <div class="post-list-item-container ">
                         <div class="item-label ">
                             <div class="item-title">
-                                <a href="${(permalink(article.cid, article.slug))}">${article.title}</a>
+                                <a href="${permalink(article)}">${article.title}</a>
                             </div>
                             <div class="item-meta clearfix">
                                 <div class="item-meta-ico ${show_icon(article.cid)}"
@@ -26,12 +29,7 @@
                 #end
             </div>
         </div>
-        #else
-        <div>
-            <p>抱歉，还没有相关文章.</p>
-        </div>
         #end
     </div>
 </div>
-
 #include('./footer.html')

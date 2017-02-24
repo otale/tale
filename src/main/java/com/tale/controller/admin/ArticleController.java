@@ -134,7 +134,7 @@ public class ArticleController extends BaseController {
         contents.setTags(tags);
         contents.setCategories(categories);
         try {
-            contentsService.update(contents);
+            contentsService.updateArticle(contents);
         } catch (Exception e) {
             String msg = "文章编辑失败";
             if (e instanceof TipException) {

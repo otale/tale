@@ -87,7 +87,7 @@ public class ContentsServiceImpl implements ContentsService {
     }
 
     @Override
-    public void update(Contents contents) {
+    public void updateArticle(Contents contents) {
         if (null == contents || null == contents.getCid()) {
             throw new TipException("文章对象不能为空");
         }
@@ -118,6 +118,13 @@ public class ContentsServiceImpl implements ContentsService {
 
         metasService.saveMetas(cid, contents.getTags(), Types.TAG);
         metasService.saveMetas(cid, contents.getCategories(), Types.CATEGORY);
+    }
+
+    @Override
+    public void update(Contents contents) {
+        if (null != contents && null != contents.getCid()) {
+            activeRecord.update(contents);
+        }
     }
 
     @Override

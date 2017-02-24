@@ -56,6 +56,9 @@ public class IndexController extends BaseController {
         return this.index(request, 1, limit);
     }
 
+    /**
+     * 自定义页面
+     */
     @Route(value = "/:pagename", method = HttpMethod.GET)
     public String page(@PathParam String pagename, Request request) {
         Contents contents = contentsService.getContents(pagename);
@@ -67,22 +70,28 @@ public class IndexController extends BaseController {
             Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 15);
             request.attribute("comments", commentsPaginator);
         }
-        Integer hits = cache.hget("article", "hits");
-        if (null == hits) {
-            hits = 1;
-            cache.hset("article", "hits", 1);
-        }
+        Integer hits = cache.hget("page", "hits");
+        hits = null == hits ? 1 : hits + 1;
         if (hits >= TaleConst.HIT_EXCEED) {
             Contents temp = new Contents();
             temp.setCid(contents.getCid());
             temp.setHits(contents.getHits() + hits);
             contentsService.update(temp);
-            cache.hset("page", "hits", 0);
+            cache.hset("page", "hits", 1);
+        } else {
+            cache.hset("page", "hits", hits);
         }
-        request.attribute("article", contents);
         return this.render("page");
     }
 
+    /**
+     * 首页分页
+     *
+     * @param request
+     * @param p
+     * @param limit
+     * @return
+     */
     @Route(value = "page/:p", method = HttpMethod.GET)
     public String index(Request request, @PathParam int p, @QueryParam(value = "limit", defaultValue = "12") int limit) {
         p = p < 0 || p > TaleConst.MAX_PAGE ? 1 : p;
@@ -113,16 +122,15 @@ public class IndexController extends BaseController {
             request.attribute("comments", commentsPaginator);
         }
         Integer hits = cache.hget("article", "hits");
-        if (null == hits) {
-            hits = 1;
-            cache.hset("article", "hits", 1);
-        }
+        hits = null == hits ? 1 : hits + 1;
         if (hits >= TaleConst.HIT_EXCEED) {
             Contents temp = new Contents();
             temp.setCid(contents.getCid());
             temp.setHits(contents.getHits() + hits);
             contentsService.update(temp);
-            cache.hset("article", "hits", 0);
+            cache.hset("article", "hits", 1);
+        } else {
+            cache.hset("article", "hits", hits);
         }
         return this.render("post");
     }
@@ -167,6 +175,14 @@ public class IndexController extends BaseController {
         return this.tags(request, name, 1, limit);
     }
 
+    /**
+     * 标签分页
+     * @param request
+     * @param name
+     * @param page
+     * @param limit
+     * @return
+     */
     @Route(value = "tag/:name/:page", method = HttpMethod.GET)
     public String tags(Request request, @PathParam String name, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
 

@@ -22,7 +22,7 @@
                     <a href="/admin/article/${post.cid}">${post.title}</a>
                 </td>
                 <td>${fmtdate(post.created, 'yyyy-MM-dd HH:mm:ss')}</td>
-                <td>0</td>
+                <td>${post.hits}</td>
                 <td>${post.categories}</td>
                 <td>
                     #if(post.status == 'publish')

@@ -109,7 +109,7 @@ public class PageController extends BaseController {
         }
         contents.setAuthor_id(users.getUid());
         try {
-            contentsService.update(contents);
+            contentsService.updateArticle(contents);
         } catch (Exception e) {
             String msg = "页面编辑失败";
             if (e instanceof TipException) {

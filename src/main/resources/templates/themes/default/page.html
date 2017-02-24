@@ -1,14 +1,12 @@
 #include('./header.html', {title: article.title })
-
 <article class="main-content post-page">
     <div class="post-header">
         <h1 class="post-title" itemprop="name headline">${article.title}</h1>
         <div class="post-data">
-            <time datetime="2016-01-28T14:07:00+08:00" itemprop="datePublished">Published : Jan 28, 2016</time>
+            <time datetime="${fmtdate(article.create)}" itemprop="datePublished">发布于 ${fmtdate(article.create)}</time>
         </div>
     </div>
     <div id="post-content" class="post-content">${article(article.content)}</div>
 </article>
-
 #include('./comments.html')
 #include('./footer.html')

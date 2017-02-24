@@ -34,6 +34,8 @@ public interface ContentsService {
      * 编辑文章
      * @param contents
      */
+    void updateArticle(Contents contents);
+
     void update(Contents contents);
 
     /**

@@ -90,14 +90,12 @@
     </div>
 </div>
 #end
-
 <script type="text/javascript">
     function reply_user(coid) {
         $('#comment-form input[name=coid]').val(coid);
         $("html,body").animate({scrollTop: $('div.comment-container').offset().top}, 500);
         $('#comment-form #textarea').focus();
     }
-
     function comment_reply() {
         $.ajax({
             type: 'post',
