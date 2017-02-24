@@ -26,7 +26,6 @@ public class WebContext implements BeanProcessor, WebContextListener {
     public void init(BConfig bConfig, ServletContext sec) {
         JetbrickTemplateEngine templateEngine = new JetbrickTemplateEngine();
         templateEngine.addConfig("jetx.import.macros", "/comm/macros.html");
-//        JetGlobalContext context = templateEngine.getGlobalContext();
         GlobalResolver resolver = templateEngine.getGlobalResolver();
         resolver.registerFunctions(Commons.class);
         resolver.registerFunctions(AdminCommons.class);
@@ -34,9 +33,9 @@ public class WebContext implements BeanProcessor, WebContextListener {
 
         ViewSettings.$().templateEngine(templateEngine);
         if (dbIsOk) {
-            TaleConst.options.addAll(optionsService.getOptions());
+            TaleConst.OPTIONS.addAll(optionsService.getOptions());
+            TaleConst.INSTALL = true;
         }
-        TaleConst.SITE_URL = bConfig.config().get("app.site_url");
     }
 
     @Override

@@ -66,7 +66,7 @@ public class IndexController {
 
             Config config = new Config();
             config.addAll(optionsService.getOptions());
-            TaleConst.options = config;
+            TaleConst.OPTIONS = config;
 
             BaseController.THEME = "themes/" + site_theme;
 

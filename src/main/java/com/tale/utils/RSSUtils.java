@@ -22,11 +22,11 @@ public class RSSUtils {
         //选择一个协议标准
         Channel channel = new Channel("rss_2.0");
         //网站名称
-        channel.setTitle(TaleConst.options.get("site_title"));
+        channel.setTitle(TaleConst.OPTIONS.get("site_title"));
         //网站地址
-        channel.setLink(TaleConst.SITE_URL);
+        channel.setLink(Commons.site_url());
         //网站描述
-        channel.setDescription(TaleConst.options.get("site_description"));
+        channel.setDescription(TaleConst.OPTIONS.get("site_description"));
         channel.setLanguage("zh-CN");
 
         //一个Item就是一篇文章

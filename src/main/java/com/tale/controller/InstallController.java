@@ -5,6 +5,7 @@ import com.blade.Blade;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.FileKit;
 import com.blade.kit.StringKit;
+import com.blade.kit.base.Config;
 import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.QueryParam;
@@ -17,7 +18,9 @@ import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.init.TaleJdbc;
 import com.tale.model.Users;
+import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
+import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +32,9 @@ public class InstallController extends BaseController {
     @Inject
     private SiteService siteService;
 
+    @Inject
+    private OptionsService optionsService;
+
     /**
      * 安装页
      *
@@ -39,7 +45,7 @@ public class InstallController extends BaseController {
         String webRoot = Blade.$().webRoot();
         boolean existInstall = FileKit.exist(webRoot + "/install.lock");
         if (existInstall) {
-            request.attribute("is_install", !"1".equals(TaleConst.options.get("allow_install")));
+            request.attribute("is_install", !"1".equals(TaleConst.OPTIONS.get("allow_install")));
         } else {
             request.attribute("is_install", false);
         }
@@ -48,14 +54,16 @@ public class InstallController extends BaseController {
 
     @Route(value = "/", method = HttpMethod.POST)
     @JSON
-    public RestResponse doInstall(@QueryParam String site_title, @QueryParam String admin_user,
-                                  @QueryParam String admin_email, @QueryParam String admin_pwd,
+    public RestResponse doInstall(@QueryParam String site_title, @QueryParam String site_url,
+                                  @QueryParam String admin_user, @QueryParam String admin_email,
+                                  @QueryParam String admin_pwd,
                                   @QueryParam String db_host, @QueryParam String db_name,
                                   @QueryParam String db_user, @QueryParam String db_pass) {
 
         try {
 
             if (StringKit.isBlank(site_title) ||
+                    StringKit.isBlank(site_url) ||
                     StringKit.isBlank(admin_user) ||
                     StringKit.isBlank(admin_pwd)) {
                 return RestResponse.fail("请确认网站信息输入完整");
@@ -68,6 +76,14 @@ public class InstallController extends BaseController {
                 return RestResponse.fail("请确认数据库信息输入完整");
             }
 
+            if (db_pass.length() < 6 || db_pass.length() > 14) {
+                return RestResponse.fail("请输入6-14位密码");
+            }
+
+            if (StringKit.isNotBlank(admin_email) && !TaleUtils.isEmail(admin_email)) {
+                return RestResponse.fail("邮箱格式不正确");
+            }
+
             TaleJdbc.open(Blade.$().ioc());
 
             Users users = new Users();
@@ -77,7 +93,16 @@ public class InstallController extends BaseController {
 
             JdbcConf jdbcConf = new JdbcConf(db_host, db_name, db_user, db_pass);
 
-            siteService.initSite(users, jdbcConf, site_title);
+            siteService.initSite(users, jdbcConf);
+
+            optionsService.saveOption("site_title", site_title);
+            optionsService.saveOption("site_url", site_url);
+
+            Config config = new Config();
+            config.addAll(optionsService.getOptions());
+            TaleConst.OPTIONS = config;
+
+            TaleConst.INSTALL = true;
         } catch (Exception e) {
             String msg = "安装失败";
             if (e instanceof TipException) {

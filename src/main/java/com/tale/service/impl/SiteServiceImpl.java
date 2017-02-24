@@ -6,6 +6,7 @@ import com.blade.jdbc.ActiveRecord;
 import com.blade.kit.DateKit;
 import com.blade.kit.Tools;
 import com.tale.dto.JdbcConf;
+import com.tale.exception.TipException;
 import com.tale.init.TaleJdbc;
 import com.tale.model.Users;
 import com.tale.service.OptionsService;
@@ -28,13 +29,12 @@ public class SiteServiceImpl implements SiteService {
     private OptionsService optionsService;
 
     @Override
-    public void initSite(Users users, JdbcConf jdbcConf, String site_title) {
+    public void initSite(Users users, JdbcConf jdbcConf) {
         String pwd = Tools.md5(users.getUsername() + users.getPassword());
         users.setPassword(pwd);
         users.setScreen_name(users.getUsername());
         users.setCreated(DateKit.getCurrentUnixTime());
         activeRecord.insert(users);
-        optionsService.saveOption("site_title", site_title);
 
         try {
             Properties props = new Properties();
@@ -53,7 +53,7 @@ public class SiteServiceImpl implements SiteService {
             lock.createNewFile();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new TipException("初始化站点失败");
         }
     }
 }

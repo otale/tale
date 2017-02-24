@@ -26,7 +26,7 @@ public final class Commons {
      * @return
      */
     public static String site_url() {
-        return TaleConst.SITE_URL;
+        return site_url("");
     }
 
     /**
@@ -36,7 +36,7 @@ public final class Commons {
      * @return
      */
     public static String site_url(String sub) {
-        return site_url() + sub;
+        return site_option("site_url") + sub;
     }
 
     /**
@@ -69,7 +69,7 @@ public final class Commons {
         if (StringKit.isBlank(key)) {
             return "";
         }
-        return TaleConst.options.get(key, defalutValue);
+        return TaleConst.OPTIONS.get(key, defalutValue);
     }
 
     /**
@@ -138,7 +138,7 @@ public final class Commons {
      * @return
      */
     public static String permalink(Integer cid, String slug) {
-        return TaleConst.SITE_URL + "/article/" + (StringKit.isNotBlank(slug) ? slug : cid.toString());
+        return site_url("/article/" + (StringKit.isNotBlank(slug) ? slug : cid.toString()));
     }
 
     /**

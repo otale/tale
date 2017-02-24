@@ -8,6 +8,6 @@ import com.tale.model.Users;
  */
 public interface SiteService {
 
-    void initSite(Users users, JdbcConf jdbcConf, String site_title);
+    void initSite(Users users, JdbcConf jdbcConf);
 
 }

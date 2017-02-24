@@ -6,6 +6,7 @@ import com.blade.kit.Tools;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.wrapper.Session;
+import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Users;
 import org.commonmark.node.Node;
@@ -28,7 +29,7 @@ public class TaleUtils {
     public static void setCookie(Response response, Integer uid) {
         try {
             String val = Tools.enAes(uid.toString(), TaleConst.AES_SALT);
-            boolean isSSL = TaleConst.SITE_URL.startsWith("https");
+            boolean isSSL = Commons.site_url().startsWith("https");
             response.cookie("/", TaleConst.USER_IN_COOKIE, val, one_month, isSSL);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,7 +48,7 @@ public class TaleUtils {
     public static void logout(Session session, Response response) {
         session.removeAttribute(TaleConst.LOGIN_SESSION_KEY);
         response.removeCookie(TaleConst.USER_IN_COOKIE);
-        response.redirect(TaleConst.SITE_URL);
+        response.redirect(Commons.site_url());
     }
 
     public static Integer getCookieUid(Request request) {
