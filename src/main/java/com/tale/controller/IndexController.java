@@ -4,6 +4,8 @@ package com.tale.controller;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
+import com.blade.kit.PatternKit;
+import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
@@ -27,6 +29,7 @@ import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 @Controller
@@ -178,6 +181,7 @@ public class IndexController extends BaseController {
 
     /**
      * 标签分页
+     *
      * @param request
      * @param name
      * @param page
@@ -285,10 +289,33 @@ public class IndexController extends BaseController {
      */
     @Route(value = "comment", method = HttpMethod.POST)
     @JSON
-    public RestResponse comment(Request request,
+    public RestResponse comment(Request request, Response response,
                                 @QueryParam Integer cid, @QueryParam Integer coid,
                                 @QueryParam String author, @QueryParam String mail,
                                 @QueryParam String url, @QueryParam String text) {
+
+        if(null == cid || StringKit.isBlank(author) || StringKit.isBlank(mail) || StringKit.isBlank(text)){
+            return RestResponse.fail("请输入完整后评论");
+        }
+
+        if(author.length() > 50){
+            return RestResponse.fail("姓名过长");
+        }
+
+        if(!TaleUtils.isEmail(mail)){
+            return RestResponse.fail("请输入正确的邮箱格式");
+        }
+
+        if(!PatternKit.isURL(url)){
+            return RestResponse.fail("请输入正确的URL格式");
+        }
+
+        if(text.length() > 2000){
+            return RestResponse.fail("请输入2000个字符以内的评论");
+        }
+
+        author = TaleUtils.cleanXSS(author);
+        text = TaleUtils.cleanXSS(text);
 
         Comments comments = new Comments();
         comments.setAuthor(author);
@@ -296,10 +323,16 @@ public class IndexController extends BaseController {
         comments.setContent(text);
         comments.setIp(request.address());
         comments.setUrl(url);
+        comments.setContent(text);
         comments.setMail(mail);
         comments.setParent(coid);
         try {
             commentsService.saveComment(comments);
+            response.cookie("tale_remember_author", URLEncoder.encode(author, "UTF-8"), 7 * 24 * 60 * 60);
+            response.cookie("tale_remember_mail", URLEncoder.encode(mail, "UTF-8"), 7 * 24 * 60 * 60);
+            if (StringKit.isNotBlank(url)) {
+                response.cookie("tale_remember_url", URLEncoder.encode(url, "UTF-8"), 7 * 24 * 60 * 60);
+            }
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "评论发布失败";

@@ -74,7 +74,12 @@
                     <ul class="list-group">
                         #for(comment : comments)
                         <li class="list-group-item">
-                            ${comment.author}：<a href="${site_url('/article/')}${comment.cid}#comments" target="_blank">${comment.content}</a>
+                            #if(null != comment.url && comment.url != '')
+                            <a href="${comment.url}" target="_blank">${comment.author}</a>
+                            #else
+                            ${comment.author}
+                            #end
+                            于${fmtdate(comment.created,'MM月dd日HH:mm')} ：<a href="${site_url('/article/')}${comment.cid}#comments" target="_blank">${comment.content}</a>
                         </li>
                         #end
                     </ul>

@@ -5,9 +5,9 @@
         <span class="response">#if(null!=login_user) Hi，<a href="${login_user.home_url}" data-no-instant>${login_user.username}</a>
             如果你想 <a href="/logout" title="注销" data-no-instant>注销</a> ? #end</span>
 
-        <form method="post" id="comment-form" class="comment-form" role="form" onsubmit="return TaleComment.subComment();">
-            <input type="hidden" name="coid" id="coid"/>
-            <input type="hidden" name="cid" id="cid" value="${article.cid}"/>
+        <form method="post" id="comment-form" class="comment-form" role="form" onsubmit="return comment_reply();">
+            <input type="hidden" name="coid"/>
+            <input type="hidden" name="cid" value="${article.cid}"/>
             <input type="hidden" name="_csrf_token" value="">
             <input type="text" name="author" maxlength="12" id="author" class="form-control input-control clearfix"
                    placeholder="姓名 (*)" value="${login_user.username ?! ''}" required/>
@@ -43,7 +43,7 @@
                         <div class="comment-meta">
                             <time class="comment-time">${fmtdate(comment.created)}</time>
                             <span class="comment-reply">
-                                <a rel="nofollow" onclick="TaleComment.reply('${comment.coid}');">回复</a>
+                                <a rel="nofollow" onclick="reply_user('${comment.coid}');">回复</a>
                             </span>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                                     <div class="comment-meta">
                                         <time class="comment-time">${fmtdate(child.created)}</time>
                                         <span class="comment-reply">
-                                            <a rel="nofollow" onclick="TaleComment.reply('${child.coid}');">回复</a>
+                                            <a rel="nofollow" onclick="reply_user('${child.coid}');">回复</a>
                                         </span>
                                     </div>
                                 </div>
@@ -103,3 +103,30 @@
 </div>
 #end
 #include('/comm/tale_comment.html')
+<script type="text/javascript">
+    function reply_user(coid) {
+        $('#comment-form input[name=coid]').val(coid);
+        $("html,body").animate({scrollTop: $('div.comment-container').offset().top}, 500);
+        $('#comment-form #textarea').focus();
+    }
+    function comment_reply() {
+        $.ajax({
+            type: 'post',
+            url: '/comment',
+            data: $('#comment-form').serialize(),
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                $('#comment-form input[name=coid]').val('');
+                if (result && result.success) {
+                    window.location.reload();
+                } else {
+                    if (result.msg) {
+                        swal("提示消息", result.msg, 'error');
+                    }
+                }
+            }
+        });
+        return false;
+    }
+</script>
