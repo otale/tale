@@ -1,6 +1,6 @@
 *.js linguist-language=java
 *.jar linguist-language=java
-*.css linguist-language=css
+*.css linguist-language=java
 *.html linguist-language=html
 *.java linguist-language=java
 *.properties linguist-language=java
