@@ -4,36 +4,30 @@
     #dropzone {
         margin-bottom: 3rem;
     }
-
     .dropzone {
         border: 2px dashed #0087F7;
         border-radius: 5px;
         background: white;
     }
-
     .dropzone .dz-message {
         font-weight: 400;
     }
-
     .dropzone .dz-message .note {
         font-size: 0.8em;
         font-weight: 200;
         display: block;
         margin-top: 1.4rem;
     }
-
     .attach-img {
         width: 100px;
         height: 100px;
         border-radius: 10px;
         box-shadow: 0px 0px 8px #333;
     }
-
     .attach-text {
         font-size: 12px;
         font-weight: 300;
     }
-
     .attach-img:hover {
         background-color: #f9f9f9;
     }
@@ -77,6 +71,16 @@
                         onclick="delAttach(${attach.id});">
                     <i class="fa fa-trash-o"></i> <span>删除</span>
                 </button>
+            </div>
+        </div>
+        #end
+
+        #if(is_empty(attachs))
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="alert alert-warning">
+                    目前还没有一个附件呢，你可以上传试试!
+                </div>
             </div>
         </div>
         #end

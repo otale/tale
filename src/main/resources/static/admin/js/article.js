@@ -2,40 +2,28 @@
  * Created by biezhi on 2017/2/22.
  */
 // Tags Input
-jQuery('#tags').tagsInput({
+$('#tags').tagsInput({
     width: '100%',
     height: '35px',
     defaultText: '请输入文章标签'
 });
 
-jQuery('.toggle').toggles({on: true});
+$('.toggle').toggles({
+    on: true,
+    text: {
+        on: '开启',
+        off: '关闭'
+    }
+});
 
-// Select2
-jQuery(".select2").select2({
+$(".select2").select2({
     width: '100%'
 });
 
-// validate the comment form when it is submitted
-/*$('#articleForm').validate({
- submitHandler: function(form) {
-
- $('#content-editor').val( $('#text').val() );
- $("#articleForm #categories").val( $('#multiple-sel').val() );
- var params = $("#articleForm").serialize();
- var url = $('#articleForm #cid').val() != '' ? '/admin/article/modify' : '/admin/article/publish';
- $.post(url, params, function(result){
- if(result && result.success){
- swal('提示信息', '文章保存成功', 'success');
- setTimeout(function () {
- window.location.href = '/admin/article';
- }, 2000);
- } else{
- swal("提示消息", result.msg, 'error');
- }
- });
- }
- });*/
-
+/**
+ * 保存文章
+ * @param status
+ */
 function subArticle(status) {
     var title = $('#articleForm input[name=title]').val();
     var content = $('#text').val();
@@ -111,5 +99,9 @@ function allow_feed(obj) {
 }
 
 $('div.allow-false').toggles({
-    off: true
+    off: true,
+    text: {
+        on: '开启',
+        off: '关闭'
+    }
 });

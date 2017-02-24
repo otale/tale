@@ -49,6 +49,7 @@ public class IndexController {
                                     @QueryParam String social_github,
                                     @QueryParam String social_twitter,
                                     @QueryParam String site_theme,
+                                    @QueryParam String allow_install,
                                     @QueryParam String site_description,
                                     @QueryParam String site_keywords) {
 
@@ -57,6 +58,7 @@ public class IndexController {
             optionsService.saveOption("site_theme", site_theme);
             optionsService.saveOption("site_description", site_description);
             optionsService.saveOption("site_keywords", site_keywords);
+            optionsService.saveOption("allow_install", allow_install);
 
             optionsService.saveOption("social_weibo", social_weibo);
             optionsService.saveOption("social_zhihu", social_zhihu);

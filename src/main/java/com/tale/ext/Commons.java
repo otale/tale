@@ -1,5 +1,7 @@
 package com.tale.ext;
 
+import com.blade.jdbc.model.Paginator;
+import com.blade.kit.CollectionKit;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.blade.kit.Tools;
@@ -19,6 +21,16 @@ import java.util.regex.Pattern;
  * Created by biezhi on 2017/2/21.
  */
 public final class Commons {
+
+    /**
+     * 判断分页中是否有数据
+     *
+     * @param paginator
+     * @return
+     */
+    public static boolean is_empty(Paginator paginator) {
+        return null == paginator || CollectionKit.isEmpty(paginator.getList());
+    }
 
     /**
      * 网站链接

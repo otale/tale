@@ -1,4 +1,5 @@
 #include('./header.html',{active:'settings', title:'系统设置'})
+<link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
 <div class="row">
 
     <div class="col-sm-12">
@@ -42,6 +43,15 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">允许重新安装</label>
+                        <div class="col-md-9">
+                            <div class="toggle toggle-success allow-${options.allow_install}"
+                                 onclick="allow_reinstall(this);"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="allow_install" id="allow_install"/>
                     <div class="clearfix pull-right">
                         <button type="button" class="btn btn-primary waves-effect waves-light" onclick="saveSetting()">
                             保存设置
@@ -100,7 +110,12 @@
 
 </div>
 #include('./footer.html')
+<script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
 <script type="text/javascript">
+
+    /**
+     * 保存全局设置
+     */
     function saveSetting() {
         var param = $('#global-form').serialize();
         $.post('/admin/setting', param, function (result) {
@@ -111,6 +126,10 @@
             }
         });
     }
+
+    /**
+     * 保存个性化设置
+     */
     function saveIndiviSetting() {
         var param = $('#indivi-form').serialize();
         $.post('/admin/setting', param, function (result) {
@@ -121,6 +140,35 @@
             }
         });
     }
+    /**
+     * 设置是否允许重新安装
+     */
+    function allow_reinstall(obj) {
+        var this_ = $(obj);
+        var on = this_.find('.toggle-on.active').length;
+        var off = this_.find('.toggle-off.active').length;
+        if (on == 1) {
+            $('#allow_install').val(0);
+        }
+        if (off == 1) {
+            $('#allow_install').val(1);
+        }
+    }
+
+    $('.allow-1').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+    $('.allow-0').toggles({
+        off: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
 </script>
 </body>
 </html>

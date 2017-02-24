@@ -22,8 +22,12 @@
                 <td>${link.description}</td>
                 <td>${link.sort}</td>
                 <td>
-                    <a href="javascript:void(0)" onclick="editLink(this);">编辑</a> | <a href="javascript:void(0)"
-                                                                                       onclick="delLink(${link.mid});">删除</a>
+                    <a href="javascript:void(0)" onclick="editLink(this);"
+                       class="btn btn-primary btn-sm waves-effect waves-light m-b-5"><i
+                            class="fa fa-edit"></i> <span>编辑</span></a>
+                    <a href="javascript:void(0)" onclick="delLink(${link.mid});"
+                       class="btn btn-danger btn-sm waves-effect waves-light m-b-5"><i
+                            class="fa fa-trash-o"></i> <span>删除</span></a>
                 </td>
             </tr>
             #end
@@ -31,7 +35,7 @@
         </table>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" style="padding: 20px;">
             <div class="panel panel-primary">
                 <div class="panel-heading"><h3 class="panel-title">保存友链</h3></div>
                 <div class="panel-body">
