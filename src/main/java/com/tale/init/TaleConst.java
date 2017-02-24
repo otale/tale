@@ -14,5 +14,5 @@ public class TaleConst {
     public static String LOGIN_SESSION_KEY = "login_user";
     public static Config OPTIONS = new Config();
     public static boolean INSTALL = false;
-
+    public static Config BCONF = null;
 }

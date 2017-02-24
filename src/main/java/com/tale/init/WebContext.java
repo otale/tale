@@ -41,6 +41,7 @@ public class WebContext implements BeanProcessor, WebContextListener {
             TaleConst.OPTIONS.addAll(optionsService.getOptions());
             TaleConst.INSTALL = true;
         }
+        TaleConst.BCONF = bConfig.config();
     }
 
     @Override
