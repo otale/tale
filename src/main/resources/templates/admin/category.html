@@ -20,7 +20,8 @@
                             data-toggle="dropdown" aria-expanded="false">${c.name} (${c.count}) <span
                             class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="javascript:void(0)" mid="${c.mid}" cname="${c.name}" class="edit-category">修改</a></li>
+                        <li><a href="javascript:void(0)" mid="${c.mid}" cname="${c.name}" class="edit-category">修改</a>
+                        </li>
                         <li><a href="javascript:void(0)" mid="${c.mid}" class="del-category">删除</a></li>
                     </ul>
                     #end
@@ -58,7 +59,9 @@
                     <div class="form-group">
                         <input type="text" class="form-control" id="cname" placeholder="请输入分类名称">
                     </div>
-                    <button id="save-category-btn" type="button" class="btn btn-success waves-effect waves-light m-l-10">保存分类</button>
+                    <button id="save-category-btn" type="button"
+                            class="btn btn-success waves-effect waves-light m-l-10">保存分类
+                    </button>
                 </form>
             </div>
         </div>
@@ -69,16 +72,16 @@
     $('#save-category-btn').click(function () {
         var cname = $('#cform #cname').val();
         var mid = $('#cform #mid').val();
-        if(cname && cname != ''){
-            $.post('/admin/category/save', {mid:mid,cname:cname}, function (result) {
+        if (cname && cname != '') {
+            $.post('/admin/category/save', {mid: mid, cname: cname}, function (result) {
                 $('#cform #mid').val('');
                 $('#cform #cname').val('');
-                if(result && result.success){
+                if (result && result.success) {
                     swal('提示信息', '分类保存成功', 'success');
                     setTimeout(function () {
                         window.location.reload();
                     }, 2000);
-                } else{
+                } else {
                     swal("提示消息", result.msg, 'error');
                 }
             });
@@ -104,8 +107,8 @@
             confirmButtonText: '确定',
             cancelButtonText: '取消'
         }).then(function () {
-            $.post('/admin/category/delete', {mid:mid}, function(result){
-                if(result && result.success){
+            $.post('/admin/category/delete', {mid: mid}, function (result) {
+                if (result && result.success) {
                     swal('提示信息', '删除成功', 'success');
                     setTimeout(function () {
                         window.location.reload();

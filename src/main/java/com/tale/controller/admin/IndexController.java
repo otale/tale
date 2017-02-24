@@ -10,8 +10,8 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.init.TaleConst;
 import com.tale.exception.TipException;
+import com.tale.init.TaleConst;
 import com.tale.service.OptionsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +30,12 @@ public class IndexController {
     private OptionsService optionsService;
 
     @Route(value = {"/", "index"}, method = HttpMethod.GET)
-    public String index(){
+    public String index() {
         return "admin/index";
     }
 
     @Route(value = "setting", method = HttpMethod.GET)
-    public String setting(Request request){
+    public String setting(Request request) {
         Map<String, String> options = optionsService.getOptions();
         request.attribute("options", options);
         return "admin/setting";
@@ -70,7 +70,7 @@ public class IndexController {
 
             BaseController.THEME = "themes/" + site_theme;
 
-        } catch (Exception e){
+        } catch (Exception e) {
             String msg = "保存设置失败";
             if (e instanceof TipException) {
                 msg = e.getMessage();

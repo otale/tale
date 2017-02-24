@@ -32,7 +32,7 @@ public class MetasServiceImpl implements MetasService {
 
     @Override
     public List<MetaDto> getMetaList(String types) {
-        if(StringKit.isNotBlank(types)){
+        if (StringKit.isNotBlank(types)) {
             String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                     "where a.type = ? group by a.mid";
             return activeRecord.list(MetaDto.class, sql, types);
@@ -42,7 +42,7 @@ public class MetasServiceImpl implements MetasService {
 
     @Override
     public MetaDto getMeta(String type, String name) {
-        if(StringKit.isNotBlank(type) && StringKit.isNotBlank(name)){
+        if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
             String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                     "where a.type = ? and a.name = ? group by a.mid";
             return activeRecord.one(MetaDto.class, sql, type, name);
@@ -81,7 +81,7 @@ public class MetasServiceImpl implements MetasService {
         }
         if (mid != 0) {
             int count = activeRecord.count(new Take(Relationships.class).eq("cid", cid).eq("mid", mid));
-            if(count == 0){
+            if (count == 0) {
                 Relationships relationships = new Relationships();
                 relationships.setCid(cid);
                 relationships.setMid(mid);
@@ -157,14 +157,14 @@ public class MetasServiceImpl implements MetasService {
 
     @Override
     public void saveMeta(Metas metas) {
-        if(null != metas){
+        if (null != metas) {
             activeRecord.insert(metas);
         }
     }
 
     @Override
     public void update(Metas metas) {
-        if(null != metas && null != metas.getMid()){
+        if (null != metas && null != metas.getMid()) {
             activeRecord.update(metas);
         }
     }

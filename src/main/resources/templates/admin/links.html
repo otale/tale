@@ -22,7 +22,8 @@
                 <td>${link.description}</td>
                 <td>${link.sort}</td>
                 <td>
-                    <a href="javascript:void(0)" onclick="editLink(this);">编辑</a> | <a href="javascript:void(0)" onclick="delLink(${link.mid});">删除</a>
+                    <a href="javascript:void(0)" onclick="editLink(this);">编辑</a> | <a href="javascript:void(0)"
+                                                                                       onclick="delLink(${link.mid});">删除</a>
                 </td>
             </tr>
             #end
@@ -37,26 +38,29 @@
 
                     <form id="linkForm" class="form-inline" role="form" novalidate="novalidate">
 
-                        <input type="hidden" id="mid" name="mid" />
+                        <input type="hidden" id="mid" name="mid"/>
 
                         <div class="form-group">
                             <label class="sr-only">链接标题</label>
-                            <input type="text" id="title" name="title" class="form-control" placeholder="请输入链接标题" required aria-required="true"/>
+                            <input type="text" id="title" name="title" class="form-control" placeholder="请输入链接标题"
+                                   required aria-required="true"/>
                         </div>
 
                         <div class="form-group">
                             <label class="sr-only">链接URL</label>
-                            <input type="url" id="url" name="url" class="form-control" placeholder="请输入链接地址" required aria-required="true"/>
+                            <input type="url" id="url" name="url" class="form-control" placeholder="请输入链接地址" required
+                                   aria-required="true"/>
                         </div>
 
                         <div class="form-group">
                             <label class="sr-only">链接LOGO</label>
-                            <input type="url" id="logo" name="logo" class="form-control" placeholder="请输入链接LOGO，没有则不输入" />
+                            <input type="url" id="logo" name="logo" class="form-control"
+                                   placeholder="请输入链接LOGO，没有则不输入"/>
                         </div>
 
                         <div class="form-group">
                             <label class="sr-only">链接排序</label>
-                            <input type="number" id="sort" name="sort" class="form-control" value="0" />
+                            <input type="number" id="sort" name="sort" class="form-control" value="0"/>
                         </div>
 
                         <button type="submit" class="btn btn-success waves-effect waves-light m-l-10">保存链接</button>
@@ -75,17 +79,17 @@
 <script type="text/javascript">
 
     $('#linkForm').validate({
-        submitHandler: function(form) {
+        submitHandler: function (form) {
             var params = $("#linkForm").serialize();
-            $.post('/admin/links/save', params, function(result){
-                if(result && result.success){
+            $.post('/admin/links/save', params, function (result) {
+                if (result && result.success) {
                     $('#linkForm input').val('');
                     $('#linkForm #sort').val('0');
                     swal('提示信息', '友链保存成功', 'success');
                     setTimeout(function () {
                         window.location.reload();
                     }, 2000);
-                } else{
+                } else {
                     swal("提示消息", result.msg, 'error');
                 }
             });
@@ -108,7 +112,7 @@
         $('#linkForm #sort').val(sort);
     }
 
-    function delLink(mid){
+    function delLink(mid) {
         swal({
             title: '警告信息',
             text: "确定删除该链接吗？",
@@ -119,8 +123,8 @@
             confirmButtonText: '确定',
             cancelButtonText: '取消'
         }).then(function () {
-            $.post('/admin/links/delete', {mid:mid}, function(result){
-                if(result && result.success){
+            $.post('/admin/links/delete', {mid: mid}, function (result) {
+                if (result && result.success) {
                     swal('提示信息', '删除成功', 'success');
                     setTimeout(function () {
                         window.location.reload();

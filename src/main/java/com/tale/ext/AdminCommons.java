@@ -4,8 +4,6 @@ import com.blade.kit.StringKit;
 import com.blade.kit.Tools;
 import com.tale.model.Metas;
 
-import javax.tools.Tool;
-
 /**
  * 后台公共函数
  * <p>

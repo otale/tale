@@ -1,4 +1,3 @@
-
 <footer class="footer bg-white">
     <div class="footer-social">
         <div class="footer-container clearfix">
@@ -57,7 +56,7 @@
     <div id="directory"></div>
 </div>
 <script>
-    var postDirectoryBuild = function() {
+    var postDirectoryBuild = function () {
         var postChildren = function children(childNodes, reg) {
                 var result = [],
                     isReg = typeof reg === 'object',
@@ -74,12 +73,12 @@
                 }
                 return result;
             },
-            createPostDirectory = function(article, directory, isDirNum) {
+            createPostDirectory = function (article, directory, isDirNum) {
                 var contentArr = [],
                     titleId = [],
                     levelArr, root, level,
                     currentList, list, li, link, i, len;
-                levelArr = (function(article, contentArr, titleId) {
+                levelArr = (function (article, contentArr, titleId) {
                     var titleElem = postChildren(article.childNodes, /^h\d$/),
                         levelArr = [],
                         lastNum = 1,
@@ -135,13 +134,13 @@
                     link = document.createElement('a');
                     link.href = '#' + titleId[i];
                     link.innerHTML = !isDirNum ? contentArr[i] :
-                        dirNum.join('.') + ' ' + contentArr[i] ;
+                        dirNum.join('.') + ' ' + contentArr[i];
                     li.appendChild(link);
                     currentList.appendChild(li);
                 }
                 directory.appendChild(root);
             };
-        createPostDirectory(document.getElementById('post-content'),document.getElementById('directory'), true);
+        createPostDirectory(document.getElementById('post-content'), document.getElementById('directory'), true);
     };
     postDirectoryBuild();
 </script>
@@ -153,38 +152,40 @@
 <!--<script src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>-->
 
 <script type="text/javascript">
-#if(is_post)
-var postDirectory = new Headroom(document.getElementById("directory-content"), {
-    tolerance: 0,
-    offset : 100,
-    classes: {
-        initial: "initial",
-        pinned: "pinned",
-        unpinned: "unpinned"
-    }
-});
-postDirectory.init();
-#end
-var header = new Headroom(document.getElementById("header"), {
-    tolerance: 0,
-    offset : 80,
-    classes: {
-      initial: "animated",
-      pinned: "slideDown",
-      unpinned: "slideUp"
-    }
-});
-header.init();
-
-$('#search-inp').keypress(function (e) {
-    var key = e.which; //e.which是按键的值
-    if (key == 13) {
-        var q = $(this).val();
-        if(q && q != ''){
-            window.location.href = '/search/' + q;
+    #
+    if (is_post)
+        var postDirectory = new Headroom(document.getElementById("directory-content"), {
+            tolerance: 0,
+            offset: 100,
+            classes: {
+                initial: "initial",
+                pinned: "pinned",
+                unpinned: "unpinned"
+            }
+        });
+    postDirectory.init();
+    #
+    end
+    var header = new Headroom(document.getElementById("header"), {
+        tolerance: 0,
+        offset: 80,
+        classes: {
+            initial: "animated",
+            pinned: "slideDown",
+            unpinned: "slideUp"
         }
-    }
-});
+    });
+    header.init();
+
+    $('#search-inp').keypress(function (e) {
+        var key = e.which; //e.which是按键的值
+        if (key == 13) {
+            var q = $(this).val();
+            if (q && q != '') {
+                window.location.href = '/search/' + q;
+            }
+        }
+    });
 </script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -204,21 +205,25 @@ MathJax.Hub.Config({
     }
 });
 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+
 </script>
 <script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 <script data-no-instant>
-InstantClick.on('change', function(isInitialLoad){
-    var blocks = document.querySelectorAll('pre code');
-    for (var i = 0; i < blocks.length; i++) {
-        hljs.highlightBlock(blocks[i]);
-    }
-    if (isInitialLoad === false) {
+    InstantClick.on('change', function (isInitialLoad) {
+        var blocks = document.querySelectorAll('pre code');
+        for (var i = 0; i < blocks.length; i++) {
+            hljs.highlightBlock(blocks[i]);
+        }
+        if (isInitialLoad === false) {
             if (typeof ga !== 'undefined') ga('send', 'pageview', location.pathname + location.search);
-                if (typeof MathJax !== 'undefined'){MathJax.Hub.Queue(["Typeset",MathJax.Hub]);}
-    }
-});
-InstantClick.init();
+            if (typeof MathJax !== 'undefined') {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            }
+        }
+    });
+    InstantClick.init();
 </script>
 </body>
 </html>

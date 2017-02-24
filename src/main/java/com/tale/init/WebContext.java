@@ -33,7 +33,7 @@ public class WebContext implements BeanProcessor, WebContextListener {
         resolver.registerTags(JetTag.class);
 
         ViewSettings.$().templateEngine(templateEngine);
-        if(dbIsOk){
+        if (dbIsOk) {
             TaleConst.options.addAll(optionsService.getOptions());
         }
         TaleConst.SITE_URL = bConfig.config().get("app.site_url");

@@ -1,8 +1,6 @@
 package com.tale.controller;
 
-import com.blade.kit.StringKit;
 import com.blade.mvc.http.Request;
-import com.tale.init.TaleConst;
 import com.tale.model.Users;
 import com.tale.utils.TaleUtils;
 
@@ -31,7 +29,7 @@ public abstract class BaseController {
         return TaleUtils.getLoginUser();
     }
 
-    public String render_404(){
+    public String render_404() {
         return "/comm/error_404";
     }
 

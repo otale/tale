@@ -3,34 +3,36 @@
 <link href="/static/admin/plugins/select2/dist/css/select2-bootstrap.css" rel="stylesheet">
 <link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
 
-<link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.css" rel="stylesheet" />
-<link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet" />
-<link href="/static/admin/plugins/md/css/style.css" rel="stylesheet" />
+<link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.css" rel="stylesheet"/>
+<link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet"/>
+<link href="/static/admin/plugins/md/css/style.css" rel="stylesheet"/>
 <style>
-    #tags_tagsinput{
+    #tags_tagsinput {
         background-color: #fafafa;
         border: 1px solid #eeeeee;
     }
+
     #tags_addTag input {
         width: 100%;
     }
-    #tags_addTag{
+
+    #tags_addTag {
         margin-top: -5px;
     }
 </style>
 <div class="row">
     <div class="col-sm-12">
         <h4 class="page-title">
-        #if(null != contents)
-        编辑文章
-        #else
-        发布文章
-        #end
+            #if(null != contents)
+            编辑文章
+            #else
+            发布文章
+            #end
         </h4>
     </div>
     <div class="col-md-12">
         <form id="articleForm" role="form" novalidate="novalidate">
-            <input type="hidden" name="categories" id="categories" />
+            <input type="hidden" name="categories" id="categories"/>
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
             <input type="hidden" name="status" value="${contents.status ?! 'publish'}" id="status"/>
             <input type="hidden" name="allow_comment" value="${contents.allow_comment ?! true}" id="allow_comment"/>
@@ -39,7 +41,8 @@
             <input type="hidden" name="content" id="content-editor"/>
 
             <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
-                <input type="text" class="form-control" placeholder="请输入文章标题（必须）" name="title" required aria-required="true" value="${contents.title ?! ''}"/>
+                <input type="text" class="form-control" placeholder="请输入文章标题（必须）" name="title" required
+                       aria-required="true" value="${contents.title ?! ''}"/>
             </div>
 
             <div class="form-group col-md-6" style="padding: 0 0 0 10px;">
@@ -75,21 +78,24 @@
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">开启评论</label>
                 <div class="col-sm-8">
-                    <div class="toggle toggle-success allow-${contents.allow_comment ?! true}" onclick="allow_comment(this);"></div>
+                    <div class="toggle toggle-success allow-${contents.allow_comment ?! true}"
+                         onclick="allow_comment(this);"></div>
                 </div>
             </div>
 
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">允许Ping</label>
                 <div class="col-sm-8">
-                    <div class="toggle toggle-success allow-${contents.allow_ping ?! true}" onclick="allow_ping(this);"></div>
+                    <div class="toggle toggle-success allow-${contents.allow_ping ?! true}"
+                         onclick="allow_ping(this);"></div>
                 </div>
             </div>
 
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">允许订阅</label>
                 <div class="col-sm-8">
-                    <div class="toggle toggle-success allow-${contents.allow_feed ?! true}" onclick="allow_feed(this);"></div>
+                    <div class="toggle toggle-success allow-${contents.allow_feed ?! true}"
+                         onclick="allow_feed(this);"></div>
                 </div>
             </div>
 
@@ -97,8 +103,12 @@
 
             <div class="text-right">
                 <a class="btn btn-default waves-effect waves-light" href="/admin/article">返回列表</a>
-                <button type="button" class="btn btn-primary waves-effect waves-light" onclick="subArticle('publish');">保存文章</button>
-                <button type="button" class="btn btn-warning waves-effect waves-light" onclick="subArticle('draft');">存为草稿</button>
+                <button type="button" class="btn btn-primary waves-effect waves-light" onclick="subArticle('publish');">
+                    保存文章
+                </button>
+                <button type="button" class="btn btn-warning waves-effect waves-light" onclick="subArticle('draft');">
+                    存为草稿
+                </button>
             </div>
         </form>
     </div>

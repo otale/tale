@@ -52,7 +52,7 @@ public class SiteServiceImpl implements SiteService {
             File lock = new File(cp + "install.lock");
             lock.createNewFile();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

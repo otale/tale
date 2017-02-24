@@ -63,9 +63,9 @@ public class ArticleController extends BaseController {
     @Route(value = "publish", method = HttpMethod.POST)
     @JSON
     public RestResponse publishArticle(@QueryParam String title, @QueryParam String content,
-                                   @QueryParam String tags, @QueryParam String categories,
-                                   @QueryParam String status, @QueryParam String slug,
-                                   @QueryParam Boolean allow_comment, @QueryParam Boolean allow_ping, @QueryParam Boolean allow_feed) {
+                                       @QueryParam String tags, @QueryParam String categories,
+                                       @QueryParam String status, @QueryParam String slug,
+                                       @QueryParam Boolean allow_comment, @QueryParam Boolean allow_ping, @QueryParam Boolean allow_feed) {
 
         Users users = this.user();
 
@@ -75,13 +75,13 @@ public class ArticleController extends BaseController {
         contents.setStatus(status);
         contents.setSlug(slug);
         contents.setType(Types.ARTICLE);
-        if(null != allow_comment){
+        if (null != allow_comment) {
             contents.setAllow_comment(allow_comment);
         }
-        if(null != allow_ping){
+        if (null != allow_ping) {
             contents.setAllow_ping(allow_ping);
         }
-        if(null != allow_feed){
+        if (null != allow_feed) {
             contents.setAllow_feed(allow_feed);
         }
         contents.setAuthor_id(users.getUid());
@@ -120,13 +120,13 @@ public class ArticleController extends BaseController {
         contents.setContent(content);
         contents.setStatus(status);
         contents.setSlug(slug);
-        if(null != allow_comment){
+        if (null != allow_comment) {
             contents.setAllow_comment(allow_comment);
         }
-        if(null != allow_ping){
+        if (null != allow_ping) {
             contents.setAllow_ping(allow_ping);
         }
-        if(null != allow_feed){
+        if (null != allow_feed) {
             contents.setAllow_feed(allow_feed);
         }
         contents.setAuthor_id(users.getUid());

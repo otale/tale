@@ -1,6 +1,9 @@
 package com.tale.utils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.io.Reader;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
@@ -95,10 +98,10 @@ public class ScriptRunner {
      * Runs an SQL script (read in using the Reader parameter) using the
      * connection passed in
      *
-     * @param conn - the connection to use for the script
+     * @param conn   - the connection to use for the script
      * @param reader - the source of the script
      * @throws SQLException if any SQL errors occur
-     * @throws IOException if there is an error reading from the Reader
+     * @throws IOException  if there is an error reading from the Reader
      */
     private void runScript(Connection conn, Reader reader) throws IOException,
             SQLException {
@@ -142,8 +145,7 @@ public class ScriptRunner {
             if (!autoCommit) {
                 conn.commit();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IOException(String.format("Error executing '%s': %s", command, e.getMessage()), e);
         } finally {
             conn.rollback();

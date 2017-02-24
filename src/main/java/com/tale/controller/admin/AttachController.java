@@ -59,13 +59,13 @@ public class AttachController extends BaseController {
         Map<String, FileItem> fileItemMap = request.fileItems();
         Collection<FileItem> fileItems = fileItemMap.values();
         try {
-            fileItems.forEach( f -> {
+            fileItems.forEach(f -> {
                 String fname = f.fileName();
 
                 String prefix = "/upload/" + DateKit.dateFormat(new Date(), "yyyy/MM");
 
                 String dir = Blade.$().webRoot() + prefix;
-                if(!FileKit.exist(dir)){
+                if (!FileKit.exist(dir)) {
                     new File(dir).mkdirs();
                 }
 
@@ -82,7 +82,7 @@ public class AttachController extends BaseController {
                 }
                 attachService.save(fname, fkey, ftype, uid);
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             return RestResponse.fail();
         }
         return RestResponse.ok();

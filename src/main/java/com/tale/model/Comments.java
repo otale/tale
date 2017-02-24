@@ -1,9 +1,8 @@
 package com.tale.model;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import com.blade.jdbc.annotation.Table;
+
+import java.io.Serializable;
 
 //
 @Table(name = "t_comments", pk = "coid")

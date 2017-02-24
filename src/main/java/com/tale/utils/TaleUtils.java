@@ -94,7 +94,7 @@ public class TaleUtils {
     }
 
     public static String htmlToText(String html) {
-        if(StringKit.isNotBlank(html)){
+        if (StringKit.isNotBlank(html)) {
             return html.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
         }
         return "";

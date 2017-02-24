@@ -5,7 +5,7 @@ import com.tale.model.Metas;
 /**
  * Created by biezhi on 2017/2/22.
  */
-public class MetaDto extends Metas{
+public class MetaDto extends Metas {
 
     private int count;
 

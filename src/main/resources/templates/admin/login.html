@@ -28,7 +28,7 @@
     <div class="panel panel-color panel-primary panel-pages">
         <div class="panel-heading bg-img">
             <div class="bg-overlay"></div>
-            <h3 class="text-center m-t-10 text-white"> Tale <strong>博客系统</strong> </h3>
+            <h3 class="text-center m-t-10 text-white"> Tale <strong>博客系统</strong></h3>
         </div>
 
         <div class="panel-body">
@@ -36,13 +36,15 @@
 
                 <div class="form-group">
                     <div class="col-xs-12">
-                        <input class="form-control input-lg" name="username" type="text" required="" placeholder="请输入账号 :)">
+                        <input class="form-control input-lg" name="username" type="text" required=""
+                               placeholder="请输入账号 :)">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-xs-12">
-                        <input class="form-control input-lg" name="password" type="password" required="" placeholder="请输入密码">
+                        <input class="form-control input-lg" name="password" type="password" required=""
+                               placeholder="请输入密码">
                     </div>
                 </div>
 
@@ -57,7 +59,8 @@
 
                 <div class="form-group text-center m-t-40">
                     <div class="col-xs-12">
-                        <button class="btn btn-primary btn-lg w-lg waves-effect waves-light" type="submit">登&nbsp;录</button>
+                        <button class="btn btn-primary btn-lg w-lg waves-effect waves-light" type="submit">登&nbsp;录
+                        </button>
                     </div>
                 </div>
             </form>
@@ -74,9 +77,9 @@
 <script type="text/javascript">
     function checkForm() {
         $.post('/admin/login', $("#loginForm").serialize(), function (result) {
-            if(result && result.success){
+            if (result && result.success) {
                 window.location.href = '/admin/index';
-            } else{
+            } else {
                 swal("提示消息", result.msg);
             }
         });

@@ -72,7 +72,7 @@ public final class TaleJdbc {
     }
 
     public static boolean open(Ioc ioc) {
-        if(jdbc_prop.containsKey("url") && jdbc_prop.containsKey("username") && jdbc_prop.containsKey("password")){
+        if (jdbc_prop.containsKey("url") && jdbc_prop.containsKey("username") && jdbc_prop.containsKey("password")) {
             DataSource dataSource;
             try {
                 dataSource = DruidDataSourceFactory.createDataSource(jdbc_prop);
@@ -81,7 +81,7 @@ public final class TaleJdbc {
             }
 
             SampleActiveRecord sampleActiveRecord = ioc.getBean(SampleActiveRecord.class);
-            if(null != sampleActiveRecord){
+            if (null != sampleActiveRecord) {
                 sampleActiveRecord.setSql2o(new Sql2o(dataSource));
             } else {
                 SampleActiveRecord activeRecord = new SampleActiveRecord(dataSource);
@@ -93,11 +93,11 @@ public final class TaleJdbc {
         return false;
     }
 
-    public static void testConn(){
-        if(jdbc_prop.containsKey("url") && jdbc_prop.containsKey("username") && jdbc_prop.containsKey("password")){
+    public static void testConn() {
+        if (jdbc_prop.containsKey("url") && jdbc_prop.containsKey("username") && jdbc_prop.containsKey("password")) {
             try {
                 Class.forName("com.mysql.jdbc.Driver"); //MYSQL驱动
-                Connection con = DriverManager.getConnection(jdbc_prop.getProperty("url"), jdbc_prop.getProperty("username"),  jdbc_prop.getProperty("password"));
+                Connection con = DriverManager.getConnection(jdbc_prop.getProperty("url"), jdbc_prop.getProperty("username"), jdbc_prop.getProperty("password"));
                 ScriptRunner runner = new ScriptRunner(con, false, true);
                 String cp = TaleJdbc.class.getClassLoader().getResource("").getPath();
                 runner.runScript(new BufferedReader(new FileReader(new File(cp + "schema.sql"))));

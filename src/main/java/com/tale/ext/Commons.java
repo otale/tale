@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 /**
  * 主题公共函数
- *
+ * <p>
  * Created by biezhi on 2017/2/21.
  */
 public final class Commons {
@@ -32,7 +32,7 @@ public final class Commons {
     /**
      * 返回网站链接下的全址
      *
-     * @param sub   后面追加的地址
+     * @param sub 后面追加的地址
      * @return
      */
     public static String site_url(String sub) {
@@ -41,6 +41,7 @@ public final class Commons {
 
     /**
      * 网站标题
+     *
      * @return
      */
     public static String site_title() {
@@ -65,7 +66,7 @@ public final class Commons {
      * @return
      */
     public static String site_option(String key, String defalutValue) {
-        if (StringKit.isBlank(key)){
+        if (StringKit.isBlank(key)) {
             return "";
         }
         return TaleConst.options.get(key, defalutValue);
@@ -73,12 +74,13 @@ public final class Commons {
 
     /**
      * 截取字符串
+     *
      * @param str
      * @param len
      * @return
      */
-    public static String substr(String str, int len){
-        if(str.length() > len){
+    public static String substr(String str, int len) {
+        if (str.length() > len) {
             return str.substring(0, len);
         }
         return str;
@@ -86,6 +88,7 @@ public final class Commons {
 
     /**
      * 返回主题URL
+     *
      * @return
      */
     public static String theme_url() {
@@ -119,6 +122,7 @@ public final class Commons {
 
     /**
      * 返回文章链接地址
+     *
      * @param contents
      * @return
      */
@@ -128,6 +132,7 @@ public final class Commons {
 
     /**
      * 返回文章链接地址
+     *
      * @param cid
      * @param slug
      * @return
@@ -138,6 +143,7 @@ public final class Commons {
 
     /**
      * 格式化unix时间戳为日期
+     *
      * @param unixTime
      * @return
      */
@@ -147,12 +153,13 @@ public final class Commons {
 
     /**
      * 格式化unix时间戳为日期
+     *
      * @param unixTime
      * @param patten
      * @return
      */
     public static String fmtdate(Integer unixTime, String patten) {
-        if(null != unixTime && StringKit.isNotBlank(patten)){
+        if (null != unixTime && StringKit.isNotBlank(patten)) {
             return DateKit.formatDateByUnixTime(unixTime, patten);
         }
         return "";
@@ -160,14 +167,15 @@ public final class Commons {
 
     /**
      * 显示分类
+     *
      * @param categories
      * @return
      */
     public static String show_categories(String categories) throws UnsupportedEncodingException {
-        if(StringKit.isNotBlank(categories)){
+        if (StringKit.isNotBlank(categories)) {
             String[] arr = categories.split(",");
             StringBuffer sbuf = new StringBuffer();
-            for(String c : arr){
+            for (String c : arr) {
                 sbuf.append("<a href=\"/category/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
             }
             return sbuf.toString();
@@ -177,15 +185,16 @@ public final class Commons {
 
     /**
      * 显示标签
+     *
      * @param tags
      * @return
      */
     public static String show_tags(String tags) throws UnsupportedEncodingException {
-        if(StringKit.isNotBlank(tags)){
+        if (StringKit.isNotBlank(tags)) {
             String[] arr = tags.split(",");
             StringBuffer sbuf = new StringBuffer();
-            for(String c : arr){
-                sbuf.append("<a href=\"/tag/"+ URLEncoder.encode(c, "UTF-8") +"\">"+ c +"</a>");
+            for (String c : arr) {
+                sbuf.append("<a href=\"/tag/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
             }
             return sbuf.toString();
         }
@@ -199,14 +208,14 @@ public final class Commons {
      * @param len   要截取文字的个数
      * @return
      */
-    public static String intro(String value, int len){
+    public static String intro(String value, int len) {
         int pos = value.indexOf("<!--more-->");
-        if(pos != -1){
+        if (pos != -1) {
             String html = value.substring(0, pos);
-            return TaleUtils.htmlToText( TaleUtils.mdToHtml(html) );
+            return TaleUtils.htmlToText(TaleUtils.mdToHtml(html));
         } else {
-            String text = TaleUtils.htmlToText( TaleUtils.mdToHtml(value) );
-            if(text.length() > len){
+            String text = TaleUtils.htmlToText(TaleUtils.mdToHtml(value));
+            if (text.length() > len) {
                 return text.substring(0, len);
             }
             return text;
@@ -219,8 +228,8 @@ public final class Commons {
      * @param value
      * @return
      */
-    public static String article(String value){
-        if(StringKit.isNotBlank(value)){
+    public static String article(String value) {
+        if (StringKit.isNotBlank(value)) {
             value = value.replace("<!--more-->", "\r\n");
             return TaleUtils.mdToHtml(value);
         }
@@ -273,10 +282,11 @@ public final class Commons {
 
     /**
      * 显示文章图标
+     *
      * @param cid
      * @return
      */
-    public static String show_icon(int cid){
+    public static String show_icon(int cid) {
         return ICONS[cid % ICONS.length];
     }
 

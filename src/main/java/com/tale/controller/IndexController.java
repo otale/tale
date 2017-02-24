@@ -102,6 +102,7 @@ public class IndexController extends BaseController {
 
     /**
      * 分类页
+     *
      * @return
      */
     @Route(value = "category/:keyword", method = HttpMethod.GET)
@@ -219,7 +220,7 @@ public class IndexController extends BaseController {
         try {
             String xml = RSSUtils.getRssXml(contentsPaginator.getList());
             response.xml(xml);
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("生成RSS失败", e);
         }
     }

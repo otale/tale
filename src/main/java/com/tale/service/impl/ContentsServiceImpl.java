@@ -15,7 +15,6 @@ import com.tale.model.Contents;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class ContentsServiceImpl implements ContentsService {
 
     @Override
     public Contents getPage(String slug) {
-        if(StringKit.isNotBlank(slug)){
+        if (StringKit.isNotBlank(slug)) {
             return activeRecord.one(new Take(Contents.class).eq("slug", slug));
         }
         return null;
@@ -161,7 +160,7 @@ public class ContentsServiceImpl implements ContentsService {
                 "where b.mid = ? and a.status = 'publish' and a.type = 'post' order by a.created desc limit " + pageRow.getOffSet() + "," + limit;
 
         List<Contents> list = activeRecord.list(Contents.class, sql, mid);
-        if(null != list){
+        if (null != list) {
             paginator.setList(list);
         }
         return paginator;
@@ -170,8 +169,8 @@ public class ContentsServiceImpl implements ContentsService {
     @Override
     public List<Archive> getArchives() {
         List<Archive> archives = activeRecord.list(Archive.class, "select FROM_UNIXTIME(created, '%Y年%m月') as date, count(*) as count from t_contents where type = 'post' and status = 'publish' group by date");
-        if(null != archives){
-            for(Archive archive : archives){
+        if (null != archives) {
+            for (Archive archive : archives) {
                 String date = archive.getDate();
                 Date sd = DateKit.dateFormat(date, "yyyy年MM月");
                 int start = DateKit.getUnixTimeByDate(sd);

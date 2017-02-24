@@ -1,30 +1,32 @@
 #include('./header.html',{active:'page', title:'保存页面'})
 <link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
-<link href="/static/admin/plugins/md/css/style.css" rel="stylesheet" />
+<link href="/static/admin/plugins/md/css/style.css" rel="stylesheet"/>
 
 <div class="row">
     <div class="col-sm-12">
         <h4 class="page-title">
-        #if(null != contents)
-        编辑页面
-        #else
-        发布新页面
-        #end
+            #if(null != contents)
+            编辑页面
+            #else
+            发布新页面
+            #end
         </h4>
     </div>
     <div class="col-md-12">
         <form id="articleForm" role="form" novalidate="novalidate">
-            <input type="hidden" name="categories" id="categories" />
+            <input type="hidden" name="categories" id="categories"/>
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
             <input type="hidden" name="status" value="${contents.status ?! 'publish'}" id="status"/>
             <input type="hidden" name="content" id="content-editor"/>
 
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="请输入页面标题" name="title" required="" aria-required="true" value="${contents.title ?! ''}"/>
+                <input type="text" class="form-control" placeholder="请输入页面标题" name="title" required=""
+                       aria-required="true" value="${contents.title ?! ''}"/>
             </div>
 
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="请输入页面访问名" name="slug" required="" aria-required="true" value="${contents.slug ?! ''}"/>
+                <input type="text" class="form-control" placeholder="请输入页面访问名" name="slug" required=""
+                       aria-required="true" value="${contents.slug ?! ''}"/>
             </div>
 
             <div class="form-group">
@@ -53,18 +55,18 @@
 <script>
     // validate the comment form when it is submitted
     $('#articleForm').validate({
-        submitHandler: function(form) {
-            $('#content-editor').val( $('#text').val() );
-            $("#articleForm #categories").val( $('#multiple-sel').val() );
+        submitHandler: function (form) {
+            $('#content-editor').val($('#text').val());
+            $("#articleForm #categories").val($('#multiple-sel').val());
             var params = $("#articleForm").serialize();
             var url = $('#articleForm #cid').val() != '' ? '/admin/page/modify' : '/admin/page/publish';
-            $.post(url, params, function(result){
-                if(result && result.success){
+            $.post(url, params, function (result) {
+                if (result && result.success) {
                     swal('提示信息', '页面保存成功', 'success');
                     setTimeout(function () {
                         window.location.href = '/admin/page';
                     }, 2000);
-                } else{
+                } else {
                     swal("提示消息", result.msg, 'error');
                 }
             });

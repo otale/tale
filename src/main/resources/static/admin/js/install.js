@@ -1,11 +1,12 @@
 /**
  * Created by biezhi on 2017/2/23.
  */
-!function($) {
+!function ($) {
     "use strict";
-    var FormWizard = function() {};
+    var FormWizard = function () {
+    };
     //creates form with validation
-    FormWizard.prototype.init = function() {
+    FormWizard.prototype.init = function () {
         var $form_container = $("#wizard-validation-form");
         $form_container.validate({
             errorPlacement: function errorPlacement(error, element) {
@@ -16,17 +17,17 @@
             headerTag: "h3",
             bodyTag: "section",
             transitionEffect: "slideLeft",
-            labels:{
+            labels: {
                 previous: "上一步",
                 next: "下一步",
                 finish: "登录后台",
                 loading: '加载中...',
-                current:'当前位置'
+                current: '当前位置'
             },
             onStepChanging: function (event, currentIndex, newIndex) {
                 $form_container.validate().settings.ignore = ":disabled,:hidden";
                 var isValid = $form_container.valid();
-                if(isValid && currentIndex == 1){
+                if (isValid && currentIndex == 1) {
                     isValid = false;
                     var params = $form_container.serialize();
                     $.ajax({
@@ -35,33 +36,33 @@
                         data: params,
                         async: false,
                         dataType: 'json',
-                        success: function(result) {
-                            if(result && result.success){
+                        success: function (result) {
+                            if (result && result.success) {
                                 $.ajax({
                                     type: 'post',
                                     url: '/install',
                                     data: params,
                                     async: false,
                                     dataType: 'json',
-                                    success: function(result) {
-                                        if(result && result.success){
+                                    success: function (result) {
+                                        if (result && result.success) {
                                             isValid = true;
                                         } else {
-                                            if(result.msg){
+                                            if (result.msg) {
                                                 swal("提示消息", result.msg, 'error');
                                             }
                                         }
                                     }
                                 });
                             } else {
-                                if(result.msg){
+                                if (result.msg) {
                                     swal("提示消息", result.msg, 'error');
                                 }
                             }
                         }
                     });
                     return isValid;
-                } else{
+                } else {
                     return isValid;
                 }
             },
@@ -77,8 +78,8 @@
         });
         return $form_container;
     },
-    //init
-    $.FormWizard = new FormWizard, $.FormWizard.Constructor = FormWizard
+        //init
+        $.FormWizard = new FormWizard, $.FormWizard.Constructor = FormWizard
 }(window.jQuery),
 
-$.FormWizard.init();
+    $.FormWizard.init();

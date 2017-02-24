@@ -1,92 +1,93 @@
 package com.tale.model;
 
-import java.io.Serializable;
-import java.util.Date;
 import com.blade.jdbc.annotation.Table;
+
+import java.io.Serializable;
 
 //
 @Table(name = "t_metas", pk = "mid")
 public class Metas implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	// 项目主键
-	private Integer mid;
+    // 项目主键
+    private Integer mid;
 
-	// 名称
-	private String name;
+    // 名称
+    private String name;
 
-	// 项目缩略名
-	private String slug;
+    // 项目缩略名
+    private String slug;
 
-	// 项目类型
-	private String type;
+    // 项目类型
+    private String type;
 
-	// 选项描述
-	private String description;
+    // 选项描述
+    private String description;
 
-	// 项目排序
-	private Integer sort;
+    // 项目排序
+    private Integer sort;
 
-	private Integer parent;
+    private Integer parent;
 
-	public Metas(){}
+    public Metas() {
+    }
 
-	public Integer getMid() {
-		return mid;
-	}
+    public Integer getMid() {
+        return mid;
+    }
 
-	public void setMid(Integer mid) {
-		this.mid = mid;
-	}
+    public void setMid(Integer mid) {
+        this.mid = mid;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getSlug() {
-		return slug;
-	}
+    public String getSlug() {
+        return slug;
+    }
 
-	public void setSlug(String slug) {
-		this.slug = slug;
-	}
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Integer getSort() {
-		return sort;
-	}
+    public Integer getSort() {
+        return sort;
+    }
 
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
 
-	public Integer getParent() {
-		return parent;
-	}
+    public Integer getParent() {
+        return parent;
+    }
 
-	public void setParent(Integer parent) {
-		this.parent = parent;
-	}
+    public void setParent(Integer parent) {
+        this.parent = parent;
+    }
 
 
 }

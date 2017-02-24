@@ -49,22 +49,22 @@ public class InstallController extends BaseController {
     @Route(value = "/", method = HttpMethod.POST)
     @JSON
     public RestResponse doInstall(@QueryParam String site_title, @QueryParam String admin_user,
-                                @QueryParam String admin_email, @QueryParam String admin_pwd,
+                                  @QueryParam String admin_email, @QueryParam String admin_pwd,
                                   @QueryParam String db_host, @QueryParam String db_name,
                                   @QueryParam String db_user, @QueryParam String db_pass) {
 
         try {
 
-            if(StringKit.isBlank(site_title) ||
-                    StringKit.isBlank(admin_user)||
-                    StringKit.isBlank(admin_pwd)){
+            if (StringKit.isBlank(site_title) ||
+                    StringKit.isBlank(admin_user) ||
+                    StringKit.isBlank(admin_pwd)) {
                 return RestResponse.fail("请确认网站信息输入完整");
             }
 
-            if(StringKit.isBlank(db_host) ||
+            if (StringKit.isBlank(db_host) ||
                     StringKit.isBlank(db_name) ||
                     StringKit.isBlank(db_user) ||
-                    StringKit.isBlank(db_pass)){
+                    StringKit.isBlank(db_pass)) {
                 return RestResponse.fail("请确认数据库信息输入完整");
             }
 
@@ -78,7 +78,7 @@ public class InstallController extends BaseController {
             JdbcConf jdbcConf = new JdbcConf(db_host, db_name, db_user, db_pass);
 
             siteService.initSite(users, jdbcConf, site_title);
-        } catch (Exception e){
+        } catch (Exception e) {
             String msg = "安装失败";
             if (e instanceof TipException) {
                 msg = e.getMessage();

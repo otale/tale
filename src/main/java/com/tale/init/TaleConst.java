@@ -2,9 +2,6 @@ package com.tale.init;
 
 import com.blade.kit.base.Config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by biezhi on 2017/2/21.
  */

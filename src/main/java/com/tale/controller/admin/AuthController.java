@@ -10,8 +10,8 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.wrapper.Session;
 import com.blade.mvc.view.RestResponse;
-import com.tale.init.TaleConst;
 import com.tale.exception.TipException;
+import com.tale.init.TaleConst;
 import com.tale.model.Users;
 import com.tale.service.UsersService;
 import com.tale.utils.TaleUtils;
@@ -43,7 +43,7 @@ public class AuthController {
         try {
             Users user = usersService.login(username, password);
             session.attribute(TaleConst.LOGIN_SESSION_KEY, user);
-            if(StringKit.isNotBlank(remeber_me)){
+            if (StringKit.isNotBlank(remeber_me)) {
                 TaleUtils.setCookie(response, user.getUid());
             }
         } catch (Exception e) {

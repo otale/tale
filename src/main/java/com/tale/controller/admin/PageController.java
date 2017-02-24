@@ -53,8 +53,8 @@ public class PageController extends BaseController {
     @Route(value = "publish", method = HttpMethod.POST)
     @JSON
     public RestResponse publishPage(@QueryParam String title, @QueryParam String content,
-                                   @QueryParam String status, @QueryParam String slug,
-                                   @QueryParam Integer allow_comment, @QueryParam Integer allow_ping) {
+                                    @QueryParam String status, @QueryParam String slug,
+                                    @QueryParam Integer allow_comment, @QueryParam Integer allow_ping) {
 
         Users users = this.user();
         Contents contents = new Contents();
@@ -63,10 +63,10 @@ public class PageController extends BaseController {
         contents.setStatus(status);
         contents.setSlug(slug);
         contents.setType(Types.PAGE);
-        if(null != allow_comment){
+        if (null != allow_comment) {
             contents.setAllow_comment(allow_comment == 1);
         }
-        if(null != allow_ping){
+        if (null != allow_ping) {
             contents.setAllow_ping(allow_ping == 1);
         }
         contents.setAuthor_id(users.getUid());
@@ -100,10 +100,10 @@ public class PageController extends BaseController {
         contents.setStatus(status);
         contents.setSlug(slug);
         contents.setType(Types.PAGE);
-        if(null != allow_comment){
+        if (null != allow_comment) {
             contents.setAllow_comment(allow_comment == 1);
         }
-        if(null != allow_ping){
+        if (null != allow_ping) {
             contents.setAllow_ping(allow_ping == 1);
         }
         contents.setAuthor_id(users.getUid());

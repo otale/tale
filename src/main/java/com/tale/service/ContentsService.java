@@ -9,15 +9,15 @@ import java.util.List;
 
 public interface ContentsService {
 
-	Contents getContents(String id);
+    Contents getContents(String id);
 
-	Contents getPage(String slug);
+    Contents getPage(String slug);
 
-	Paginator<Contents> getArticles(Take take);
+    Paginator<Contents> getArticles(Take take);
 
     void publish(Contents contents);
 
-	void update(Contents contents);
+    void update(Contents contents);
 
     void delete(int cid);
 
