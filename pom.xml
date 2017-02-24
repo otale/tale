@@ -89,10 +89,14 @@
                 <directory>src/main/java</directory>
                 <filtering>false</filtering>
             </resource>
-            <!--<resource>
+            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
-            </resource>-->
+                <excludes>
+                    <exclude>*.sql</exclude>
+                    <exclude>*.properties</exclude>
+                </excludes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -103,7 +107,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--mvn clean package assembly:single -Dmaven.test.skip=true-->
+            <!--mvn clean package -Dmaven.test.skip=true-->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
@@ -113,6 +117,15 @@
                     </descriptors>
                     <outputDirectory>${project.build.directory}/dist/</outputDirectory>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
