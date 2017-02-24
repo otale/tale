@@ -15,6 +15,7 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.view.RestResponse;
 import com.tale.dto.JdbcConf;
 import com.tale.exception.TipException;
+import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
 import com.tale.init.TaleJdbc;
 import com.tale.model.Users;
@@ -103,8 +104,9 @@ public class InstallController extends BaseController {
             Config config = new Config();
             config.addAll(optionsService.getOptions());
             TaleConst.OPTIONS = config;
-
             TaleConst.INSTALL = true;
+            Commons.setSiteService(siteService);
+
         } catch (Exception e) {
             String msg = "安装失败";
             if (e instanceof TipException) {

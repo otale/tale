@@ -7,11 +7,15 @@ import com.blade.kit.StringKit;
 import com.blade.kit.Tools;
 import com.tale.controller.BaseController;
 import com.tale.init.TaleConst;
+import com.tale.model.Comments;
 import com.tale.model.Contents;
+import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +25,14 @@ import java.util.regex.Pattern;
  * Created by biezhi on 2017/2/21.
  */
 public final class Commons {
+
+    private static SiteService siteService;
+
+    private static final List EMPTY = new ArrayList(0);
+
+    public static void setSiteService(SiteService ss) {
+        siteService = ss;
+    }
 
     /**
      * 判断分页中是否有数据
@@ -264,6 +276,32 @@ public final class Commons {
         }
         int cid = contents.getCid();
         return "/static/user/img/rand/" + cid % 12 + ".jpg";
+    }
+
+    /**
+     * 最新文章
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Contents> recent_articles(int limit) {
+        if (null == siteService) {
+            return EMPTY;
+        }
+        return siteService.recentContents(limit);
+    }
+
+    /**
+     * 最新评论
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Comments> recent_comments(int limit) {
+        if (null == siteService) {
+            return EMPTY;
+        }
+        return siteService.recentComments(limit);
     }
 
     /**

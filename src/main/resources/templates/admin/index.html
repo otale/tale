@@ -53,7 +53,7 @@
                         <li class="list-group-item">
                             <span class="badge badge-primary"
                                   title="${article.comments_num}条评论">${article.comments_num}</span>
-                            <a href="">${article.title}</a>
+                            <a target="_blank" href="${site_url('/article/')}${article.cid}">${article.title}</a>
                         </li>
                         #end
                     </ul>

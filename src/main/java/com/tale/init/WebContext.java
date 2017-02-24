@@ -1,5 +1,6 @@
 package com.tale.init;
 
+import com.blade.Blade;
 import com.blade.config.BConfig;
 import com.blade.context.WebContextListener;
 import com.blade.ioc.BeanProcessor;
@@ -11,6 +12,7 @@ import com.tale.ext.AdminCommons;
 import com.tale.ext.Commons;
 import com.tale.ext.JetTag;
 import com.tale.service.OptionsService;
+import com.tale.service.SiteService;
 import jetbrick.template.resolver.GlobalResolver;
 
 import javax.servlet.ServletContext;
@@ -40,6 +42,7 @@ public class WebContext implements BeanProcessor, WebContextListener {
         if (dbIsOk) {
             TaleConst.OPTIONS.addAll(optionsService.getOptions());
             TaleConst.INSTALL = true;
+            Commons.setSiteService(Blade.$().ioc().getBean(SiteService.class));
         }
         TaleConst.BCONF = bConfig.config();
     }
