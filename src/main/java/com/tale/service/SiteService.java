@@ -54,4 +54,10 @@ public interface SiteService {
      */
     List<Archive> getArchives();
 
+    /**
+     * 查询一条评论
+     * @param coid
+     * @return
+     */
+    Comments getComment(Integer coid);
 }

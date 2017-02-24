@@ -6,6 +6,7 @@ import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.blade.kit.Tools;
 import com.tale.controller.BaseController;
+import com.tale.dto.Comment;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -302,6 +303,19 @@ public final class Commons {
             return EMPTY;
         }
         return siteService.recentComments(limit);
+    }
+
+    /**
+     * 获取评论at信息
+     * @param coid
+     * @return
+     */
+    public static String comment_at(Integer coid){
+        Comments comments = siteService.getComment(coid);
+        if(null != comments){
+            return "<a href=\"#comment-" + coid + "\">@" + comments.getAuthor() + "</a>";
+        }
+        return "";
     }
 
     /**

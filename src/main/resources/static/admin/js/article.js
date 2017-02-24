@@ -48,6 +48,9 @@ function subArticle(status) {
                 timer: 2000,
                 type: 'success'
             });
+            setTimeout(function () {
+                window.location.href = '/admin/article';
+            }, 2000);
         } else {
             swal("提示消息", result.msg, 'error');
         }

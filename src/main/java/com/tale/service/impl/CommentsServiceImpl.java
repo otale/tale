@@ -79,7 +79,7 @@ public class CommentsServiceImpl implements CommentsService {
         if (null != cid) {
             Take take = new Take(Comments.class);
             take.eq("cid", cid).eq("parent", 0);
-            take.page(page, limit, "coid asc");
+            take.page(page, limit, "coid desc");
             Paginator<Comments> cp = activeRecord.page(take);
             Paginator<Comment> commentPaginator = new Paginator<>(cp.getTotal(), page, limit);
             if (null != cp.getList()) {
@@ -87,7 +87,8 @@ public class CommentsServiceImpl implements CommentsService {
                 List<Comment> comments = new ArrayList<>(parents.size());
                 parents.forEach(parent -> {
                     Comment comment = new Comment(parent);
-                    List<Comments> children = getChildren(parent.getCoid());
+                    List<Comments> children = new ArrayList<>();
+                    getChildren(children, comment.getCoid());
                     comment.setChildren(children);
                     if (CollectionKit.isNotEmpty(children)) {
                         comment.setLevels(1);
@@ -101,8 +102,18 @@ public class CommentsServiceImpl implements CommentsService {
         return null;
     }
 
-    private List<Comments> getChildren(Integer coid) {
-        return activeRecord.list(new Take(Comments.class).eq("parent", coid).orderby("created asc"));
+    /**
+     * 获取该评论下的追加评论
+     *
+     * @param coid
+     * @return
+     */
+    private void getChildren(List<Comments> list, Integer coid) {
+        List<Comments> cms = activeRecord.list(new Take(Comments.class).eq("parent", coid).orderby("coid asc"));
+        if (null != cms) {
+            list.addAll(cms);
+            cms.forEach(c -> getChildren(list, c.getCoid()));
+        }
     }
 
 }

@@ -7,10 +7,7 @@ import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.DateKit;
 import com.blade.kit.Tools;
-import com.tale.dto.Archive;
-import com.tale.dto.JdbcConf;
-import com.tale.dto.Statistics;
-import com.tale.dto.Types;
+import com.tale.dto.*;
 import com.tale.exception.TipException;
 import com.tale.init.TaleJdbc;
 import com.tale.model.*;
@@ -69,8 +66,7 @@ public class SiteServiceImpl implements SiteService {
         if (limit < 0 || limit > 10) {
             limit = 10;
         }
-        Paginator<Comments> cp = activeRecord.page(new Take(Comments.class)
-                .eq("parent", 0).page(1, limit, "created"));
+        Paginator<Comments> cp = activeRecord.page(new Take(Comments.class).page(1, limit, "created desc"));
         return cp.getList();
     }
 
@@ -117,4 +113,11 @@ public class SiteServiceImpl implements SiteService {
         return archives;
     }
 
+    @Override
+    public Comments getComment(Integer coid) {
+        if(null != coid){
+            return activeRecord.byId(Comments.class, coid);
+        }
+        return null;
+    }
 }

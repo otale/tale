@@ -67,9 +67,10 @@ public class IndexController extends BaseController {
         }
         if (contents.getAllow_comment()) {
             int cp = request.queryInt("cp", 1);
-            Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 15);
+            Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 6);
             request.attribute("comments", commentsPaginator);
         }
+        request.attribute("article", contents);
         Integer hits = cache.hget("page", "hits");
         hits = null == hits ? 1 : hits + 1;
         if (hits >= TaleConst.HIT_EXCEED) {
@@ -118,7 +119,7 @@ public class IndexController extends BaseController {
         request.attribute("is_post", true);
         if (contents.getAllow_comment()) {
             int cp = request.queryInt("cp", 1);
-            Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 15);
+            Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 6);
             request.attribute("comments", commentsPaginator);
         }
         Integer hits = cache.hget("article", "hits");

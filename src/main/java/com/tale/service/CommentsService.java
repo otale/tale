@@ -21,11 +21,12 @@ public interface CommentsService {
     void delete(Integer coid) throws Exception;
 
     /**
-     * 分页读取评论
+     * 获取文章下的评论
      * @param cid
      * @param page
      * @param limit
      * @return
      */
     Paginator<Comment> getComments(Integer cid, int page, int limit);
+
 }
