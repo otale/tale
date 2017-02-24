@@ -7,7 +7,10 @@ import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.DateKit;
 import com.blade.kit.Tools;
-import com.tale.dto.*;
+import com.tale.dto.Archive;
+import com.tale.dto.JdbcConf;
+import com.tale.dto.Statistics;
+import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.init.TaleJdbc;
 import com.tale.model.*;
@@ -98,7 +101,7 @@ public class SiteServiceImpl implements SiteService {
     public List<Archive> getArchives() {
         List<Archive> archives = activeRecord.list(Archive.class, "select FROM_UNIXTIME(created, '%Y年%m月') as date, count(*) as count from t_contents where type = 'post' and status = 'publish' group by date");
         if (null != archives) {
-            for (Archive archive : archives) {
+            archives.forEach(archive -> {
                 String date = archive.getDate();
                 Date sd = DateKit.dateFormat(date, "yyyy年MM月");
                 int start = DateKit.getUnixTimeByDate(sd);
@@ -108,14 +111,14 @@ public class SiteServiceImpl implements SiteService {
                         .eq("status", Types.PUBLISH)
                         .gt("created", start).lt("created", end).orderby("created desc"));
                 archive.setArticles(contentss);
-            }
+            });
         }
         return archives;
     }
 
     @Override
     public Comments getComment(Integer coid) {
-        if(null != coid){
+        if (null != coid) {
             return activeRecord.byId(Comments.class, coid);
         }
         return null;

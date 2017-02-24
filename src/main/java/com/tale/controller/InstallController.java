@@ -76,7 +76,7 @@ public class InstallController extends BaseController {
                 return RestResponse.fail("请确认数据库信息输入完整");
             }
 
-            if (db_pass.length() < 6 || db_pass.length() > 14) {
+            if (admin_pwd.length() < 6 || admin_pwd.length() > 14) {
                 return RestResponse.fail("请输入6-14位密码");
             }
 
@@ -129,7 +129,7 @@ public class InstallController extends BaseController {
     public RestResponse conn_test(@QueryParam String db_host, @QueryParam String db_name,
                                   @QueryParam String db_user, @QueryParam String db_pass) {
 
-        String url = "jdbc:mysql://" + db_host + "/" + db_name;
+        String url = "jdbc:mysql://" + db_host + "/" + db_name + "?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull";
         TaleJdbc.put("url", url);
         TaleJdbc.put("username", db_user);
         TaleJdbc.put("password", db_pass);

@@ -37,4 +37,13 @@ public class Archive implements Serializable {
     public void setArticles(List<Contents> articles) {
         this.articles = articles;
     }
+
+    @Override
+    public String toString() {
+        return "Archive [" +
+                "date='" + date + '\'' +
+                ", count='" + count + '\'' +
+                ", articles=" + articles +
+                ']';
+    }
 }
