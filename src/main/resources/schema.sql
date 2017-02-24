@@ -46,6 +46,7 @@ CREATE TABLE `t_contents` (
   `status` varchar(16) DEFAULT 'publish' COMMENT '内容状态',
   `tags` varchar(200) DEFAULT NULL COMMENT '标签列表',
   `categories` varchar(200) DEFAULT NULL COMMENT '分类列表',
+  `hits` int(10) unsigned DEFAULT '0' COMMENT '点击次数',
   `comments_num` int(10) unsigned DEFAULT '0' COMMENT '内容所属评论数',
   `allow_comment` tinyint(1) DEFAULT '1' COMMENT '是否允许评论',
   `allow_ping` tinyint(1) DEFAULT '1' COMMENT '是否允许ping',
@@ -59,8 +60,8 @@ LOCK TABLES `t_contents` WRITE;
 
 INSERT INTO `t_contents` (`cid`, `title`, `slug`, `created`, `modified`, `content`, `author_id`, `type`, `status`, `tags`, `categories`, `comments_num`, `allow_comment`, `allow_ping`, `allow_feed`)
 VALUES
-	(1,'关于','about',1487853610,1487872488,'### Hello World\r\n\r\n这是我的关于页面\r\n\r\n### 当然还有其他\r\n\r\n具体你来写点什么吧',1,'page','publish',NULL,NULL,0,1,1,1),
-	(2,'第一篇文章',NULL,1487861184,1487872798,'## Hello  World.\r\n\r\n> 第一篇文章总得写点儿什么?...\r\n\r\n----------\r\n\r\n\r\n<!--more-->\r\n\r\n```java\r\npublic static void main(String[] args){\r\n    System.out.println(\"Hello Tale.\");\r\n}\r\n```',1,'post','publish','','默认分类',0,1,1,1);
+	(1,'关于','about',1487853610,1487872488,'### Hello World\r\n\r\n这是我的关于页面\r\n\r\n### 当然还有其他\r\n\r\n具体你来写点什么吧',1,'page','publish',NULL,NULL,0,0,1,1,1),
+	(2,'第一篇文章',NULL,1487861184,1487872798,'## Hello  World.\r\n\r\n> 第一篇文章总得写点儿什么?...\r\n\r\n----------\r\n\r\n\r\n<!--more-->\r\n\r\n```java\r\npublic static void main(String[] args){\r\n    System.out.println(\"Hello Tale.\");\r\n}\r\n```',1,'post','publish','','默认分类',10,0,1,1,1);
 
 UNLOCK TABLES;
 

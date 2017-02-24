@@ -47,8 +47,10 @@ public class TaleUtils {
     /**
      * 匹配邮箱正则
      */
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+    private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern SLUG_REGEX = Pattern.compile("^[A-Za-z0-9_-]+\\{5,100}$", Pattern.CASE_INSENSITIVE);
 
     /**
      * 设置记住密码cookie
@@ -197,6 +199,23 @@ public class TaleUtils {
     public static boolean isEmail(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();
+    }
+
+    /**
+     * 判断是否是合法路径
+     *
+     * @param slug
+     * @return
+     */
+    public static boolean isPath(String slug) {
+        if (StringKit.isNotBlank(slug)) {
+            if (slug.contains("/") || slug.contains(" ") || slug.contains(".")) {
+                return false;
+            }
+            Matcher matcher = SLUG_REGEX.matcher(slug);
+            return matcher.find();
+        }
+        return false;
     }
 
     /**

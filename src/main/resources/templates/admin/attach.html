@@ -52,6 +52,16 @@
         </div>
     </div>
     <div class="col-md-12 attach">
+        #if(is_empty(attachs))
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="alert alert-warning">
+                    目前还没有一个附件呢，你可以上传试试!
+                </div>
+            </div>
+        </div>
+        #else
+
         #for(attach : attachs.list)
         <div class="col-md-2 text-center m-t-10">
             <a href="${site_url(attach.fkey)}" target="_blank">
@@ -64,7 +74,8 @@
                       data-original-title="${attach.fname}">${substr(attach.fname, 12)}</span>
             </div>
             <div class="clearfix">
-                <button type="button" class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
+                <button url="${site_url(attach.fkey)}" type="button"
+                        class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
                     <i class="fa fa-copy"></i> <span>复制</span>
                 </button>
                 <button type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5"
@@ -75,14 +86,8 @@
         </div>
         #end
 
-        #if(is_empty(attachs))
-        <div class="row">
-            <div class="col-md-4 text-center">
-                <div class="alert alert-warning">
-                    目前还没有一个附件呢，你可以上传试试!
-                </div>
-            </div>
-        </div>
+        #call pageAdminNav(attachs)
+
         #end
     </div>
 </div>
@@ -103,9 +108,9 @@
         }
     });
 
-    var clipboard = new Clipboard('.copy', {
+    var clipboard = new Clipboard('button.copy', {
         text: function (trigger) {
-            return $(trigger).parent().prev().attr('href');
+            return $(trigger).attr('url');
         }
     });
 

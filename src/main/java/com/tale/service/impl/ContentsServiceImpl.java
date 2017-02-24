@@ -13,6 +13,7 @@ import com.tale.exception.TipException;
 import com.tale.model.Contents;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
+import com.tale.utils.TaleUtils;
 
 import java.util.List;
 
@@ -50,24 +51,26 @@ public class ContentsServiceImpl implements ContentsService {
 
     @Override
     public void publish(Contents contents) {
-        if (null == contents) {
+        if (null == contents)
             throw new TipException("文章对象为空");
-        }
-        if (StringKit.isBlank(contents.getTitle())) {
+        if (StringKit.isBlank(contents.getTitle()))
             throw new TipException("文章标题不能为空");
-        }
-        if (StringKit.isBlank(contents.getContent())) {
+        if (StringKit.isBlank(contents.getContent()))
             throw new TipException("文章内容不能为空");
-        }
-        if (contents.getTitle().length() > 200) {
+        if (contents.getTitle().length() > 200)
             throw new TipException("文章标题过长");
-        }
-        if (contents.getContent().length() > 10000) {
+        if (contents.getContent().length() > 10000)
             throw new TipException("文章内容过长");
-        }
-        if (null == contents.getAuthor_id()) {
+        if (null == contents.getAuthor_id())
             throw new TipException("请登录后发布文章");
+
+        if (StringKit.isNotBlank(contents.getSlug())) {
+            if (!TaleUtils.isPath(contents.getSlug())) throw new TipException("您输入的路径不合法");
+
+            int count = activeRecord.count(new Take(Contents.class).eq("type", contents.getType()).eq("slug", contents.getSlug()));
+            if (count > 0) throw new TipException("该路径已经存在，请重新输入");
         }
+
 
         int time = DateKit.getCurrentUnixTime();
         contents.setCreated(time);
@@ -128,14 +131,11 @@ public class ContentsServiceImpl implements ContentsService {
 
     @Override
     public Paginator<Contents> getArticles(Integer mid, int page, int limit) {
-
         String countSql = "select count(0) from t_contents a left join t_relationships b on a.cid = b.cid " +
                 "where b.mid = ? and a.status = 'publish' and a.type = 'post'";
-
         int total = activeRecord.one(Integer.class, countSql, mid);
 
         PageRow pageRow = new PageRow(page, limit);
-
         Paginator<Contents> paginator = new Paginator<>(total, pageRow.getPage(), pageRow.getLimit());
 
         String sql = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +

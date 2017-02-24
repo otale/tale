@@ -44,8 +44,8 @@ public class AttachController extends BaseController {
     private AttachService attachService;
 
     @Route(value = "", method = HttpMethod.GET)
-    public String index(Request request, @QueryParam(value = "p", defaultValue = "1") int page,
-                        @QueryParam(value = "limit", defaultValue = "10") int limit) {
+    public String index(Request request, @QueryParam(value = "page", defaultValue = "1") int page,
+                        @QueryParam(value = "limit", defaultValue = "12") int limit) {
         Paginator<Attach> attachPaginator = attachService.getAttachs(new Take(Attach.class).page(page, limit, "id desc"));
         request.attribute("attachs", attachPaginator);
         return "admin/attach";
