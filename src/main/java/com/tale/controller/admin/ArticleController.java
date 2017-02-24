@@ -57,6 +57,7 @@ public class ArticleController extends BaseController {
         request.attribute("contents", contents);
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         request.attribute("categories", categories);
+        request.attribute("active", "article");
         return "admin/article_edit";
     }
 
