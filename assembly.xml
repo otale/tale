@@ -27,6 +27,10 @@
         <fileSet>
             <directory>src/main/resources/</directory>
             <outputDirectory>/config</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+                <include>*.properties</include>
+            </includes>
         </fileSet>
     </fileSets>
 </assembly>
