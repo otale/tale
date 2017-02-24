@@ -17,6 +17,7 @@ import java.sql.DriverManager;
 import java.util.Properties;
 
 /**
+ * 数据库操作
  * Created by biezhi on 2017/2/23.
  */
 public final class TaleJdbc {
@@ -71,7 +72,13 @@ public final class TaleJdbc {
         jdbc_prop.put(key, value);
     }
 
-    public static boolean open(Ioc ioc) {
+    /**
+     * 注入数据库查询对象到ioc容器
+     *
+     * @param ioc
+     * @return
+     */
+    public static boolean injection(Ioc ioc) {
         if (jdbc_prop.containsKey("url") && jdbc_prop.containsKey("username") && jdbc_prop.containsKey("password")) {
             DataSource dataSource;
             try {
@@ -79,7 +86,6 @@ public final class TaleJdbc {
             } catch (Exception e) {
                 throw new TipException("数据库连接失败, 请检查数据库配置");
             }
-
             SampleActiveRecord sampleActiveRecord = ioc.getBean(SampleActiveRecord.class);
             if (null != sampleActiveRecord) {
                 sampleActiveRecord.setSql2o(new Sql2o(dataSource));
@@ -93,6 +99,9 @@ public final class TaleJdbc {
         return false;
     }
 
+    /**
+     * 测试连接并导入数据库
+     */
     public static void testConn() {
         if (jdbc_prop.containsKey("url") && jdbc_prop.containsKey("username") && jdbc_prop.containsKey("password")) {
             try {

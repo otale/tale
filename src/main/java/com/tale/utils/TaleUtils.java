@@ -1,13 +1,20 @@
 package com.tale.utils;
 
 import com.blade.context.WebContextHolder;
+import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.blade.kit.Tools;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.wrapper.Session;
+import com.sun.syndication.feed.rss.Channel;
+import com.sun.syndication.feed.rss.Content;
+import com.sun.syndication.feed.rss.Item;
+import com.sun.syndication.io.FeedException;
+import com.sun.syndication.io.WireFeedOutput;
 import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
+import com.tale.model.Contents;
 import com.tale.model.Users;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
@@ -16,16 +23,39 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Tale工具类
+ * <p>
  * Created by biezhi on 2017/2/21.
  */
 public class TaleUtils {
 
+    /**
+     * 一个月
+     */
     private static final int one_month = 30 * 24 * 60 * 60;
 
+    /**
+     * markdown解析器
+     */
+    private static Parser parser = Parser.builder().build();
+
+    /**
+     * 匹配邮箱正则
+     */
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    /**
+     * 设置记住密码cookie
+     *
+     * @param response
+     * @param uid
+     */
     public static void setCookie(Response response, Integer uid) {
         try {
             String val = Tools.enAes(uid.toString(), TaleConst.AES_SALT);
@@ -36,6 +66,11 @@ public class TaleUtils {
         }
     }
 
+    /**
+     * 返回当前登录用户
+     *
+     * @return
+     */
     public static Users getLoginUser() {
         Session session = WebContextHolder.session();
         if (null == session) {
@@ -45,12 +80,24 @@ public class TaleUtils {
         return user;
     }
 
+    /**
+     * 退出登录状态
+     *
+     * @param session
+     * @param response
+     */
     public static void logout(Session session, Response response) {
         session.removeAttribute(TaleConst.LOGIN_SESSION_KEY);
         response.removeCookie(TaleConst.USER_IN_COOKIE);
         response.redirect(Commons.site_url());
     }
 
+    /**
+     * 获取cookie中的用户id
+     *
+     * @param request
+     * @return
+     */
     public static Integer getCookieUid(Request request) {
         if (null != request) {
             String value = request.cookie(TaleConst.USER_IN_COOKIE);
@@ -65,11 +112,12 @@ public class TaleUtils {
         return null;
     }
 
-    public static String rejoin(String tags) {
-        String[] arr = tags.split(",");
-        return rejoin(arr);
-    }
-
+    /**
+     * 重新拼接字符串
+     *
+     * @param arr
+     * @return
+     */
     public static String rejoin(String[] arr) {
         if (null == arr) {
             return "";
@@ -82,18 +130,24 @@ public class TaleUtils {
         return a;
     }
 
-    private static Parser parser = Parser.builder().build();
-
+    /**
+     * markdown转换为html
+     *
+     * @param markdown
+     * @return
+     */
     public static String mdToHtml(String markdown) {
         Node document = parser.parse(markdown);
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         return renderer.render(document);
     }
 
-    public static String htmlToMarkdown(String html) {
-        return "";
-    }
-
+    /**
+     * 提取html中的文字
+     *
+     * @param html
+     * @return
+     */
     public static String htmlToText(String html) {
         if (StringKit.isNotBlank(html)) {
             return html.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
@@ -101,30 +155,65 @@ public class TaleUtils {
         return "";
     }
 
+    /**
+     * 判断文件是否是图片类型
+     *
+     * @param imageFile
+     * @return
+     */
     public static boolean isImage(File imageFile) {
         if (!imageFile.exists()) {
             return false;
         }
-        Image img = null;
         try {
-            img = ImageIO.read(imageFile);
+            Image img = ImageIO.read(imageFile);
             if (img == null || img.getWidth(null) <= 0 || img.getHeight(null) <= 0) {
                 return false;
             }
             return true;
         } catch (Exception e) {
             return false;
-        } finally {
-            img = null;
         }
     }
 
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
+    /**
+     * 判断是否是邮箱
+     *
+     * @param emailStr
+     * @return
+     */
     public static boolean isEmail(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();
+    }
+
+    /**
+     * 获取RSS输出
+     *
+     * @param articles
+     * @return
+     * @throws FeedException
+     */
+    public static String getRssXml(java.util.List<Contents> articles) throws FeedException {
+        Channel channel = new Channel("rss_2.0");
+        channel.setTitle(TaleConst.OPTIONS.get("site_title"));
+        channel.setLink(Commons.site_url());
+        channel.setDescription(TaleConst.OPTIONS.get("site_description"));
+        channel.setLanguage("zh-CN");
+        java.util.List<Item> items = new ArrayList<>();
+        articles.forEach(post -> {
+            Item item = new Item();
+            item.setTitle(post.getTitle());
+            Content content = new Content();
+            content.setValue(Commons.article(post.getContent()));
+            item.setContent(content);
+            item.setLink(Commons.permalink(post.getCid(), post.getSlug()));
+            item.setPubDate(DateKit.getDateByUnixTime(post.getCreated()));
+            items.add(item);
+        });
+        channel.setItems(items);
+        WireFeedOutput out = new WireFeedOutput();
+        return out.outputString(channel);
     }
 
 }

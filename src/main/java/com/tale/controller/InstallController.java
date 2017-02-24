@@ -84,7 +84,7 @@ public class InstallController extends BaseController {
                 return RestResponse.fail("邮箱格式不正确");
             }
 
-            TaleJdbc.open(Blade.$().ioc());
+            TaleJdbc.injection(Blade.$().ioc());
 
             Users users = new Users();
             users.setUsername(admin_user);

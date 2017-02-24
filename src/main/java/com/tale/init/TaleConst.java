@@ -3,7 +3,9 @@ package com.tale.init;
 import com.blade.kit.base.Config;
 
 /**
- * Created by biezhi on 2017/2/21.
+ * Tale 常量存储
+ *
+ * @author biezhi
  */
 public class TaleConst {
 

@@ -15,6 +15,11 @@ import jetbrick.template.resolver.GlobalResolver;
 
 import javax.servlet.ServletContext;
 
+/**
+ * Tale初始化进程
+ *
+ * @author biezhi
+ */
 public class WebContext implements BeanProcessor, WebContextListener {
 
     @Inject
@@ -40,7 +45,7 @@ public class WebContext implements BeanProcessor, WebContextListener {
 
     @Override
     public void register(Ioc ioc) {
-        dbIsOk = TaleJdbc.open(ioc);
+        dbIsOk = TaleJdbc.injection(ioc);
     }
 
 }

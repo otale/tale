@@ -21,7 +21,6 @@ import com.tale.model.Metas;
 import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
-import com.tale.utils.RSSUtils;
 import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -215,10 +214,9 @@ public class IndexController extends BaseController {
     @Route(value = {"feed", "feed.xml"}, method = HttpMethod.GET)
     public void feed(Response response) {
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class)
-                .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true)
-                .page(1, 9999, "created desc"));
+                .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, 9999, "created desc"));
         try {
-            String xml = RSSUtils.getRssXml(contentsPaginator.getList());
+            String xml = TaleUtils.getRssXml(contentsPaginator.getList());
             response.xml(xml);
         } catch (Exception e) {
             LOGGER.error("生成RSS失败", e);
