@@ -1,5 +1,6 @@
 package com.tale.service;
 
+import com.tale.dto.Archive;
 import com.tale.dto.JdbcConf;
 import com.tale.dto.Statistics;
 import com.tale.model.Comments;
@@ -45,5 +46,12 @@ public interface SiteService {
      * @return
      */
     Statistics getStatistics();
+
+    /**
+     * 查询文章归档
+     *
+     * @return
+     */
+    List<Archive> getArchives();
 
 }

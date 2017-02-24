@@ -7,6 +7,7 @@ import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.DateKit;
 import com.blade.kit.Tools;
+import com.tale.dto.Archive;
 import com.tale.dto.JdbcConf;
 import com.tale.dto.Statistics;
 import com.tale.dto.Types;
@@ -18,6 +19,7 @@ import com.tale.service.SiteService;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -95,4 +97,24 @@ public class SiteServiceImpl implements SiteService {
         statistics.setLinks(links);
         return statistics;
     }
+
+    @Override
+    public List<Archive> getArchives() {
+        List<Archive> archives = activeRecord.list(Archive.class, "select FROM_UNIXTIME(created, '%Y年%m月') as date, count(*) as count from t_contents where type = 'post' and status = 'publish' group by date");
+        if (null != archives) {
+            for (Archive archive : archives) {
+                String date = archive.getDate();
+                Date sd = DateKit.dateFormat(date, "yyyy年MM月");
+                int start = DateKit.getUnixTimeByDate(sd);
+                int end = DateKit.getUnixTimeByDate(DateKit.dateAdd(DateKit.INTERVAL_MONTH, sd, 1)) - 1;
+                List<Contents> contentss = activeRecord.list(new Take(Contents.class)
+                        .eq("type", Types.ARTICLE)
+                        .eq("status", Types.PUBLISH)
+                        .gt("created", start).lt("created", end).orderby("created desc"));
+                archive.setArticles(contentss);
+            }
+        }
+        return archives;
+    }
+
 }

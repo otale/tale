@@ -21,6 +21,7 @@ import com.tale.model.Metas;
 import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
+import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,9 @@ public class IndexController extends BaseController {
     @Inject
     private CommentsService commentsService;
 
+    @Inject
+    private SiteService siteService;
+
     /**
      * 首页
      *
@@ -53,7 +57,7 @@ public class IndexController extends BaseController {
 
     @Route(value = "/:pagename", method = HttpMethod.GET)
     public String page(@PathParam String pagename, Request request) {
-        Contents contents = contentsService.getPage(pagename);
+        Contents contents = contentsService.getContents(pagename);
         if (null == contents) {
             return this.render_404();
         }
@@ -67,9 +71,8 @@ public class IndexController extends BaseController {
     }
 
     @Route(value = "page/:p", method = HttpMethod.GET)
-    public String index(Request request, @PathParam int p,
-                        @QueryParam(value = "limit", defaultValue = "12") int limit) {
-
+    public String index(Request request, @PathParam int p, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+        p = p < 0 || p > 999 ? 1 : p;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE)
                 .eq("status", Types.PUBLISH).page(p, limit, "created desc");
         Paginator<Contents> articles = contentsService.getArticles(take);
@@ -112,6 +115,7 @@ public class IndexController extends BaseController {
     @Route(value = "category/:keyword/:page", method = HttpMethod.GET)
     public String categories(Request request, @PathParam String keyword,
                              @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+        page = page < 0 || page > 999 ? 1 : page;
         MetaDto metaDto = metasService.getMeta(Types.CATEGORY, keyword);
         if (null == metaDto) {
             return this.render_404();
@@ -139,9 +143,9 @@ public class IndexController extends BaseController {
     }
 
     @Route(value = "tag/:name/:page", method = HttpMethod.GET)
-    public String tags(Request request, @PathParam String name, @PathParam int page,
-                       @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    public String tags(Request request, @PathParam String name, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
 
+        page = page < 0 || page > 999 ? 1 : page;
         MetaDto metaDto = metasService.getMeta(Types.TAG, name);
         if (null == metaDto) {
             return this.render_404();
@@ -168,11 +172,11 @@ public class IndexController extends BaseController {
     }
 
     @Route(value = "search/:keyword/:page", method = HttpMethod.GET)
-    public String search(Request request, @PathParam String keyword, @PathParam int page,
-                         @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    public String search(Request request, @PathParam String keyword, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
 
-        Take take = new Take(Contents.class).eq("type", Types.ARTICLE)
-                .eq("status", Types.PUBLISH).like("title", "%" + keyword + "%").page(page, limit, "created desc");
+        page = page < 0 || page > 999 ? 1 : page;
+        Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH)
+                .like("title", "%" + keyword + "%").page(page, limit, "created desc");
 
         Paginator<Contents> articles = contentsService.getArticles(take);
         request.attribute("articles", articles);
@@ -189,7 +193,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "archives", method = HttpMethod.GET)
     public String archives(Request request) {
-        List<Archive> archives = contentsService.getArchives();
+        List<Archive> archives = siteService.getArchives();
         request.attribute("archives", archives);
         return this.render("archives");
     }
@@ -239,12 +243,10 @@ public class IndexController extends BaseController {
      */
     @Route(value = "comment", method = HttpMethod.POST)
     @JSON
-    public RestResponse comment(Request request, @QueryParam Integer cid,
-                                @QueryParam Integer coid,
-                                @QueryParam String author,
-                                @QueryParam String mail,
-                                @QueryParam String url,
-                                @QueryParam String text) {
+    public RestResponse comment(Request request,
+                                @QueryParam Integer cid, @QueryParam Integer coid,
+                                @QueryParam String author, @QueryParam String mail,
+                                @QueryParam String url, @QueryParam String text) {
 
         Comments comments = new Comments();
         comments.setAuthor(author);
@@ -255,7 +257,7 @@ public class IndexController extends BaseController {
         comments.setMail(mail);
         comments.setParent(coid);
         try {
-            commentsService.save(comments);
+            commentsService.saveComment(comments);
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "评论发布失败";

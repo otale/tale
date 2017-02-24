@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 后台控制器
  * Created by biezhi on 2017/2/21.
  */
 @Controller("admin")
@@ -44,6 +45,9 @@ public class IndexController extends BaseController {
     @Inject
     private UsersService usersService;
 
+    /**
+     * 仪表盘
+     */
     @Route(value = {"/", "index"}, method = HttpMethod.GET)
     public String index(Request request) {
         List<Comments> comments = siteService.recentComments(5);
@@ -55,6 +59,9 @@ public class IndexController extends BaseController {
         return "admin/index";
     }
 
+    /**
+     * 系统设置
+     */
     @Route(value = "setting", method = HttpMethod.GET)
     public String setting(Request request) {
         Map<String, String> options = optionsService.getOptions();
@@ -62,6 +69,9 @@ public class IndexController extends BaseController {
         return "admin/setting";
     }
 
+    /**
+     * 保存系统设置
+     */
     @Route(value = "setting", method = HttpMethod.POST)
     @JSON
     public RestResponse saveSetting(@QueryParam String site_theme, Request request) {
@@ -90,8 +100,6 @@ public class IndexController extends BaseController {
 
     /**
      * 个人设置页面
-     *
-     * @return
      */
     @Route(value = "profile", method = HttpMethod.GET)
     public String profile() {
@@ -100,8 +108,6 @@ public class IndexController extends BaseController {
 
     /**
      * 保存个人信息
-     *
-     * @return
      */
     @Route(value = "profile", method = HttpMethod.POST)
     @JSON
@@ -119,8 +125,6 @@ public class IndexController extends BaseController {
 
     /**
      * 修改密码
-     *
-     * @return
      */
     @Route(value = "password", method = HttpMethod.POST)
     @JSON

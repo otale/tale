@@ -25,7 +25,7 @@ public class CommentsServiceImpl implements CommentsService {
     private ActiveRecord activeRecord;
 
     @Override
-    public void save(Comments comments) {
+    public void saveComment(Comments comments) {
         if (null == comments) {
             throw new TipException("评论对象为空");
         }
@@ -52,6 +52,11 @@ public class CommentsServiceImpl implements CommentsService {
             comments.setOwner_id(contents.getAuthor_id());
             comments.setCreated(DateKit.getCurrentUnixTime());
             activeRecord.insert(comments);
+
+            Contents temp = new Contents();
+            temp.setCid(contents.getCid());
+            temp.setComments_num(contents.getComments_num() + 1);
+            activeRecord.update(temp);
         } catch (Exception e) {
             throw e;
         }
@@ -88,10 +93,6 @@ public class CommentsServiceImpl implements CommentsService {
                         comment.setLevels(1);
                     }
                     comments.add(comment);
-//
-//					children.forEach(c2 -> {
-//
-//					});
                 });
                 commentPaginator.setList(comments);
             }
@@ -103,4 +104,5 @@ public class CommentsServiceImpl implements CommentsService {
     private List<Comments> getChildren(Integer coid) {
         return activeRecord.list(new Take(Comments.class).eq("parent", coid).orderby("created asc"));
     }
+
 }

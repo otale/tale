@@ -91,18 +91,6 @@ public class MetasServiceImpl implements MetasService {
     }
 
     @Override
-    public void updateCount(String type, String[] names, int count) {
-        if (null != names && names.length > 0 && StringKit.isNotBlank(type)) {
-            String nameStr = TaleUtils.rejoin(names);
-            String sql = "update t_metas set count = (count - 1) where count > 0 and `name` in (" + nameStr + ") and `type` = ?";
-            if (count > 0) {
-                sql = "update t_metas set count = (count + 1) where count > 0 and `name` in (" + nameStr + ") and `type` = ?";
-            }
-            activeRecord.execute(sql, type);
-        }
-    }
-
-    @Override
     public void delete(int mid) {
         Metas metas = activeRecord.byId(Metas.class, mid);
         if (null != metas) {

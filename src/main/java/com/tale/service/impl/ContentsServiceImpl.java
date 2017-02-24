@@ -8,14 +8,12 @@ import com.blade.jdbc.model.PageRow;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
-import com.tale.dto.Archive;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.model.Contents;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -35,14 +33,6 @@ public class ContentsServiceImpl implements ContentsService {
             } else {
                 return activeRecord.one(new Take(Contents.class).eq("slug", id));
             }
-        }
-        return null;
-    }
-
-    @Override
-    public Contents getPage(String slug) {
-        if (StringKit.isNotBlank(slug)) {
-            return activeRecord.one(new Take(Contents.class).eq("slug", slug));
         }
         return null;
     }
@@ -131,16 +121,8 @@ public class ContentsServiceImpl implements ContentsService {
     public void delete(int cid) {
         Contents contents = this.getContents(cid + "");
         if (null != contents) {
-            String tags = contents.getTags();
-            String categories = contents.getCategories();
             activeRecord.delete(Contents.class, cid);
             activeRecord.execute("delete from t_relationships where cid = ?", cid);
-            if (StringKit.isNotBlank(tags)) {
-                metasService.updateCount(Types.TAG, tags.split(","), -1);
-            }
-            if (StringKit.isNotBlank(categories)) {
-                metasService.updateCount(Types.CATEGORY, categories.split(","), -1);
-            }
         }
     }
 
@@ -166,22 +148,4 @@ public class ContentsServiceImpl implements ContentsService {
         return paginator;
     }
 
-    @Override
-    public List<Archive> getArchives() {
-        List<Archive> archives = activeRecord.list(Archive.class, "select FROM_UNIXTIME(created, '%Y年%m月') as date, count(*) as count from t_contents where type = 'post' and status = 'publish' group by date");
-        if (null != archives) {
-            for (Archive archive : archives) {
-                String date = archive.getDate();
-                Date sd = DateKit.dateFormat(date, "yyyy年MM月");
-                int start = DateKit.getUnixTimeByDate(sd);
-                int end = DateKit.getUnixTimeByDate(DateKit.dateAdd(DateKit.INTERVAL_MONTH, sd, 1)) - 1;
-                List<Contents> contentss = activeRecord.list(new Take(Contents.class)
-                        .eq("type", Types.ARTICLE)
-                        .eq("status", Types.PUBLISH)
-                        .gt("created", start).lt("created", end).orderby("created desc"));
-                archive.setArticles(contentss);
-            }
-        }
-        return archives;
-    }
 }
