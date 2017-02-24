@@ -64,38 +64,18 @@ public class IndexController extends BaseController {
 
     @Route(value = "setting", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveSetting(@QueryParam String site_title,
-                                    @QueryParam String social_weibo,
-                                    @QueryParam String social_zhihu,
-                                    @QueryParam String social_github,
-                                    @QueryParam String social_twitter,
-                                    @QueryParam String site_theme,
-                                    @QueryParam String allow_install,
-                                    @QueryParam String site_description,
-                                    @QueryParam String site_keywords,
-                                    Request request) {
-
+    public RestResponse saveSetting(@QueryParam String site_theme, Request request) {
         try {
-
             Map<String, String> querys = request.querys();
-
-            optionsService.saveOption("site_title", site_title);
-            optionsService.saveOption("site_theme", site_theme);
-            optionsService.saveOption("site_description", site_description);
-            optionsService.saveOption("site_keywords", site_keywords);
-            optionsService.saveOption("allow_install", allow_install);
-
-            optionsService.saveOption("social_weibo", social_weibo);
-            optionsService.saveOption("social_zhihu", social_zhihu);
-            optionsService.saveOption("social_github", social_github);
-            optionsService.saveOption("social_twitter", social_twitter);
+            optionsService.saveOptions(querys);
 
             Config config = new Config();
             config.addAll(optionsService.getOptions());
             TaleConst.OPTIONS = config;
 
-            BaseController.THEME = "themes/" + site_theme;
-
+            if (StringKit.isNotBlank(site_theme)) {
+                BaseController.THEME = "themes/" + site_theme;
+            }
         } catch (Exception e) {
             String msg = "保存设置失败";
             if (e instanceof TipException) {

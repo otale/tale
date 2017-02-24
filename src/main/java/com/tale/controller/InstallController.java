@@ -61,7 +61,6 @@ public class InstallController extends BaseController {
                                   @QueryParam String db_user, @QueryParam String db_pass) {
 
         try {
-
             if (StringKit.isBlank(site_title) ||
                     StringKit.isBlank(site_url) ||
                     StringKit.isBlank(admin_user) ||
@@ -95,6 +94,9 @@ public class InstallController extends BaseController {
 
             siteService.initSite(users, jdbcConf);
 
+            if (site_url.endsWith("/")) {
+                site_url = site_url.substring(0, site_url.length() - 1);
+            }
             optionsService.saveOption("site_title", site_title);
             optionsService.saveOption("site_url", site_url);
 

@@ -18,6 +18,13 @@ public class OptionsServiceImpl implements OptionsService {
     private ActiveRecord activeRecord;
 
     @Override
+    public void saveOptions(Map<String, String> options) {
+        if (null != options && !options.isEmpty()) {
+            options.forEach((k, v) -> saveOption(k, v));
+        }
+    }
+
+    @Override
     public void saveOption(String key, String value) {
         if (StringKit.isNotBlank(key) && StringKit.isNotBlank(value)) {
             Options options = new Options();
