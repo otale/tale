@@ -1,0 +1,126 @@
+#include('./header.html',{active:'publish', title:'保存文章'})
+<link href="/static/admin/plugins/tagsinput/jquery.tagsinput.css" rel="stylesheet">
+<link href="/static/admin/plugins/select2/dist/css/select2-bootstrap.css" rel="stylesheet">
+<link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.css" rel="stylesheet" />
+<link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet" />
+<link href="/static/admin/plugins/md/css/style.css" rel="stylesheet" />
+<style>
+    #tags_tagsinput{
+        background-color: #fafafa;
+        border: 1px solid #eeeeee;
+    }
+    #tags_addTag input {
+        width: 100%;
+    }
+    #tags_addTag{
+        margin-top: -5px;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="page-title">
+        #if(null != contents)
+        编辑文章
+        #else
+        发布文章
+        #end
+        </h4>
+    </div>
+    <div class="col-md-12">
+        <form id="articleForm" role="form" novalidate="novalidate">
+            <input type="hidden" name="categories" id="categories" />
+            <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
+            <input type="hidden" name="status" value="${contents.status ?! 'publish'}" id="status"/>
+            <input type="hidden" name="allow_comment" value="${contents.allow_comment ?! true}" id="allow_comment"/>
+            <input type="hidden" name="allow_ping" value="${contents.allow_ping ?! true}" id="allow_ping"/>
+            <input type="hidden" name="allow_feed" value="${contents.allow_feed ?! true}" id="allow_feed"/>
+            <input type="hidden" name="content" id="content-editor"/>
+
+            <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
+                <input type="text" class="form-control" placeholder="请输入文章标题（必须）" name="title" required aria-required="true" value="${contents.title ?! ''}"/>
+            </div>
+
+            <div class="form-group col-md-6" style="padding: 0 0 0 10px;">
+                <input type="text" class="form-control" placeholder="自定义访问路径，如：my-first-article  默认为文章id" name="slug"
+                       value="${contents.slug ?! ''}"/>
+            </div>
+
+            <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
+                <input name="tags" id="tags" type="text" class="form-control" placeholder="请填写文章标签"
+                       value="${contents.tags ?! ''}"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <select id="multiple-sel" class="select2 form-control" multiple="multiple" data-placeholder="请选择分类...">
+                    #if(null == categories)
+                    <option value="默认分类" selected>默认分类</option>
+                    #else
+
+                    #for(c : categories)
+                    <option value="${c.name}" #if(null !=contents && exist_cat(c, contents.categories)) selected #end>
+                        ${c.name}
+                    </option>
+                    #end
+
+                    #end
+                </select>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+                <textarea style="height: 350px" autocomplete="off" id="text" name="text" class="markdown-textarea">${contents.content ?! ''}</textarea>
+            </div>
+
+            <div class="form-group col-md-3 col-sm-4">
+                <label class="col-sm-4">开启评论</label>
+                <div class="col-sm-8">
+                    <div class="toggle toggle-success allow-${contents.allow_comment ?! true}" onclick="allow_comment(this);"></div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-3 col-sm-4">
+                <label class="col-sm-4">允许Ping</label>
+                <div class="col-sm-8">
+                    <div class="toggle toggle-success allow-${contents.allow_ping ?! true}" onclick="allow_ping(this);"></div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-3 col-sm-4">
+                <label class="col-sm-4">允许订阅</label>
+                <div class="col-sm-8">
+                    <div class="toggle toggle-success allow-${contents.allow_feed ?! true}" onclick="allow_feed(this);"></div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="text-right">
+                <a class="btn btn-default waves-effect waves-light" href="/admin/article">返回列表</a>
+                <button type="button" class="btn btn-primary waves-effect waves-light" onclick="subArticle('publish');">保存文章</button>
+                <button type="button" class="btn btn-warning waves-effect waves-light" onclick="subArticle('draft');">存为草稿</button>
+            </div>
+        </form>
+    </div>
+</div>
+#include('./footer.html')
+
+<script src="/static/admin/plugins/tagsinput/jquery.tagsinput.min.js"></script>
+<script src="/static/admin/plugins/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
+<script src="/static/admin/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
+
+<script src="/static/admin/plugins/md/js/jquery.scrollto.js"></script>
+<script src="/static/admin/plugins/md/js/pagedown.js"></script>
+<script src="/static/admin/plugins/md/js/pagedown-extra.js"></script>
+<script src="/static/admin/plugins/md/js/diff.js"></script>
+<script src="/static/admin/plugins/md/js/md.js"></script>
+
+<script src="//cdn.bootcss.com/multi-select/0.9.12/js/jquery.multi-select.min.js"></script>
+<script src="//cdn.bootcss.com/select2/3.4.8/select2.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
+<!--<script src="//cdn.bootcss.com/jquery-validate/1.15.1/jquery.validate.min.js"></script>-->
+<!--<script src="//cdn.bootcss.com/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>-->
+<script src="/static/admin/js/article.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="shortcut icon" href="/static/admin/images/favicon_1.ico">
+    <title>Tale - 博客安装</title>
+    <link href="/static/admin/plugins/jquery.steps/demo/css/jquery.steps.css" rel="stylesheet" type="text/css">
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/admin/css/core.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/components.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/pages.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/menu.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/responsive.css" rel="stylesheet" type="text/css">
+
+    <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<div class="container" style="max-width: 680px;">
+    <section class="home bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <div class="home-wrapper">
+                        <h1 class="home-text"><span class="rotate">开始使用Tale写博客吧 :)</span></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    #if(!is_install)
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tale安装向导</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="wizard-validation-form">
+                        <div>
+                            <h3>网站设置</h3>
+                            <section>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">站点名称</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" name="site_title" type="text" placeholder="请输入站点名称" required aria-required="true"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">管理员账号</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" name="admin_user" type="text" placeholder="请输入管理员账号" required aria-required="true"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">管理员邮箱</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" name="admin_email" type="email" placeholder="请输入管理员邮箱"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">管理员密码</label>
+                                    <div class="col-md-9">
+                                        <input id="password1" name="admin_pwd" type="password" class="form-control" required aria-required="true" placeholder="请输入管理员密码"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">确认管理员密码</label>
+                                    <div class="col-md-9">
+                                        <input id="password2" type="password" class="form-control" required aria-required="true" placeholder="请确认管理员密码"/>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>数据库设置</h3>
+                            <section>
+
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-2 control-label" for="name2">数据库地址</label>
+                                    <div class="col-lg-10">
+                                        <input id="name2" name="db_host" type="text" class="form-control" required aria-required="true" value="127.0.0.1:3306" placeholder="请输入数据库地址包含端口，如127.0.0.1:3306"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-2 control-label" for="name2">数据库名</label>
+                                    <div class="col-lg-10">
+                                        <input name="db_name" type="text" class="form-control" required aria-required="true" placeholder="请输入数据库名" value="tale"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-2 control-label" for="surname2">数据库用户</label>
+                                    <div class="col-lg-10">
+                                        <input id="surname2" name="db_user" type="text" class="form-control" required aria-required="true" placeholder="请输入数据库用户"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-lg-2 control-label" for="surname2">数据库密码</label>
+                                    <div class="col-lg-10">
+                                        <input name="db_pass" type="password" class="form-control" required aria-required="true" placeholder="请输入数据库密码" />
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>安装完成</h3>
+                            <section>
+                                <div class="form-group clearfix">
+                                    <div class="col-lg-12 text-center">
+                                        <h3>恭喜你，安装完成！</h3>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </form>
+                </div>  <!-- End panel-body -->
+            </div> <!-- End panel -->
+
+        </div> <!-- end col -->
+
+    </div> <!-- End row -->
+    #else
+    你已经安装过Tale了，如需重新安装请提前做好备份，并删除根目录下的<mark>install.lock</mark>文件。
+    #end
+</div>
+
+<!-- Main  -->
+<script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-steps/1.1.0/jquery.steps.min.js"></script>
+<script src="/static/admin/js/install.js"></script>
+
+</body>
+</html>

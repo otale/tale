@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
+    <title>Tale - 用户登录</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/admin/css/core.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/components.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/pages.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/menu.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/responsive.css" rel="stylesheet" type="text/css">
+    <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<div class="wrapper-page">
+    <div class="panel panel-color panel-primary panel-pages">
+        <div class="panel-heading bg-img">
+            <div class="bg-overlay"></div>
+            <h3 class="text-center m-t-10 text-white"> Tale <strong>博客系统</strong> </h3>
+        </div>
+
+        <div class="panel-body">
+            <form class="form-horizontal m-t-20" method="post" id="loginForm" onsubmit="return checkForm()">
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <input class="form-control input-lg" name="username" type="text" required="" placeholder="请输入账号 :)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <input class="form-control input-lg" name="password" type="password" required="" placeholder="请输入密码">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <div class="checkbox checkbox-primary">
+                            <input id="checkbox-signup" name="remeber_me" type="checkbox">
+                            <label for="checkbox-signup">记住我</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group text-center m-t-40">
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary btn-lg w-lg waves-effect waves-light" type="submit">登&nbsp;录</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Main  -->
+<script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
+
+<script type="text/javascript">
+    function checkForm() {
+        $.post('/admin/login', $("#loginForm").serialize(), function (result) {
+            if(result && result.success){
+                window.location.href = '/admin/index';
+            } else{
+                swal("提示消息", result.msg);
+            }
+        });
+        return false;
+    }
+</script>
+</body>
+</html>

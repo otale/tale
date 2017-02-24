@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>${title ?! '博客后台'} - Tale</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta content="Coderthemes" name="author"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
+    <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/core.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/components.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/menu.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/responsive.css" rel="stylesheet" type="text/css">
+    <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="fixed-left">
+<!-- Begin page -->
+<div id="wrapper">
+
+    <!-- Top Bar Start -->
+    <div class="topbar">
+        <!-- LOGO -->
+        <div class="topbar-left">
+            <div class="text-center p-t-10">
+                <a href="/admin/index">
+                    <img src="/static/admin/images/logo.png" width="250" height="45"/>
+                </a>
+            </div>
+        </div>
+        <!-- Button mobile view to collapse sidebar menu -->
+        <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="">
+                    <div class="pull-left">
+                        <button type="button" class="button-menu-mobile open-left">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <span class="clearfix"></span>
+                    </div>
+
+                    <ul class="nav navbar-nav navbar-right pull-right">
+                        <li class="dropdown">
+                            <a href="index.html" class="dropdown-toggle profile" data-toggle="dropdown"
+                               aria-expanded="true"><img src="${gravatar(login_user.email)}" alt="user-img"
+                                                         class="img-circle"> </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/"><i class="md md-web"></i> 网站</a></li>
+                                <li><a href="/admin/settings"><i class="md md-settings"></i> 设置</a></li>
+                                <li><a href="/logout"><i class="md md-settings-power"></i> 注销</a></li>
+                            </ul>
+
+                        </li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <!-- Top Bar End -->
+
+    <!-- ========== Left Sidebar Start ========== -->
+    <div class="left side-menu">
+        <div class="sidebar-inner slimscrollleft">
+            <!--- Divider -->
+            <div id="sidebar-menu">
+                <ul>
+                    <li #if(active=='home') class="active" #end>
+                        <a href="/admin/index" class="waves-effect"><i class="md md-home"></i><span> 仪表盘 </span></a>
+                    </li>
+                    <li #if(active=='publish') class="active" #end>
+                        <a href="/admin/article/publish" class="waves-effect"><i class="md md-border-color"></i><span> 发布文章 </span></a>
+                    </li>
+                    <li #if(active=='article') class="active" #end>
+                        <a href="/admin/article" class="waves-effect"><i class="md md-list"></i><span> 文章管理 </span></a>
+                    </li>
+                    <li #if(active=='page') class="active" #end>
+                        <a href="/admin/page" class="waves-effect"><i class="md md-pages"></i><span> 页面管理 </span></a>
+                    </li>
+                    <li #if(active=='category') class="active" #end>
+                        <a href="/admin/category" class="waves-effect"><i class="md md-class"></i><span> 分类/标签 </span></a>
+                    </li>
+                    <li #if(active=='attach') class="active" #end>
+                        <a href="/admin/attach" class="waves-effect"><i class="md md-cloud-done"></i><span> 文件管理 </span></a>
+                    </li>
+                    <li #if(active=='links') class="active" #end>
+                        <a href="/admin/links" class="waves-effect"><i class="md md-link"></i><span> 友链管理 </span></a>
+                    </li>
+                    <li #if(active=='setting') class="active" #end>
+                        <a href="/admin/setting" class="waves-effect"><i class="md md-settings"></i><span> 系统设置 </span></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <!-- Left Sidebar End -->
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <!-- Start content -->
+        <div class="content">
+            <div class="container">

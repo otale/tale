@@ -1,0 +1,77 @@
+#include('./header.html',{active:'article', title:'页面管理'})
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="page-title">文章管理</h4>
+    </div>
+    <div class="col-md-10">
+        <div class="pull-right">
+            <a href="/admin/page/new" class="btn btn-success waves-effect waves-light m-b-5">添加新页面</a>
+        </div>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>页面名称</th>
+                    <th>页面路径</th>
+                    <th width="20%">发布时间</th>
+                    <th width="12%">发布状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                #for(post : articles.list)
+                <tr cid="${post.cid}">
+                    <td>${post.title}</td>
+                    <td>${post.slug}</td>
+                    <td>${fmtdate(post.created, 'yyyy-MM-dd HH:mm:ss')}</td>
+                    <td>
+                        #if(post.status == 'publish')
+                        已发布
+                        #elseif(post.status == 'draft')
+                        草稿
+                        #end
+                    </td>
+                    <td>
+                        <a href="/admin/page/${post.cid}" class="btn btn-primary btn-sm waves-effect waves-light m-b-5"><i
+                                class="fa fa-edit"></i> <span>编辑</span></a>
+                        <a href="javascript:void(0)" onclick="delPost(${post.cid});" class="btn btn-danger btn-sm waves-effect waves-light m-b-5"><i
+                                class="fa fa-trash-o"></i> <span>删除</span></a>
+                        <a class="btn btn-warning btn-sm waves-effect waves-light m-b-5" href="/${post.slug}" target="_blank"><i
+                                class="fa fa-rocket"></i> <span>预览</span></a>
+                    </td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+    </div>
+</div>
+
+#include('./footer.html')
+
+<script type="text/javascript">
+    function delPost(cid){
+        swal({
+            title: '警告信息',
+            text: "确定删除这个页面吗？",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+        }).then(function () {
+            $.post('/admin/page/delete', {cid:cid}, function(result){
+                if(result && result.success){
+                    swal('提示信息', '删除成功', 'success');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    swal("提示消息", result.msg, 'error');
+                }
+            });
+        });
+    }
+</script>
+
+</body>
+</html>

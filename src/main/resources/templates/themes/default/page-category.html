@@ -1,0 +1,37 @@
+#include('./header.html', {title: keyword })
+
+<div class="main-content common-page clearfix">
+    <div class="categorys-item">
+        <div class="common-title">
+            ${type}：${keyword}
+        </div>
+        #if(null != articles)
+        <div class="post-lists">
+            <div class="post-lists-body">
+                #for(article : articles.list)
+                <div class="post-list-item">
+                    <div class="post-list-item-container ">
+                        <div class="item-label ">
+                            <div class="item-title">
+                                <a href="${(permalink(article.cid, article.slug))}">${article.title}</a>
+                            </div>
+                            <div class="item-meta clearfix">
+                                <div class="item-meta-ico ${show_icon(article.cid)}"
+                                     style="background: url(/static/user/img/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+                                <div class="item-meta-date">${fmtdate(article.created)}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                #end
+            </div>
+        </div>
+        #else
+        <div>
+            <p>抱歉，还没有相关文章.</p>
+        </div>
+        #end
+    </div>
+</div>
+
+#include('./footer.html')

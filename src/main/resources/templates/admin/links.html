@@ -1,0 +1,136 @@
+#include('./header.html',{active:'category', title:'友链管理'})
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="page-title">友链管理</h4>
+    </div>
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>链接名称</th>
+                <th>链接地址</th>
+                <th>链接LOGO</th>
+                <th>链接排序</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            #for(link : links)
+            <tr mid="${link.mid}">
+                <td>${link.name}</td>
+                <td><a href="${link.slug}" target="_blank">${link.slug}</a></td>
+                <td>${link.description}</td>
+                <td>${link.sort}</td>
+                <td>
+                    <a href="javascript:void(0)" onclick="editLink(this);">编辑</a> | <a href="javascript:void(0)" onclick="delLink(${link.mid});">删除</a>
+                </td>
+            </tr>
+            #end
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h3 class="panel-title">保存友链</h3></div>
+                <div class="panel-body">
+
+                    <form id="linkForm" class="form-inline" role="form" novalidate="novalidate">
+
+                        <input type="hidden" id="mid" name="mid" />
+
+                        <div class="form-group">
+                            <label class="sr-only">链接标题</label>
+                            <input type="text" id="title" name="title" class="form-control" placeholder="请输入链接标题" required aria-required="true"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="sr-only">链接URL</label>
+                            <input type="url" id="url" name="url" class="form-control" placeholder="请输入链接地址" required aria-required="true"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="sr-only">链接LOGO</label>
+                            <input type="url" id="logo" name="logo" class="form-control" placeholder="请输入链接LOGO，没有则不输入" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="sr-only">链接排序</label>
+                            <input type="number" id="sort" name="sort" class="form-control" value="0" />
+                        </div>
+
+                        <button type="submit" class="btn btn-success waves-effect waves-light m-l-10">保存链接</button>
+                    </form>
+                </div> <!-- panel-body -->
+            </div> <!-- panel -->
+        </div> <!-- col -->
+
+    </div>
+</div>
+
+#include('./footer.html')
+<script src="//cdn.bootcss.com/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
+
+<script type="text/javascript">
+
+    $('#linkForm').validate({
+        submitHandler: function(form) {
+            var params = $("#linkForm").serialize();
+            $.post('/admin/links/save', params, function(result){
+                if(result && result.success){
+                    $('#linkForm input').val('');
+                    $('#linkForm #sort').val('0');
+                    swal('提示信息', '友链保存成功', 'success');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+                } else{
+                    swal("提示消息", result.msg, 'error');
+                }
+            });
+        }
+    });
+
+    function editLink(obj) {
+        var this_ = $(obj);
+
+        var mid = this_.parents('tr').attr('mid');
+        var title = this_.parents('tr').find('td:eq(0)').text();
+        var url = this_.parents('tr').find('td:eq(1)').text();
+        var logo = this_.parents('tr').find('td:eq(2)').text();
+        var sort = this_.parents('tr').find('td:eq(3)').text();
+
+        $('#linkForm #mid').val(mid);
+        $('#linkForm #title').val(title);
+        $('#linkForm #url').val(url);
+        $('#linkForm #logo').val(logo);
+        $('#linkForm #sort').val(sort);
+    }
+
+    function delLink(mid){
+        swal({
+            title: '警告信息',
+            text: "确定删除该链接吗？",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+        }).then(function () {
+            $.post('/admin/links/delete', {mid:mid}, function(result){
+                if(result && result.success){
+                    swal('提示信息', '删除成功', 'success');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    swal("提示消息", result.msg, 'error');
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>

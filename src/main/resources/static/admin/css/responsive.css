@@ -1,0 +1,125 @@
+/*
+Template Name: Moltran Dashboard
+Author: CoderThemes
+Email: coderthemes@gmail.com
+File: Responsive
+*/
+@media only screen and (max-width: 6000px) and (min-width: 700px) {
+  .wrapper.right-bar-enabled .right-bar {
+    right: 0;
+    z-index: 99;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  body {
+    overflow-x: hidden;
+  }
+}
+@media (max-width: 767px) {
+  body {
+    overflow-x: hidden;
+  }
+  .content-page {
+    margin-left: 0px !important;
+  }
+  .enlarged .left.side-menu {
+    margin-left: -75px;
+  }
+  .mobile-sidebar {
+    left: 0px;
+  }
+  .mobile-content {
+    left: 250px;
+    right: -250px;
+  }
+  .wrapper-page {
+    width: 90%;
+  }
+  .navbar-nav .open .dropdown-menu {
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    left: auto;
+    position: absolute;
+    right: 0;
+  }
+  .todo-send {
+    margin-top: 10px;
+    padding-left: 15px;
+  }
+  .chat-inputbar {
+    padding-left: 15px;
+  }
+  .chat-send {
+    margin-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .wizard > .steps > ul > li {
+    width: 100%;
+  }
+  .wizard > .content {
+    padding: 0px !important;
+  }
+  .wizard > .content > .body {
+    float: none;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0%;
+  }
+  .wizard.vertical > .steps {
+    display: inline;
+    float: none;
+    width: 100%;
+  }
+  .wizard.vertical > .content {
+    display: inline;
+    float: none;
+    margin: 0%;
+    width: 100%;
+  }
+  .footer {
+    left: 0px !important;
+  }
+}
+@media (max-width: 480px) {
+  .side-menu {
+    z-index: 10 !important;
+  }
+  .button-menu-mobile {
+    display: block;
+  }
+  .search-bar {
+    display: none !important;
+  }
+}
+@media (max-width: 420px) {
+  .hide-phone {
+    display: none !important;
+  }
+  .topbar-left {
+    width: 70px !important;
+  }
+  .logo span {
+    display: none !important;
+  }
+  .logo i {
+    margin-right: 0px;
+  }
+}
+/* Container-alt */
+@media (min-width: 768px) {
+  .container-alt {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container-alt {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container-alt {
+    width: 1170px;
+  }
+}
