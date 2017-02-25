@@ -7,12 +7,15 @@ import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
+import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.wrapper.Session;
 import com.blade.mvc.view.RestResponse;
+import com.tale.dto.LogActions;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.model.Users;
+import com.tale.service.LogService;
 import com.tale.service.UsersService;
 import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
@@ -29,6 +32,9 @@ public class AuthController {
     @Inject
     private UsersService usersService;
 
+    @Inject
+    private LogService logService;
+
     @Route(value = "login", method = HttpMethod.GET)
     public String login() {
         return "admin/login";
@@ -39,6 +45,7 @@ public class AuthController {
     public RestResponse doLogin(@QueryParam String username,
                                 @QueryParam String password,
                                 @QueryParam String remeber_me,
+                                Request request,
                                 Session session, Response response) {
         try {
             Users user = usersService.login(username, password);
@@ -46,6 +53,7 @@ public class AuthController {
             if (StringKit.isNotBlank(remeber_me)) {
                 TaleUtils.setCookie(response, user.getUid());
             }
+            logService.save(LogActions.LOGIN, null, request.address(), user.getUid());
         } catch (Exception e) {
             String msg = "登录失败";
             if (e instanceof TipException) {

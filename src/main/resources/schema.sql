@@ -1,3 +1,16 @@
+
+DROP TABLE IF EXISTS `t_logs`;
+
+CREATE TABLE `t_logs` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '日志主键',
+  `action` varchar(100) DEFAULT NULL COMMENT '产生的动作',
+  `data` varchar(2000) DEFAULT NULL COMMENT '产生的数据',
+  `author_id` int(10) DEFAULT NULL COMMENT '发生人id',
+  `ip` varchar(20) DEFAULT NULL COMMENT '日志产生的ip',
+  `created` int(10) DEFAULT NULL COMMENT '日志创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `t_attach`;
 
 CREATE TABLE `t_attach` (
@@ -8,7 +21,7 @@ CREATE TABLE `t_attach` (
   `author_id` int(10) DEFAULT NULL,
   `created` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `t_comments`;
 

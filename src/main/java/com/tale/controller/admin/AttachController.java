@@ -16,11 +16,13 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.multipart.FileItem;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
+import com.tale.dto.LogActions;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.model.Attach;
 import com.tale.model.Users;
 import com.tale.service.AttachService;
+import com.tale.service.LogService;
 import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +45,9 @@ public class AttachController extends BaseController {
 
     @Inject
     private AttachService attachService;
+
+    @Inject
+    private LogService logService;
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request, @QueryParam(value = "page", defaultValue = "1") int page,
@@ -95,7 +100,7 @@ public class AttachController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam int id) {
+    public RestResponse delete(@QueryParam Integer id, Request request) {
         try {
             Attach attach = attachService.byId(id);
             if(null == attach){
@@ -104,7 +109,7 @@ public class AttachController extends BaseController {
             attachService.delete(id);
             String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
             FileKit.delete(upDir + attach.getFkey());
-            LOGGER.info("DELETE ATTACH {}", attach.getFkey());
+            logService.save(LogActions.DEL_ARTICLE, attach.getFkey(), request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "附件删除失败";
             if (e instanceof TipException) {

@@ -32,6 +32,10 @@ public abstract class BaseController {
         return TaleUtils.getLoginUser();
     }
 
+    public Integer getUid(){
+        return this.user().getUid();
+    }
+
     public String render_404() {
         return "/comm/error_404";
     }

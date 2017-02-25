@@ -9,12 +9,14 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
+import com.tale.dto.LogActions;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.model.Contents;
 import com.tale.model.Metas;
 import com.tale.model.Users;
 import com.tale.service.ContentsService;
+import com.tale.service.LogService;
 import com.tale.service.MetasService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,9 @@ public class ArticleController extends BaseController {
 
     @Inject
     private MetasService metasService;
+
+    @Inject
+    private LogService logService;
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(@QueryParam(value = "page", defaultValue = "1") int page,
@@ -149,9 +154,10 @@ public class ArticleController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam int cid) {
+    public RestResponse delete(@QueryParam int cid, Request request) {
         try {
             contentsService.delete(cid);
+            logService.save(LogActions.DEL_ARTICLE, cid+"", request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "文章删除失败";
             if (e instanceof TipException) {

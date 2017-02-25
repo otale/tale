@@ -11,6 +11,7 @@ import com.tale.dto.*;
 import com.tale.exception.TipException;
 import com.tale.init.TaleJdbc;
 import com.tale.model.*;
+import com.tale.service.LogService;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import com.tale.utils.ZipUtils;
@@ -36,13 +37,16 @@ public class SiteServiceImpl implements SiteService {
     @Inject
     private OptionsService optionsService;
 
+    @Inject
+    private LogService logService;
+
     @Override
     public void initSite(Users users, JdbcConf jdbcConf) {
         String pwd = Tools.md5(users.getUsername() + users.getPassword());
         users.setPassword(pwd);
         users.setScreen_name(users.getUsername());
         users.setCreated(DateKit.getCurrentUnixTime());
-        activeRecord.insert(users);
+        Long uid = activeRecord.insert(users);
 
         try {
             Properties props = new Properties();
@@ -60,6 +64,7 @@ public class SiteServiceImpl implements SiteService {
             File lock = new File(cp + "install.lock");
             lock.createNewFile();
 
+            logService.save(LogActions.INIT_SITE, null, "", uid.intValue());
         } catch (Exception e) {
             throw new TipException("初始化站点失败");
         }
