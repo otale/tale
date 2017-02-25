@@ -51,9 +51,6 @@ public class AuthController extends BaseController {
 
         Integer error_count = cache.get("login_error_count");
         try {
-            if(null != error_count && error_count >= 3){
-                return RestResponse.fail("您输入密码已经错误超过3次，请10分钟后尝试");
-            }
             Users user = usersService.login(username, password);
             session.attribute(TaleConst.LOGIN_SESSION_KEY, user);
             if (StringKit.isNotBlank(remeber_me)) {
@@ -63,7 +60,9 @@ public class AuthController extends BaseController {
         } catch (Exception e) {
             error_count = null == error_count ? 1 : error_count + 1;
             cache.set("login_error_count", error_count, 10 * 60);
-
+            if(null != error_count && error_count > 3){
+                return RestResponse.fail("您输入密码已经错误超过3次，请10分钟后尝试");
+            }
             String msg = "登录失败";
             if (e instanceof TipException) {
                 msg = e.getMessage();
