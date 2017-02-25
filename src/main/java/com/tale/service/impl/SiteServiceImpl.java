@@ -99,7 +99,7 @@ public class SiteServiceImpl implements SiteService {
 
     @Override
     public List<Archive> getArchives() {
-        List<Archive> archives = activeRecord.list(Archive.class, "select FROM_UNIXTIME(created, '%Y年%m月') as date, count(*) as count from t_contents where type = 'post' and status = 'publish' group by date");
+        List<Archive> archives = activeRecord.list(Archive.class, "select FROM_UNIXTIME(created, '%Y年%m月') as date, count(*) as count from t_contents where type = 'post' and status = 'publish' group by date order by date desc");
         if (null != archives) {
             archives.forEach(archive -> {
                 String date = archive.getDate();
