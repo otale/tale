@@ -66,3 +66,9 @@
 ## 开源协议
 
 [MIT](LICENSE)
+
+## 感谢
+
++ [typecho](https://github.com/typecho/typecho)
++ [pinghsu](https://github.com/chakhsu/pinghsu)
++ [emoji-java](https://github.com/vdurmont/emoji-java)
