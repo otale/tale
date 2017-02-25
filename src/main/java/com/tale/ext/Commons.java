@@ -277,7 +277,9 @@ public final class Commons {
             return img;
         }
         int cid = contents.getCid();
-        return "/static/user/img/rand/" + cid % 12 + ".jpg";
+        int size = cid % 20;
+        size = size == 0 ? 1 : size;
+        return "/static/user/img/rand/" + size + ".jpg";
     }
 
     /**

@@ -14,6 +14,7 @@ import com.tale.model.Contents;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.utils.TaleUtils;
+import com.vdurmont.emoji.EmojiParser;
 
 import java.util.List;
 
@@ -71,6 +72,7 @@ public class ContentsServiceImpl implements ContentsService {
             if (count > 0) throw new TipException("该路径已经存在，请重新输入");
         }
 
+        contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
 
         int time = DateKit.getCurrentUnixTime();
         contents.setCreated(time);
@@ -110,6 +112,8 @@ public class ContentsServiceImpl implements ContentsService {
         contents.setModified(time);
 
         Integer cid = contents.getCid();
+
+        contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
 
         activeRecord.update(contents);
 
