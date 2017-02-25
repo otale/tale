@@ -18,10 +18,9 @@ public interface MetasService {
 
     /**
      * 根据类型查询项目列表，带项目下面的文章数
-     * @param types
      * @return
      */
-    List<MetaDto> getMetaList(String types);
+    List<MetaDto> getMetaList(String type, String orderby, int limit);
 
     /**
      * 根据类型查询项目列表

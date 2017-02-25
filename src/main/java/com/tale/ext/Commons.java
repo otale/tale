@@ -7,6 +7,8 @@ import com.blade.kit.StringKit;
 import com.blade.kit.Tools;
 import com.tale.controller.BaseController;
 import com.tale.dto.Comment;
+import com.tale.dto.MetaDto;
+import com.tale.dto.Types;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -306,6 +308,38 @@ public final class Commons {
             return EMPTY;
         }
         return siteService.recentComments(limit);
+    }
+
+    /**
+     * 获取分类列表
+     * @return
+     */
+    public static List<MetaDto> categries(int limit){
+        return siteService.metas(Types.CATEGORY, null, limit);
+    }
+
+    /**
+     * 获取所有分类
+     * @return
+     */
+    public static List<MetaDto> categries(){
+        return categries(TaleConst.MAX_POSTS);
+    }
+
+    /**
+     * 获取标签列表
+     * @return
+     */
+    public static List<MetaDto> tags(int limit){
+        return siteService.metas(Types.TAG, null, limit);
+    }
+
+    /**
+     * 获取所有标签
+     * @return
+     */
+    public static List<MetaDto> tags(){
+        return tags(TaleConst.MAX_POSTS);
     }
 
     /**

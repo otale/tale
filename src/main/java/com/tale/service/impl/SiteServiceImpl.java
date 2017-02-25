@@ -12,6 +12,7 @@ import com.tale.exception.TipException;
 import com.tale.init.TaleJdbc;
 import com.tale.model.*;
 import com.tale.service.LogService;
+import com.tale.service.MetasService;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import com.tale.utils.ZipUtils;
@@ -39,6 +40,9 @@ public class SiteServiceImpl implements SiteService {
 
     @Inject
     private LogService logService;
+
+    @Inject
+    private MetasService metasService;
 
     @Override
     public void initSite(Users users, JdbcConf jdbcConf) {
@@ -185,5 +189,10 @@ public class SiteServiceImpl implements SiteService {
             }, 10 * 1000);
         }
         return backResponse;
+    }
+
+    @Override
+    public List<MetaDto> metas(String type, String orderBy, int limit) {
+        return metasService.getMetaList(type, orderBy, limit);
     }
 }

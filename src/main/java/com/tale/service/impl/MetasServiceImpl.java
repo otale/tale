@@ -8,6 +8,7 @@ import com.blade.kit.StringKit;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.init.TaleConst;
 import com.tale.model.Contents;
 import com.tale.model.Metas;
 import com.tale.model.Relationships;
@@ -31,11 +32,17 @@ public class MetasServiceImpl implements MetasService {
     }
 
     @Override
-    public List<MetaDto> getMetaList(String types) {
-        if (StringKit.isNotBlank(types)) {
+    public List<MetaDto> getMetaList(String type, String orderby, int limit) {
+        if (StringKit.isNotBlank(type)) {
+            if(StringKit.isBlank(orderby)){
+                orderby = "count desc, a.mid desc";
+            }
+            if(limit < 1 || limit > TaleConst.MAX_POSTS){
+                limit = 10;
+            }
             String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
-                    "where a.type = ? group by a.mid";
-            return activeRecord.list(MetaDto.class, sql, types);
+                    "where a.type = ? group by a.mid order by ? limit ?";
+            return activeRecord.list(MetaDto.class, sql, type, orderby, limit);
         }
         return null;
     }

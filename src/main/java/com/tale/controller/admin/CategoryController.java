@@ -12,6 +12,7 @@ import com.tale.controller.BaseController;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.init.TaleConst;
 import com.tale.service.MetasService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,8 @@ public class CategoryController extends BaseController {
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
-        List<MetaDto> categories = metasService.getMetaList(Types.CATEGORY);
-        List<MetaDto> tags = metasService.getMetaList(Types.TAG);
+        List<MetaDto> categories = metasService.getMetaList(Types.CATEGORY, null, TaleConst.MAX_POSTS);
+        List<MetaDto> tags = metasService.getMetaList(Types.TAG,  null, TaleConst.MAX_POSTS);
         request.attribute("categories", categories);
         request.attribute("tags", tags);
         return "admin/category";

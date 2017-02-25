@@ -1,9 +1,6 @@
 package com.tale.service;
 
-import com.tale.dto.Archive;
-import com.tale.dto.BackResponse;
-import com.tale.dto.JdbcConf;
-import com.tale.dto.Statistics;
+import com.tale.dto.*;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
 import com.tale.model.Users;
@@ -70,4 +67,10 @@ public interface SiteService {
      * @return
      */
     BackResponse backup(String bk_type, String bk_path, String fmt) throws Exception;
+
+    /**
+     * 获取分类/标签列表
+     * @return
+     */
+    List<MetaDto> metas(String type, String orderBy, int limit);
 }
