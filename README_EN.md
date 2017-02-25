@@ -16,6 +16,7 @@ demo website：https://tale.biezhi.me
 
 + Simple design, beautiful interface
 + Markdown article published
++ Custom article links
 + Support multiple themes
 + Support Emoji
 + Support Netease cloud music player
