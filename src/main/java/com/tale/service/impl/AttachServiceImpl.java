@@ -30,6 +30,14 @@ public class AttachServiceImpl implements AttachService {
     }
 
     @Override
+    public Attach byId(Integer id) {
+        if(null != id){
+            return activeRecord.byId(Attach.class, id);
+        }
+        return null;
+    }
+
+    @Override
     public void delete(Integer id) {
         if (null != id) {
             activeRecord.delete(Attach.class, id);

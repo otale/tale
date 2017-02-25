@@ -31,4 +31,11 @@ public interface AttachService {
      * @return
      */
     Paginator<Attach> getAttachs(Take take);
+
+    /**
+     * 根据附件id查询附件
+     * @param id
+     * @return
+     */
+    Attach byId(Integer id);
 }

@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.Blade;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
@@ -59,6 +58,7 @@ public class AttachController extends BaseController {
 
         String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
         LOGGER.info("UPLOAD DIR = {}", upDir);
+
         Users users = this.user();
         Integer uid = users.getUid();
         Map<String, FileItem> fileItemMap = request.fileItems();
@@ -97,7 +97,14 @@ public class AttachController extends BaseController {
     @JSON
     public RestResponse delete(@QueryParam int id) {
         try {
+            Attach attach = attachService.byId(id);
+            if(null == attach){
+                return RestResponse.fail("不存在该附件");
+            }
             attachService.delete(id);
+            String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
+            FileKit.delete(upDir + attach.getFkey());
+            LOGGER.info("DELETE ATTACH {}", attach.getFkey());
         } catch (Exception e) {
             String msg = "附件删除失败";
             if (e instanceof TipException) {
