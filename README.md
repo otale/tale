@@ -3,7 +3,7 @@
 > Tale的英文含义为**故事**，我相信每个坚持写Blog的人都是有故事的；中文你叫它 ***塌了*** 也无所谓 🤣。
 
 
-`Tale` 使用了轻量级mvc框架 [Blade](https://github.com/biezhi/blade) 开发，默认主题使用了漂亮的 [pinghsu](https://github.com/chakhsu/pinghsu)，如果觉得这个项目不错，请为它点赞支持。
+`Tale` 使用了轻量级mvc框架 [Blade](https://github.com/biezhi/blade) 开发，默认主题使用了漂亮的 [pinghsu](https://github.com/chakhsu/pinghsu)，如果觉得这个项目不错，请为它[点赞](https://github.com/otale/tale/stargazers)支持。
 
 
 演示站点：https://tale.biezhi.me
