@@ -12,6 +12,7 @@ import com.tale.model.Comments;
 import com.tale.model.Contents;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
+import com.vdurmont.emoji.EmojiParser;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -316,6 +317,18 @@ public final class Commons {
             return "<a href=\"#comment-" + coid + "\">@" + comments.getAuthor() + "</a>";
         }
         return "";
+    }
+
+    /**
+     * An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!
+     *
+     * 这种格式的字符转换为emoji表情
+     *
+     * @param value
+     * @return
+     */
+    public static String emoji(String value){
+        return EmojiParser.parseToUnicode(value);
     }
 
     /**

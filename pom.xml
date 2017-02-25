@@ -33,17 +33,20 @@
             <version>${blade-jdbc.version}</version>
         </dependency>
 
+        <!--连接池-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+
         <!-- 模板引擎 -->
         <dependency>
             <groupId>com.bladejava</groupId>
             <artifactId>blade-template-jetbrick</artifactId>
             <version>${blade-tpl.verion}</version>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${druid.version}</version>
-        </dependency>
+
         <!--markdown处理-->
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
@@ -62,10 +65,17 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
         </dependency>
+        <!--RSS输出-->
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
             <version>1.0</version>
+        </dependency>
+        <!--过滤emoji字符-->
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>emoji-java</artifactId>
+            <version>3.2.0</version>
         </dependency>
     </dependencies>
 

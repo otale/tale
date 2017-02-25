@@ -146,6 +146,8 @@ public class TaleUtils {
         Node document = parser.parse(markdown);
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         String content = renderer.render(document);
+        content = Commons.emoji(content);
+
         // 支持网易云音乐输出
         if (TaleConst.BCONF.getBoolean("app.support_163_music", true) && content.contains("[mp3:")) {
             content = content.replaceAll("\\[mp3:(\\d+)\\]", "<iframe frameborder='no' border='0' marginwidth='0' marginheight='0' width=330 height=86 src='http://music.163.com/outchain/player?type=2&id=$1&auto=0&height=66'></iframe>");

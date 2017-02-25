@@ -26,6 +26,7 @@ import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
+import com.vdurmont.emoji.EmojiParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -316,6 +317,9 @@ public class IndexController extends BaseController {
 
         author = TaleUtils.cleanXSS(author);
         text = TaleUtils.cleanXSS(text);
+
+        author = EmojiParser.parseToAliases(author);
+        text = EmojiParser.parseToAliases(text);
 
         Comments comments = new Comments();
         comments.setAuthor(author);
