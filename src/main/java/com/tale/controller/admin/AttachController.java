@@ -40,6 +40,8 @@ public class AttachController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AttachController.class);
 
+    private static final String CLASSPATH = AttachController.class.getClassLoader().getResource("").getPath();
+
     @Inject
     private AttachService attachService;
 
@@ -54,6 +56,9 @@ public class AttachController extends BaseController {
     @Route(value = "upload", method = HttpMethod.POST)
     @JSON
     public RestResponse upload(Request request) {
+
+        String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
+        LOGGER.info("UPLOAD DIR = {}", upDir);
         Users users = this.user();
         Integer uid = users.getUid();
         Map<String, FileItem> fileItemMap = request.fileItems();
@@ -64,7 +69,7 @@ public class AttachController extends BaseController {
 
                 String prefix = "/upload/" + DateKit.dateFormat(new Date(), "yyyy/MM");
 
-                String dir = Blade.$().webRoot() + prefix;
+                String dir = upDir + prefix;
                 if (!FileKit.exist(dir)) {
                     new File(dir).mkdirs();
                 }
@@ -72,7 +77,7 @@ public class AttachController extends BaseController {
                 String fkey = prefix + "/" + UUID.UU32() + "." + FileKit.getExtension(fname);
                 String ftype = TaleUtils.isImage(f.file()) ? Types.IMAGE : Types.FILE;
 
-                String filePath = Blade.$().webRoot() + fkey;
+                String filePath = upDir + fkey;
 
                 File file = new File(filePath);
                 try {
