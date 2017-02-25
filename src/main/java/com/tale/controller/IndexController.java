@@ -307,7 +307,7 @@ public class IndexController extends BaseController {
             return RestResponse.fail("请输入正确的邮箱格式");
         }
 
-        if(!PatternKit.isURL(url)){
+        if(StringKit.isNotBlank(url) && !PatternKit.isURL(url)){
             return RestResponse.fail("请输入正确的URL格式");
         }
 
@@ -324,7 +324,6 @@ public class IndexController extends BaseController {
         Comments comments = new Comments();
         comments.setAuthor(author);
         comments.setCid(cid);
-        comments.setContent(text);
         comments.setIp(request.address());
         comments.setUrl(url);
         comments.setContent(text);

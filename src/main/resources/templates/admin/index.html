@@ -79,7 +79,7 @@
                             #else
                             ${comment.author}
                             #end
-                            于${fmtdate(comment.created,'MM月dd日HH:mm')} ：<a href="${site_url('/article/')}${comment.cid}#comments" target="_blank">${comment.content}</a>
+                            于${fmtdate(comment.created,'MM月dd日HH:mm')} ：<a href="${site_url('/article/')}${comment.cid}#comments" target="_blank">${article(comment.content)}</a>
                         </li>
                         #end
                     </ul>

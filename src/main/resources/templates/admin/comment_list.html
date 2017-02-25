@@ -1,0 +1,153 @@
+#include('./header.html',{active:'comments', title:'评论管理'})
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="page-title">评论管理</h4>
+    </div>
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>评论内容</th>
+                <th>评论人</th>
+                <th>评论时间</th>
+                <th>评论人邮箱</th>
+                <th>评论人网址</th>
+                <th>评论状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            #for(comment : comments.list)
+            <tr cid="${comment.coid}">
+                <td>
+                    <a href="${site_url('/article/')}${comment.cid}#comments" target="_blank">${article(comment.content)}</a>
+                </td>
+                <td>${comment.author}</td>
+                <td>${fmtdate(comment.created, 'yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${comment.mail}</td>
+                <td><a href="${comment.url}" target="_blank">${comment.url}</a></td>
+                <td>
+                    #if(comment.status == 'approved')
+                    <span class="label label-success">审核通过</span>
+                    #elseif(comment.status == 'not_audit')
+                    <span class="label label-default">未审核</span>
+                    #end
+                </td>
+                <td>
+                    <a href="javascript:void(0)" onclick="reply('${comment.coid}');" class="btn btn-primary btn-sm waves-effect waves-light m-b-5"><i class="fa fa-edit"></i> <span>回复</span></a>
+                    #if(comment.status == 'not_audit')
+                    <a href="javascript:void(0)" onclick="updateStatus('${comment.coid}', 'approved');" class="btn btn-danger btn-sm waves-effect waves-light m-b-5"><i
+                            class="fa fa-trash-o"></i> <span>通过</span></a>
+                    #end
+                    <a href="javascript:void(0)" onclick="delComment(${comment.coid});" class="btn btn-danger btn-sm waves-effect waves-light m-b-5"><i class="fa fa-trash-o"></i> <span>删除</span></a>
+                </td>
+            </tr>
+            #end
+            </tbody>
+        </table>
+        #call pageAdminNav(comments)
+    </div>
+</div>
+
+#include('./footer.html')
+
+<script type="text/javascript">
+
+    function reply(coid) {
+        swal({
+            title: "回复评论",
+            text: "请输入你要回复的内容:",
+            input: 'text',
+            showCancelButton: true,
+            confirmButtonText: '回复',
+            cancelButtonText: '取消',
+            showLoaderOnConfirm: true,
+            preConfirm: function (comment) {
+                return new Promise(function (resolve, reject) {
+                    $.ajax({
+                        type: 'post',
+                        url: '/admin/comments',
+                        data: {coid: coid, content: comment},
+                        async: false,
+                        dataType: 'json',
+                        success: function (result) {
+                            if (result && result.success) {
+                                swal({
+                                    type: 'success',
+                                    title: '已回复'
+                                });
+                            } else {
+                                if (result.msg) {
+                                    swal("提示消息", result.msg, 'error');
+                                }
+                            }
+                        }
+                    });
+//                    setTimeout(function() {
+//                        if (email === 'taken@example.com') {
+//                            reject('This email is already taken.')
+//                        } else {
+//                            resolve()
+//                        }
+//                    }, 2000)
+                })
+            },
+            allowOutsideClick: false
+        }).then(function (email) {
+            swal({
+                type: 'success',
+                title: 'Ajax request finished!',
+                html: 'Submitted email: ' + email
+            })
+        });
+    }
+
+    function delComment(coid) {
+        swal({
+            title: '警告信息',
+            text: "确定删除该评论吗？",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+        }).then(function () {
+            $.post('/admin/comments/delete', {coid: coid}, function (result) {
+                if (result && result.success) {
+                    swal('提示信息', '删除成功', 'success');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    swal("提示消息", result.msg, 'error');
+                }
+            });
+        });
+    }
+
+    function updateStatus(coid, status) {
+        $.ajax({
+            type: 'post',
+            url: '/admin/comments/status',
+            data: {coid: coid, status: status},
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                if (result && result.success) {
+                    swal({
+                        type: 'success',
+                        title: '设置成功'
+                    });
+                } else {
+                    if (result.msg) {
+                        swal("提示消息", result.msg, 'error');
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

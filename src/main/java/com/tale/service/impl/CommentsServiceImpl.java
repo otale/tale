@@ -116,4 +116,26 @@ public class CommentsServiceImpl implements CommentsService {
         }
     }
 
+    @Override
+    public Paginator<Comments> getComments(Take take) {
+        if(null != take){
+            return activeRecord.page(take);
+        }
+        return null;
+    }
+
+    @Override
+    public Comments byId(Integer coid) {
+        if(null != coid){
+            return activeRecord.byId(Comments.class, coid);
+        }
+        return null;
+    }
+
+    @Override
+    public void update(Comments comments) {
+        if(null != comments && null != comments.getCoid()){
+            activeRecord.update(comments);
+        }
+    }
 }
