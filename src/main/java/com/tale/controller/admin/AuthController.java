@@ -51,7 +51,7 @@ public class AuthController extends BaseController {
 
         Integer error_count = cache.get("login_error_count");
         try {
-            if(null != error_count && error_count > 3){
+            if(null != error_count && error_count >= 3){
                 return RestResponse.fail("您输入密码已经错误超过3次，请10分钟后尝试");
             }
             Users user = usersService.login(username, password);
