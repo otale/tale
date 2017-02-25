@@ -10,8 +10,10 @@ import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
+import com.blade.mvc.http.Response;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
+import com.tale.dto.BackResponse;
 import com.tale.dto.Statistics;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
@@ -86,6 +88,7 @@ public class IndexController extends BaseController {
             if (StringKit.isNotBlank(site_theme)) {
                 BaseController.THEME = "themes/" + site_theme;
             }
+            return RestResponse.ok();
         } catch (Exception e) {
             String msg = "保存设置失败";
             if (e instanceof TipException) {
@@ -95,7 +98,6 @@ public class IndexController extends BaseController {
             }
             return RestResponse.fail(msg);
         }
-        return RestResponse.ok();
     }
 
     /**
@@ -147,6 +149,30 @@ public class IndexController extends BaseController {
         temp.setPassword(pwd);
         usersService.update(temp);
         return RestResponse.ok();
+    }
+
+    /**
+     * 系统备份
+     * @return
+     */
+    @Route(value = "backup", method = HttpMethod.POST)
+    @JSON
+    public RestResponse backup(@QueryParam String bk_type, @QueryParam String bk_path, Response response) {
+        if (StringKit.isBlank(bk_type)) {
+            return RestResponse.fail("请确认信息输入完整");
+        }
+        try {
+            BackResponse backResponse = siteService.backup(bk_type, bk_path, "yyyyMMddHHmm");
+            return RestResponse.ok(backResponse);
+        } catch (Exception e){
+            String msg = "备份失败";
+            if (e instanceof TipException) {
+                msg = e.getMessage();
+            } else {
+                LOGGER.error(msg, e);
+            }
+            return RestResponse.fail(msg);
+        }
     }
 
 }

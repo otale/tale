@@ -23,6 +23,9 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -319,6 +322,26 @@ public class TaleUtils {
             cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
         }
         return cleanValue;
+    }
+
+    public static void download(Response response, String filePath) throws Exception {
+
+        response.contentType("application/octet-stream");
+        response.header("Content-Transfer-Encoding", "binary");
+
+        File file = new File(filePath);
+        String fname = file.getName();
+        response.header("Content-Disposition", "attachment; filename=" + fname);
+        OutputStream out = response.outputStream();
+        FileInputStream in = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = in.read(buffer)) > 0){
+            out.write(buffer, 0, length);
+        }
+        in.close();
+        out.flush();
+        out.close();
     }
 
 }

@@ -2,26 +2,25 @@ package com.tale.service.impl;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.ioc.annotation.Service;
-import com.blade.jdbc.ActiveRecord;
+import com.blade.jdbc.ar.SampleActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.DateKit;
-import com.blade.kit.Tools;
-import com.tale.dto.Archive;
-import com.tale.dto.JdbcConf;
-import com.tale.dto.Statistics;
-import com.tale.dto.Types;
+import com.blade.kit.*;
+import com.tale.controller.admin.AttachController;
+import com.tale.dto.*;
 import com.tale.exception.TipException;
 import com.tale.init.TaleJdbc;
 import com.tale.model.*;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
+import com.tale.utils.ZipUtils;
+import com.tale.utils.backup.Backup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by biezhi on 2017/2/23.
@@ -29,8 +28,10 @@ import java.util.Properties;
 @Service
 public class SiteServiceImpl implements SiteService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SiteService.class);
+
     @Inject
-    private ActiveRecord activeRecord;
+    private SampleActiveRecord activeRecord;
 
     @Inject
     private OptionsService optionsService;
@@ -122,5 +123,62 @@ public class SiteServiceImpl implements SiteService {
             return activeRecord.byId(Comments.class, coid);
         }
         return null;
+    }
+
+    @Override
+    public BackResponse backup(String bk_type, String bk_path, String fmt) throws Exception {
+        BackResponse backResponse = new BackResponse();
+        if (bk_type.equals("attach")) {
+            if (StringKit.isBlank(bk_path)) {
+                throw new TipException("请输入备份文件存储路径");
+            }
+            if (!FileKit.isDirectory(bk_path)) {
+                throw new TipException("请输入一个存在的目录");
+            }
+            String bkAttachDir = AttachController.CLASSPATH + "upload";
+            String bkThemesDir = AttachController.CLASSPATH + "templates/themes";
+
+            String fname = DateKit.dateFormat(new Date(), fmt) + "_" + StringKit.getRandomNumber(5) + ".zip";
+
+            String attachPath = bk_path + "/" + "attachs_" + fname;
+            String themesPath = bk_path + "/" + "themes_" + fname;
+
+            ZipUtils.zipFolder(bkAttachDir, attachPath);
+            ZipUtils.zipFolder(bkThemesDir, themesPath);
+
+            backResponse.setAttach_path(attachPath);
+            backResponse.setTheme_path(themesPath);
+        }
+        if (bk_type.equals("db")) {
+
+            String bkAttachDir = AttachController.CLASSPATH + "upload/";
+            String sqlFileName = "tale_" + DateKit.dateFormat(new Date(), fmt) + "_" + StringKit.getRandomNumber(5) + ".sql";
+            String zipFile = sqlFileName.replace(".sql", ".zip");
+
+            Backup backup = new Backup(activeRecord.getSql2o().getDataSource().getConnection());
+            String sqlContent = backup.execute();
+
+            File sqlFile = new File(bkAttachDir + sqlFileName);
+            IOKit.write(sqlContent, sqlFile, "UTF-8");
+
+            String zip = bkAttachDir + zipFile;
+            ZipUtils.zipFile(sqlFile.getPath(), zip);
+
+            if (!sqlFile.exists()) {
+                throw new TipException("数据库备份失败");
+            }
+            sqlFile.delete();
+
+            backResponse.setSql_path(zipFile);
+
+            // 10秒后删除备份文件
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    new File(zip).delete();
+                }
+            }, 10 * 1000);
+        }
+        return backResponse;
     }
 }

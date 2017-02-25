@@ -3,6 +3,7 @@ package com.tale.init;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.blade.ioc.Ioc;
 import com.blade.jdbc.ar.SampleActiveRecord;
+import com.tale.dto.JdbcConf;
 import com.tale.exception.TipException;
 import com.tale.utils.ScriptRunner;
 import org.sql2o.Sql2o;
@@ -23,6 +24,8 @@ import java.util.Properties;
 public final class TaleJdbc {
 
     private static final Properties jdbc_prop = new Properties();
+
+    public static JdbcConf jdbcConf;
 
     private TaleJdbc() {
     }
@@ -58,6 +61,7 @@ public final class TaleJdbc {
                 put("url", url);
                 put("username", username);
                 put("password", password);
+                jdbcConf = new JdbcConf(db_host, db_name, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();

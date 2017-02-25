@@ -108,6 +108,30 @@
         </div>
     </div>
 
+    <div class="clearfix"></div>
+
+    <div class="col-md-6">
+        <div class="panel panel-color panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">系统备份（备份文件包含附件和主题）</h3>
+            </div>
+            <div class="panel-body">
+                <form id="backupForm" class="form-inline" role="form">
+                    <!--<div class="form-group">
+                        <label class="sr-only">备份格式</label>
+                        <input name="url" class="form-control" placeholder="请输入备份文件格式，如yyyy-MM-dd" required="" aria-required="true" type="url">
+                    </div>-->
+                    <div class="form-group col-md-6">
+                        <input id="backup_dir" style="width: 100%;" class="form-control" placeholder="请输入备份存放的磁盘路径" required="" aria-required="true" type="text">
+                    </div>
+
+                    <button type="button" class="btn btn-success waves-effect waves-light m-l-10" onclick="backup('attach');">备份文件</button>
+                    <button type="button" class="btn btn-danger waves-effect waves-light m-l-10" onclick="backup('db')">导出数据库SQL</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 #include('./footer.html')
 <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
@@ -154,6 +178,33 @@
             $('#allow_install').val(1);
         }
     }
+
+    /**
+     * 系统备份
+     * @param type
+     */
+    function backup(type) {
+        var param = {
+            bk_type: type,
+            bk_path: $('#backup_dir').val()
+        };
+        $.post('/admin/backup', param, function (result) {
+            result = eval(result);
+            if (result && result.success) {
+                if(result.payload && result.payload.attach_path){
+                    swal('备份成功', '您的附件备份在 <mark>'+ result.payload.attach_path +'</mark><br/><br/>' +
+                        '主题备份存储在 <mark>'+ result.payload.theme_path +'</mark>', 'success');
+                    $('#backup_dir').val('');
+                }
+                if(result.payload.sql_path){
+                   window.location.href = '/upload/' + result.payload.sql_path;
+                }
+            } else {
+                swal("提示消息", result.msg, 'error');
+            }
+        });
+    }
+
 
     $('.allow-1').toggles({
         on: true,

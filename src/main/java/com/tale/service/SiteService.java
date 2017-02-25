@@ -1,6 +1,7 @@
 package com.tale.service;
 
 import com.tale.dto.Archive;
+import com.tale.dto.BackResponse;
 import com.tale.dto.JdbcConf;
 import com.tale.dto.Statistics;
 import com.tale.model.Comments;
@@ -60,4 +61,13 @@ public interface SiteService {
      * @return
      */
     Comments getComment(Integer coid);
+
+    /**
+     * 系统备份
+     * @param bk_type
+     * @param bk_path
+     * @param fmt
+     * @return
+     */
+    BackResponse backup(String bk_type, String bk_path, String fmt) throws Exception;
 }
