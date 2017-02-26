@@ -1,13 +1,5 @@
-/**
- * Theme: Montran Admin Template
- * Author: Coderthemes
- * Module/App: Main Js
- */
-
-
 !function ($) {
     "use strict";
-
     var Sidemenu = function () {
         this.$body = $("body"),
             this.$openLeftBtn = $(".open-left"),
@@ -77,62 +69,6 @@
         $.Sidemenu = new Sidemenu, $.Sidemenu.Constructor = Sidemenu
 
 }(window.jQuery),
-
-
-    function ($) {
-        "use strict";
-
-        var FullScreen = function () {
-            this.$body = $("body"),
-                this.$fullscreenBtn = $("#btn-fullscreen")
-        };
-
-        //turn on full screen
-        // Thanks to http://davidwalsh.name/fullscreen
-        FullScreen.prototype.launchFullscreen = function (element) {
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
-            }
-        },
-            FullScreen.prototype.exitFullscreen = function () {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                }
-            },
-            //toggle screen
-            FullScreen.prototype.toggle_fullscreen = function () {
-                var $this = this;
-                var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;
-                if (fullscreenEnabled) {
-                    if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                        $this.launchFullscreen(document.documentElement);
-                    } else {
-                        $this.exitFullscreen();
-                    }
-                }
-            },
-            //init sidemenu
-            FullScreen.prototype.init = function () {
-                var $this = this;
-                //bind
-                $this.$fullscreenBtn.on('click', function () {
-                    $this.toggle_fullscreen();
-                });
-            },
-            //init FullScreen
-            $.FullScreen = new FullScreen, $.FullScreen.Constructor = FullScreen
-
-    }(window.jQuery),
 
 //portlets
     function ($) {
@@ -242,12 +178,8 @@
                 $.Portlet.init();
                 //init side bar - left
                 $.Sidemenu.init();
-                //init fullscreen
-                $.FullScreen.init();
             },
-
             $.MoltranApp = new MoltranApp, $.MoltranApp.Constructor = MoltranApp
-
     }(window.jQuery),
 
 //initializing main application module
@@ -326,22 +258,6 @@ function resizeitems() {
      }
      }*/
 }
-/*
- function initscrolls(){
- //SLIM SCROLL
- $('.slimscroller').slimscroll({
- height: 'auto',
- size: "5px"
- });
-
- $('.slimscrollleft').slimScroll({
- height: 'auto',
- position: 'right',
- size: "5px",
- color: '#7A868F',
- wheelStep: 5
- });
- }*/
 
 function toggle_slimscroll(item) {
     if ($("#wrapper").hasClass("enlarged")) {
@@ -352,25 +268,15 @@ function toggle_slimscroll(item) {
         $(item).siblings(".slimScrollBar").css("visibility", "visible");
     }
 }
-/*
- var wow = new WOW(
- {
- boxClass: 'wow', // animated element css class (default is wow)
- animateClass: 'animated', // animation css class (default is animated)
- offset: 50, // distance to the element when triggering the animation (default is 0)
- mobile: false        // trigger animations on mobile devices (true is default)
- }
- );
- wow.init();*/
-
 /* === following js will activate the menu in left side bar based on url ==== */
 $(document).ready(function () {
-    $("#sidebar-menu a").each(function () {
-        if (this.href == window.location.href) {
-            $(this).addClass("active");
-            $(this).parent().addClass("active"); // add active to li of the current link
-            $(this).parent().parent().prev().addClass("active"); // add active class to an anchor
-            $(this).parent().parent().prev().click(); // click the item to make it drop
-        }
-    });
+    // $("#sidebar-menu a").each(function () {
+    //     if (this.href == window.location.href) {
+    //         $(this).addClass("active");
+    //         console.log($(this).text());
+    //         $(this).parent().addClass("active"); // add active to li of the current link
+    //         $(this).parent().parent().prev().addClass("active"); // add active class to an anchor
+    //         $(this).parent().parent().prev().click(); // click the item to make it drop
+    //     }
+    // });
 });

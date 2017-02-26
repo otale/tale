@@ -13,6 +13,7 @@ import com.tale.ext.Commons;
 import com.tale.ext.JetTag;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
+import jetbrick.template.JetGlobalContext;
 import jetbrick.template.resolver.GlobalResolver;
 
 import javax.servlet.ServletContext;
@@ -37,6 +38,9 @@ public class WebContext implements BeanProcessor, WebContextListener {
         resolver.registerFunctions(Commons.class);
         resolver.registerFunctions(AdminCommons.class);
         resolver.registerTags(JetTag.class);
+
+        JetGlobalContext context = templateEngine.getGlobalContext();
+        context.set("version", bConfig.config().get("app.version", "v1.0"));
 
         ViewSettings.$().templateEngine(templateEngine);
         if (dbIsOk) {

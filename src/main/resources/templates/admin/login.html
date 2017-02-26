@@ -6,11 +6,7 @@
     <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
     <title>Tale - 用户登录</title>
     <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/static/admin/css/core.css" rel="stylesheet" type="text/css">
-    <link href="/static/admin/css/icons.css" rel="stylesheet" type="text/css">
-    <link href="/static/admin/css/components.css" rel="stylesheet" type="text/css">
-    <link href="/static/admin/css/pages.css" rel="stylesheet" type="text/css">
-    <link href="/static/admin/css/menu.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/style.css?v=${version}" rel="stylesheet" type="text/css">
     <link href="/static/admin/css/responsive.css" rel="stylesheet" type="text/css">
     <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
 
@@ -68,12 +64,10 @@
 
     </div>
 </div>
-
 <!-- Main  -->
 <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
-
 <script type="text/javascript">
     function checkForm() {
         $.post('/admin/login', $("#loginForm").serialize(), function (result) {
