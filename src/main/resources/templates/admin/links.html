@@ -85,18 +85,30 @@
     $('#linkForm').validate({
         submitHandler: function (form) {
             var params = $("#linkForm").serialize();
-            $.post('/admin/links/save', params, function (result) {
-                if (result && result.success) {
-                    $('#linkForm input').val('');
-                    $('#linkForm #sort').val('0');
-                    swal('提示信息', '友链保存成功', 'success');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 2000);
-                } else {
-                    swal("提示消息", result.msg, 'error');
-                }
-            });
+//            $.post('/admin/links/save', params, function (result) {
+//                if (result && result.success) {
+//                    $('#linkForm input').val('');
+//                    $('#linkForm #sort').val('0');
+//                    swal('提示信息', '友链保存成功', 'success');
+//                    setTimeout(function () {
+//                        window.location.reload();
+//                    }, 2000);
+//                } else {
+//                    swal("提示消息", result.msg, 'error');
+//                }
+//            });
+            var tale = new $.tale();
+            tale.post({
+                url: '/admin/links/save',
+                params: params
+            }, function (boolean) {
+                $('#linkForm input').val('');
+                $('#linkForm #sort').val('0');
+                swal('提示信息', '友链保存成功', 'success');
+                setTimeout(function () {
+                    window.location.reload();
+                }, 2000);
+            })
         }
     });
 
@@ -117,7 +129,8 @@
     }
 
     function delLink(mid) {
-        _swal.alert_del({
+        var tale = new $.tale();
+        tale.alert_del({
             text: "确定删除该链接吗？",
             url: "/admin/links/delete",
             parame: {mid: mid}

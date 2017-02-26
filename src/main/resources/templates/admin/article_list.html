@@ -55,7 +55,8 @@
 
 <script type="text/javascript">
     function delPost(cid) {
-        _swal.alert_del({
+        var tale = new $.tale();
+        tale.alert_del({
             text: "确定删除这篇文章吗？",
             url: "/admin/article/delete",
             parame: {cid: cid}

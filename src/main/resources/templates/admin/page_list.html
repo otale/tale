@@ -51,10 +51,11 @@
 
 <script type="text/javascript">
     function delPost(cid) {
-        _swal.alert_del({
-            text:"确定删除这个页面吗？",
-            url:"/admin/page/delete",
-            parame:{cid: cid}
+        var tale = new $.tale();
+        tale.alert_del({
+            text: "确定删除这个页面吗？",
+            url: "/admin/page/delete",
+            parame: {cid: cid}
         })
     }
 
