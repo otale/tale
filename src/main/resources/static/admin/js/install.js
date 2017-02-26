@@ -25,8 +25,12 @@
                 current: '当前位置'
             },
             onStepChanging: function (event, currentIndex, newIndex) {
+                tale.showLoading();
                 $form_container.validate().settings.ignore = ":disabled,:hidden";
                 var isValid = $form_container.valid();
+                if(!isValid){
+                    tale.hideLoading();
+                }
                 if (isValid && currentIndex == 1) {
                     isValid = false;
                     var params = $form_container.serialize();
@@ -38,6 +42,7 @@
                         dataType: 'json',
                         success: function (result) {
                             if (result && result.success) {
+                                tale.showLoading();
                                 $.ajax({
                                     type: 'post',
                                     url: '/install',
@@ -45,6 +50,7 @@
                                     async: false,
                                     dataType: 'json',
                                     success: function (result) {
+                                        tale.hideLoading();
                                         if (result && result.success) {
                                             isValid = true;
                                         } else {
@@ -65,6 +71,9 @@
                 } else {
                     return isValid;
                 }
+            },
+            onStepChanged: function (event, currentIndex) {
+                tale.hideLoading();
             },
             onFinishing: function (event, currentIndex) {
                 $form_container.validate().settings.ignore = ":disabled";
