@@ -17,9 +17,10 @@ public interface CommentsService {
     /**
      * 删除评论，暂时没用
      * @param coid
+     * @param cid
      * @throws Exception
      */
-    void delete(Integer coid) throws Exception;
+    void delete(Integer coid, Integer cid);
 
     /**
      * 获取文章下的评论

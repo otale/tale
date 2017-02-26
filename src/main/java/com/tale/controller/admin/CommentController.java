@@ -12,6 +12,7 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
+import com.tale.dto.Comment;
 import com.tale.exception.TipException;
 import com.tale.model.Comments;
 import com.tale.model.Users;
@@ -50,7 +51,11 @@ public class CommentController extends BaseController {
     @JSON
     public RestResponse delete(@QueryParam Integer coid) {
         try {
-            commentsService.delete(coid);
+            Comments comments = commentsService.byId(coid);
+            if(null == comments){
+                return RestResponse.fail("不存在该评论");
+            }
+            commentsService.delete(coid, comments.getCid());
         } catch (Exception e) {
             String msg = "评论删除失败";
             if (e instanceof TipException) {

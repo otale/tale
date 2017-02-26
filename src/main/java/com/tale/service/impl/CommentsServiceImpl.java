@@ -13,6 +13,7 @@ import com.tale.exception.TipException;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
 import com.tale.service.CommentsService;
+import com.tale.service.ContentsService;
 import com.tale.utils.TaleUtils;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Inject
     private ActiveRecord activeRecord;
+
+    @Inject
+    private ContentsService contentsService;
 
     @Override
     public void saveComment(Comments comments) {
@@ -66,12 +70,19 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public void delete(Integer coid) throws Exception {
+    public void delete(Integer coid, Integer cid){
         if (null == coid) {
             throw new TipException("主键为空");
         }
         try {
             activeRecord.delete(Comments.class, coid);
+            Contents contents = contentsService.getContents(cid+"");
+            if(null != contents && contents.getComments_num() > 0){
+                Contents temp = new Contents();
+                temp.setCid(cid);
+                temp.setComments_num(contents.getComments_num() - 1);
+                contentsService.update(temp);
+            }
         } catch (Exception e) {
             throw e;
         }
