@@ -122,27 +122,11 @@
     });
 
     function delAttach(id) {
-        swal({
-            title: '警告信息',
-            text: "确定删除这个附件吗？",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '确定',
-            cancelButtonText: '取消'
-        }).then(function () {
-            $.post('/admin/attach/delete', {id: id}, function (result) {
-                if (result && result.success) {
-                    swal('提示信息', '删除成功', 'success');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 2000);
-                } else {
-                    swal("提示消息", result.msg, 'error');
-                }
-            });
-        });
+        _swal.alert_del({
+            text: "确定删除该附件吗？",
+            url: "/admin/attach/delete",
+            parame: {id: id}
+        })
     }
 </script>
 </body>

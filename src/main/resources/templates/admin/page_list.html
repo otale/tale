@@ -51,28 +51,13 @@
 
 <script type="text/javascript">
     function delPost(cid) {
-        swal({
-            title: '警告信息',
-            text: "确定删除这个页面吗？",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '确定',
-            cancelButtonText: '取消'
-        }).then(function () {
-            $.post('/admin/page/delete', {cid: cid}, function (result) {
-                if (result && result.success) {
-                    swal('提示信息', '删除成功', 'success');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 2000);
-                } else {
-                    swal("提示消息", result.msg, 'error');
-                }
-            });
-        }).catch(swal.noop);
+        _swal.alert_del({
+            text:"确定删除这个页面吗？",
+            url:"/admin/page/delete",
+            parame:{cid: cid}
+        })
     }
+
 </script>
 
 </body>

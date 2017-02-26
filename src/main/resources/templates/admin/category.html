@@ -97,27 +97,11 @@
 
     $('.del-category').click(function () {
         var mid = $(this).attr('mid');
-        swal({
-            title: '警告信息',
+        _swal.alert_del({
             text: "确定删除该项吗？",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '确定',
-            cancelButtonText: '取消'
-        }).then(function () {
-            $.post('/admin/category/delete', {mid: mid}, function (result) {
-                if (result && result.success) {
-                    swal('提示信息', '删除成功', 'success');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 2000);
-                } else {
-                    swal("提示消息", result.msg, 'error');
-                }
-            });
-        });
+            url: "/admin/category/delete",
+            parame: {mid: mid}
+        })
     });
 
 </script>
