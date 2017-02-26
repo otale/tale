@@ -25,11 +25,11 @@ demo website：https://tale.biezhi.me
 
 ## Interface Preview
 
-![安装1](https://ooo.0o0.ooo/2017/02/25/58b13a81d5f19.png)
+![安装1](https://ooo.0o0.ooo/2017/02/26/58b2c3387b7db.png)
 
-![安装2](https://ooo.0o0.ooo/2017/02/25/58b13a817ebc8.png)
+![安装2](https://ooo.0o0.ooo/2017/02/26/58b2c33878a63.png)
 
-![安装完成](https://ooo.0o0.ooo/2017/02/25/58b13a8142728.png)
+![安装完成](https://ooo.0o0.ooo/2017/02/26/58b2c3387fced.png)
 
 ![后台登录](https://ooo.0o0.ooo/2017/02/25/58b13a82d91e7.png)
 
