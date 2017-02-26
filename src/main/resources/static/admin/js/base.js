@@ -46,15 +46,26 @@ $.tale.prototype.alert_error = function(options){
     swal(option.title || '提示信息', options.text, 'error');
 };
 
-$.tale.prototype.post = function(option, callback){
-    $.post(option.url, option.params, function (result) {
-        if (result && result.success) {
-            callback(true);
-
-        } else {
-            swal("提示消息", result.msg, 'error');
+/**
+ * 全局post函数
+ *
+ * @param options   参数
+ * @param callback  成功后调用的函数
+ */
+$.tale.prototype.post = function(options, callback){
+    $.ajax({
+        type: 'POST',
+        url: options.url,
+        data: options.data || {},
+        async: options.async || false,
+        dataType: 'json',
+        success: function (result) {
+            if (result && result.success) {
+                callback && callback();
+            } else {
+                swal("提示消息", result.msg, 'error');
+            }
         }
-        //return this;
     });
 };
 

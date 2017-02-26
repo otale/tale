@@ -3,6 +3,7 @@
  */
 !function ($) {
     "use strict";
+    var tale = new $.tale();
     var FormWizard = function () {
     };
     //creates form with validation
