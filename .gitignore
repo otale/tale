@@ -10,3 +10,6 @@ target/
 .classpath
 .project
 bin/
+
+# logs file #
+logs/
