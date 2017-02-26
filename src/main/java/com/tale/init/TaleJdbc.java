@@ -10,9 +10,9 @@ import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
@@ -110,7 +110,10 @@ public final class TaleJdbc {
                 Connection con = DriverManager.getConnection(jdbc_prop.getProperty("url"), jdbc_prop.getProperty("username"), jdbc_prop.getProperty("password"));
                 ScriptRunner runner = new ScriptRunner(con, false, true);
                 String cp = TaleJdbc.class.getClassLoader().getResource("").getPath();
-                runner.runScript(new BufferedReader(new FileReader(new File(cp + "schema.sql"))));
+                
+                InputStreamReader isr = new InputStreamReader(new FileInputStream(cp + "schema.sql"), "UTF-8");
+                BufferedReader read = new BufferedReader(isr);
+                runner.runScript(read);
                 con.close();
             } catch (Exception e) {
                 e.printStackTrace();
