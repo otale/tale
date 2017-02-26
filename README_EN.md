@@ -69,6 +69,9 @@ demo website：https://tale.biezhi.me
 
 ## Thanks
 
++ [pkwenda](https://github.com/pkwenda)
 + [typecho](https://github.com/typecho/typecho)
 + [pinghsu](https://github.com/chakhsu/pinghsu)
 + [emoji-java](https://github.com/vdurmont/emoji-java)
++ [emoji-java](https://github.com/vdurmont/emoji-java)
++ [jetbrick-template](https://github.com/subchen/jetbrick-template-2x)
