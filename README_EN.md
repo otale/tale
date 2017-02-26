@@ -10,7 +10,7 @@ demo website：https://tale.biezhi.me
 [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/otale/tale/blob/master/LICENSE)
 [![@biezhi on weibo](https://img.shields.io/badge/weibo-%40biezhi-red.svg?style=flat-square)](http://weibo.com/u/5238733773)
 
-[QuickStart](https://github.com/otale/tale/wiki)&nbsp; | &nbsp;[Contribution](https://github.com/otale/tale/issues/new)&nbsp; | &nbsp;[Donate](donate.md)&nbsp; | &nbsp;[中文](README.md)
+[QuickStart](https://github.com/otale/tale/wiki/QuickStart)&nbsp; | &nbsp;[Contribution](https://github.com/otale/tale/issues/new)&nbsp; | &nbsp;[Donate](donate.md)&nbsp; | &nbsp;[中文](README.md)
 
 ## Feature
 
