@@ -1,5 +1,7 @@
 package com.tale.utils;
 
+import com.blade.kit.StringKit;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -59,12 +61,13 @@ public class ZipUtils {
 
     public static void addFolderToZip(String path, String srcFolder, ZipOutputStream zip) throws Exception {
         File folder = new File(srcFolder);
-
-        for (String fileName : folder.list()) {
-            if (path.equals("")) {
-                addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
-            } else {
-                addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + fileName, zip);
+        if (null != path && folder.isDirectory()) {
+            for (String fileName : folder.list()) {
+                if (path.equals("")) {
+                    addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
+                } else {
+                    addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + fileName, zip);
+                }
             }
         }
     }
