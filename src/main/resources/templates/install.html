@@ -9,7 +9,22 @@
     <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="/static/admin/css/style.min.css" rel="stylesheet" type="text/css">
     <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
-
+    <style>
+        .home-text span{
+            text-shadow: 0 1px 0 #ccc,
+            0 2px 0 #c9c9c9,
+            0 3px 0 #bbb,
+            0 4px 0 #b9b9b9,
+            0 5px 0 #aaa,
+            0 6px 1px rgba(0,0,0,.1),
+            0 0 5px rgba(0,0,0,.1),
+            0 1px 3px rgba(0,0,0,.3),
+            0 3px 5px rgba(0,0,0,.2),
+            0 5px 10px rgba(0,0,0,.25),
+            0 10px 10px rgba(0,0,0,.2),
+            0 20px 20px rgba(0,0,0,.15);
+        }
+    </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -21,12 +36,12 @@
 <body>
 
 <div class="container" style="max-width: 680px;">
-    <section class="home bg-dark">
+    <section class="home bg-dark" style="margin-top: 20px; margin-bottom: 20px;">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 text-center">
                     <div class="home-wrapper">
-                        <h1 class="home-text"><span class="rotate">开始使用Tale写博客吧 :)</span></h1>
+                        <h1 class="home-text"><span class="rotate">开始使用 Tale 写博客吧 :)</span></h1>
                     </div>
                 </div>
             </div>
@@ -47,43 +62,42 @@
                             <section>
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label">* 网站名称</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input class="form-control" name="site_title" type="text" placeholder="请输入网站名称"
                                                required aria-required="true" maxlength="100"/>
                                     </div>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label">* 网站地址</label>
-                                    <div class="col-md-9">
-                                        <input class="form-control" name="site_url" type="text" placeholder="请输入网站地址"
+                                    <div class="col-md-8">
+                                        <input class="form-control" name="site_url" type="text" placeholder="请输入网站地址，未绑定域名则输入http://ip:port"
                                                required aria-required="true"/>
                                     </div>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label">* 管理员账号</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input class="form-control" name="admin_user" type="text" placeholder="请输入管理员账号"
                                                required aria-required="true" maxlength="50"/>
                                     </div>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label">&nbsp;&nbsp;管理员邮箱</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input class="form-control" name="admin_email" type="email"
                                                placeholder="请输入管理员邮箱"/>
                                     </div>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label">* 管理员密码</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input id="password1" name="admin_pwd" type="password" class="form-control"
-                                               required aria-required="true" rangelength="[6,14]"
-                                               placeholder="请输入管理员密码"/>
+                                               required aria-required="true" rangelength="[6,14]" placeholder="请输入6-14位管理员密码"/>
                                     </div>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label">* 确认管理员密码</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input id="password2" type="password" class="form-control" equalTo="#password1"
                                                placeholder="请确认管理员密码"/>
                                     </div>
@@ -94,7 +108,7 @@
 
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label" for="name2">* 数据库地址</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input id="name2" name="db_host" type="text" class="form-control" required
                                                aria-required="true" value="127.0.0.1:3306"
                                                placeholder="请输入数据库地址包含端口，如127.0.0.1:3306"/>
@@ -103,7 +117,7 @@
 
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label" for="name2">* 数据库名</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input name="db_name" type="text" class="form-control" required
                                                aria-required="true" placeholder="请输入数据库名" value="tale"/>
                                     </div>
@@ -111,14 +125,14 @@
 
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label" for="surname2">* 数据库用户</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input id="surname2" name="db_user" type="text" class="form-control" required
                                                aria-required="true" placeholder="请输入数据库用户"/>
                                     </div>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label class="col-md-3 control-label" for="surname2">* 数据库密码</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <input name="db_pass" type="password" class="form-control" required
                                                aria-required="true" placeholder="请输入数据库密码"/>
                                     </div>
