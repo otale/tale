@@ -66,6 +66,9 @@ public class ContentsServiceImpl implements ContentsService {
             throw new TipException("请登录后发布文章");
 
         if (StringKit.isNotBlank(contents.getSlug())) {
+            if(contents.getSlug().length() < 5){
+                throw new TipException("路径太短了");
+            }
             if (!TaleUtils.isPath(contents.getSlug())) throw new TipException("您输入的路径不合法");
 
             int count = activeRecord.count(new Take(Contents.class).eq("type", contents.getType()).eq("slug", contents.getSlug()));

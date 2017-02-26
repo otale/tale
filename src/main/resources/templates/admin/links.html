@@ -1,4 +1,4 @@
-#include('./header.html',{active:'category', title:'友链管理'})
+#include('./header.html',{active:'links', title:'友链管理'})
 <div class="row">
     <div class="col-sm-12">
         <h4 class="page-title">友链管理</h4>
@@ -82,33 +82,24 @@
 
 <script type="text/javascript">
 
+    var tale = new $.tale();
+
     $('#linkForm').validate({
         submitHandler: function (form) {
             var params = $("#linkForm").serialize();
-//            $.post('/admin/links/save', params, function (result) {
-//                if (result && result.success) {
-//                    $('#linkForm input').val('');
-//                    $('#linkForm #sort').val('0');
-//                    swal('提示信息', '友链保存成功', 'success');
-//                    setTimeout(function () {
-//                        window.location.reload();
-//                    }, 2000);
-//                } else {
-//                    swal("提示消息", result.msg, 'error');
-//                }
-//            });
-            var tale = new $.tale();
             tale.post({
-                url: '/admin/links/save',
-                params: params
-            }, function (boolean) {
-                $('#linkForm input').val('');
-                $('#linkForm #sort').val('0');
-                swal('提示信息', '友链保存成功', 'success');
-                setTimeout(function () {
-                    window.location.reload();
-                }, 2000);
-            })
+                url : '/admin/links/save',
+                data: params,
+                success: function (result) {
+                    $('#linkForm input').val('');
+                    $('#linkForm #sort').val('0');
+                    if(result && result.success){
+                        tale.alertOkAndReload('友链保存成功');
+                    } else {
+                        tale.alertError(result.msg || '友链保存失败');
+                    }
+                }
+            });
         }
     });
 
@@ -129,14 +120,23 @@
     }
 
     function delLink(mid) {
-        var tale = new $.tale();
-        tale.alert_del({
-            text: "确定删除该链接吗？",
-            url: "/admin/links/delete",
-            parame: {mid: mid}
-        })
+        tale.alertConfirm({
+            title:'确定删除该链接吗?',
+            then: function () {
+                tale.post({
+                    url : '/admin/links/delete',
+                    data: {mid: mid},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOkAndReload('链接删除成功');
+                        } else {
+                            tale.alertError(result.msg || '链接删除失败');
+                        }
+                    }
+                });
+            }
+        });
     }
-
 </script>
 </body>
 </html>

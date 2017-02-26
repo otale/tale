@@ -1,4 +1,4 @@
-#include('./header.html',{active:'category', title:'文件管理'})
+#include('./header.html',{active:'attach', title:'文件管理'})
 <link href="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
 <style>
     #dropzone {
@@ -98,12 +98,17 @@
 <script src="//cdn.bootcss.com/clipboard.js/1.6.0/clipboard.min.js"></script>
 
 <script type="text/javascript">
+
+    var tale = new $.tale();
+
     $("#dropzone").dropzone({
         url: "/admin/attach/upload",
         init: function () {
             this.on("success", function (file) {
                 console.log(file);
-                window.location.reload();
+                setTimeout(function () {
+                    window.location.reload();
+                }, 200);
             });
         }
     });
@@ -122,12 +127,22 @@
     });
 
     function delAttach(id) {
-        var tale = new $.tale();
-        tale.alert_del({
-            text: "确定删除该附件吗？",
-            url: "/admin/attach/delete",
-            parame: {id: id}
-        })
+        tale.alertConfirm({
+            title:'确定删除该附件吗?',
+            then: function () {
+                tale.post({
+                    url : '/admin/attach/delete',
+                    data: {id: id},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOkAndReload('附件删除成功');
+                        } else {
+                            tale.alertError(result.msg || '附件删除失败');
+                        }
+                    }
+                });
+            }
+        });
     }
 </script>
 </body>

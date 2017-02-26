@@ -69,20 +69,24 @@
 </div>
 #include('./footer.html')
 <script type="text/javascript">
+
+    var tale = new $.tale();
+
     $('#save-category-btn').click(function () {
         var cname = $('#cform #cname').val();
         var mid = $('#cform #mid').val();
         if (cname && cname != '') {
-            $.post('/admin/category/save', {mid: mid, cname: cname}, function (result) {
-                $('#cform #mid').val('');
-                $('#cform #cname').val('');
-                if (result && result.success) {
-                    swal('提示信息', '分类保存成功', 'success');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 2000);
-                } else {
-                    swal("提示消息", result.msg, 'error');
+            tale.post({
+                url : '/admin/category/save',
+                data: {mid: mid, cname: cname},
+                success: function (result) {
+                    $('#cform #mid').val('');
+                    $('#cform #cname').val('');
+                    if(result && result.success){
+                        tale.alertOkAndReload('分类保存成功');
+                    } else {
+                        tale.alertError(result.msg || '分类保存失败');
+                    }
                 }
             });
         }
@@ -97,12 +101,22 @@
 
     $('.del-category').click(function () {
         var mid = $(this).attr('mid');
-        var tale = new $.tale();
-        tale.alert_del({
-            text: "确定删除该项吗？",
-            url: "/admin/category/delete",
-            parame: {mid: mid}
-        })
+        tale.alertConfirm({
+            title:'确定删除该项吗?',
+            then: function () {
+                tale.post({
+                    url : '/admin/category/delete',
+                    data: {mid: mid},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOkAndReload('删除成功');
+                        } else {
+                            tale.alertError(result.msg || '删除失败');
+                        }
+                    }
+                });
+            }
+        });
     });
 
 </script>

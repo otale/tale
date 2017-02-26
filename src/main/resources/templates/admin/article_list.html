@@ -54,13 +54,24 @@
 #include('./footer.html')
 
 <script type="text/javascript">
+    var tale = new $.tale();
     function delPost(cid) {
-        var tale = new $.tale();
-        tale.alert_del({
-            text: "确定删除这篇文章吗？",
-            url: "/admin/article/delete",
-            parame: {cid: cid}
-        })
+        tale.alertConfirm({
+            title:'确定删除该文章吗?',
+            then: function () {
+               tale.post({
+                   url : '/admin/article/delete',
+                   data: {cid: cid},
+                   success: function (result) {
+                       if(result && result.success){
+                           tale.alertOkAndReload('文章删除成功');
+                       } else {
+                           tale.alertError(result.msg || '文章删除失败');
+                       }
+                   }
+               });
+           }
+        });
     }
 </script>
 

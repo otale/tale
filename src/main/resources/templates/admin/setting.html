@@ -137,16 +137,22 @@
 <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
 <script type="text/javascript">
 
+    var tale = new $.tale();
+
     /**
      * 保存全局设置
      */
     function saveSetting() {
         var param = $('#global-form').serialize();
-        $.post('/admin/setting', param, function (result) {
-            if (result && result.success) {
-                swal('提示信息', '保存成功', 'success');
-            } else {
-                swal("提示消息", result.msg, 'error');
+        tale.post({
+            url : '/admin/setting',
+            data: param,
+            success: function (result) {
+                if(result && result.success){
+                    tale.alertOk('设置保存成功');
+                } else {
+                    tale.alertError(result.msg || '设置保存失败');
+                }
             }
         });
     }
@@ -156,11 +162,15 @@
      */
     function saveIndiviSetting() {
         var param = $('#indivi-form').serialize();
-        $.post('/admin/setting', param, function (result) {
-            if (result && result.success) {
-                swal('提示信息', '保存成功', 'success');
-            } else {
-                swal("提示消息", result.msg, 'error');
+        tale.post({
+            url : '/admin/setting',
+            data: param,
+            success: function (result) {
+                if(result && result.success){
+                    tale.alertOk('设置保存成功');
+                } else {
+                    tale.alertError(result.msg || '设置保存失败');
+                }
             }
         });
     }
@@ -188,23 +198,25 @@
             bk_type: type,
             bk_path: $('#backup_dir').val()
         };
-        $.post('/admin/backup', param, function (result) {
-            result = eval(result);
-            if (result && result.success) {
-                if(result.payload && result.payload.attach_path){
-                    swal('备份成功', '您的附件备份在 <mark>'+ result.payload.attach_path +'</mark><br/><br/>' +
-                        '主题备份存储在 <mark>'+ result.payload.theme_path +'</mark>', 'success');
-                    $('#backup_dir').val('');
+        tale.post({
+            url : '/admin/backup',
+            data: param,
+            success: function (result) {
+                if(result && result.success){
+                    if(result.payload && result.payload.attach_path){
+                        swal('备份成功', '您的附件备份在 <mark>'+ result.payload.attach_path +'</mark><br/><br/>' +
+                            '主题备份存储在 <mark>'+ result.payload.theme_path +'</mark>', 'success');
+                        $('#backup_dir').val('');
+                    }
+                    if(result.payload.sql_path){
+                        window.location.href = '/upload/' + result.payload.sql_path;
+                    }
+                } else {
+                    tale.alertError(result.msg || '备份失败');
                 }
-                if(result.payload.sql_path){
-                   window.location.href = '/upload/' + result.payload.sql_path;
-                }
-            } else {
-                swal("提示消息", result.msg, 'error');
             }
         });
     }
-
 
     $('.allow-1').toggles({
         on: true,

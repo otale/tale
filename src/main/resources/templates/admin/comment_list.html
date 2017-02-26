@@ -53,6 +53,7 @@
 
 <script type="text/javascript">
 
+    var tale = new $.tale();
     function reply(coid) {
         swal({
             title: "回复评论",
@@ -64,78 +65,54 @@
             showLoaderOnConfirm: true,
             preConfirm: function (comment) {
                 return new Promise(function (resolve, reject) {
-                    $.ajax({
-                        type: 'post',
-                        url: '/admin/comments',
+                    tale.post({
+                        url : '/admin/comments',
                         data: {coid: coid, content: comment},
-                        async: false,
-                        dataType: 'json',
                         success: function (result) {
-                            if (result && result.success) {
-                                swal({
-                                    type: 'success',
-                                    title: '已回复'
-                                });
+                            if(result && result.success){
+                                tale.alertOk('已回复');
                             } else {
-                                if (result.msg) {
-                                    swal("提示消息", result.msg, 'error');
-                                }
+                                tale.alertError(result.msg || '回复失败');
                             }
                         }
                     });
-//                    setTimeout(function() {
-//                        if (email === 'taken@example.com') {
-//                            reject('This email is already taken.')
-//                        } else {
-//                            resolve()
-//                        }
-//                    }, 2000)
                 })
             },
             allowOutsideClick: false
-        }).then(function (email) {
-            swal({
-                type: 'success',
-                title: 'Ajax request finished!',
-                html: 'Submitted email: ' + email
-            })
         });
     }
 
     function delComment(coid) {
-        var tale = new $.tale();
-        tale.alert_del({
-            text: "确定删除该评论吗？",
-            url: "/admin/comments/delete",
-            parame: {coid: coid}
-        })
+        tale.alertConfirm({
+            title:'确定删除该评论吗?',
+            then: function () {
+                tale.post({
+                    url : '/admin/comments/delete',
+                    data: {coid: coid},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOkAndReload('评论删除成功');
+                        } else {
+                            tale.alertError(result.msg || '评论删除失败');
+                        }
+                    }
+                });
+            }
+        });
     }
 
     function updateStatus(coid, status) {
-        $.ajax({
-            type: 'post',
-            url: '/admin/comments/status',
+        tale.post({
+            url : '/admin/comments/status',
             data: {coid: coid, status: status},
-            async: false,
-            dataType: 'json',
             success: function (result) {
-                if (result && result.success) {
-                    swal({
-                        type: 'success',
-                        title: '设置成功'
-                    });
+                if(result && result.success){
+                    tale.alertOkAndReload('评论状态设置成功');
                 } else {
-                    if (result.msg) {
-                        swal("提示消息", result.msg, 'error');
-                    }
+                    tale.alertError(result.msg || '评论设置失败');
                 }
             }
         });
-        var tale = $.tale();
-        tale.ajax({
-            url:'/admin/comments/status',
-            params:params
-        })
     }
 </script>
 

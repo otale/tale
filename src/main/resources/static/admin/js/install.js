@@ -35,36 +35,27 @@
                 if (isValid && currentIndex == 1) {
                     isValid = false;
                     var params = $form_container.serialize();
-                    $.ajax({
-                        type: 'post',
+                    tale.post({
                         url: '/install/conn_test',
                         data: params,
-                        async: false,
-                        dataType: 'json',
                         success: function (result) {
                             if (result && result.success) {
                                 tale.showLoading();
-                                $.ajax({
-                                    type: 'post',
+                                tale.post({
                                     url: '/install',
                                     data: params,
-                                    async: false,
-                                    dataType: 'json',
                                     success: function (result) {
-                                        tale.hideLoading();
                                         if (result && result.success) {
                                             isValid = true;
                                         } else {
                                             if (result.msg) {
-                                                swal("提示消息", result.msg, 'error');
+                                                tale.alertError(result.msg || '安装失败');
                                             }
                                         }
                                     }
                                 });
                             } else {
-                                if (result.msg) {
-                                    swal("提示消息", result.msg, 'error');
-                                }
+                                tale.alertError(result.msg || '测试连接失败');
                             }
                         }
                     });
@@ -90,6 +81,4 @@
     },
         //init
         $.FormWizard = new FormWizard, $.FormWizard.Constructor = FormWizard
-}(window.jQuery),
-
-    $.FormWizard.init();
+}(window.jQuery), $.FormWizard.init();

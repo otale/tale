@@ -52,7 +52,8 @@
 <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
 <script src="//cdn.bootcss.com/jquery-validate/1.15.1/jquery.validate.min.js"></script>
 <script src="//cdn.bootcss.com/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
-<script>
+<script type="text/javascript">
+    var tale = new $.tale();
     // validate the comment form when it is submitted
     $('#articleForm').validate({
         submitHandler: function (form) {
@@ -60,14 +61,23 @@
             $("#articleForm #categories").val($('#multiple-sel').val());
             var params = $("#articleForm").serialize();
             var url = $('#articleForm #cid').val() != '' ? '/admin/page/modify' : '/admin/page/publish';
-            $.post(url, params, function (result) {
-                if (result && result.success) {
-                    swal('提示信息', '页面保存成功', 'success');
-                    setTimeout(function () {
-                        window.location.href = '/admin/page';
-                    }, 2000);
-                } else {
-                    swal("提示消息", result.msg, 'error');
+
+            tale.post({
+                url:url,
+                data:params,
+                success: function (result) {
+                    if (result && result.success) {
+                        tale.alertOk({
+                            text:'页面保存成功',
+                            then: function () {
+                                setTimeout(function () {
+                                    window.location.href = '/admin/page';
+                                }, 500);
+                            }
+                        });
+                    } else {
+                        tale.alertError(result.msg || '页面文章失败');
+                    }
                 }
             });
         }

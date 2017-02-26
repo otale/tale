@@ -20,6 +20,8 @@ $(".select2").select2({
     width: '100%'
 });
 
+var tale = new $.tale();
+
 /**
  * 保存文章
  * @param status
@@ -28,11 +30,11 @@ function subArticle(status) {
     var title = $('#articleForm input[name=title]').val();
     var content = $('#text').val();
     if (title == '') {
-        swal('提示信息', '请输入文章标题', 'warning');
+        tale.alertWarn('请输入文章标题');
         return;
     }
     if (content == '') {
-        swal('提示信息', '请输入文章内容', 'warning');
+        tale.alertWarn('请输入文章内容');
         return;
     }
     $('#content-editor').val(content);
@@ -40,19 +42,22 @@ function subArticle(status) {
     $("#articleForm #categories").val($('#multiple-sel').val());
     var params = $("#articleForm").serialize();
     var url = $('#articleForm #cid').val() != '' ? '/admin/article/modify' : '/admin/article/publish';
-    $.post(url, params, function (result) {
-        if (result && result.success) {
-            swal({
-                title: "提示信息",
-                text: "文章保存成功",
-                timer: 2000,
-                type: 'success'
-            });
-            setTimeout(function () {
-                window.location.href = '/admin/article';
-            }, 2000);
-        } else {
-            swal("提示消息", result.msg, 'error');
+    tale.post({
+        url:url,
+        data:params,
+        success: function (result) {
+            if (result && result.success) {
+                tale.alertOk({
+                    text:'文章保存成功',
+                    then: function () {
+                        setTimeout(function () {
+                            window.location.href = '/admin/article';
+                        }, 500);
+                    }
+                });
+            } else {
+                tale.alertError(result.msg || '保存文章失败');
+            }
         }
     });
 }

@@ -1,4 +1,4 @@
-#include('./header.html',{active:'article', title:'页面管理'})
+#include('./header.html',{active:'page', title:'页面管理'})
 <div class="row">
     <div class="col-sm-12">
         <h4 class="page-title">文章管理</h4>
@@ -50,16 +50,25 @@
 #include('./footer.html')
 
 <script type="text/javascript">
+    var tale = new $.tale();
     function delPost(cid) {
-        var tale = new $.tale();
-        tale.alert_del({
-            text: "确定删除这个页面吗？",
-            url: "/admin/page/delete",
-            parame: {cid: cid}
-        })
+        tale.alertConfirm({
+            title:'确定删除这个页面吗?',
+            then: function () {
+                tale.post({
+                    url : '/admin/page/delete',
+                    data: {cid: cid},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOkAndReload('页面删除成功');
+                        } else {
+                            tale.alertError(result.msg || '页面删除失败');
+                        }
+                    }
+                });
+            }
+        });
     }
-
 </script>
-
 </body>
 </html>

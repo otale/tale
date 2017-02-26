@@ -85,16 +85,22 @@
 <script src="//cdn.bootcss.com/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
 <script type="text/javascript">
 
+    var tale = new $.tale();
+
     /**
      * 保存个人信息
      */
     function saveSetting() {
         var param = $('#user-form').serialize();
-        $.post('/admin/profile', param, function (result) {
-            if (result && result.success) {
-                swal('提示信息', '保存成功', 'success');
-            } else {
-                swal("提示消息", result.msg, 'error');
+        tale.post({
+            url : '/admin/profile',
+            data: param,
+            success: function (result) {
+                if(result && result.success){
+                    tale.alertOk('保存成功');
+                } else {
+                    tale.alertError(result.msg || '保存失败');
+                }
             }
         });
     }
@@ -102,11 +108,15 @@
     $('#pwd-form').validate({
         submitHandler: function (form) {
             var params = $("#pwd-form").serialize();
-            $.post('/admin/password', params, function (result) {
-                if (result && result.success) {
-                    swal('提示信息', '密码修改成功', 'success');
-                } else {
-                    swal("提示消息", result.msg, 'error');
+            tale.post({
+                url : '/admin/password',
+                data: params,
+                success: function (result) {
+                    if(result && result.success){
+                        tale.alertOk('密码修改成功');
+                    } else {
+                        tale.alertError(result.msg || '密码修改失败');
+                    }
                 }
             });
         }
