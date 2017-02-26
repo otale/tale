@@ -14,4 +14,6 @@ public interface Types {
     String LINK = "link";
     String IMAGE = "image";
     String FILE = "file";
+    String CSRF_TOKEN = "csrf_token";
+    String COMMENTS_FREQUENCY = "comments:frequency";
 }

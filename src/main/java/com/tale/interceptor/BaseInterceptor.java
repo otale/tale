@@ -2,13 +2,16 @@ package com.tale.interceptor;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.IPKit;
+import com.blade.kit.UUID;
 import com.blade.mvc.annotation.Intercept;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.interceptor.Interceptor;
+import com.tale.dto.Types;
 import com.tale.init.TaleConst;
 import com.tale.model.Users;
 import com.tale.service.UsersService;
+import com.tale.utils.MapCache;
 import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +23,8 @@ public class BaseInterceptor implements Interceptor {
 
     @Inject
     private UsersService usersService;
+
+    private MapCache cache = MapCache.single();
 
     @Override
     public boolean before(Request request, Response response) {
@@ -48,6 +53,14 @@ public class BaseInterceptor implements Interceptor {
                 response.go("/admin/login");
                 return false;
             }
+        }
+//        String url = request.url();
+        String method = request.method();
+        if(method.equals("GET")){
+            String csrf_token = UUID.UU64();
+            // 默认存储30分钟
+            cache.hset(Types.CSRF_TOKEN, csrf_token, uri, TaleConst.BCONF.getInt("app.csrf-token-timeout", 30) * 60);
+            request.attribute("_csrf_token", csrf_token);
         }
         return true;
     }
