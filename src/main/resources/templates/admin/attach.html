@@ -122,7 +122,8 @@
     });
 
     function delAttach(id) {
-        _swal.alert_del({
+        var tale = new $.tale();
+        tale.alert_del({
             text: "确定删除该附件吗？",
             url: "/admin/attach/delete",
             parame: {id: id}

@@ -103,7 +103,8 @@
     }
 
     function delComment(coid) {
-        _swal.alert_del({
+        var tale = new $.tale();
+        tale.alert_del({
             text: "确定删除该评论吗？",
             url: "/admin/comments/delete",
             parame: {coid: coid}
@@ -130,6 +131,11 @@
                 }
             }
         });
+        var tale = $.tale();
+        tale.ajax({
+            url:'/admin/comments/status',
+            params:params
+        })
     }
 </script>
 
