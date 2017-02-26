@@ -161,6 +161,9 @@ public class SiteServiceImpl implements SiteService {
         if (bk_type.equals("db")) {
 
             String bkAttachDir = AttachController.CLASSPATH + "upload/";
+            if (!FileKit.isDirectory(bkAttachDir)) {
+               FileKit.createDir(bkAttachDir,false);
+            }
             String sqlFileName = "tale_" + DateKit.dateFormat(new Date(), fmt) + "_" + StringKit.getRandomNumber(5) + ".sql";
             String zipFile = sqlFileName.replace(".sql", ".zip");
 
