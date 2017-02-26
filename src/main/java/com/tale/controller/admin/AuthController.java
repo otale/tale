@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 登录，退出
  * Created by biezhi on 2017/2/21.
  */
 @Controller("admin")
@@ -59,10 +60,10 @@ public class AuthController extends BaseController {
             logService.save(LogActions.LOGIN, null, request.address(), user.getUid());
         } catch (Exception e) {
             error_count = null == error_count ? 1 : error_count + 1;
-            cache.set("login_error_count", error_count, 10 * 60);
             if(null != error_count && error_count > 3){
                 return RestResponse.fail("您输入密码已经错误超过3次，请10分钟后尝试");
             }
+            cache.set("login_error_count", error_count, 10 * 60);
             String msg = "登录失败";
             if (e instanceof TipException) {
                 msg = e.getMessage();
