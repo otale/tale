@@ -1,6 +1,7 @@
 package com.tale.interceptor;
 
 import com.blade.ioc.annotation.Inject;
+import com.blade.kit.IPKit;
 import com.blade.mvc.annotation.Intercept;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
@@ -26,7 +27,7 @@ public class BaseInterceptor implements Interceptor {
         String uri = request.uri();
 
         LOGGE.info("UserAgent: {}", request.userAgent());
-        LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, request.address());
+        LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, IPKit.getIpAddrByRequest(request.raw()));
 
         if (!TaleConst.INSTALL && !uri.startsWith("/install")) {
             response.go("/install");
