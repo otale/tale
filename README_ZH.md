@@ -12,7 +12,7 @@
 [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/otale/tale/blob/master/LICENSE)
 [![@biezhi on weibo](https://img.shields.io/badge/weibo-%40biezhi-red.svg?style=flat-square)](http://weibo.com/u/5238733773)
 
-[开始使用](https://github.com/otale/tale/wiki)&nbsp; | &nbsp;[参与贡献](https://github.com/otale/tale/issues/new)&nbsp; | &nbsp;[捐赠](donate.md)&nbsp; | &nbsp;[视频教程](donate.md)&nbsp; | &nbsp;[English](README_EN.md)
+[开始使用](https://github.com/otale/tale/wiki)&nbsp; | &nbsp;[参与贡献](https://github.com/otale/tale/issues/new)&nbsp; | &nbsp;[捐赠](donate.md)&nbsp; | &nbsp;[视频教程](donate.md)&nbsp; | &nbsp;[English](README.md)
 
 ## 特性
 
