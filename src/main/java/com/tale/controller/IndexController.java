@@ -319,8 +319,8 @@ public class IndexController extends BaseController {
             return RestResponse.fail("请输入正确的URL格式");
         }
 
-        if (text.length() > 2000) {
-            return RestResponse.fail("请输入2000个字符以内的评论");
+        if (text.length() > 200) {
+            return RestResponse.fail("请输入200个字符以内的评论");
         }
 
         String val = IPKit.getIpAddrByRequest(request.raw()) + ":" + cid;
