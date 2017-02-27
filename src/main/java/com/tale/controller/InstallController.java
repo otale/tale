@@ -98,6 +98,9 @@ public class InstallController extends BaseController {
             if (site_url.endsWith("/")) {
                 site_url = site_url.substring(0, site_url.length() - 1);
             }
+            if (!site_url.startsWith("http")) {
+                site_url = "http://".concat(site_url);
+            }
             optionsService.saveOption("site_title", site_title);
             optionsService.saveOption("site_url", site_url);
 
