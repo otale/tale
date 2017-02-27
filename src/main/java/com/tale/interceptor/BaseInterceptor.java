@@ -2,6 +2,7 @@ package com.tale.interceptor;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.IPKit;
+import com.blade.kit.StringKit;
 import com.blade.kit.UUID;
 import com.blade.mvc.annotation.Intercept;
 import com.blade.mvc.http.Request;
@@ -54,7 +55,6 @@ public class BaseInterceptor implements Interceptor {
                 return false;
             }
         }
-//        String url = request.url();
         String method = request.method();
         if(method.equals("GET")){
             String csrf_token = UUID.UU64();
@@ -68,6 +68,11 @@ public class BaseInterceptor implements Interceptor {
 
     @Override
     public boolean after(Request request, Response response) {
+        String _csrf_token = request.query("_csrf_token");
+        if(StringKit.isNotBlank(_csrf_token)){
+            // 移除本次token
+            cache.hdel(Types.CSRF_TOKEN, _csrf_token);
+        }
         return true;
     }
 
