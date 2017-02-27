@@ -29,11 +29,14 @@
 
 ## 界面预览
 
-![后台仪表盘](https://ooo.0o0.ooo/2017/02/25/58b13a8416e6d.png)
-
-![首页](https://ooo.0o0.ooo/2017/02/25/58b13ac013c10.png)
-
-[更多](https://github.com/otale/tale/wiki/Preview)
+![tale_022.png](https://ooo.0o0.ooo/2017/02/28/58b4686f37836.png)
+![tale_01.png](https://ooo.0o0.ooo/2017/02/28/58b4687641066.png)
+![tale_06.png](https://ooo.0o0.ooo/2017/02/28/58b46862ec24e.png)
+![tale_04.png](https://ooo.0o0.ooo/2017/02/28/58b4686384fb4.png)
+![tale_03.png](https://ooo.0o0.ooo/2017/02/28/58b4686638460.png)
+![tale_08.png](https://ooo.0o0.ooo/2017/02/28/58b46866c5898.png)
+![tale_07.png](https://ooo.0o0.ooo/2017/02/28/58b46868b1a67.png)
+![tale_05.png](https://ooo.0o0.ooo/2017/02/28/58b46869bff5b.png)
 
 ## 开源协议
 
