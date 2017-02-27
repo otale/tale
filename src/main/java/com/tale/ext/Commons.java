@@ -1,10 +1,7 @@
 package com.tale.ext;
 
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.CollectionKit;
-import com.blade.kit.DateKit;
-import com.blade.kit.StringKit;
-import com.blade.kit.Tools;
+import com.blade.kit.*;
 import com.tale.controller.BaseController;
 import com.tale.dto.Comment;
 import com.tale.dto.MetaDto;
@@ -20,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +31,8 @@ public final class Commons {
     private static SiteService siteService;
 
     private static final List EMPTY = new ArrayList(0);
+
+    private static final Random rand = new Random();
 
     public static void setSiteService(SiteService ss) {
         siteService = ss;
@@ -282,6 +282,16 @@ public final class Commons {
         int size = cid % 20;
         size = size == 0 ? 1 : size;
         return "/static/user/img/rand/" + size + ".jpg";
+    }
+
+    /**
+     * 获取随机数
+     * @param max
+     * @param str
+     * @return
+     */
+    public static String random(int max, String str){
+        return UUID.random(1, max) + str;
     }
 
     /**
