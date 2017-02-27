@@ -2,8 +2,13 @@
  * Created by biezhi on 2017/2/23.
  */
 !function ($) {
+
     "use strict";
     var tale = new $.tale();
+
+    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+    var regex = new RegExp(expression);
+
     var FormWizard = function () {
     };
     //creates form with validation
@@ -28,6 +33,9 @@
             onStepChanging: function (event, currentIndex, newIndex) {
                 tale.showLoading();
                 $form_container.validate().settings.ignore = ":disabled,:hidden";
+                if(currentIndex == 1 && newIndex == 0){
+                    return true;
+                }
                 var isValid = $form_container.valid();
                 if(!isValid){
                     tale.hideLoading();
