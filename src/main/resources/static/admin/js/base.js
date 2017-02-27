@@ -3,36 +3,16 @@
  */
 $.extend({
     tale: function () {
+    },
+    constant:function(){ //常量池
+        return{
+            ///-------文件常量----------
+            MAX_FILE_SIZE:50,//文件最大???MB
+            MAX_FILES:10,//一次队列最大文件数
+        }
     }
-});
 
-/**
- * tale alert删除  // todo: 减少耦合度,链式操作替代  2017-02-27
- * @param options
- */
-// $.tale.prototype.alert_del = function (options) {
-//     swal({
-//         title: options.title || '警告信息',
-//         text: options.text || "确定删除吗？",
-//         type: 'warning',
-//         showCancelButton: true,
-//         confirmButtonColor: '#3085d6',
-//         cancelButtonColor: '#d33',
-//         confirmButtonText: '确定',
-//         cancelButtonText: '取消'
-//     }).then(function () {
-//         $.post(options.url, options.parame, function (result) {
-//             if (result && result.success) {
-//                 swal('提示信息', '删除成功', 'success');
-//                 setTimeout(function () {
-//                     window.location.reload();
-//                 }, 2000);
-//             } else {
-//                 swal("提示消息", result.msg, 'error');
-//             }
-//         });
-//     }).catch(swal.noop);
-// };
+});
 
 /**
  * 成功弹框
@@ -159,3 +139,4 @@ $.tale.prototype.showLoading = function () {
 $.tale.prototype.hideLoading = function () {
     $('#tale-loading') && $('#tale-loading').hide();
 };
+

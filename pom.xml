@@ -15,7 +15,7 @@
         <blade.version>1.7.1-alpha</blade.version>
         <blade-jdbc.version>0.1.5</blade-jdbc.version>
         <blade-tpl.verion>0.0.9</blade-tpl.verion>
-        <blade-embed-jetty.version>0.1.1</blade-embed-jetty.version>
+        <blade-embed-jetty.version>0.1.2</blade-embed-jetty.version>
         <mysql.version>5.1.38</mysql.version>
     </properties>
 
