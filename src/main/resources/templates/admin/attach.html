@@ -4,30 +4,36 @@
     #dropzone {
         margin-bottom: 3rem;
     }
+
     .dropzone {
         border: 2px dashed #0087F7;
         border-radius: 5px;
         background: white;
     }
+
     .dropzone .dz-message {
         font-weight: 400;
     }
+
     .dropzone .dz-message .note {
         font-size: 0.8em;
         font-weight: 200;
         display: block;
         margin-top: 1.4rem;
     }
+
     .attach-img {
         width: 100px;
         height: 100px;
         border-radius: 10px;
         box-shadow: 0px 0px 8px #333;
     }
+
     .attach-text {
         font-size: 12px;
         font-weight: 300;
     }
+
     .attach-img:hover {
         background-color: #f9f9f9;
     }
@@ -103,15 +109,23 @@
 
     $("#dropzone").dropzone({
         url: "/admin/attach/upload",
-        init: function () {
-            this.on("success", function (file) {
-                console.log(file);
-                setTimeout(function () {
-                    window.location.reload();
-                }, 200);
+        filesizeBase:1024,//定义字节算法 默认1000
+        maxFiles: $.constant().MAX_FILES,//最大文件数量
+        maxFilesize: $.constant().MAX_FILE_SIZE ,//MB
+//        acceptedFiles: ".js,.obj,.dae" //限制文件类型  image/*,application/pdf,.psd,.obj
+        fallback:function(){
+            tale.alertOkAndReload('暂不支持当前浏览器');
+        },
+        dictFileTooBig:'您的文件超过'+ $.constant().MAX_FILE_SIZE+'MB!',
+        dictInvalidInputType:'不支持您上传的类型',
+        dictMaxFilesExceeded:'您的文件超过'+ $.constant().MAX_FILES+'个!',
+        init: function() {
+            this.on("addedfile", function(file) {
+                tale.alertError('暂不支持您的浏览器长传!');
             });
         }
     });
+
 
     var clipboard = new Clipboard('button.copy', {
         text: function (trigger) {
@@ -128,13 +142,13 @@
 
     function delAttach(id) {
         tale.alertConfirm({
-            title:'确定删除该附件吗?',
+            title: '确定删除该附件吗?',
             then: function () {
                 tale.post({
-                    url : '/admin/attach/delete',
+                    url: '/admin/attach/delete',
                     data: {id: id},
                     success: function (result) {
-                        if(result && result.success){
+                        if (result && result.success) {
                             tale.alertOkAndReload('附件删除成功');
                         } else {
                             tale.alertError(result.msg || '附件删除失败');
