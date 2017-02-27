@@ -4,13 +4,11 @@
 
 ## 支付宝
 
-![](https://ooo.0o0.ooo/2017/02/23/58ae89e27ffb8.png
-)
+![](https://ooo.0o0.ooo/2017/02/27/58b3ff7af06db.png)
 
 ## 微信支付
 
-![](https://ooo.0o0.ooo/2017/02/25/58b142193bed3.png
-)
+![](https://ooo.0o0.ooo/2017/02/27/58b4013b2769d.png)
 
 
 ## 捐赠列表
