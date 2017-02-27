@@ -113,7 +113,11 @@ public class CommentController extends BaseController {
         comments.setIp(request.address());
         comments.setUrl(users.getHome_url());
         comments.setContent(content);
-        comments.setMail(users.getEmail());
+        if(StringKit.isNotBlank(users.getEmail())){
+            comments.setMail(users.getEmail());
+        } else {
+            comments.setMail("support@tale.me");
+        }
         comments.setParent(coid);
         try {
             commentsService.saveComment(comments);
