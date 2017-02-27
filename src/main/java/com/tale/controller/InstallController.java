@@ -48,7 +48,7 @@ public class InstallController extends BaseController {
         boolean existInstall = FileKit.exist(webRoot + "install.lock");
         if (existInstall) {
             if("1".equals(TaleConst.OPTIONS.get("allow_install", "0"))){
-                request.attribute("is_install", true);
+                request.attribute("is_install", false);
             } else {
                 request.attribute("is_install", true);
             }
