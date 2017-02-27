@@ -2,8 +2,8 @@
 
 1. 开发环境快速开始
     - [IDEA](http://v.youku.com/v_show/id_XMjUzMzAwODE0OA==.html)
-    - [Eclipse / 审核中]()
-2. [部署到服务器]()
+    - [Eclipse](https://v.qq.com/x/page/x0379l5ttpq.html)
+2. [部署到服务器](http://v.youku.com/v_show/id_XMjUzMzExNzA0OA==.html)
 3. 常见问题解决
 
 ## 视频中的脚本
