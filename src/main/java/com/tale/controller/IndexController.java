@@ -104,6 +104,7 @@ public class IndexController extends BaseController {
         if (p > 1) {
             this.title(request, "第" + p + "页");
         }
+        request.attribute("is_home", true);
         return this.render("index");
     }
 
@@ -162,6 +163,7 @@ public class IndexController extends BaseController {
         request.attribute("meta", metaDto);
         request.attribute("type", "分类");
         request.attribute("keyword", keyword);
+        request.attribute("is_category", true);
 
         return this.render("page-category");
     }
@@ -200,6 +202,7 @@ public class IndexController extends BaseController {
         request.attribute("meta", metaDto);
         request.attribute("type", "标签");
         request.attribute("keyword", name);
+        request.attribute("is_tag", true);
 
         return this.render("page-category");
     }
@@ -239,6 +242,7 @@ public class IndexController extends BaseController {
     public String archives(Request request) {
         List<Archive> archives = siteService.getArchives();
         request.attribute("archives", archives);
+        request.attribute("is_archive", true);
         return this.render("archives");
     }
 

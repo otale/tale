@@ -6,6 +6,7 @@ import com.tale.dto.Types;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
+import com.tale.model.Metas;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import jetbrick.template.runtime.InterpretContext;
@@ -33,6 +34,46 @@ public final class Theme {
         siteService = ss;
     }
 
+    /**
+     * 获取header keywords
+     * @return
+     */
+    public static String meta_keywords(){
+        InterpretContext ctx = InterpretContext.current();
+        Object value = ctx.getValueStack().getValue("keywords");
+        if(null != value){
+            return value.toString();
+        }
+        return Commons.site_option("site_keywords");
+    }
+
+    /**
+     * 获取header description
+     * @return
+     */
+    public static String meta_description(){
+        InterpretContext ctx = InterpretContext.current();
+        Object value = ctx.getValueStack().getValue("description");
+        if(null != value){
+            return value.toString();
+        }
+        return Commons.site_option("site_description");
+    }
+
+    /**
+     * header title
+     * @return
+     */
+    public static String head_title(){
+        InterpretContext ctx = InterpretContext.current();
+        Object value = ctx.getValueStack().getValue("title");
+
+        String p = "首页";
+        if(null != value){
+            p = value.toString();
+        }
+        return p + " - " + Commons.site_option("site_title", "Tale 博客");
+    }
     /**
      * 返回文章链接地址
      *
@@ -90,16 +131,6 @@ public final class Theme {
             return Commons.fmtdate(contents.getModified(), fmt);
         }
         return "";
-    }
-
-    /**
-     * 返回文章评论数
-     *
-     * @return
-     */
-    public static Integer comments_num() {
-        Contents contents = current_article();
-        return null != contents ? contents.getComments_num() : 0;
     }
 
     /**
@@ -401,7 +432,36 @@ public final class Theme {
      */
     public static String title() {
         Contents contents = current_article();
-        return null != contents ? contents.getTitle() : "";
+        return null != contents ? contents.getTitle() : Commons.site_title();
+    }
+
+    /**
+     * 返回所有友链
+     * @return
+     */
+    public static List<MetaDto> links(){
+        List<MetaDto> links = siteService.getMetas(Types.RECENT_META, Types.LINK, TaleConst.MAX_POSTS);
+        return links;
+    }
+
+    /**
+     * 返回社交账号链接
+     * @param socialtype
+     * @return
+     */
+    public static String social_link(String socialtype) {
+        String id = Commons.site_option("social_" + socialtype);
+        switch (socialtype){
+            case "github":
+                return "https://github.com/" + id;
+            case "weibo":
+                return "http://weibo.com/" + id;
+            case "twitter":
+                return "https://twitter.com/" + id;
+            case "zhihu":
+                return "https://www.zhihu.com/people/" + id;
+        }
+        return "";
     }
 
     /**
@@ -417,4 +477,20 @@ public final class Theme {
         }
         return null;
     }
+
+    /**
+     * 显示评论
+     *
+     * @param noComment 评论为0的时候显示的文本
+     * @param value     评论组装文本
+     * @return
+     */
+    public static String comments_num(String noComment, String value){
+        Contents contents = current_article();
+        if(null == contents){
+            return noComment;
+        }
+        return contents.getComments_num() > 0 ? String.format(value, contents.getComments_num()) : noComment;
+    }
+
 }

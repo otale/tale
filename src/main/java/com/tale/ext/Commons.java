@@ -95,6 +95,13 @@ public final class Commons {
     }
 
     /**
+     * 返回站点设置的描述信息
+     * @return
+     */
+    public static String site_description(){
+        return site_option("site_description");
+    }
+    /**
      * 截取字符串
      *
      * @param str

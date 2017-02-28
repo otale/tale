@@ -6,7 +6,7 @@
         </h1>
         <div class="post-data">
             <time datetime="${created('yyyy-MM-dd')}" itemprop="datePublished">发布于 ${created('yyyy-MM-dd')}</time>
-            / ${show_categories()} / <a href="#comments">${comments_num()} 条评论</a> /
+            / ${show_categories()} / <a href="#comments">${comments_num('没有评论', '%d 条评论')}</a> /
             ${hits()}浏览
         </div>
     </div>

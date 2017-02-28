@@ -11,7 +11,6 @@ import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.http.Response;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.BackResponse;
@@ -31,6 +30,8 @@ import com.tale.service.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,16 @@ public class IndexController extends BaseController {
     public String setting(Request request) {
         Map<String, String> options = optionsService.getOptions();
         request.attribute("options", options);
+        // 读取主题
+        String themesDir = AttachController.CLASSPATH + "templates/themes";
+        File[] themesFile = new File(themesDir).listFiles();
+        List<String> themems = new ArrayList<>(themesFile.length);
+        for(File f : themesFile){
+            if(f.isDirectory()){
+                themems.add(f.getName());
+            }
+        }
+        request.attribute("themes", themems);
         return "admin/setting";
     }
 
