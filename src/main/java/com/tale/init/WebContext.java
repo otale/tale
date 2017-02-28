@@ -47,7 +47,6 @@ public class WebContext implements BeanProcessor, WebContextListener {
             if(f.isDirectory() && FileKit.exist(f.getPath() + "/macros.html")){
                 templateEngine.addConfig("jetx.import.macros", "/themes/" + f.getName() + "/macros.html");
             }
-            bConfig.addStatic(new String[]{"/templates/themes/"+ f.getName() +"/static"});
         }
         GlobalResolver resolver = templateEngine.getGlobalResolver();
         resolver.registerFunctions(Commons.class);
