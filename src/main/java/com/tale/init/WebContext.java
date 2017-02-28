@@ -11,6 +11,7 @@ import com.blade.mvc.view.template.JetbrickTemplateEngine;
 import com.tale.ext.AdminCommons;
 import com.tale.ext.Commons;
 import com.tale.ext.JetTag;
+import com.tale.ext.Theme;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import jetbrick.template.JetGlobalContext;
@@ -36,6 +37,7 @@ public class WebContext implements BeanProcessor, WebContextListener {
         templateEngine.addConfig("jetx.import.macros", "/comm/macros.html");
         GlobalResolver resolver = templateEngine.getGlobalResolver();
         resolver.registerFunctions(Commons.class);
+        resolver.registerFunctions(Theme.class);
         resolver.registerFunctions(AdminCommons.class);
         resolver.registerTags(JetTag.class);
 

@@ -2,21 +2,21 @@
 <article class="main-content post-page" itemscope itemtype="http://schema.org/Article">
     <div class="post-header">
         <h1 class="post-title" itemprop="name headline">
-            <a href="${permalink(article)}">${article.title}</a>
+            <a href="${permalink()}">${title()}</a>
         </h1>
         <div class="post-data">
-            <time datetime="${fmtdate(article.created)}" itemprop="datePublished">发布于 ${fmtdate(article.created)}</time>
-            / ${show_categories(article.categories)} / <a href="#comments">${article.comments_num ?! 0} 条评论</a> /
-            ${article.hits}浏览
+            <time datetime="${created('yyyy-MM-dd')}" itemprop="datePublished">发布于 ${created('yyyy-MM-dd')}</time>
+            / ${show_categories()} / <a href="#comments">${comments_num()} 条评论</a> /
+            ${hits()}浏览
         </div>
     </div>
     <div id="post-content" class="post-content" itemprop="articleBody">
-        <p class="post-tags">${show_tags(article.tags)}</p>
-        ${article(article.content)}
+        <p class="post-tags">${show_tags()}</p>
+        ${show_content()}
         <p class="post-info">
             本文由 <a href="">biezhi</a> 创作，采用 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank"
                                                rel="external nofollow">知识共享署名4.0</a> 国际许可协议进行许可<br>本站文章除注明转载/出处外，均为本站原创或翻译，转载前请务必署名<br>最后编辑时间为:
-            ${fmtdate(article.modified, 'yyyy/MM/dd HH:mm')}
+            ${modified('yyyy/MM/dd HH:mm')}
         </p>
     </div>
 </article>

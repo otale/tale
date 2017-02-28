@@ -16,12 +16,12 @@
                     <div class="post-list-item-container ">
                         <div class="item-label ">
                             <div class="item-title">
-                                <a href="${permalink(article)}">${article.title}</a>
+                                <a href="${permalink()}">${title()}</a>
                             </div>
                             <div class="item-meta clearfix">
-                                <div class="item-meta-ico ${show_icon(article.cid)}"
+                                <div class="item-meta-ico ${show_icon()}"
                                      style="background: url(/static/user/img/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
-                                <div class="item-meta-date">发布于 ${fmtdate(article.created)}</div>
+                                <div class="item-meta-date">发布于 ${created('yyyy-MM-dd')}</div>
                             </div>
                         </div>
                     </div>
