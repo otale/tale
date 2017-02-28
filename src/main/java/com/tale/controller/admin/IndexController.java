@@ -17,6 +17,7 @@ import com.tale.controller.BaseController;
 import com.tale.dto.BackResponse;
 import com.tale.dto.LogActions;
 import com.tale.dto.Statistics;
+import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
@@ -60,7 +61,7 @@ public class IndexController extends BaseController {
     @Route(value = {"/", "index"}, method = HttpMethod.GET)
     public String index(Request request) {
         List<Comments> comments = siteService.recentComments(5);
-        List<Contents> contents = siteService.recentContents(5);
+        List<Contents> contents = siteService.getContens(Types.RECENT_ARTICLE, 5);
         Statistics statistics = siteService.getStatistics();
         // 取最新的20条日志
         List<Logs> logs = logService.getLogs(1, 20);

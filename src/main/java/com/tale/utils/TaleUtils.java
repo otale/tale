@@ -25,10 +25,11 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +49,8 @@ public class TaleUtils {
      * markdown解析器
      */
     private static Parser parser = Parser.builder().build();
+
+    private static Random r = new Random();
 
     /**
      * 匹配邮箱正则
@@ -256,10 +259,11 @@ public class TaleUtils {
 
     /**
      * 替换HTML脚本
+     *
      * @param value
      * @return
      */
-    public static String cleanXSS(String value){
+    public static String cleanXSS(String value) {
         //You'll need to remove the spaces from the html entities below
         value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
         value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
@@ -337,12 +341,38 @@ public class TaleUtils {
         FileInputStream in = new FileInputStream(file);
         byte[] buffer = new byte[1024];
         int length;
-        while ((length = in.read(buffer)) > 0){
+        while ((length = in.read(buffer)) > 0) {
             out.write(buffer, 0, length);
         }
         in.close();
         out.flush();
         out.close();
+    }
+
+    /**
+     * 获取某个范围内的随机数
+     *
+     * @param max   最大值
+     * @param len   取多少个
+     * @return
+     */
+    public static int[] random(int max, int len) {
+        int values[] = new int[max];
+        int temp1, temp2, temp3;
+        for (int i = 0; i < values.length; i++) {
+            values[i] = i + 1;
+        }
+        //随机交换values.length次
+        for (int i = 0; i < values.length; i++) {
+            temp1 = Math.abs(r.nextInt()) % (values.length - 1); //随机产生一个位置
+            temp2 = Math.abs(r.nextInt()) % (values.length - 1); //随机产生另一个位置
+            if (temp1 != temp2) {
+                temp3 = values[temp1];
+                values[temp1] = values[temp2];
+                values[temp2] = temp3;
+            }
+        }
+        return Arrays.copyOf(values, len);
     }
 
 }

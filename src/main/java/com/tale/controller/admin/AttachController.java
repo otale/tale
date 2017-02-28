@@ -23,6 +23,7 @@ import com.tale.model.Attach;
 import com.tale.model.Users;
 import com.tale.service.AttachService;
 import com.tale.service.LogService;
+import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,9 @@ public class AttachController extends BaseController {
 
     @Inject
     private LogService logService;
+
+    @Inject
+    private SiteService siteService;
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request, @QueryParam(value = "page", defaultValue = "1") int page,
@@ -91,6 +95,7 @@ public class AttachController extends BaseController {
                     e.printStackTrace();
                 }
                 attachService.save(fname, fkey, ftype, uid);
+                siteService.cleanCache(Types.C_STATISTICS);
             });
         } catch (Exception e) {
             return RestResponse.fail();
@@ -107,6 +112,7 @@ public class AttachController extends BaseController {
                 return RestResponse.fail("不存在该附件");
             }
             attachService.delete(id);
+            siteService.cleanCache(Types.C_STATISTICS);
             String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
             FileKit.delete(upDir + attach.getFkey());
             logService.save(LogActions.DEL_ARTICLE, attach.getFkey(), request.address(), this.getUid());

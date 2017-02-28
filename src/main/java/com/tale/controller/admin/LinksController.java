@@ -13,6 +13,7 @@ import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.model.Metas;
 import com.tale.service.MetasService;
+import com.tale.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,9 @@ public class LinksController extends BaseController {
 
     @Inject
     private MetasService metasService;
+
+    @Inject
+    private SiteService siteService;
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
@@ -54,6 +58,7 @@ public class LinksController extends BaseController {
             } else {
                 metasService.saveMeta(metas);
             }
+            siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "友链保存失败";
             if (e instanceof TipException) {
@@ -71,6 +76,7 @@ public class LinksController extends BaseController {
     public RestResponse delete(@QueryParam int mid) {
         try {
             metasService.delete(mid);
+            siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "友链删除失败";
             if (e instanceof TipException) {
