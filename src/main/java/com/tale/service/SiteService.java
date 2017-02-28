@@ -1,5 +1,6 @@
 package com.tale.service;
 
+import com.blade.jdbc.model.Paginator;
 import com.tale.dto.*;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -82,4 +83,21 @@ public interface SiteService {
      */
     void cleanCache(String key);
 
+    /**
+     * 获取相邻的文章
+     *
+     * @param type  上一篇:prev 下一篇:next
+     * @param cid   当前文章id
+     * @return
+     */
+    Contents getNhContent(String type, Integer cid);
+
+    /**
+     * 获取文章的评论
+     * @param cid
+     * @param page
+     * @param limit
+     * @return
+     */
+    Paginator<Comment> getComments(Integer cid, int page, int limit);
 }

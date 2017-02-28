@@ -3,6 +3,7 @@ package com.tale.dto;
 import com.tale.model.Contents;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,15 +11,24 @@ import java.util.List;
  */
 public class Archive implements Serializable {
 
-    private String date;
+    private String date_str;
+    private Date date;
     private String count;
     private List<Contents> articles;
 
-    public String getDate() {
+    public String getDate_str() {
+        return date_str;
+    }
+
+    public void setDate_str(String date_str) {
+        this.date_str = date_str;
+    }
+
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -38,12 +48,4 @@ public class Archive implements Serializable {
         this.articles = articles;
     }
 
-    @Override
-    public String toString() {
-        return "Archive [" +
-                "date='" + date + '\'' +
-                ", count='" + count + '\'' +
-                ", articles=" + articles +
-                ']';
-    }
 }

@@ -13,10 +13,7 @@ import com.tale.ext.Theme;
 import com.tale.init.TaleConst;
 import com.tale.init.TaleJdbc;
 import com.tale.model.*;
-import com.tale.service.LogService;
-import com.tale.service.MetasService;
-import com.tale.service.OptionsService;
-import com.tale.service.SiteService;
+import com.tale.service.*;
 import com.tale.utils.MapCache;
 import com.tale.utils.TaleUtils;
 import com.tale.utils.ZipUtils;
@@ -47,6 +44,9 @@ public class SiteServiceImpl implements SiteService {
 
     @Inject
     private MetasService metasService;
+
+    @Inject
+    private CommentsService commentsService;
 
     public MapCache mapCache = new MapCache();
 
@@ -146,11 +146,12 @@ public class SiteServiceImpl implements SiteService {
 
     @Override
     public List<Archive> getArchives() {
-        List<Archive> archives = activeRecord.list(Archive.class, "select FROM_UNIXTIME(created, '%Y年%m月') as date, count(*) as count from t_contents where type = 'post' and status = 'publish' group by date order by date desc");
+        List<Archive> archives = activeRecord.list(Archive.class, "select FROM_UNIXTIME(created, '%Y年%m月') as date_str, count(*) as count from t_contents where type = 'post' and status = 'publish' group by date_str order by date_str desc");
         if (null != archives) {
             archives.forEach(archive -> {
-                String date = archive.getDate();
-                Date sd = DateKit.dateFormat(date, "yyyy年MM月");
+                String date_str = archive.getDate_str();
+                Date sd = DateKit.dateFormat(date_str, "yyyy年MM月");
+                archive.setDate(sd);
                 int start = DateKit.getUnixTimeByDate(sd);
                 int end = DateKit.getUnixTimeByDate(DateKit.dateAdd(DateKit.INTERVAL_MONTH, sd, 1)) - 1;
                 List<Contents> contentss = activeRecord.list(new Take(Contents.class)
@@ -260,6 +261,22 @@ public class SiteServiceImpl implements SiteService {
             }
         }
         return Theme.EMPTY;
+    }
+
+    @Override
+    public Contents getNhContent(String type, Integer cid) {
+        if(Types.NEXT.equals(type)){
+            return activeRecord.one(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).gt("cid", cid));
+        }
+        if(Types.PREV.equals(type)){
+            return activeRecord.one(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).lt("cid", cid));
+        }
+        return null;
+    }
+
+    @Override
+    public Paginator<Comment> getComments(Integer cid, int page, int limit) {
+        return commentsService.getComments(cid, page, limit);
     }
 
     @Override

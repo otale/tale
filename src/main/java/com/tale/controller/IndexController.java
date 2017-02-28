@@ -15,6 +15,7 @@ import com.blade.mvc.http.wrapper.Session;
 import com.blade.mvc.view.RestResponse;
 import com.tale.dto.*;
 import com.tale.exception.TipException;
+import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -69,8 +70,7 @@ public class IndexController extends BaseController {
         }
         if (contents.getAllow_comment()) {
             int cp = request.queryInt("cp", 1);
-            Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 6);
-            request.attribute("comments", commentsPaginator);
+            request.attribute("cp", cp);
         }
         request.attribute("article", contents);
         Integer hits = cache.hget("page", "hits");
@@ -105,6 +105,7 @@ public class IndexController extends BaseController {
             this.title(request, "第" + p + "页");
         }
         request.attribute("is_home", true);
+        request.attribute("page_prefix", "/page");
         return this.render("index");
     }
 
@@ -121,8 +122,7 @@ public class IndexController extends BaseController {
         request.attribute("is_post", true);
         if (contents.getAllow_comment()) {
             int cp = request.queryInt("cp", 1);
-            Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 6);
-            request.attribute("comments", commentsPaginator);
+            request.attribute("cp", cp);
         }
         Integer hits = cache.hget("article", "hits");
         hits = null == hits ? 1 : hits + 1;
@@ -164,6 +164,7 @@ public class IndexController extends BaseController {
         request.attribute("type", "分类");
         request.attribute("keyword", keyword);
         request.attribute("is_category", true);
+        request.attribute("page_prefix", "/category/" + keyword);
 
         return this.render("page-category");
     }
@@ -203,6 +204,7 @@ public class IndexController extends BaseController {
         request.attribute("type", "标签");
         request.attribute("keyword", name);
         request.attribute("is_tag", true);
+        request.attribute("page_prefix", "/tag/" + name);
 
         return this.render("page-category");
     }
@@ -230,6 +232,7 @@ public class IndexController extends BaseController {
 
         request.attribute("type", "搜索");
         request.attribute("keyword", keyword);
+        request.attribute("page_prefix", "/search/" + keyword);
         return this.render("page-category");
     }
 
@@ -299,6 +302,10 @@ public class IndexController extends BaseController {
         String ref = request.header("Referer");
         if (StringKit.isBlank(ref) || StringKit.isBlank(_csrf_token)) {
             return RestResponse.fail(ErrorCode.BAD_REQUEST);
+        }
+
+        if(!ref.startsWith(Commons.site_url())){
+            return RestResponse.fail("非法评论来源");
         }
 
         String token = cache.hget(Types.CSRF_TOKEN, _csrf_token);

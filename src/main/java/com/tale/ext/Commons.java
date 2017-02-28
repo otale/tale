@@ -9,6 +9,7 @@ import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -157,6 +158,16 @@ public final class Commons {
      */
     public static String fmtdate(Integer unixTime) {
         return fmtdate(unixTime, "yyyy-MM-dd");
+    }
+
+    /**
+     * 格式化日期
+     * @param date
+     * @param fmt
+     * @return
+     */
+    public static String fmtdate(Date date, String fmt) {
+        return DateKit.dateFormat(date, fmt);
     }
 
     /**

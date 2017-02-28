@@ -23,9 +23,11 @@
         <span class="response">评论已关闭.</span>
         #end
 
+        #set( comments = comments(6) )
+
         #if(!is_empty(comments))
         <ol class="comment-list">
-            #for(comment : comments.list)
+            #for(comment : comments(6).list)
             <li id="li-comment-${comment.coid}" class="comment-body comment-parent comment-odd">
                 <div id="comment-${comment.coid}">
                     <div class="comment-view" onclick="">
