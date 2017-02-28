@@ -13,10 +13,12 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.Comment;
+import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.model.Comments;
 import com.tale.model.Users;
 import com.tale.service.CommentsService;
+import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 import org.slf4j.Logger;
@@ -32,6 +34,9 @@ public class CommentController extends BaseController {
 
     @Inject
     private CommentsService commentsService;
+
+    @Inject
+    private SiteService siteService;
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(@QueryParam(value = "page", defaultValue = "1") int page,
@@ -56,6 +61,7 @@ public class CommentController extends BaseController {
                 return RestResponse.fail("不存在该评论");
             }
             commentsService.delete(coid, comments.getCid());
+            siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "评论删除失败";
             if (e instanceof TipException) {
@@ -76,6 +82,7 @@ public class CommentController extends BaseController {
             comments.setCoid(coid);
             comments.setStatus(status);
             commentsService.update(comments);
+            siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "操作失败";
             if (e instanceof TipException) {
@@ -121,6 +128,7 @@ public class CommentController extends BaseController {
         comments.setParent(coid);
         try {
             commentsService.saveComment(comments);
+            siteService.cleanCache(Types.C_STATISTICS);
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "回复失败";

@@ -18,6 +18,7 @@ import com.tale.model.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.LogService;
 import com.tale.service.MetasService;
+import com.tale.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,9 @@ public class ArticleController extends BaseController {
 
     @Inject
     private LogService logService;
+
+    @Inject
+    private SiteService siteService;
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(@QueryParam(value = "page", defaultValue = "1") int page,
@@ -99,6 +103,7 @@ public class ArticleController extends BaseController {
 
         try {
             contentsService.publish(contents);
+            siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "文章发布失败";
             if (e instanceof TipException) {
@@ -157,6 +162,7 @@ public class ArticleController extends BaseController {
     public RestResponse delete(@QueryParam int cid, Request request) {
         try {
             contentsService.delete(cid);
+            siteService.cleanCache(Types.C_STATISTICS);
             logService.save(LogActions.DEL_ARTICLE, cid+"", request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "文章删除失败";
