@@ -100,20 +100,17 @@ public class SiteServiceImpl implements SiteService {
 
         // 最新文章
         if (Types.RECENT_ARTICLE.equals(type)) {
-
             cp = activeRecord.page(new Take(Contents.class)
                     .eq("status", Types.PUBLISH).eq("type", Types.ARTICLE).page(1, limit, "created"));
         }
 
-        Statistics statistics = this.getStatistics();
-
         // 随机文章
         if (Types.RANDOM_ARTICLE.equals(type)) {
-            int max = statistics.getArticles();
-            int[] cids = TaleUtils.random(max, limit);
-            cp = activeRecord.page(new Take(Contents.class)
-                    .in("cid", cids).eq("status", Types.PUBLISH)
-                    .eq("type", Types.ARTICLE).page(1, limit));
+            List<Integer> cids = activeRecord.list(Integer.class, "select cid from t_contents where type = ? and status = ? order by rand() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
+            if (CollectionKit.isNotEmpty(cids)) {
+                Integer[] inCids = cids.toArray(new Integer[cids.size()]);
+                return activeRecord.list(new Take(Contents.class).in("cid", inCids));
+            }
         }
         return cp.getList();
     }
@@ -256,10 +253,10 @@ public class SiteServiceImpl implements SiteService {
         if (Types.RANDOM_META.equals(searchType)) {
             List<Integer> mids = activeRecord.list(Integer.class, "select mid from t_metas where type = ? order by rand() * mid limit ?", type, limit);
             if (CollectionKit.isNotEmpty(mids)) {
-                Integer[] inMids = mids.toArray(new Integer[mids.size()]);
+                String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
-                        "where a.mid in (?) group by a.mid order by count desc, a.mid desc";
-                return activeRecord.list(MetaDto.class, sql, inMids, limit);
+                        "where a.mid in "+ in + "group by a.mid order by count desc, a.mid desc";
+                return activeRecord.list(MetaDto.class, sql);
             }
         }
         return Theme.EMPTY;

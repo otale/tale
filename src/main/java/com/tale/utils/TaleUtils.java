@@ -27,9 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -375,4 +373,16 @@ public class TaleUtils {
         return Arrays.copyOf(values, len);
     }
 
+    /**
+     * 将list转为 (1, 2, 4) 这样的sql输出
+     * @param list
+     * @param <T>
+     * @return
+     */
+    public static <T> String listToInSql(java.util.List<T> list){
+        StringBuffer sbuf = new StringBuffer();
+        list.forEach( item -> sbuf.append(',').append(item.toString()));
+        sbuf.append(')');
+        return '(' + sbuf.substring(1);
+    }
 }

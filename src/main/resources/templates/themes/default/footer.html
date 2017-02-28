@@ -42,9 +42,9 @@
 
             <div class="meta-item meta-posts">
                 <h3 class="meta-title">最新文章</h3>
-                #for(post : recent_articles(8))
+                #for(article : rand_articles(8))
                 <li>
-                    <a href="${permalink(post)}">${post.title}</a>
+                    <a href="${permalink()}">${title()}</a>
                 </li>
                 #end
             </div>
