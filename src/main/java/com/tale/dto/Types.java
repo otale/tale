@@ -16,4 +16,13 @@ public interface Types {
     String FILE = "file";
     String CSRF_TOKEN = "csrf_token";
     String COMMENTS_FREQUENCY = "comments:frequency";
+
+    String RECENT_ARTICLE = "recent_article";
+    String RANDOM_ARTICLE = "random_article";
+
+    String RECENT_META = "recent_meta";
+    String RANDOM_META = "random_meta";
+
+    String C_STATISTICS = "sys:statistics";
+
 }

@@ -9,12 +9,16 @@ import com.blade.kit.*;
 import com.tale.controller.admin.AttachController;
 import com.tale.dto.*;
 import com.tale.exception.TipException;
+import com.tale.ext.Theme;
+import com.tale.init.TaleConst;
 import com.tale.init.TaleJdbc;
 import com.tale.model.*;
 import com.tale.service.LogService;
 import com.tale.service.MetasService;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
+import com.tale.utils.MapCache;
+import com.tale.utils.TaleUtils;
 import com.tale.utils.ZipUtils;
 import com.tale.utils.backup.Backup;
 import org.slf4j.Logger;
@@ -43,6 +47,8 @@ public class SiteServiceImpl implements SiteService {
 
     @Inject
     private MetasService metasService;
+
+    public MapCache mapCache = new MapCache();
 
     @Override
     public void initSite(Users users, JdbcConf jdbcConf) {
@@ -84,26 +90,57 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public List<Contents> recentContents(int limit) {
-        if (limit < 0 || limit > 10) {
+    public List<Contents> getContens(String type, int limit) {
+
+        if (limit < 0 || limit > 20) {
             limit = 10;
         }
-        Paginator<Contents> cp = activeRecord.page(new Take(Contents.class)
-                .eq("status", Types.PUBLISH).eq("type", Types.ARTICLE).page(1, limit, "created"));
+
+        Paginator<Contents> cp = new Paginator<>(1, 1);
+
+        // 最新文章
+        if (Types.RECENT_ARTICLE.equals(type)) {
+            cp = activeRecord.page(new Take(Contents.class)
+                    .eq("status", Types.PUBLISH).eq("type", Types.ARTICLE).page(1, limit, "created"));
+        }
+
+        // 随机文章
+        if (Types.RANDOM_ARTICLE.equals(type)) {
+            List<Integer> cids = activeRecord.list(Integer.class, "select cid from t_contents where type = ? and status = ? order by rand() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
+            if (CollectionKit.isNotEmpty(cids)) {
+                Integer[] inCids = cids.toArray(new Integer[cids.size()]);
+                return activeRecord.list(new Take(Contents.class).in("cid", inCids));
+            }
+        }
         return cp.getList();
     }
 
     @Override
     public Statistics getStatistics() {
-        Statistics statistics = new Statistics();
+
+        Statistics statistics = mapCache.get(Types.C_STATISTICS);
+        if (null != statistics) {
+            return statistics;
+        }
+
+        statistics = new Statistics();
         int articles = activeRecord.count(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH));
+        int pages = activeRecord.count(new Take(Contents.class).eq("type", Types.PAGE).eq("status", Types.PUBLISH));
         int comments = activeRecord.count(new Take(Comments.class));
         int attachs = activeRecord.count(new Take(Attach.class));
         int links = activeRecord.count(new Take(Metas.class).eq("type", Types.LINK));
+        int tags = activeRecord.count(new Take(Metas.class).eq("type", Types.TAG));
+        int categories = activeRecord.count(new Take(Metas.class).eq("type", Types.CATEGORY));
+
         statistics.setArticles(articles);
+        statistics.setPages(pages);
         statistics.setComments(comments);
         statistics.setAttachs(attachs);
         statistics.setLinks(links);
+        statistics.setTags(tags);
+        statistics.setCategories(categories);
+
+        mapCache.set(Types.C_STATISTICS, statistics);
         return statistics;
     }
 
@@ -162,7 +199,7 @@ public class SiteServiceImpl implements SiteService {
 
             String bkAttachDir = AttachController.CLASSPATH + "upload/";
             if (!FileKit.isDirectory(bkAttachDir)) {
-               FileKit.createDir(bkAttachDir,false);
+                FileKit.createDir(bkAttachDir, false);
             }
             String sqlFileName = "tale_" + DateKit.dateFormat(new Date(), fmt) + "_" + StringKit.getRandomNumber(5) + ".sql";
             String zipFile = sqlFileName.replace(".sql", ".zip");
@@ -195,7 +232,44 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public List<MetaDto> metas(String type, String orderBy, int limit) {
-        return metasService.getMetaList(type, orderBy, limit);
+    public List<MetaDto> getMetas(String searchType, String type, int limit) {
+
+        if (StringKit.isBlank(searchType) || StringKit.isBlank(type)) {
+            return Theme.EMPTY;
+        }
+
+        if (limit < 1 || limit > TaleConst.MAX_POSTS) {
+            limit = 10;
+        }
+
+        // 获取最新的项目
+        if (Types.RECENT_META.equals(searchType)) {
+            String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
+                    "where a.type = ? group by a.mid order by count desc, a.mid desc limit ?";
+            return activeRecord.list(MetaDto.class, sql, type, limit);
+        }
+
+        // 随机获取项目
+        if (Types.RANDOM_META.equals(searchType)) {
+            List<Integer> mids = activeRecord.list(Integer.class, "select mid from t_metas where type = ? order by rand() * mid limit ?", type, limit);
+            if (CollectionKit.isNotEmpty(mids)) {
+                String in = TaleUtils.listToInSql(mids);
+                String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
+                        "where a.mid in "+ in + "group by a.mid order by count desc, a.mid desc";
+                return activeRecord.list(MetaDto.class, sql);
+            }
+        }
+        return Theme.EMPTY;
+    }
+
+    @Override
+    public void cleanCache(String key) {
+        if (StringKit.isNotBlank(key)) {
+            if ("*".equals(key)) {
+                mapCache.clean();
+            } else {
+                mapCache.del(key);
+            }
+        }
     }
 }

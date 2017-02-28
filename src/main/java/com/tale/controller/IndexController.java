@@ -98,8 +98,7 @@ public class IndexController extends BaseController {
     @Route(value = "page/:p", method = HttpMethod.GET)
     public String index(Request request, @PathParam int p, @QueryParam(value = "limit", defaultValue = "12") int limit) {
         p = p < 0 || p > TaleConst.MAX_PAGE ? 1 : p;
-        Take take = new Take(Contents.class).eq("type", Types.ARTICLE)
-                .eq("status", Types.PUBLISH).page(p, limit, "created desc");
+        Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(p, limit, "created desc");
         Paginator<Contents> articles = contentsService.getArticles(take);
         request.attribute("articles", articles);
         if (p > 1) {
@@ -352,6 +351,7 @@ public class IndexController extends BaseController {
             }
             // 设置对每个文章1分钟可以评论一次
             cache.hset(Types.COMMENTS_FREQUENCY, val, 1, 60);
+            siteService.cleanCache(Types.C_STATISTICS);
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "评论发布失败";
