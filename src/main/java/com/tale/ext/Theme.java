@@ -29,6 +29,10 @@ public final class Theme {
 
     private static final Random rand = new Random();
 
+    public static void setSiteService(SiteService ss) {
+        siteService = ss;
+    }
+
     /**
      * 返回文章链接地址
      * @return

@@ -29,6 +29,7 @@ public final class Commons {
 
     public static void setSiteService(SiteService ss) {
         siteService = ss;
+        Theme.setSiteService(ss);
     }
 
     /**
