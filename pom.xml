@@ -25,6 +25,7 @@
             <artifactId>blade-core</artifactId>
             <version>${blade.version}</version>
         </dependency>
+        
         <!-- 数据库操作 -->
         <dependency>
             <groupId>mysql</groupId>
@@ -36,6 +37,7 @@
             <artifactId>blade-jdbc</artifactId>
             <version>${blade-jdbc.version}</version>
         </dependency>
+
         <!--连接池-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -62,7 +64,6 @@
             <artifactId>blade-embed-jetty</artifactId>
             <version>${blade-embed-jetty.version}</version>
         </dependency>
-
         <!--RSS输出-->
         <dependency>
             <groupId>rome</groupId>
@@ -90,18 +91,45 @@
         </repository>
     </repositories>
 
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/java</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/java</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                    <resource>
+                        <directory>src/main/test</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                    <resource>
+                        <directory>src/test/resources</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <finalName>tale</finalName>
-        <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
-        <testResources>
-        </testResources>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -111,7 +139,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--mvn clean package assembly:single -Dmaven.test.skip=true-->
+            <!--mvn clean package assembly:single -Pprod -Dmaven.test.skip=true-->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
