@@ -6,7 +6,7 @@
 
     <groupId>com.junicorn</groupId>
     <artifactId>tale</artifactId>
-    <version>1.0</version>
+    <version>1.01</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,11 +27,15 @@
         </dependency>
         <!-- 数据库操作 -->
         <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.bladejava</groupId>
             <artifactId>blade-jdbc</artifactId>
             <version>${blade-jdbc.version}</version>
         </dependency>
-
         <!--连接池-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -58,12 +62,7 @@
             <artifactId>blade-embed-jetty</artifactId>
             <version>${blade-embed-jetty.version}</version>
         </dependency>
-        <!-- 数据库 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
-        </dependency>
+
         <!--RSS输出-->
         <dependency>
             <groupId>rome</groupId>
