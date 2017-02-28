@@ -8,6 +8,7 @@ import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Inject;
 import com.blade.mvc.view.ViewSettings;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
+import com.tale.controller.BaseController;
 import com.tale.ext.AdminCommons;
 import com.tale.ext.Commons;
 import com.tale.ext.JetTag;
@@ -48,6 +49,7 @@ public class WebContext implements BeanProcessor, WebContextListener {
         if (dbIsOk) {
             TaleConst.OPTIONS.addAll(optionsService.getOptions());
             TaleConst.INSTALL = true;
+            BaseController.THEME = "themes/" + Commons.site_option("site_theme");
             Commons.setSiteService(Blade.$().ioc().getBean(SiteService.class));
         }
         TaleConst.BCONF = bConfig.config();
