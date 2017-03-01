@@ -20,6 +20,7 @@ demo website：https://tale.biezhi.me
 + Markdown article published
 + Custom article links
 + Support multiple themes
++ Support plugin extension
 + Support Emoji
 + Support Netease cloud music player
 + Support for attachments and database backups
