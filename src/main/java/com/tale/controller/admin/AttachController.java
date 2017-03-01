@@ -3,10 +3,8 @@ package com.tale.controller.admin;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.DateKit;
 import com.blade.kit.FileKit;
 import com.blade.kit.Tools;
-import com.blade.kit.UUID;
 import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.QueryParam;
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -65,8 +62,7 @@ public class AttachController extends BaseController {
     @JSON
     public RestResponse upload(Request request) {
 
-        String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
-        LOGGER.info("UPLOAD DIR = {}", upDir);
+        LOGGER.info("UPLOAD DIR = {}", TaleUtils.upDir);
 
         Users users = this.user();
         Integer uid = users.getUid();
@@ -75,22 +71,14 @@ public class AttachController extends BaseController {
         try {
             fileItems.forEach(f -> {
                 String fname = f.fileName();
-
-                String prefix = "/upload/" + DateKit.dateFormat(new Date(), "yyyy/MM");
-
-                String dir = upDir + prefix;
-                if (!FileKit.exist(dir)) {
-                    new File(dir).mkdirs();
-                }
-
-                String fkey = prefix + "/" + UUID.UU32() + "." + FileKit.getExtension(fname);
+                String fkey = TaleUtils.getFileKey(fname);
                 String ftype = TaleUtils.isImage(f.file()) ? Types.IMAGE : Types.FILE;
-
-                String filePath = upDir + fkey;
+                String filePath = TaleUtils.upDir + fkey;
 
                 File file = new File(filePath);
                 try {
                     Tools.copyFileUsingFileChannels(f.file(), file);
+                    f.file().delete();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -108,7 +96,7 @@ public class AttachController extends BaseController {
     public RestResponse delete(@QueryParam Integer id, Request request) {
         try {
             Attach attach = attachService.byId(id);
-            if(null == attach){
+            if (null == attach) {
                 return RestResponse.fail("不存在该附件");
             }
             attachService.delete(id);
