@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.junicorn</groupId>
+    <groupId>org.junicorn</groupId>
     <artifactId>tale</artifactId>
-    <version>1.01</version>
+    <version>1.02</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -100,6 +100,15 @@
                         <directory>src/main/java</directory>
                         <filtering>false</filtering>
                     </resource>
+                    <!-- 把放在根目录下的脚本文件.sh,.bat拷贝到bin目录中 -->
+                    <resource>
+                        <directory>.</directory>
+                        <includes>
+                            <include>**/*.sh</include>
+                            <include>**/*.bat</include>
+                        </includes>
+                        <targetPath>${project.build.directory}/bin</targetPath>
+                    </resource>
                 </resources>
             </build>
         </profile>
@@ -166,6 +175,9 @@
                             <Class-Path>resources/</Class-Path>
                         </manifestEntries>
                     </archive>
+                    <excludes>
+                        <exclude>*.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
