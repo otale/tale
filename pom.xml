@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.version>5.1.38</mysql.version>
         <druid.version>1.0.24</druid.version>
-        <blade.version>1.7.1-alpha</blade.version>
+        <blade.version>1.7.1-beta</blade.version>
         <blade-jdbc.version>0.1.5</blade-jdbc.version>
         <blade-tpl.verion>0.0.9</blade-tpl.verion>
         <blade-embed-jetty.version>0.1.2</blade-embed-jetty.version>
@@ -24,6 +24,12 @@
             <groupId>com.bladejava</groupId>
             <artifactId>blade-core</artifactId>
             <version>${blade.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bladejava</groupId>
+            <artifactId>blade-kit</artifactId>
+            <version>1.4.1-alpha</version>
         </dependency>
         
         <!-- 数据库操作 -->
@@ -76,6 +82,7 @@
             <artifactId>emoji-java</artifactId>
             <version>3.2.0</version>
         </dependency>
+
     </dependencies>
 
     <repositories>

@@ -3,6 +3,7 @@ package com.tale.init;
 import com.blade.config.BConfig;
 import com.blade.kit.FileKit;
 import com.tale.controller.admin.AttachController;
+import com.tale.utils.ExtClasspathLoader;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -20,7 +21,8 @@ public final class TaleLoader {
     }
 
     public static void init(){
-        loadPlugins();
+//        loadPlugins();
+        ExtClasspathLoader.loadClasspath();
         loadThemes();
     }
 
@@ -52,10 +54,12 @@ public final class TaleLoader {
      */
     public static void loadPlugin(File pluginFile) {
         try {
-            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-            Method add = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-            add.setAccessible(true);
-            add.invoke(classLoader, pluginFile.toURI().toURL());
+            if(pluginFile.isFile() && pluginFile.getName().endsWith(".jar")){
+                URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+                Method add = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+                add.setAccessible(true);
+                add.invoke(classLoader, pluginFile.toURI().toURL());
+            }
         } catch (Exception e) {
             throw new RuntimeException("插件 [" + pluginFile.getName() + "] 加载失败");
         }

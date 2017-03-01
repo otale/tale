@@ -41,4 +41,8 @@ public class TaleConst {
      */
     public static final List<PluginMenu> plugin_menus = CollectionKit.newArrayList(8);
 
+    /**
+     * 上传文件最大20M
+     */
+    public static Integer MAX_FILE_SIZE = 204800;
 }
