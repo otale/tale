@@ -2,6 +2,7 @@ package com.tale.ext;
 
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.StringKit;
+import com.tale.controller.BaseController;
 import com.tale.dto.Comment;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
@@ -71,16 +72,6 @@ public final class Theme {
             p = value.toString();
         }
         return p + " - " + Commons.site_option("site_title", "Tale 博客");
-    }
-
-    /**
-     * 返回主题所在的url
-     *
-     * @param sub
-     * @return
-     */
-    public static String theme_url(String sub){
-        return Commons.site_url("/templates/themes/" + Commons.site_option("site_theme") + sub);
     }
 
     /**
@@ -308,7 +299,7 @@ public final class Theme {
     }
 
     /**
-     * 获取当前文章的上一篇
+     * 获取当前文章的下一篇
      * @return
      */
     public static Contents article_next(){
@@ -317,7 +308,7 @@ public final class Theme {
     }
 
     /**
-     * 获取当前文章的下一篇
+     * 获取当前文章的上一篇
      *
      * @return
      */
@@ -402,7 +393,7 @@ public final class Theme {
      *
      * @return
      */
-    public static List<MetaDto> tags(int limit) {
+        public static List<MetaDto> tags(int limit) {
         if (null == siteService) {
             return EMPTY;
         }

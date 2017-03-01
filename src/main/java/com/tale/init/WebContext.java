@@ -19,7 +19,6 @@ import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import jetbrick.template.JetGlobalContext;
 import jetbrick.template.resolver.GlobalResolver;
-import sun.nio.ch.FileKey;
 
 import javax.servlet.ServletContext;
 import java.io.File;

@@ -1,6 +1,11 @@
 package com.tale.init;
 
+import com.blade.kit.CollectionKit;
 import com.blade.kit.base.Config;
+import com.tale.dto.PluginMenu;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tale 常量存储
@@ -30,5 +35,10 @@ public class TaleConst {
      * 点击次数超过多少更新到数据库
      */
     public static final int HIT_EXCEED = 10;
+
+    /**
+     * 插件菜单
+     */
+    public static final List<PluginMenu> plugin_menus = CollectionKit.newArrayList(8);
 
 }

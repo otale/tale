@@ -44,7 +44,7 @@ public final class Commons {
     }
 
     /**
-     * 网站链接
+     * 返回网站首页链接，如：http://tale.biezhi.me
      *
      * @return
      */
@@ -102,6 +102,7 @@ public final class Commons {
     public static String site_description(){
         return site_option("site_description");
     }
+
     /**
      * 截取字符串
      *
@@ -122,7 +123,7 @@ public final class Commons {
      * @return
      */
     public static String theme_url() {
-        return site_url(BaseController.THEME);
+        return Commons.site_url(BaseController.THEME);
     }
 
     /**
@@ -132,8 +133,9 @@ public final class Commons {
      * @return
      */
     public static String theme_url(String sub) {
-        return site_url(BaseController.THEME + sub);
+        return Commons.site_url(BaseController.THEME + sub);
     }
+
 
     /**
      * 返回gravatar头像地址
