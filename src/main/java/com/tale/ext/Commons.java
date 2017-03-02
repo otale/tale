@@ -27,6 +27,8 @@ public final class Commons {
     private static final List EMPTY = new ArrayList(0);
 
     private static final Random rand = new Random();
+    
+    private static final String TEMPLATES = "/templates/";
 
     public static void setSiteService(SiteService ss) {
         siteService = ss;
@@ -123,7 +125,7 @@ public final class Commons {
      * @return
      */
     public static String theme_url() {
-        return Commons.site_url(BaseController.THEME);
+        return Commons.site_url(TEMPLATES + BaseController.THEME);
     }
 
     /**
@@ -133,7 +135,7 @@ public final class Commons {
      * @return
      */
     public static String theme_url(String sub) {
-        return Commons.site_url(BaseController.THEME + sub);
+        return Commons.site_url(TEMPLATES + BaseController.THEME + sub);
     }
 
 
