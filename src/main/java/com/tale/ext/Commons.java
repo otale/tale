@@ -2,16 +2,18 @@ package com.tale.ext;
 
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.*;
+import com.blade.kit.UUID;
 import com.tale.controller.BaseController;
 import com.tale.init.TaleConst;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -186,6 +188,9 @@ public final class Commons {
             return DateKit.formatDateByUnixTime(unixTime, patten);
         }
         return "";
+    }
+    public static String configFile(String fileName,String rowKey)  {
+        return  TaleUtils.getProPertieFile(fileName,rowKey);
     }
 
     /**

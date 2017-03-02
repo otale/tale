@@ -5,6 +5,7 @@ import com.blade.kit.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.wrapper.Session;
+import com.sun.media.jfxmedia.logging.Logger;
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Item;
@@ -22,9 +23,7 @@ import org.commonmark.renderer.html.HtmlRenderer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -394,5 +393,18 @@ public class TaleUtils {
             new File(dir).mkdirs();
         }
         return prefix + "/" + com.blade.kit.UUID.UU32() + "." + FileKit.getExtension(name);
+    }
+
+    public static String getProPertieFile(String fileName , String rowKey){
+        InputStream in = TaleUtils.class.getClassLoader().getResourceAsStream(fileName);
+        Properties props = new Properties();
+        String rowValue = null;
+        try {
+            props.load(in);
+            rowValue = props.getProperty(rowKey);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rowValue;
     }
 }

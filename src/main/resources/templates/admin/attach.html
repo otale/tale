@@ -47,7 +47,7 @@
                     <div class="dz-message">
                         <p>将文件拖至此处或点击上传.${attach_url}</p>
                         <p>
-                            <span style="font-size: 16px; color: #d0d0d0;">一次最多可以上传10个文件</span>
+                            <span style="font-size: 16px; color: #d0d0d0;">一次最多可以上传${configFile("file.properties","file.max_fies_size")}个文件</span>
                         </p>
                     </div>
                 </form>
@@ -105,15 +105,15 @@
     $("#dropzone").dropzone({
         url: "/admin/attach/upload",
         filesizeBase:1024,//定义字节算法 默认1000
-        maxFiles: $.constant().MAX_FILES,//最大文件数量
-        maxFilesize: '${max_file_size}', //MB
+        maxFiles: '${configFile("file.properties","file.max_fies_size")}',//最大文件数量
+        maxFilesize: '${configFile("file.properties","file.max_size")}', //MB
         fallback:function(){
             tale.alertError('暂不支持您的浏览器上传!');
         },
         uploadMultiple: true,
-        dictFileTooBig:'您的文件超过'+ ${max_file_size} +'MB!',
+        dictFileTooBig:'您的文件超过'+ ${configFile("file.properties","file.max_size")} +'MB!',
         dictInvalidInputType:'不支持您上传的类型',
-        dictMaxFilesExceeded:'您的文件超过'+ $.constant().MAX_FILES+'个!',
+        dictMaxFilesExceeded:'您的文件超过'+ ${configFile("file.properties","file.max_fies_size")}+'个!',
         init: function() {
             this.on('queuecomplete', function (files) {
                 tale.alertOkAndReload('上传成功');
