@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -211,6 +212,43 @@ public class IndexController extends BaseController {
             }
             return RestResponse.fail(msg);
         }
+    }
+
+    /**
+     * 后台高级选项页面
+     *
+     * @return
+     */
+    @Route(value = "advanced", method = HttpMethod.GET)
+    public String advanced(Request request){
+        Map<String, String> options = optionsService.getOptions();
+        request.attribute("options", options);
+        return "admin/advanced";
+    }
+
+    /**
+     * 保存高级选项设置
+     * @return
+     */
+    @Route(value = "advanced", method = HttpMethod.POST)
+    public String doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips){
+        // 清除缓存
+        if(StringKit.isNotBlank(cache_key)){
+            if(cache_key.equals("*")){
+                cache.clean();
+            } else {
+                cache.del(cache_key);
+            }
+        }
+        // 要过过滤的黑名单列表
+        if(StringKit.isNotBlank(block_ips)){
+            optionsService.saveOption(Types.BLOCK_IPS, block_ips);
+            TaleConst.BLOCK_IPS.addAll(Arrays.asList(StringKit.split(block_ips, ",")));
+        } else {
+            optionsService.saveOption(Types.BLOCK_IPS, "");
+            TaleConst.BLOCK_IPS.clear();
+        }
+        return "admin/advanced";
     }
 
 }

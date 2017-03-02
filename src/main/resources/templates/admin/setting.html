@@ -1,4 +1,4 @@
-#include('./header.html',{active:'settings', title:'系统设置'})
+#include('./header.html',{active:'setting', title:'系统设置'})
 <link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
 <div class="row">
 
@@ -180,15 +180,26 @@
      * 设置是否允许重新安装
      */
     function allow_reinstall(obj) {
-        var this_ = $(obj);
-        var on = this_.find('.toggle-on.active').length;
-        var off = this_.find('.toggle-off.active').length;
-        if (on == 1) {
+
+        var isInstall = $('#allow_install').val();
+        if(isInstall==0){
+            $('#allow_install').val(1);
+        } else {
             $('#allow_install').val(0);
         }
-        if (off == 1) {
-            $('#allow_install').val(1);
-        }
+
+//        var this_ = $(obj);
+//        var on = this_.find('.toggle-on.active').length;
+//        var off = this_.find('.toggle-off.active').length;
+//
+//        alert('on=' + on + ', off=' + off);
+//
+//        if (on == 1) {
+//            $('#allow_install').val(1);
+//        }
+//        if (off == 1) {
+//            $('#allow_install').val(0);
+//        }
     }
 
     /**

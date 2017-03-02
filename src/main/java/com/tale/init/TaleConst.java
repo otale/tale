@@ -4,8 +4,10 @@ import com.blade.kit.CollectionKit;
 import com.blade.kit.base.Config;
 import com.tale.dto.PluginMenu;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Tale 常量存储
@@ -45,4 +47,10 @@ public class TaleConst {
      * 上传文件最大20M
      */
     public static Integer MAX_FILE_SIZE = 204800;
+
+    /**
+     * 要过滤的ip列表
+     */
+    public static final Set<String> BLOCK_IPS = new HashSet<>(16);
+
 }

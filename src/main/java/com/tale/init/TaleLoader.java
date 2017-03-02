@@ -3,7 +3,6 @@ package com.tale.init;
 import com.blade.config.BConfig;
 import com.blade.kit.FileKit;
 import com.tale.controller.admin.AttachController;
-import com.tale.utils.ExtClasspathLoader;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -19,37 +18,37 @@ import static com.blade.Blade.$;
  */
 public final class TaleLoader {
 
-    private TaleLoader(){
+    private TaleLoader() {
     }
 
-    public static void init(){
-//        loadPlugins();
-        ExtClasspathLoader.loadClasspath();
-        loadThemes();
-    }
-
-    public static void loadThemes(){
+    public static void init() {
         BConfig bConfig = $().bConfig();
+        loadPlugins(bConfig);
+        loadThemes(bConfig);
+    }
+
+    public static void loadThemes(BConfig bConfig) {
+
         String themeDir = AttachController.CLASSPATH + "templates/themes";
-    	try {
-			themeDir = new URI(themeDir).getPath();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}  
+        try {
+            themeDir = new URI(themeDir).getPath();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         File[] dir = new File(themeDir).listFiles();
-        for(File f : dir){
-            if(f.isDirectory() && FileKit.isDirectory(f.getPath() + "/static")){
-                bConfig.addStatic(new String[]{"/templates/themes/"+ f.getName() +"/static"});
+        for (File f : dir) {
+            if (f.isDirectory() && FileKit.isDirectory(f.getPath() + "/static")) {
+                bConfig.addStatic(new String[]{"/templates/themes/" + f.getName() + "/static"});
             }
         }
     }
 
-    public static void loadPlugins() {
+    public static void loadPlugins(BConfig bConfig) {
         File pluginDir = new File(AttachController.CLASSPATH + "plugins");
         if (pluginDir.exists() && pluginDir.isDirectory()) {
             File[] plugins = pluginDir.listFiles();
             for (File plugin : plugins) {
-                loadPlugin(plugin);
+                loadPlugin(bConfig, plugin);
             }
         }
     }
@@ -59,13 +58,16 @@ public final class TaleLoader {
      *
      * @param pluginFile 插件文件
      */
-    public static void loadPlugin(File pluginFile) {
+    public static void loadPlugin(BConfig bConfig, File pluginFile) {
         try {
-            if(pluginFile.isFile() && pluginFile.getName().endsWith(".jar")){
+            if (pluginFile.isFile() && pluginFile.getName().endsWith(".jar")) {
                 URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
                 Method add = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
                 add.setAccessible(true);
                 add.invoke(classLoader, pluginFile.toURI().toURL());
+
+                String pluginName = pluginFile.getName().substring(6);
+                bConfig.addStatic(new String[]{"/templates/plugins/" + pluginName + "/static"});
             }
         } catch (Exception e) {
             throw new RuntimeException("插件 [" + pluginFile.getName() + "] 加载失败");

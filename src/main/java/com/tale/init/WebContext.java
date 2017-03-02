@@ -7,10 +7,12 @@ import com.blade.ioc.BeanProcessor;
 import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.FileKit;
+import com.blade.kit.StringKit;
 import com.blade.mvc.view.ViewSettings;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
 import com.tale.controller.BaseController;
 import com.tale.controller.admin.AttachController;
+import com.tale.dto.Types;
 import com.tale.ext.AdminCommons;
 import com.tale.ext.Commons;
 import com.tale.ext.JetTag;
@@ -24,6 +26,7 @@ import javax.servlet.ServletContext;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 /**
  * Tale初始化进程
@@ -70,6 +73,12 @@ public class WebContext implements BeanProcessor, WebContextListener {
             TaleConst.OPTIONS.addAll(optionsService.getOptions());
             TaleConst.INSTALL = TaleConst.OPTIONS.getInt("site_is_install", 0) == 1;
             BaseController.THEME = "themes/" + Commons.site_option("site_theme");
+
+            String ips = TaleConst.OPTIONS.get(Types.BLOCK_IPS, "");
+            if(StringKit.isNotBlank(ips)){
+                TaleConst.BLOCK_IPS.addAll(Arrays.asList(StringKit.split(ips, ",")));
+            }
+
             Commons.setSiteService(Blade.$().ioc().getBean(SiteService.class));
         }
         if (FileKit.exist(AttachController.CLASSPATH + "install.lock")) {
