@@ -1,6 +1,11 @@
 package com.tale.init;
 
+import com.blade.kit.CollectionKit;
 import com.blade.kit.base.Config;
+import com.tale.dto.PluginMenu;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tale 常量存储
@@ -31,4 +36,13 @@ public class TaleConst {
      */
     public static final int HIT_EXCEED = 10;
 
+    /**
+     * 插件菜单
+     */
+    public static final List<PluginMenu> plugin_menus = CollectionKit.newArrayList(8);
+
+    /**
+     * 上传文件最大20M
+     */
+    public static Integer MAX_FILE_SIZE = 204800;
 }

@@ -1,9 +1,7 @@
 package com.tale.utils;
 
 import com.blade.context.WebContextHolder;
-import com.blade.kit.DateKit;
-import com.blade.kit.StringKit;
-import com.blade.kit.Tools;
+import com.blade.kit.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.wrapper.Session;
@@ -12,6 +10,7 @@ import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Item;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
+import com.tale.controller.admin.AttachController;
 import com.tale.ext.Commons;
 import com.tale.ext.Theme;
 import com.tale.init.TaleConst;
@@ -384,5 +383,16 @@ public class TaleUtils {
         list.forEach( item -> sbuf.append(',').append(item.toString()));
         sbuf.append(')');
         return '(' + sbuf.substring(1);
+    }
+
+    public static final String upDir = AttachController.CLASSPATH.substring(0, AttachController.CLASSPATH.length() - 1);
+
+    public static String getFileKey(String name){
+        String prefix = "/upload/" + DateKit.dateFormat(new Date(), "yyyy/MM");
+        String dir = upDir + prefix;
+        if (!FileKit.exist(dir)) {
+            new File(dir).mkdirs();
+        }
+        return prefix + "/" + com.blade.kit.UUID.UU32() + "." + FileKit.getExtension(name);
     }
 }

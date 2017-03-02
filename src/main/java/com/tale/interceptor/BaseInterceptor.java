@@ -49,9 +49,13 @@ public class BaseInterceptor implements Interceptor {
                     request.session().attribute(TaleConst.LOGIN_SESSION_KEY, user);
                 }
             }
-            if (uri.startsWith("/admin") && !uri.startsWith("/admin/login") && null == user) {
-                response.go("/admin/login");
-                return false;
+
+            if(uri.startsWith("/admin") && !uri.startsWith("/admin/login")){
+                if(null == user){
+                    response.go("/admin/login");
+                    return false;
+                }
+                request.attribute("plugin_menus", TaleConst.plugin_menus);
             }
         }
         String method = request.method();

@@ -7,7 +7,6 @@ $.extend({
     constant:function(){ //常量池
         return{
             ///-------文件常量----------
-            MAX_FILE_SIZE:50,//文件最大???MB
             MAX_FILES:10,//一次队列最大文件数
         }
     }
@@ -36,7 +35,7 @@ $.tale.prototype.alertOkAndReload = function (text) {
     this.alertOk({text:text, then:function () {
         setTimeout(function () {
             window.location.reload();
-        }, 500);
+        }, 700);
     }});
 };
 

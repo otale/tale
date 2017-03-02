@@ -7,10 +7,27 @@
         <format>dir</format>
     </formats>
 
-    <includeBaseDirectory>false</includeBaseDirectory>
+    <includeBaseDirectory>true</includeBaseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>src/main/resources/</directory>
+            <outputDirectory>/resources</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/plugins/</directory>
+            <outputDirectory>/plugins</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>bin/</directory>
+            <outputDirectory>/bin</outputDirectory>
+        </fileSet>
+    </fileSets>
+
     <dependencySets>
         <dependencySet>
             <outputDirectory>/lib</outputDirectory>
+            <scope>runtime</scope>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}</exclude>
             </excludes>
@@ -23,10 +40,4 @@
         </dependencySet>
     </dependencySets>
 
-    <fileSets>
-        <fileSet>
-            <directory>src/main/resources/</directory>
-            <outputDirectory>/resources</outputDirectory>
-        </fileSet>
-    </fileSets>
 </assembly>

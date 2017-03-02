@@ -19,7 +19,6 @@ import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import jetbrick.template.JetGlobalContext;
 import jetbrick.template.resolver.GlobalResolver;
-import sun.nio.ch.FileKey;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -56,6 +55,8 @@ public class WebContext implements BeanProcessor, WebContextListener {
 
         JetGlobalContext context = templateEngine.getGlobalContext();
         context.set("version", bConfig.config().get("app.version", "v1.0"));
+
+        TaleConst.MAX_FILE_SIZE = bConfig.config().getInt("app.max-file-size", 20480);
 
         ViewSettings.$().templateEngine(templateEngine);
         if (dbIsOk) {

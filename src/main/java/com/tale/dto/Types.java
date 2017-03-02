@@ -27,4 +27,7 @@ public interface Types {
 
     String NEXT = "next";
     String PREV = "prev";
+
+    String ATTACH_URL = "attach_url";
+
 }
