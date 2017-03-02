@@ -11,7 +11,8 @@
     <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
     <style>
         body,html {
-            background-image: url(/static/admin/images/bg/${random(5, '.png')});
+            background: url("/static/admin/images/bg/${random(5, '.png')}") no-repeat;
+            background-size: cover;
         }
         .home-text {
             -webkit-box-sizing: content-box;

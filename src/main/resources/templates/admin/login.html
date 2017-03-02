@@ -11,7 +11,8 @@
     <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
     <style type="text/css">
         body,html {
-            background-image: url(/static/admin/images/bg/${random(5, '.png')});
+            background: url("/static/admin/images/bg/${random(5, '.png')}") no-repeat;
+            background-size: cover;
         }
         .panel-shadow {
             -moz-box-shadow: 0px 0px 10px 0px rgba(39, 49, 65, 0.1);
