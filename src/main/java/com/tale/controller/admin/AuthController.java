@@ -1,6 +1,7 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
+import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
@@ -38,7 +39,11 @@ public class AuthController extends BaseController {
     private LogService logService;
 
     @Route(value = "login", method = HttpMethod.GET)
-    public String login() {
+    public String login(Response response) {
+        if(null != this.user()){
+            response.go("/admin/index");
+            return null;
+        }
         return "admin/login";
     }
 
@@ -57,6 +62,10 @@ public class AuthController extends BaseController {
             if (StringKit.isNotBlank(remeber_me)) {
                 TaleUtils.setCookie(response, user.getUid());
             }
+            Users temp = new Users();
+            temp.setUid(user.getUid());
+            temp.setLogged(DateKit.getCurrentUnixTime());
+            usersService.update(temp);
             logService.save(LogActions.LOGIN, null, request.address(), user.getUid());
         } catch (Exception e) {
             error_count = null == error_count ? 1 : error_count + 1;
