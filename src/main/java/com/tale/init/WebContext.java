@@ -22,6 +22,8 @@ import jetbrick.template.resolver.GlobalResolver;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Tale初始化进程
@@ -41,6 +43,11 @@ public class WebContext implements BeanProcessor, WebContextListener {
         templateEngine.addConfig("jetx.import.macros", "/comm/macros.html");
         // 扫描主题下面的所有自定义宏
         String themeDir = AttachController.CLASSPATH + "templates/themes";
+    	try {
+			themeDir = new URI(themeDir).getPath();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}  
         File[] dir = new File(themeDir).listFiles();
         for(File f : dir){
             if(f.isDirectory() && FileKit.exist(f.getPath() + "/macros.html")){
