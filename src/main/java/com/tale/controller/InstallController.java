@@ -37,6 +37,8 @@ public class InstallController extends BaseController {
     @Inject
     private OptionsService optionsService;
 
+    private boolean dbConn = false;
+
     /**
      * 安装页
      *
@@ -87,6 +89,10 @@ public class InstallController extends BaseController {
 
             if (StringKit.isNotBlank(admin_email) && !TaleUtils.isEmail(admin_email)) {
                 return RestResponse.fail("邮箱格式不正确");
+            }
+
+            if(!dbConn){
+                return RestResponse.fail("请检查数据库连接");
             }
 
             TaleJdbc.injection(Blade.$().ioc());
@@ -143,6 +149,7 @@ public class InstallController extends BaseController {
         TaleJdbc.put("password", db_pass);
         try {
             TaleJdbc.testConn();
+            dbConn = true;
         } catch (Exception e) {
             String msg = "数据库连接失败, 请检查数据库配置";
             if (e instanceof TipException) {
