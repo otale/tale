@@ -7,6 +7,8 @@ import com.tale.utils.ExtClasspathLoader;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -29,6 +31,11 @@ public final class TaleLoader {
     public static void loadThemes(){
         BConfig bConfig = $().bConfig();
         String themeDir = AttachController.CLASSPATH + "templates/themes";
+    	try {
+			themeDir = new URI(themeDir).getPath();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}  
         File[] dir = new File(themeDir).listFiles();
         for(File f : dir){
             if(f.isDirectory() && FileKit.isDirectory(f.getPath() + "/static")){
