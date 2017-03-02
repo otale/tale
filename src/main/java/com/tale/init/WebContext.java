@@ -43,14 +43,14 @@ public class WebContext implements BeanProcessor, WebContextListener {
         templateEngine.addConfig("jetx.import.macros", "/comm/macros.html");
         // 扫描主题下面的所有自定义宏
         String themeDir = AttachController.CLASSPATH + "templates/themes";
-    	try {
-			themeDir = new URI(themeDir).getPath();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}  
+        try {
+            themeDir = new URI(themeDir).getPath();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         File[] dir = new File(themeDir).listFiles();
-        for(File f : dir){
-            if(f.isDirectory() && FileKit.exist(f.getPath() + "/macros.html")){
+        for (File f : dir) {
+            if (f.isDirectory() && FileKit.exist(f.getPath() + "/macros.html")) {
                 templateEngine.addConfig("jetx.import.macros", "/themes/" + f.getName() + "/macros.html");
             }
         }
@@ -68,9 +68,12 @@ public class WebContext implements BeanProcessor, WebContextListener {
         ViewSettings.$().templateEngine(templateEngine);
         if (dbIsOk) {
             TaleConst.OPTIONS.addAll(optionsService.getOptions());
-            TaleConst.INSTALL = true;
+            TaleConst.INSTALL = TaleConst.OPTIONS.getInt("site_is_install", 0) == 1;
             BaseController.THEME = "themes/" + Commons.site_option("site_theme");
             Commons.setSiteService(Blade.$().ioc().getBean(SiteService.class));
+        }
+        if (FileKit.exist(AttachController.CLASSPATH + "install.lock")) {
+            TaleConst.INSTALL = true;
         }
         TaleConst.BCONF = bConfig.config();
     }
