@@ -6,6 +6,7 @@ import com.blade.context.WebContextListener;
 import com.blade.ioc.BeanProcessor;
 import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Inject;
+import com.blade.kit.CollectionKit;
 import com.blade.kit.FileKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.view.ViewSettings;
@@ -26,7 +27,9 @@ import javax.servlet.ServletContext;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Tale初始化进程
@@ -43,7 +46,9 @@ public class WebContext implements BeanProcessor, WebContextListener {
     @Override
     public void init(BConfig bConfig, ServletContext sec) {
         JetbrickTemplateEngine templateEngine = new JetbrickTemplateEngine();
-        templateEngine.addConfig("jetx.import.macros", "/comm/macros.html");
+
+        List<String> macros = new ArrayList<>(8);
+        macros.add("/comm/macros.html");
         // 扫描主题下面的所有自定义宏
         String themeDir = AttachController.CLASSPATH + "templates/themes";
         try {
@@ -54,9 +59,14 @@ public class WebContext implements BeanProcessor, WebContextListener {
         File[] dir = new File(themeDir).listFiles();
         for (File f : dir) {
             if (f.isDirectory() && FileKit.exist(f.getPath() + "/macros.html")) {
-                templateEngine.addConfig("jetx.import.macros", "/themes/" + f.getName() + "/macros.html");
+                String macroName = "/themes/" + f.getName() + "/macros.html";
+                macros.add(macroName);
             }
         }
+        StringBuffer macroBuf = new StringBuffer();
+        macros.forEach(s -> macroBuf.append(',').append(s));
+        templateEngine.addConfig("jetx.import.macros", macroBuf.substring(1));
+
         GlobalResolver resolver = templateEngine.getGlobalResolver();
         resolver.registerFunctions(Commons.class);
         resolver.registerFunctions(Theme.class);
