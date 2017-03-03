@@ -94,15 +94,20 @@ public class MetasServiceImpl implements MetasService {
                 for (Relationships r : rlist) {
                     Contents contents = activeRecord.byId(Contents.class, r.getCid());
                     if (null != contents) {
+                        boolean isUpdate = false;
                         Contents temp = new Contents();
                         temp.setCid(r.getCid());
                         if (type.equals(Types.CATEGORY)) {
                             temp.setCategories(reMeta(name, contents.getCategories()));
+                            isUpdate = true;
                         }
                         if (type.equals(Types.TAG)) {
                             temp.setTags(reMeta(name, contents.getTags()));
+                            isUpdate = true;
                         }
-                        activeRecord.update(temp);
+                        if(isUpdate){
+                            activeRecord.update(temp);
+                        }
                     }
                 }
             }
