@@ -65,8 +65,7 @@ public class MetasServiceImpl implements MetasService {
             metas.setSlug(name);
             metas.setName(name);
             metas.setType(type);
-            Long mid_ = activeRecord.insert(metas);
-            mid = mid_.intValue();
+            mid = activeRecord.insert(metas);
         }
         if (mid != 0) {
             int count = activeRecord.count(new Take(Relationships.class).eq("cid", cid).eq("mid", mid));

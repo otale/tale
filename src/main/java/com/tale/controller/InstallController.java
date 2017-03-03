@@ -1,7 +1,6 @@
 package com.tale.controller;
 
 
-import com.blade.Blade;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.FileKit;
 import com.blade.kit.StringKit;
@@ -14,11 +13,8 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.admin.AttachController;
-import com.tale.dto.JdbcConf;
 import com.tale.exception.TipException;
-import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
-import com.tale.init.TaleMySqlJdbc;
 import com.tale.model.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
@@ -37,8 +33,6 @@ public class InstallController extends BaseController {
     @Inject
     private OptionsService optionsService;
 
-    private boolean dbConn = false;
-
     /**
      * 安装页
      *
@@ -50,9 +44,9 @@ public class InstallController extends BaseController {
         boolean existInstall = FileKit.exist(webRoot + "install.lock");
         int isInstall = TaleConst.OPTIONS.getInt("site_is_install", 0);
         // 已经安装过
-        if(existInstall || isInstall == 1){
+        if (existInstall || isInstall == 1) {
             // 如果设置允许重新安装
-            if("1".equals(TaleConst.OPTIONS.get("allow_install", "0"))){
+            if ("1".equals(TaleConst.OPTIONS.get("allow_install", "0"))) {
                 request.attribute("is_install", false);
             } else {
                 request.attribute("is_install", true);
@@ -67,9 +61,7 @@ public class InstallController extends BaseController {
     @JSON
     public RestResponse doInstall(@QueryParam String site_title, @QueryParam String site_url,
                                   @QueryParam String admin_user, @QueryParam String admin_email,
-                                  @QueryParam String admin_pwd,
-                                  @QueryParam String db_host, @QueryParam String db_name,
-                                  @QueryParam String db_user, @QueryParam String db_pass) {
+                                  @QueryParam String admin_pwd) {
 
         try {
             if (StringKit.isBlank(site_title) ||
@@ -77,13 +69,6 @@ public class InstallController extends BaseController {
                     StringKit.isBlank(admin_user) ||
                     StringKit.isBlank(admin_pwd)) {
                 return RestResponse.fail("请确认网站信息输入完整");
-            }
-
-            if (StringKit.isBlank(db_host) ||
-                    StringKit.isBlank(db_name) ||
-                    StringKit.isBlank(db_user) ||
-                    StringKit.isBlank(db_pass)) {
-                return RestResponse.fail("请确认数据库信息输入完整");
             }
 
             if (admin_pwd.length() < 6 || admin_pwd.length() > 14) {
@@ -94,20 +79,12 @@ public class InstallController extends BaseController {
                 return RestResponse.fail("邮箱格式不正确");
             }
 
-            if(!dbConn){
-                return RestResponse.fail("请检查数据库连接");
-            }
-
-            TaleMySqlJdbc.injection(Blade.$().ioc());
-
             Users users = new Users();
             users.setUsername(admin_user);
             users.setPassword(admin_pwd);
             users.setEmail(admin_email);
 
-            JdbcConf jdbcConf = new JdbcConf(db_host, db_name, db_user, db_pass);
-
-            siteService.initSite(users, jdbcConf);
+            siteService.initSite(users);
 
             if (site_url.endsWith("/")) {
                 site_url = site_url.substring(0, site_url.length() - 1);
@@ -122,40 +99,9 @@ public class InstallController extends BaseController {
             Config config = new Config();
             config.addAll(optionsService.getOptions());
             TaleConst.OPTIONS = config;
-            TaleConst.INSTALL = true;
-            Commons.setSiteService(siteService);
-
+            TaleConst.INSTALL = Boolean.TRUE;
         } catch (Exception e) {
             String msg = "安装失败";
-            if (e instanceof TipException) {
-                msg = e.getMessage();
-            } else {
-                LOGGER.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
-        return RestResponse.ok();
-    }
-
-    /**
-     * 测试数据库连接
-     *
-     * @return
-     */
-    @Route(value = "conn_test", method = HttpMethod.POST)
-    @JSON
-    public RestResponse conn_test(@QueryParam String db_host, @QueryParam String db_name,
-                                  @QueryParam String db_user, @QueryParam String db_pass) {
-
-        String url = "jdbc:mysql://" + db_host + "/" + db_name + "?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull";
-        TaleMySqlJdbc.put("url", url);
-        TaleMySqlJdbc.put("username", db_user);
-        TaleMySqlJdbc.put("password", db_pass);
-        try {
-            TaleMySqlJdbc.testConn();
-            dbConn = true;
-        } catch (Exception e) {
-            String msg = "数据库连接失败, 请检查数据库配置";
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {

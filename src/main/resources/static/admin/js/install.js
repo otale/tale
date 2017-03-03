@@ -40,7 +40,7 @@
                 if(!isValid){
                     tale.hideLoading();
                 }
-                if (isValid && currentIndex == 1) {
+                if (isValid && currentIndex == 0) {
                     isValid = false;
                     var params = $form_container.serialize();
                     tale.showLoading();

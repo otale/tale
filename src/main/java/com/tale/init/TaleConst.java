@@ -20,7 +20,7 @@ public class TaleConst {
     public static String AES_SALT = "0123456789abcdef";
     public static String LOGIN_SESSION_KEY = "login_user";
     public static Config OPTIONS = new Config();
-    public static boolean INSTALL = false;
+    public static Boolean INSTALL = false;
     public static Config BCONF = null;
 
     /**
@@ -52,15 +52,5 @@ public class TaleConst {
      * 要过滤的ip列表
      */
     public static final Set<String> BLOCK_IPS = new HashSet<>(16);
-
-    /**
-     * MYSQL驱动名
-     */
-    public static final String MYSQL_DRIVER_NAME = "com.mysql.jdbc.Driver";
-
-    /**
-     * sqlite驱动名
-     */
-    public static final String SQLITE_DRIVER_NAME = "org.sqlite.JDBC";
 
 }

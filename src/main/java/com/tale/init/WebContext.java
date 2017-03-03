@@ -1,11 +1,12 @@
 package com.tale.init;
 
-import com.blade.Blade;
 import com.blade.config.BConfig;
 import com.blade.context.WebContextListener;
 import com.blade.ioc.BeanProcessor;
 import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Inject;
+import com.blade.jdbc.ActiveRecord;
+import com.blade.jdbc.ar.SampleActiveRecord;
 import com.blade.kit.FileKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.view.ViewSettings;
@@ -17,6 +18,7 @@ import com.tale.ext.AdminCommons;
 import com.tale.ext.Commons;
 import com.tale.ext.JetTag;
 import com.tale.ext.Theme;
+import com.tale.model.ExtSql2o;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import jetbrick.template.JetGlobalContext;
@@ -39,8 +41,6 @@ public class WebContext implements BeanProcessor, WebContextListener {
 
     @Inject
     private OptionsService optionsService;
-
-    private static boolean dbIsOk = false;
 
     @Override
     public void init(BConfig bConfig, ServletContext sec) {
@@ -78,27 +78,25 @@ public class WebContext implements BeanProcessor, WebContextListener {
         TaleConst.MAX_FILE_SIZE = bConfig.config().getInt("app.max-file-size", 20480);
 
         ViewSettings.$().templateEngine(templateEngine);
-        if (dbIsOk) {
-            TaleConst.OPTIONS.addAll(optionsService.getOptions());
-            TaleConst.INSTALL = TaleConst.OPTIONS.getInt("site_is_install", 0) == 1;
-            BaseController.THEME = "themes/" + Commons.site_option("site_theme");
 
-            String ips = TaleConst.OPTIONS.get(Types.BLOCK_IPS, "");
-            if(StringKit.isNotBlank(ips)){
-                TaleConst.BLOCK_IPS.addAll(Arrays.asList(StringKit.split(ips, ",")));
-            }
+        TaleConst.OPTIONS.addAll(optionsService.getOptions());
+        TaleConst.INSTALL = TaleConst.OPTIONS.getInt("site_is_install", 0) == 1;
+        BaseController.THEME = "themes/" + Commons.site_option("site_theme");
 
-            Commons.setSiteService(Blade.$().ioc().getBean(SiteService.class));
-        }
-        if (FileKit.exist(AttachController.CLASSPATH + "install.lock")) {
-            TaleConst.INSTALL = true;
+        String ips = TaleConst.OPTIONS.get(Types.BLOCK_IPS, "");
+        if (StringKit.isNotBlank(ips)) {
+            TaleConst.BLOCK_IPS.addAll(Arrays.asList(StringKit.split(ips, ",")));
         }
         TaleConst.BCONF = bConfig.config();
     }
 
     @Override
     public void register(Ioc ioc) {
-        dbIsOk = TaleMySqlJdbc.injection(ioc);
+        SqliteJdbc.importSql();
+        ExtSql2o sql2o = new ExtSql2o(SqliteJdbc.DB_SRC);
+        ActiveRecord activeRecord = new SampleActiveRecord(sql2o);
+        ioc.addBean(activeRecord);
+        Commons.setSiteService(ioc.getBean(SiteService.class));
     }
 
 }
