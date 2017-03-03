@@ -60,6 +60,7 @@ public class SiteServiceImpl implements SiteService {
             String cp = SiteServiceImpl.class.getClassLoader().getResource("").getPath();
             File lock = new File(cp + "install.lock");
             lock.createNewFile();
+            TaleConst.INSTALL = Boolean.TRUE;
             logService.save(LogActions.INIT_SITE, null, "", uid.intValue());
         } catch (Exception e) {
             throw new TipException("初始化站点失败");

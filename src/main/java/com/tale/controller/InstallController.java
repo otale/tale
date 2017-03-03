@@ -40,19 +40,13 @@ public class InstallController extends BaseController {
      */
     @Route(value = "/", method = HttpMethod.GET)
     public String index(Request request) {
-        String webRoot = AttachController.CLASSPATH;
-        boolean existInstall = FileKit.exist(webRoot + "install.lock");
-        int isInstall = TaleConst.OPTIONS.getInt("site_is_install", 0);
-        // 已经安装过
-        if (existInstall || isInstall == 1) {
-            // 如果设置允许重新安装
-            if ("1".equals(TaleConst.OPTIONS.get("allow_install", "0"))) {
-                request.attribute("is_install", false);
-            } else {
-                request.attribute("is_install", true);
-            }
-        } else {
+        boolean existInstall = FileKit.exist(AttachController.CLASSPATH + "install.lock");
+        int allow_reinstall = TaleConst.OPTIONS.getInt("allow_install", 0);
+
+        if(allow_reinstall == 1){
             request.attribute("is_install", false);
+        } else {
+            request.attribute("is_install", existInstall);
         }
         return "install";
     }
@@ -94,12 +88,10 @@ public class InstallController extends BaseController {
             }
             optionsService.saveOption("site_title", site_title);
             optionsService.saveOption("site_url", site_url);
-            optionsService.saveOption("site_is_install", "1");
 
             Config config = new Config();
             config.addAll(optionsService.getOptions());
             TaleConst.OPTIONS = config;
-            TaleConst.INSTALL = Boolean.TRUE;
         } catch (Exception e) {
             String msg = "安装失败";
             if (e instanceof TipException) {

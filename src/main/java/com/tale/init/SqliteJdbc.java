@@ -1,8 +1,11 @@
 package com.tale.init;
 
+import com.blade.Blade;
 import com.blade.kit.IOKit;
-import com.tale.exception.TipException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -11,18 +14,20 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
- * 数据库操作
- * Created by biezhi on 2017/2/23.
+ * Sqlite 数据库操作
+ * <p>
+ * Created by biezhi on 2017/3/4.
  */
 public final class SqliteJdbc {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SqliteJdbc.class);
 
     private SqliteJdbc() {
     }
 
-    private static final String DB_NAME = "tale.db";
+    public static final String DB_NAME = "tale.db";
     public static String DB_PATH = SqliteJdbc.class.getClassLoader().getResource("").getPath() + DB_NAME;
-
-    public static final String DB_SRC = "jdbc:sqlite://" + DB_PATH;
+    public static String DB_SRC = "jdbc:sqlite://" + DB_PATH;
 
     static {
         try {
@@ -37,6 +42,10 @@ public final class SqliteJdbc {
      */
     public static void importSql() {
         try {
+            if(Blade.$().isDev()){
+                DB_PATH = System.getProperty("user.dir") + "/" + DB_NAME;
+                DB_SRC = "jdbc:sqlite://" + DB_PATH;
+            }
             Connection con = DriverManager.getConnection(DB_SRC);
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='t_options'");
@@ -46,13 +55,14 @@ public final class SqliteJdbc {
                 InputStreamReader isr = new InputStreamReader(new FileInputStream(cp + "schema.sql"), "UTF-8");
                 String sql = IOKit.toString(isr);
                 statement.executeUpdate(sql);
+                LOGGER.info("initialize import database.");
             }
             rs.close();
             statement.close();
             con.close();
+            LOGGER.info("database path is: {}", DB_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new TipException("数据库连接失败, 请检查数据库配置");
+            LOGGER.error("initialize database fail", e);
         }
     }
 

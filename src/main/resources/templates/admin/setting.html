@@ -53,7 +53,7 @@
                                  onclick="allow_reinstall(this);"></div>
                         </div>
                     </div>
-                    <input type="hidden" name="allow_install" id="allow_install"/>
+                    <input type="hidden" name="allow_install" id="allow_install" value="${options.allow_install ?! 0}"/>
                     <div class="clearfix pull-right">
                         <button type="button" class="btn btn-primary waves-effect waves-light" onclick="saveSetting()">
                             保存设置

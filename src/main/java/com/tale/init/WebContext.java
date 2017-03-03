@@ -1,5 +1,6 @@
 package com.tale.init;
 
+import com.blade.Blade;
 import com.blade.config.BConfig;
 import com.blade.context.WebContextListener;
 import com.blade.ioc.BeanProcessor;
@@ -80,12 +81,14 @@ public class WebContext implements BeanProcessor, WebContextListener {
         ViewSettings.$().templateEngine(templateEngine);
 
         TaleConst.OPTIONS.addAll(optionsService.getOptions());
-        TaleConst.INSTALL = TaleConst.OPTIONS.getInt("site_is_install", 0) == 1;
         BaseController.THEME = "themes/" + Commons.site_option("site_theme");
 
         String ips = TaleConst.OPTIONS.get(Types.BLOCK_IPS, "");
         if (StringKit.isNotBlank(ips)) {
             TaleConst.BLOCK_IPS.addAll(Arrays.asList(StringKit.split(ips, ",")));
+        }
+        if (FileKit.exist(AttachController.CLASSPATH + "install.lock")) {
+            TaleConst.INSTALL = Boolean.TRUE;
         }
         TaleConst.BCONF = bConfig.config();
     }
