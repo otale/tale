@@ -18,6 +18,7 @@ import com.tale.dto.LogActions;
 import com.tale.dto.Statistics;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -231,7 +232,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(value = "advanced", method = HttpMethod.POST)
-    public String doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips){
+    public String doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips, @QueryParam String plugin_name){
         // 清除缓存
         if(StringKit.isNotBlank(cache_key)){
             if(cache_key.equals("*")){
@@ -247,6 +248,17 @@ public class IndexController extends BaseController {
         } else {
             optionsService.saveOption(Types.BLOCK_IPS, "");
             TaleConst.BLOCK_IPS.clear();
+        }
+        // 处理卸载插件
+        if(StringKit.isNotBlank(plugin_name)){
+            String key = "plugin_";
+            // 卸载所有插件
+            if(!"*".equals(plugin_name)){
+                key = "plugin_" + plugin_name;
+            } else {
+                optionsService.saveOption(Types.ATTACH_URL, Commons.site_url());
+            }
+            optionsService.deleteOption(key);
         }
         return "admin/advanced";
     }

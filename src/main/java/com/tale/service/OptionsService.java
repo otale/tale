@@ -24,4 +24,9 @@ public interface OptionsService {
      */
     Map<String, String> getOptions();
 
+    /**
+     * 根据key删除配置项
+     * @param key
+     */
+    void deleteOption(String key);
 }
