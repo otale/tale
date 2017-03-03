@@ -18,7 +18,7 @@ import com.tale.dto.JdbcConf;
 import com.tale.exception.TipException;
 import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
-import com.tale.init.TaleJdbc;
+import com.tale.init.TaleMySqlJdbc;
 import com.tale.model.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
@@ -98,7 +98,7 @@ public class InstallController extends BaseController {
                 return RestResponse.fail("请检查数据库连接");
             }
 
-            TaleJdbc.injection(Blade.$().ioc());
+            TaleMySqlJdbc.injection(Blade.$().ioc());
 
             Users users = new Users();
             users.setUsername(admin_user);
@@ -148,11 +148,11 @@ public class InstallController extends BaseController {
                                   @QueryParam String db_user, @QueryParam String db_pass) {
 
         String url = "jdbc:mysql://" + db_host + "/" + db_name + "?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull";
-        TaleJdbc.put("url", url);
-        TaleJdbc.put("username", db_user);
-        TaleJdbc.put("password", db_pass);
+        TaleMySqlJdbc.put("url", url);
+        TaleMySqlJdbc.put("username", db_user);
+        TaleMySqlJdbc.put("password", db_pass);
         try {
-            TaleJdbc.testConn();
+            TaleMySqlJdbc.testConn();
             dbConn = true;
         } catch (Exception e) {
             String msg = "数据库连接失败, 请检查数据库配置";

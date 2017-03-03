@@ -11,7 +11,7 @@ import com.tale.dto.*;
 import com.tale.exception.TipException;
 import com.tale.ext.Theme;
 import com.tale.init.TaleConst;
-import com.tale.init.TaleJdbc;
+import com.tale.init.TaleMySqlJdbc;
 import com.tale.model.*;
 import com.tale.service.*;
 import com.tale.utils.MapCache;
@@ -60,7 +60,7 @@ public class SiteServiceImpl implements SiteService {
 
         try {
             Properties props = new Properties();
-            String cp = TaleJdbc.class.getClassLoader().getResource("").getPath();
+            String cp = TaleMySqlJdbc.class.getClassLoader().getResource("").getPath();
 
             FileOutputStream fos = new FileOutputStream(cp + "jdbc.properties");
 

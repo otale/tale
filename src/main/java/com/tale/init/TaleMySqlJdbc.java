@@ -21,17 +21,17 @@ import java.util.Properties;
  * 数据库操作
  * Created by biezhi on 2017/2/23.
  */
-public final class TaleJdbc {
+public final class TaleMySqlJdbc {
 
     private static final Properties jdbc_prop = new Properties();
 
     public static JdbcConf jdbcConf;
 
-    private TaleJdbc() {
+    private TaleMySqlJdbc() {
     }
 
     static {
-        jdbc_prop.put("driverClassName", "com.mysql.jdbc.Driver");
+        jdbc_prop.put("driverClassName", TaleConst.MYSQL_DRIVER_NAME);
         jdbc_prop.put("initialSize", "5");
         jdbc_prop.put("maxActive", "10");
         jdbc_prop.put("minIdle", "3");
@@ -48,7 +48,7 @@ public final class TaleJdbc {
         jdbc_prop.put("maxPoolPreparedStatementPerConnectionSize", "50");
         jdbc_prop.put("filters", "stat");
 
-        InputStream in = TaleJdbc.class.getClassLoader().getResourceAsStream("jdbc.properties");
+        InputStream in = TaleMySqlJdbc.class.getClassLoader().getResourceAsStream("jdbc.properties");
         Properties props = new Properties();
         try {
             props.load(in);
@@ -109,7 +109,7 @@ public final class TaleJdbc {
                 Class.forName("com.mysql.jdbc.Driver"); //MYSQL驱动
                 Connection con = DriverManager.getConnection(jdbc_prop.getProperty("url"), jdbc_prop.getProperty("username"), jdbc_prop.getProperty("password"));
                 ScriptRunner runner = new ScriptRunner(con, false, true);
-                String cp = TaleJdbc.class.getClassLoader().getResource("").getPath();
+                String cp = TaleMySqlJdbc.class.getClassLoader().getResource("").getPath();
 
                 InputStreamReader isr = new InputStreamReader(new FileInputStream(cp + "schema.sql"), "UTF-8");
                 BufferedReader read = new BufferedReader(isr);

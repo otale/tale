@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mysql.version>5.1.38</mysql.version>
+        <sqlite.version>3.16.1</sqlite.version>
         <druid.version>1.0.24</druid.version>
         <blade.version>1.7.1-beta</blade.version>
         <blade-jdbc.version>0.1.5</blade-jdbc.version>
@@ -31,13 +31,14 @@
             <artifactId>blade-kit</artifactId>
             <version>1.4.1-alpha</version>
         </dependency>
-        
+
         <!-- 数据库操作 -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>${sqlite.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.bladejava</groupId>
             <artifactId>blade-jdbc</artifactId>

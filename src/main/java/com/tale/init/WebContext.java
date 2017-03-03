@@ -6,7 +6,6 @@ import com.blade.context.WebContextListener;
 import com.blade.ioc.BeanProcessor;
 import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Inject;
-import com.blade.kit.CollectionKit;
 import com.blade.kit.FileKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.view.ViewSettings;
@@ -99,7 +98,7 @@ public class WebContext implements BeanProcessor, WebContextListener {
 
     @Override
     public void register(Ioc ioc) {
-        dbIsOk = TaleJdbc.injection(ioc);
+        dbIsOk = TaleMySqlJdbc.injection(ioc);
     }
 
 }

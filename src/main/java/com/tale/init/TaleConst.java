@@ -53,4 +53,14 @@ public class TaleConst {
      */
     public static final Set<String> BLOCK_IPS = new HashSet<>(16);
 
+    /**
+     * MYSQL驱动名
+     */
+    public static final String MYSQL_DRIVER_NAME = "com.mysql.jdbc.Driver";
+
+    /**
+     * sqlite驱动名
+     */
+    public static final String SQLITE_DRIVER_NAME = "org.sqlite.JDBC";
+
 }

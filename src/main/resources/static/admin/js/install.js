@@ -43,27 +43,17 @@
                 if (isValid && currentIndex == 1) {
                     isValid = false;
                     var params = $form_container.serialize();
+                    tale.showLoading();
                     tale.post({
-                        url: '/install/conn_test',
+                        url: '/install',
                         data: params,
                         success: function (result) {
                             if (result && result.success) {
-                                tale.showLoading();
-                                tale.post({
-                                    url: '/install',
-                                    data: params,
-                                    success: function (result) {
-                                        if (result && result.success) {
-                                            isValid = true;
-                                        } else {
-                                            if (result.msg) {
-                                                tale.alertError(result.msg || '安装失败');
-                                            }
-                                        }
-                                    }
-                                });
+                                isValid = true;
                             } else {
-                                tale.alertError(result.msg || '测试连接失败');
+                                if (result.msg) {
+                                    tale.alertError(result.msg || '安装失败');
+                                }
                             }
                         }
                     });
