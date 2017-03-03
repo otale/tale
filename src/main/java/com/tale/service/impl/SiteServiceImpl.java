@@ -23,6 +23,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -152,8 +155,15 @@ public class SiteServiceImpl implements SiteService {
                 String date_str = archive.getDate_str();
                 Date sd = DateKit.dateFormat(date_str, "yyyy年MM月");
                 archive.setDate(sd);
+
                 int start = DateKit.getUnixTimeByDate(sd);
-                int end = DateKit.getUnixTimeByDate(DateKit.dateAdd(DateKit.INTERVAL_MONTH, sd, 1)) - 1;
+
+                Calendar calender = Calendar.getInstance();
+                calender.setTime(sd);
+                calender.add(Calendar.MONTH, 1);
+                Date endSd = calender.getTime();
+
+                int end = DateKit.getUnixTimeByDate(endSd) - 1;
                 List<Contents> contentss = activeRecord.list(new Take(Contents.class)
                         .eq("type", Types.ARTICLE)
                         .eq("status", Types.PUBLISH)
