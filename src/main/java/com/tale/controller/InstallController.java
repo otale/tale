@@ -13,6 +13,7 @@ import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.view.RestResponse;
+import com.tale.controller.admin.AttachController;
 import com.tale.dto.JdbcConf;
 import com.tale.exception.TipException;
 import com.tale.ext.Commons;
@@ -36,6 +37,8 @@ public class InstallController extends BaseController {
     @Inject
     private OptionsService optionsService;
 
+    private boolean dbConn = false;
+
     /**
      * 安装页
      *
@@ -43,10 +46,17 @@ public class InstallController extends BaseController {
      */
     @Route(value = "/", method = HttpMethod.GET)
     public String index(Request request) {
-        String webRoot = Blade.$().webRoot();
-        boolean existInstall = FileKit.exist(webRoot + "/install.lock");
-        if (existInstall) {
-            request.attribute("is_install", !"1".equals(TaleConst.OPTIONS.get("allow_install")));
+        String webRoot = AttachController.CLASSPATH;
+        boolean existInstall = FileKit.exist(webRoot + "install.lock");
+        int isInstall = TaleConst.OPTIONS.getInt("site_is_install", 0);
+        // 已经安装过
+        if(existInstall || isInstall == 1){
+            // 如果设置允许重新安装
+            if("1".equals(TaleConst.OPTIONS.get("allow_install", "0"))){
+                request.attribute("is_install", false);
+            } else {
+                request.attribute("is_install", true);
+            }
         } else {
             request.attribute("is_install", false);
         }
@@ -84,6 +94,10 @@ public class InstallController extends BaseController {
                 return RestResponse.fail("邮箱格式不正确");
             }
 
+            if(!dbConn){
+                return RestResponse.fail("请检查数据库连接");
+            }
+
             TaleJdbc.injection(Blade.$().ioc());
 
             Users users = new Users();
@@ -98,8 +112,12 @@ public class InstallController extends BaseController {
             if (site_url.endsWith("/")) {
                 site_url = site_url.substring(0, site_url.length() - 1);
             }
+            if (!site_url.startsWith("http")) {
+                site_url = "http://".concat(site_url);
+            }
             optionsService.saveOption("site_title", site_title);
             optionsService.saveOption("site_url", site_url);
+            optionsService.saveOption("site_is_install", "1");
 
             Config config = new Config();
             config.addAll(optionsService.getOptions());
@@ -135,6 +153,7 @@ public class InstallController extends BaseController {
         TaleJdbc.put("password", db_pass);
         try {
             TaleJdbc.testConn();
+            dbConn = true;
         } catch (Exception e) {
             String msg = "数据库连接失败, 请检查数据库配置";
             if (e instanceof TipException) {

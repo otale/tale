@@ -1,10 +1,12 @@
 package com.tale.service;
 
+import com.blade.jdbc.model.Paginator;
 import com.tale.dto.*;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
 import com.tale.model.Users;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -31,12 +33,13 @@ public interface SiteService {
     List<Comments> recentComments(int limit);
 
     /**
-     * 最新发表的文章
+     * 根据类型获取文章列表
      *
-     * @param limit
+     * @param type  最新,随机
+     * @param limit 获取条数
      * @return
      */
-    List<Contents> recentContents(int limit);
+    List<Contents> getContens(String type, int limit);
 
     /**
      * 获取后台统计数据
@@ -72,5 +75,29 @@ public interface SiteService {
      * 获取分类/标签列表
      * @return
      */
-    List<MetaDto> metas(String type, String orderBy, int limit);
+    List<MetaDto> getMetas(String seachType, String type, int limit);
+
+    /**
+     * 清楚缓存
+     * @param key
+     */
+    void cleanCache(String key);
+
+    /**
+     * 获取相邻的文章
+     *
+     * @param type  上一篇:prev 下一篇:next
+     * @param cid   当前文章id
+     * @return
+     */
+    Contents getNhContent(String type, Integer cid);
+
+    /**
+     * 获取文章的评论
+     * @param cid
+     * @param page
+     * @param limit
+     * @return
+     */
+    Paginator<Comment> getComments(Integer cid, int page, int limit);
 }

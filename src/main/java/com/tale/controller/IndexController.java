@@ -15,6 +15,7 @@ import com.blade.mvc.http.wrapper.Session;
 import com.blade.mvc.view.RestResponse;
 import com.tale.dto.*;
 import com.tale.exception.TipException;
+import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -69,8 +70,7 @@ public class IndexController extends BaseController {
         }
         if (contents.getAllow_comment()) {
             int cp = request.queryInt("cp", 1);
-            Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 6);
-            request.attribute("comments", commentsPaginator);
+            request.attribute("cp", cp);
         }
         request.attribute("article", contents);
         Integer hits = cache.hget("page", "hits");
@@ -98,13 +98,14 @@ public class IndexController extends BaseController {
     @Route(value = "page/:p", method = HttpMethod.GET)
     public String index(Request request, @PathParam int p, @QueryParam(value = "limit", defaultValue = "12") int limit) {
         p = p < 0 || p > TaleConst.MAX_PAGE ? 1 : p;
-        Take take = new Take(Contents.class).eq("type", Types.ARTICLE)
-                .eq("status", Types.PUBLISH).page(p, limit, "created desc");
+        Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(p, limit, "created desc");
         Paginator<Contents> articles = contentsService.getArticles(take);
         request.attribute("articles", articles);
         if (p > 1) {
             this.title(request, "第" + p + "页");
         }
+        request.attribute("is_home", true);
+        request.attribute("page_prefix", "/page");
         return this.render("index");
     }
 
@@ -121,8 +122,7 @@ public class IndexController extends BaseController {
         request.attribute("is_post", true);
         if (contents.getAllow_comment()) {
             int cp = request.queryInt("cp", 1);
-            Paginator<Comment> commentsPaginator = commentsService.getComments(contents.getCid(), cp, 6);
-            request.attribute("comments", commentsPaginator);
+            request.attribute("cp", cp);
         }
         Integer hits = cache.hget("article", "hits");
         hits = null == hits ? 1 : hits + 1;
@@ -163,6 +163,8 @@ public class IndexController extends BaseController {
         request.attribute("meta", metaDto);
         request.attribute("type", "分类");
         request.attribute("keyword", keyword);
+        request.attribute("is_category", true);
+        request.attribute("page_prefix", "/category/" + keyword);
 
         return this.render("page-category");
     }
@@ -201,6 +203,8 @@ public class IndexController extends BaseController {
         request.attribute("meta", metaDto);
         request.attribute("type", "标签");
         request.attribute("keyword", name);
+        request.attribute("is_tag", true);
+        request.attribute("page_prefix", "/tag/" + name);
 
         return this.render("page-category");
     }
@@ -228,6 +232,7 @@ public class IndexController extends BaseController {
 
         request.attribute("type", "搜索");
         request.attribute("keyword", keyword);
+        request.attribute("page_prefix", "/search/" + keyword);
         return this.render("page-category");
     }
 
@@ -240,6 +245,7 @@ public class IndexController extends BaseController {
     public String archives(Request request) {
         List<Archive> archives = siteService.getArchives();
         request.attribute("archives", archives);
+        request.attribute("is_archive", true);
         return this.render("archives");
     }
 
@@ -298,6 +304,10 @@ public class IndexController extends BaseController {
             return RestResponse.fail(ErrorCode.BAD_REQUEST);
         }
 
+        if(!ref.startsWith(Commons.site_url())){
+            return RestResponse.fail("非法评论来源");
+        }
+
         String token = cache.hget(Types.CSRF_TOKEN, _csrf_token);
         if (StringKit.isBlank(token)) {
             return RestResponse.fail(ErrorCode.BAD_REQUEST);
@@ -319,8 +329,8 @@ public class IndexController extends BaseController {
             return RestResponse.fail("请输入正确的URL格式");
         }
 
-        if (text.length() > 2000) {
-            return RestResponse.fail("请输入2000个字符以内的评论");
+        if (text.length() > 200) {
+            return RestResponse.fail("请输入200个字符以内的评论");
         }
 
         String val = IPKit.getIpAddrByRequest(request.raw()) + ":" + cid;
@@ -352,6 +362,7 @@ public class IndexController extends BaseController {
             }
             // 设置对每个文章1分钟可以评论一次
             cache.hset(Types.COMMENTS_FREQUENCY, val, 1, 60);
+            siteService.cleanCache(Types.C_STATISTICS);
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "评论发布失败";

@@ -1,75 +1,47 @@
 # Tale
 
-> Tale的英文含义为**故事**，我相信每个坚持写Blog的人都是有故事的；中文你叫它 ***塌了*** 也无所谓 🤣。
+![Tale](https://ooo.0o0.ooo/2017/02/27/58b43450c9182.png)
 
+> Tale's English meaning for the **Story**, I believe that every person who insists on writing a blog is a story; Chinese you call it ***Collapse*** does not matter.
 
-`Tale` 使用了轻量级mvc框架 [Blade](https://github.com/biezhi/blade) 开发，默认主题使用了漂亮的 [pinghsu](https://github.com/chakhsu/pinghsu)，如果觉得这个项目不错，请为它[点赞](https://github.com/otale/tale/stargazers)支持。
+`Tale` uses a lightweight mvc framework [Blade](https://github.com/biezhi/blade) for development, the default theme using a beautiful [pinghsu](https://github.com/chakhsu/pinghsu), if you think this project is good, please support it [star]((https://github.com/otale/tale/stargazers)).
 
-
-演示站点：https://tale.biezhi.me
+demo website：https://tale.biezhi.me
 
 [![Build Status](https://img.shields.io/travis/otale/tale.svg?style=flat-square)](https://travis-ci.org/otale/tale)
 [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/otale/tale/blob/master/LICENSE)
 [![@biezhi on weibo](https://img.shields.io/badge/weibo-%40biezhi-red.svg?style=flat-square)](http://weibo.com/u/5238733773)
 
-[开始使用](https://github.com/otale/tale/wiki)&nbsp; | &nbsp;[参与贡献](https://github.com/otale/tale/issues/new)&nbsp; | &nbsp;[捐赠](donate.md)&nbsp; | &nbsp;[English](README_EN.md)
+[QuickStart](https://github.com/otale/tale/wiki/QuickStart)&nbsp; | &nbsp;[Contribution](https://github.com/otale/tale/issues/new)&nbsp; | &nbsp;[Donate](donate.md)&nbsp; | &nbsp;[Video](video.md)&nbsp; | &nbsp;[中文](README_ZH.md)
 
-## 特性
+## Feature
 
-+ 设计简洁，界面美观
-+ Markdown文章发布
-+ 自定义文章链接
-+ 支持多主题
-+ 支持Emoji表情
-+ 支持网易云音乐播放
-+ 支持附件和数据库备份
-+ 部署简单，不依赖Tomcat
++ Simple design, beautiful interface
++ Markdown article published
++ Custom article links
++ Support multiple themes
++ Support plugin extension
++ Support Emoji
++ Support Netease cloud music player
++ Support for attachments and database backups
++ Deployment is simple, do not rely on Tomcat
 
-## 界面预览
+## Interface Preview
 
-![安装1](https://ooo.0o0.ooo/2017/02/26/58b2c3387b7db.png)
+![tale_01.png](https://ooo.0o0.ooo/2017/02/28/58b4687641066.png)
+![tale_022.png](https://ooo.0o0.ooo/2017/02/28/58b4686f37836.png)
+![tale_03.png](https://ooo.0o0.ooo/2017/02/28/58b4686638460.png)
+![tale_04.png](https://ooo.0o0.ooo/2017/02/28/58b4686384fb4.png)
+![tale_05.png](https://ooo.0o0.ooo/2017/02/28/58b46869bff5b.png)
+![tale_06.png](https://ooo.0o0.ooo/2017/02/28/58b46862ec24e.png)
+![tale_07.png](https://ooo.0o0.ooo/2017/02/28/58b46868b1a67.png)
+![tale_08.png](https://ooo.0o0.ooo/2017/02/28/58b46866c5898.png)
 
-![安装2](https://ooo.0o0.ooo/2017/02/26/58b2c33878a63.png)
-
-![安装完成](https://ooo.0o0.ooo/2017/02/26/58b2c3387fced.png)
-
-![后台登录](https://ooo.0o0.ooo/2017/02/25/58b13a82d91e7.png)
-
-![后台仪表盘](https://ooo.0o0.ooo/2017/02/25/58b13a8416e6d.png)
-
-![发布文章](https://ooo.0o0.ooo/2017/02/25/58b13a83bc9f4.png)
-
-![文章管理](https://ooo.0o0.ooo/2017/02/25/58b13a857b10e.png)
-
-![页面管理](https://ooo.0o0.ooo/2017/02/25/58b13a824bc28.png)
-
-![分类标签管理](https://ooo.0o0.ooo/2017/02/25/58b13a829c241.png)
-
-![文件管理](https://ooo.0o0.ooo/2017/02/25/58b13a851741d.png)
-
-![友链管理](https://ooo.0o0.ooo/2017/02/25/58b13ab1756ab.png)
-
-![系统设置](https://ooo.0o0.ooo/2017/02/25/58b13ab231b4d.png)
-
-![个人设置](https://ooo.0o0.ooo/2017/02/25/58b13ab1bba53.png)
-
-![首页](https://ooo.0o0.ooo/2017/02/25/58b13ac013c10.png)
-
-![文章页](https://ooo.0o0.ooo/2017/02/25/58b13ab5d4035.png)
-
-![网易云文章页](https://ooo.0o0.ooo/2017/02/25/58b13ab57cb82.png)
-
-![文章归档页](https://ooo.0o0.ooo/2017/02/25/58b13ab1a1ef6.png)
-
-![友情链接页](https://ooo.0o0.ooo/2017/02/25/58b13ab27ebe7.png)
-
-![关于页](https://ooo.0o0.ooo/2017/02/25/58b13ab170f02.png)
-
-## 开源协议
+## OpenSource Agreement
 
 [MIT](LICENSE)
 
-## 感谢
+## Thanks
 
 + [pkwenda](https://github.com/pkwenda)
 + [typecho](https://github.com/typecho/typecho)

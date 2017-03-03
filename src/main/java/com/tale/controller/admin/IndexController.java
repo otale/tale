@@ -11,12 +11,12 @@ import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.http.Response;
 import com.blade.mvc.view.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.BackResponse;
 import com.tale.dto.LogActions;
 import com.tale.dto.Statistics;
+import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
@@ -30,6 +30,9 @@ import com.tale.service.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +63,7 @@ public class IndexController extends BaseController {
     @Route(value = {"/", "index"}, method = HttpMethod.GET)
     public String index(Request request) {
         List<Comments> comments = siteService.recentComments(5);
-        List<Contents> contents = siteService.recentContents(5);
+        List<Contents> contents = siteService.getContens(Types.RECENT_ARTICLE, 5);
         Statistics statistics = siteService.getStatistics();
         // 取最新的20条日志
         List<Logs> logs = logService.getLogs(1, 20);
@@ -79,6 +82,16 @@ public class IndexController extends BaseController {
     public String setting(Request request) {
         Map<String, String> options = optionsService.getOptions();
         request.attribute("options", options);
+        // 读取主题
+        String themesDir = AttachController.CLASSPATH + "templates/themes";
+        File[] themesFile = new File(themesDir).listFiles();
+        List<String> themems = new ArrayList<>(themesFile.length);
+        for(File f : themesFile){
+            if(f.isDirectory()){
+                themems.add(f.getName());
+            }
+        }
+        request.attribute("themes", themems);
         return "admin/setting";
     }
 
@@ -199,6 +212,43 @@ public class IndexController extends BaseController {
             }
             return RestResponse.fail(msg);
         }
+    }
+
+    /**
+     * 后台高级选项页面
+     *
+     * @return
+     */
+    @Route(value = "advanced", method = HttpMethod.GET)
+    public String advanced(Request request){
+        Map<String, String> options = optionsService.getOptions();
+        request.attribute("options", options);
+        return "admin/advanced";
+    }
+
+    /**
+     * 保存高级选项设置
+     * @return
+     */
+    @Route(value = "advanced", method = HttpMethod.POST)
+    public String doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips){
+        // 清除缓存
+        if(StringKit.isNotBlank(cache_key)){
+            if(cache_key.equals("*")){
+                cache.clean();
+            } else {
+                cache.del(cache_key);
+            }
+        }
+        // 要过过滤的黑名单列表
+        if(StringKit.isNotBlank(block_ips)){
+            optionsService.saveOption(Types.BLOCK_IPS, block_ips);
+            TaleConst.BLOCK_IPS.addAll(Arrays.asList(StringKit.split(block_ips, ",")));
+        } else {
+            optionsService.saveOption(Types.BLOCK_IPS, "");
+            TaleConst.BLOCK_IPS.clear();
+        }
+        return "admin/advanced";
     }
 
 }

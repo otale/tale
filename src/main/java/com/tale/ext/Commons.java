@@ -1,30 +1,22 @@
 package com.tale.ext;
 
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.CollectionKit;
-import com.blade.kit.DateKit;
-import com.blade.kit.StringKit;
-import com.blade.kit.Tools;
+import com.blade.kit.*;
 import com.tale.controller.BaseController;
-import com.tale.dto.Comment;
-import com.tale.dto.MetaDto;
-import com.tale.dto.Types;
 import com.tale.init.TaleConst;
-import com.tale.model.Comments;
-import com.tale.model.Contents;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 主题公共函数
+ * 公共函数
  * <p>
  * Created by biezhi on 2017/2/21.
  */
@@ -34,8 +26,13 @@ public final class Commons {
 
     private static final List EMPTY = new ArrayList(0);
 
+    private static final Random rand = new Random();
+    
+    private static final String TEMPLATES = "/templates/";
+
     public static void setSiteService(SiteService ss) {
         siteService = ss;
+        Theme.setSiteService(ss);
     }
 
     /**
@@ -49,7 +46,7 @@ public final class Commons {
     }
 
     /**
-     * 网站链接
+     * 返回网站首页链接，如：http://tale.biezhi.me
      *
      * @return
      */
@@ -101,6 +98,14 @@ public final class Commons {
     }
 
     /**
+     * 返回站点设置的描述信息
+     * @return
+     */
+    public static String site_description(){
+        return site_option("site_description");
+    }
+
+    /**
      * 截取字符串
      *
      * @param str
@@ -120,7 +125,7 @@ public final class Commons {
      * @return
      */
     public static String theme_url() {
-        return site_url(BaseController.THEME);
+        return Commons.site_url(TEMPLATES + BaseController.THEME);
     }
 
     /**
@@ -130,8 +135,9 @@ public final class Commons {
      * @return
      */
     public static String theme_url(String sub) {
-        return site_url(BaseController.THEME + sub);
+        return Commons.site_url(TEMPLATES + BaseController.THEME + sub);
     }
+
 
     /**
      * 返回gravatar头像地址
@@ -149,27 +155,6 @@ public final class Commons {
     }
 
     /**
-     * 返回文章链接地址
-     *
-     * @param contents
-     * @return
-     */
-    public static String permalink(Contents contents) {
-        return permalink(contents.getCid(), contents.getSlug());
-    }
-
-    /**
-     * 返回文章链接地址
-     *
-     * @param cid
-     * @param slug
-     * @return
-     */
-    public static String permalink(Integer cid, String slug) {
-        return site_url("/article/" + (StringKit.isNotBlank(slug) ? slug : cid.toString()));
-    }
-
-    /**
      * 格式化unix时间戳为日期
      *
      * @param unixTime
@@ -177,6 +162,16 @@ public final class Commons {
      */
     public static String fmtdate(Integer unixTime) {
         return fmtdate(unixTime, "yyyy-MM-dd");
+    }
+
+    /**
+     * 格式化日期
+     * @param date
+     * @param fmt
+     * @return
+     */
+    public static String fmtdate(Date date, String fmt) {
+        return DateKit.dateFormat(date, fmt);
     }
 
     /**
@@ -194,165 +189,13 @@ public final class Commons {
     }
 
     /**
-     * 显示分类
-     *
-     * @param categories
+     * 获取随机数
+     * @param max
+     * @param str
      * @return
      */
-    public static String show_categories(String categories) throws UnsupportedEncodingException {
-        if (StringKit.isNotBlank(categories)) {
-            String[] arr = categories.split(",");
-            StringBuffer sbuf = new StringBuffer();
-            for (String c : arr) {
-                sbuf.append("<a href=\"/category/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
-            }
-            return sbuf.toString();
-        }
-        return show_categories("默认分类");
-    }
-
-    /**
-     * 显示标签
-     *
-     * @param tags
-     * @return
-     */
-    public static String show_tags(String tags) throws UnsupportedEncodingException {
-        if (StringKit.isNotBlank(tags)) {
-            String[] arr = tags.split(",");
-            StringBuffer sbuf = new StringBuffer();
-            for (String c : arr) {
-                sbuf.append("<a href=\"/tag/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
-            }
-            return sbuf.toString();
-        }
-        return "";
-    }
-
-    /**
-     * 截取文章摘要
-     *
-     * @param value 文章内容
-     * @param len   要截取文字的个数
-     * @return
-     */
-    public static String intro(String value, int len) {
-        int pos = value.indexOf("<!--more-->");
-        if (pos != -1) {
-            String html = value.substring(0, pos);
-            return TaleUtils.htmlToText(TaleUtils.mdToHtml(html));
-        } else {
-            String text = TaleUtils.htmlToText(TaleUtils.mdToHtml(value));
-            if (text.length() > len) {
-                return text.substring(0, len);
-            }
-            return text;
-        }
-    }
-
-    /**
-     * 显示文章内容，转换markdown为html
-     *
-     * @param value
-     * @return
-     */
-    public static String article(String value) {
-        if (StringKit.isNotBlank(value)) {
-            value = value.replace("<!--more-->", "\r\n");
-            return TaleUtils.mdToHtml(value);
-        }
-        return "";
-    }
-
-    /**
-     * 显示文章缩略图，顺序为：文章第一张图 -> 随机获取
-     *
-     * @return
-     */
-    public static String show_thumb(Contents contents) {
-        if (null == contents) {
-            return "";
-        }
-        String content = article(contents.getContent());
-        String img = show_thumb(content);
-        if (StringKit.isNotBlank(img)) {
-            return img;
-        }
-        int cid = contents.getCid();
-        int size = cid % 20;
-        size = size == 0 ? 1 : size;
-        return "/static/user/img/rand/" + size + ".jpg";
-    }
-
-    /**
-     * 最新文章
-     *
-     * @param limit
-     * @return
-     */
-    public static List<Contents> recent_articles(int limit) {
-        if (null == siteService) {
-            return EMPTY;
-        }
-        return siteService.recentContents(limit);
-    }
-
-    /**
-     * 最新评论
-     *
-     * @param limit
-     * @return
-     */
-    public static List<Comments> recent_comments(int limit) {
-        if (null == siteService) {
-            return EMPTY;
-        }
-        return siteService.recentComments(limit);
-    }
-
-    /**
-     * 获取分类列表
-     * @return
-     */
-    public static List<MetaDto> categries(int limit){
-        return siteService.metas(Types.CATEGORY, null, limit);
-    }
-
-    /**
-     * 获取所有分类
-     * @return
-     */
-    public static List<MetaDto> categries(){
-        return categries(TaleConst.MAX_POSTS);
-    }
-
-    /**
-     * 获取标签列表
-     * @return
-     */
-    public static List<MetaDto> tags(int limit){
-        return siteService.metas(Types.TAG, null, limit);
-    }
-
-    /**
-     * 获取所有标签
-     * @return
-     */
-    public static List<MetaDto> tags(){
-        return tags(TaleConst.MAX_POSTS);
-    }
-
-    /**
-     * 获取评论at信息
-     * @param coid
-     * @return
-     */
-    public static String comment_at(Integer coid){
-        Comments comments = siteService.getComment(coid);
-        if(null != comments){
-            return "<a href=\"#comment-" + coid + "\">@" + comments.getAuthor() + "</a>";
-        }
-        return "";
+    public static String random(int max, String str){
+        return UUID.random(1, max) + str;
     }
 
     /**
@@ -389,18 +232,6 @@ public final class Commons {
             }
         }
         return "";
-    }
-
-    private static final String[] ICONS = {"bg-ico-book", "bg-ico-game", "bg-ico-note", "bg-ico-chat", "bg-ico-code", "bg-ico-image", "bg-ico-web", "bg-ico-link", "bg-ico-design", "bg-ico-lock"};
-
-    /**
-     * 显示文章图标
-     *
-     * @param cid
-     * @return
-     */
-    public static String show_icon(int cid) {
-        return ICONS[cid % ICONS.length];
     }
 
 }
