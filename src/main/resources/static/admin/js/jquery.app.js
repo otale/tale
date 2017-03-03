@@ -20,6 +20,12 @@
         	localStorage.sidemenuState = 0;
         }
 
+        if($("#wrapper").hasClass("enlarged")) {
+            $(".left ul").removeAttr("style");
+        } else {
+            $(".subdrop").siblings("ul:first").show();
+        }
+
         toggle_slimscroll(".slimscrollleft");
         $("body").trigger("resize");
     },
@@ -70,6 +76,9 @@
 
             // NAVIGATION HIGHLIGHT & OPEN PARENT
             $("#sidebar-menu ul li.has_sub a.active").parents("li:last").children("a:first").addClass("active").trigger("click");
+            if($('li.has_sub a.active').length > 0){
+                $('li.has_sub a.active:eq(0)').trigger("click");
+            }
         },
 
         //init Sidemenu

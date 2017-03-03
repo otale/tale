@@ -37,6 +37,8 @@ public class InstallController extends BaseController {
     @Inject
     private OptionsService optionsService;
 
+    private boolean dbConn = false;
+
     /**
      * 安装页
      *
@@ -46,7 +48,10 @@ public class InstallController extends BaseController {
     public String index(Request request) {
         String webRoot = AttachController.CLASSPATH;
         boolean existInstall = FileKit.exist(webRoot + "install.lock");
-        if (existInstall) {
+        int isInstall = TaleConst.OPTIONS.getInt("site_is_install", 0);
+        // 已经安装过
+        if(existInstall || isInstall == 1){
+            // 如果设置允许重新安装
             if("1".equals(TaleConst.OPTIONS.get("allow_install", "0"))){
                 request.attribute("is_install", false);
             } else {
@@ -89,6 +94,10 @@ public class InstallController extends BaseController {
                 return RestResponse.fail("邮箱格式不正确");
             }
 
+            if(!dbConn){
+                return RestResponse.fail("请检查数据库连接");
+            }
+
             TaleJdbc.injection(Blade.$().ioc());
 
             Users users = new Users();
@@ -108,6 +117,7 @@ public class InstallController extends BaseController {
             }
             optionsService.saveOption("site_title", site_title);
             optionsService.saveOption("site_url", site_url);
+            optionsService.saveOption("site_is_install", "1");
 
             Config config = new Config();
             config.addAll(optionsService.getOptions());
@@ -143,6 +153,7 @@ public class InstallController extends BaseController {
         TaleJdbc.put("password", db_pass);
         try {
             TaleJdbc.testConn();
+            dbConn = true;
         } catch (Exception e) {
             String msg = "数据库连接失败, 请检查数据库配置";
             if (e instanceof TipException) {

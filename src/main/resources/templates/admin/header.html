@@ -72,23 +72,35 @@
                     <li #if(active=='article') class="active" #end>
                         <a href="/admin/article" class="waves-effect #if(active=='article') active #end"><i class="fa fa-list" aria-hidden="true"></i><span> 文章管理 </span></a>
                     </li>
-                    <li #if(active=='page') class="active" #end>
-                        <a href="/admin/page" class="waves-effect #if(active=='page') active #end"><i class="fa fa-file-text" aria-hidden="true"></i><span> 页面管理 </span></a>
-                    </li>
-                    <li #if(active=='comments') class="active" #end>
-                        <a href="/admin/comments" class="waves-effect #if(active=='comments') active #end"><i class="fa fa-comments" aria-hidden="true"></i><span> 评论管理 </span></a>
-                    </li>
-                    <li #if(active=='category') class="active" #end>
-                        <a href="/admin/category" class="waves-effect #if(active=='category') active #end"><i class="fa fa-tags" aria-hidden="true"></i><span> 分类/标签 </span></a>
-                    </li>
+
                     <li #if(active=='attach') class="active" #end>
                         <a href="/admin/attach" class="waves-effect #if(active=='attach') active #end"><i class="fa fa-cloud-upload" aria-hidden="true"></i><span> 文件管理 </span></a>
                     </li>
                     <li #if(active=='links') class="active" #end>
                         <a href="/admin/links" class="waves-effect #if(active=='links') active #end"><i class="fa fa-link" aria-hidden="true"></i><span> 友链管理 </span></a>
                     </li>
+
+                    <li class="has_sub">
+                        <a href="javascript:void(0)" class="waves-effect #if(has_sub=='other') active subdrop #end"><i class="fa fa-cubes"></i><span> 其他管理 </span><span class="pull-right"><i class="fa fa-plus"></i></span></a>
+                        <ul class="list-unstyled">
+                            <li #if(active=='page') class="active" #end>
+                                <a href="/admin/page" class="waves-effect #if(active=='page') active #end"><i class="fa fa-file-text" aria-hidden="true"></i><span> 页面管理 </span></a>
+                            </li>
+                            <li #if(active=='comments') class="active" #end>
+                                <a href="/admin/comments" class="waves-effect #if(active=='comments') active #end"><i class="fa fa-comments" aria-hidden="true"></i><span> 评论管理 </span></a>
+                            </li>
+                            <li #if(active=='category') class="active" #end>
+                                <a href="/admin/category" class="waves-effect #if(active=='category') active #end"><i class="fa fa-tags" aria-hidden="true"></i><span> 分类/标签 </span></a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li #if(active=='setting') class="active" #end>
                         <a href="/admin/setting" class="waves-effect #if(active=='setting') active #end"><i class="fa fa-gear" aria-hidden="true"></i><span> 系统设置 </span></a>
+                    </li>
+
+                    <li #if(active=='advanced') class="active" #end>
+                        <a href="/admin/advanced" class="waves-effect #if(active=='advanced') active #end"><i class="fa fa-sliders" aria-hidden="true"></i><span> 高级选项 </span></a>
                     </li>
 
                     #for(item : plugin_menus)

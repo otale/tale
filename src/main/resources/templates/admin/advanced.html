@@ -1,0 +1,62 @@
+#include('./header.html',{active:'advanced', title:'高级选项'})
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="page-title">高级选项</h4>
+    </div>
+
+    <div class="col-md-8">
+        <div class="panel panel-color panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">高级选项设置</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" id="advanced-form">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">清楚缓存</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="cache_key" placeholder="请输入缓存前缀，输入*删除所有缓存"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">黑名单IP列表</label>
+                        <div class="col-md-9">
+                            <textarea rows="3" class="form-control" name="block_ips"
+                                      placeholder="请输入黑名单IP，如：123.123.33.23,123.123.33.24">${options.block_ips}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="clearfix pull-right">
+                        <button type="button" class="btn btn-primary waves-effect waves-light" onclick="saveSetting()">
+                            保存设置
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+#include('./footer.html')
+<script type="text/javascript">
+    var tale = new $.tale();
+    /**
+     * 保存高级选项设置
+     */
+    function saveSetting() {
+        var param = $('#advanced-form').serialize();
+        tale.post({
+            url: '/admin/setting',
+            data: param,
+            success: function (result) {
+                if (result && result.success) {
+                    tale.alertOk('选项保存成功');
+                } else {
+                    tale.alertError(result.msg || '选项保存失败');
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
