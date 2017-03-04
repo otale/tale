@@ -1,6 +1,5 @@
 package com.tale.init;
 
-import com.blade.Blade;
 import com.blade.config.BConfig;
 import com.blade.context.WebContextListener;
 import com.blade.ioc.BeanProcessor;
@@ -79,7 +78,8 @@ public class WebContext implements BeanProcessor, WebContextListener {
         TaleConst.MAX_FILE_SIZE = bConfig.config().getInt("app.max-file-size", 20480);
 
         ViewSettings.$().templateEngine(templateEngine);
-
+        
+        TaleConst.AES_SALT = bConfig.config().get("app.salt", "0123456789abcdef");
         TaleConst.OPTIONS.addAll(optionsService.getOptions());
         BaseController.THEME = "themes/" + Commons.site_option("site_theme");
 
