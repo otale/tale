@@ -79,7 +79,7 @@ public class WebContext implements BeanProcessor, WebContextListener {
 
         TaleConst.MAX_FILE_SIZE = bConfig.config().getInt("app.max-file-size", 20480);
 
-        TaleConst.AES_SALT = bConfig.config().get("app.salt", StringKit.getRandomChar(16));
+        TaleConst.AES_SALT = bConfig.config().get("app.salt", "012c456789abcdef");
         TaleConst.OPTIONS.addAll(optionsService.getOptions());
         String ips = TaleConst.OPTIONS.get(Types.BLOCK_IPS, "");
         if (StringKit.isNotBlank(ips)) {
