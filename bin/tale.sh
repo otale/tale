@@ -52,11 +52,8 @@ show_log(){
 }
 
 show_help(){
-    echo "\r\n\t欢迎使用Tale Blog"
-    echo "\r\nUsage: sh tale.sh start|stop|reload|status|log"
-    echo "\r\n可选参数: [-env] [-h]"
-    echo "\t-env\t\tjvm相关参数"
-    echo "\t-h\t\t帮助信息"
+    echo -e "\r\n\t欢迎使用Tale Blog"
+    echo -e "\r\nUsage: sh tale.sh start|stop|reload|status|log"
     exit
 }
 
