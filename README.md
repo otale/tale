@@ -25,6 +25,7 @@ demo website：https://tale.biezhi.me
 + Support Netease cloud music player
 + Support for attachments and database backups
 + Deployment is simple, do not rely on Tomcat
++ No database, sqlite embedded
 
 ## Interface Preview
 
