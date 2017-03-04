@@ -75,14 +75,11 @@ public class WebContext implements BeanProcessor, WebContextListener {
         JetGlobalContext context = templateEngine.getGlobalContext();
         context.set("version", bConfig.config().get("app.version", "v1.0"));
 
-        TaleConst.MAX_FILE_SIZE = bConfig.config().getInt("app.max-file-size", 20480);
-
         ViewSettings.$().templateEngine(templateEngine);
-        
+
+        TaleConst.MAX_FILE_SIZE = bConfig.config().getInt("app.max-file-size", 20480);
         TaleConst.AES_SALT = bConfig.config().get("app.salt", "0123456789abcdef");
         TaleConst.OPTIONS.addAll(optionsService.getOptions());
-        BaseController.THEME = "themes/" + Commons.site_option("site_theme");
-
         String ips = TaleConst.OPTIONS.get(Types.BLOCK_IPS, "");
         if (StringKit.isNotBlank(ips)) {
             TaleConst.BLOCK_IPS.addAll(Arrays.asList(StringKit.split(ips, ",")));
@@ -90,6 +87,9 @@ public class WebContext implements BeanProcessor, WebContextListener {
         if (FileKit.exist(AttachController.CLASSPATH + "install.lock")) {
             TaleConst.INSTALL = Boolean.TRUE;
         }
+
+        BaseController.THEME = "themes/" + Commons.site_option("site_theme");
+
         TaleConst.BCONF = bConfig.config();
     }
 
