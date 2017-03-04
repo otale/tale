@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sqlite.version>3.16.1</sqlite.version>
+        <sqlite.version>3.15.1</sqlite.version>
         <druid.version>1.0.24</druid.version>
         <blade.version>1.7.1-beta</blade.version>
         <blade-jdbc.version>0.1.5</blade-jdbc.version>
