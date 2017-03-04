@@ -29,7 +29,7 @@ demo website：https://tale.biezhi.me
 
 ## Interface Preview
 
-![tale_01.png](https://ooo.0o0.ooo/2017/02/28/58b4687641066.png)
+![tale1.png](https://ooo.0o0.ooo/2017/03/04/58ba99604e997.png)
 ![tale_022.png](https://ooo.0o0.ooo/2017/02/28/58b4686f37836.png)
 ![tale_03.png](https://ooo.0o0.ooo/2017/02/28/58b4686638460.png)
 ![tale_04.png](https://ooo.0o0.ooo/2017/02/28/58b4686384fb4.png)
