@@ -3,7 +3,6 @@ package com.tale.controller.admin;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
-import com.blade.kit.json.JSONKit;
 import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.QueryParam;
@@ -58,12 +57,6 @@ public class AuthController extends BaseController {
 
         Integer error_count = cache.get("login_error_count");
         try {
-            error_count = null == error_count ? 0 : error_count;
-
-            if(null != error_count && error_count > 3){
-                return RestResponse.fail("您输入密码已经错误超过3次，请10分钟后尝试");
-            }
-
             Users user = usersService.login(username, password);
             session.attribute(TaleConst.LOGIN_SESSION_KEY, user);
             if (StringKit.isNotBlank(remeber_me)) {
@@ -73,11 +66,12 @@ public class AuthController extends BaseController {
             temp.setUid(user.getUid());
             temp.setLogged(DateKit.getCurrentUnixTime());
             usersService.update(temp);
-            LOGGER.info("登录成功：{}", JSONKit.toJSONString(request.querys()));
-            cache.set("login_error_count", 0);
-            logService.save(LogActions.LOGIN, JSONKit.toJSONString(request.querys()), request.address(), user.getUid());
+            logService.save(LogActions.LOGIN, null, request.address(), user.getUid());
         } catch (Exception e) {
-            error_count+=1;
+            error_count = null == error_count ? 1 : error_count + 1;
+            if(null != error_count && error_count > 3){
+                return RestResponse.fail("您输入密码已经错误超过3次，请10分钟后尝试");
+            }
             cache.set("login_error_count", error_count, 10 * 60);
             String msg = "登录失败";
             if (e instanceof TipException) {

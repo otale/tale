@@ -18,7 +18,6 @@ import com.tale.dto.LogActions;
 import com.tale.dto.Statistics;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -28,7 +27,6 @@ import com.tale.service.LogService;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import com.tale.service.UsersService;
-import jetbrick.util.ShellUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 后台控制器
@@ -202,7 +199,6 @@ public class IndexController extends BaseController {
         if (StringKit.isBlank(bk_type)) {
             return RestResponse.fail("请确认信息输入完整");
         }
-
         try {
             BackResponse backResponse = siteService.backup(bk_type, bk_path, "yyyyMMddHHmm");
             logService.save(LogActions.SYS_BACKUP, null, request.address(), this.getUid());
@@ -235,7 +231,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(value = "advanced", method = HttpMethod.POST)
-    public String doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips, @QueryParam String plugin_name){
+    public String doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips){
         // 清除缓存
         if(StringKit.isNotBlank(cache_key)){
             if(cache_key.equals("*")){
@@ -252,40 +248,7 @@ public class IndexController extends BaseController {
             optionsService.saveOption(Types.BLOCK_IPS, "");
             TaleConst.BLOCK_IPS.clear();
         }
-        // 处理卸载插件
-        if(StringKit.isNotBlank(plugin_name)){
-            String key = "plugin_";
-            // 卸载所有插件
-            if(!"*".equals(plugin_name)){
-                key = "plugin_" + plugin_name;
-            } else {
-                optionsService.saveOption(Types.ATTACH_URL, Commons.site_url());
-            }
-            optionsService.deleteOption(key);
-        }
         return "admin/advanced";
     }
 
-    /**
-     * 重启系统
-     * @param sleep
-     * @return
-     */
-    @Route(value = "reload", method = HttpMethod.GET)
-    public void reload(@QueryParam(value = "sleep", defaultValue = "0") int sleep, Request request){
-        if(sleep < 0 || sleep > 999){
-            sleep = 10;
-        }
-        try {
-            // sh tale.sh reload 10
-            String webHome = new File(AttachController.CLASSPATH).getParent();
-            String cmd = "sh " + webHome + "/bin tale.sh reload " + sleep;
-            LOGGER.info("execute shell: {}", cmd);
-            ShellUtils.shell(cmd);
-            logService.save(LogActions.RELOAD_SYS, "", request.address(), this.getUid());
-            TimeUnit.SECONDS.sleep(sleep);
-        } catch (Exception e){
-            LOGGER.error("重启系统失败", e);
-        }
-    }
 }

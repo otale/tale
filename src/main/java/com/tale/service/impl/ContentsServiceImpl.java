@@ -84,7 +84,8 @@ public class ContentsServiceImpl implements ContentsService {
         String tags = contents.getTags();
         String categories = contents.getCategories();
 
-        Integer cid = activeRecord.insert(contents);
+        Long cid_ = activeRecord.insert(contents);
+        Integer cid = cid_.intValue();
 
         metasService.saveMetas(cid, tags, Types.TAG);
         metasService.saveMetas(cid, categories, Types.CATEGORY);

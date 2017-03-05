@@ -9,6 +9,7 @@ target/
 .settings/
 .classpath
 .project
+bin/
 
 # logs file #
 logs/
