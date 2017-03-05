@@ -20,8 +20,9 @@ public interface SiteService {
      * 初始化站点
      *
      * @param users
+     * @param jdbcConf
      */
-    void initSite(Users users);
+    void initSite(Users users, JdbcConf jdbcConf);
 
     /**
      * 最新收到的评论

@@ -40,20 +40,30 @@
                 if(!isValid){
                     tale.hideLoading();
                 }
-                if (isValid && currentIndex == 0) {
+                if (isValid && currentIndex == 1) {
                     isValid = false;
                     var params = $form_container.serialize();
-                    tale.showLoading();
                     tale.post({
-                        url: '/install',
+                        url: '/install/conn_test',
                         data: params,
                         success: function (result) {
                             if (result && result.success) {
-                                isValid = true;
+                                tale.showLoading();
+                                tale.post({
+                                    url: '/install',
+                                    data: params,
+                                    success: function (result) {
+                                        if (result && result.success) {
+                                            isValid = true;
+                                        } else {
+                                            if (result.msg) {
+                                                tale.alertError(result.msg || '安装失败');
+                                            }
+                                        }
+                                    }
+                                });
                             } else {
-                                if (result.msg) {
-                                    tale.alertError(result.msg || '安装失败');
-                                }
+                                tale.alertError(result.msg || '测试连接失败');
                             }
                         }
                     });

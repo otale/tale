@@ -16,8 +16,6 @@ import com.tale.ext.Theme;
 import com.tale.init.TaleConst;
 import com.tale.model.Contents;
 import com.tale.model.Users;
-import org.commonmark.Extension;
-import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -29,7 +27,6 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.text.Normalizer;
 import java.util.*;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +41,11 @@ public class TaleUtils {
      * 一个月
      */
     private static final int one_month = 30 * 24 * 60 * 60;
+
+    /**
+     * markdown解析器
+     */
+    private static Parser parser = Parser.builder().build();
 
     private static Random r = new Random();
 
@@ -145,11 +147,8 @@ public class TaleUtils {
         if (StringKit.isBlank(markdown)) {
             return "";
         }
-
-        List<Extension> extensions = Arrays.asList(TablesExtension.create());
-        Parser parser = Parser.builder().extensions(extensions).build();
         Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
         String content = renderer.render(document);
         content = Commons.emoji(content);
 

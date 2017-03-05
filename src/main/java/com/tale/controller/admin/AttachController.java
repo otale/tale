@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 附件管理
- *
  * Created by biezhi on 2017/2/21.
  */
 @Controller("admin/attach")
@@ -56,14 +54,6 @@ public class AttachController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    /**
-     * 附件页面
-     *
-     * @param request
-     * @param page
-     * @param limit
-     * @return
-     */
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request, @QueryParam(value = "page", defaultValue = "1") int page,
                         @QueryParam(value = "limit", defaultValue = "12") int limit) {
@@ -74,12 +64,6 @@ public class AttachController extends BaseController {
         return "admin/attach";
     }
 
-    /**
-     * 上传文件接口
-     *
-     * @param request
-     * @return
-     */
     @Route(value = "upload", method = HttpMethod.POST)
     @JSON
     public RestResponse upload(Request request) {
