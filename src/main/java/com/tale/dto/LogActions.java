@@ -23,4 +23,6 @@ public interface LogActions {
 
     String INIT_SITE = "初始化站点";
 
+    String RELOAD_SYS = "重启系统";
+
 }

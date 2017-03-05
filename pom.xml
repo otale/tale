@@ -6,11 +6,11 @@
 
     <groupId>org.junicorn</groupId>
     <artifactId>tale</artifactId>
-    <version>1.03</version>
+    <version>1.2.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mysql.version>5.1.38</mysql.version>
+        <sqlite.version>3.15.1</sqlite.version>
         <druid.version>1.0.24</druid.version>
         <blade.version>1.7.1-beta</blade.version>
         <blade-jdbc.version>0.1.5</blade-jdbc.version>
@@ -31,24 +31,17 @@
             <artifactId>blade-kit</artifactId>
             <version>1.4.1-alpha</version>
         </dependency>
-        
+
         <!-- 数据库操作 -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>${sqlite.version}</version>
         </dependency>
         <dependency>
             <groupId>com.bladejava</groupId>
             <artifactId>blade-jdbc</artifactId>
             <version>${blade-jdbc.version}</version>
-        </dependency>
-
-        <!--连接池-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${druid.version}</version>
         </dependency>
 
         <!-- 模板引擎 -->
@@ -62,6 +55,11 @@
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.commonmark</groupId>
+            <artifactId>commonmark-ext-gfm-tables</artifactId>
             <version>0.8.0</version>
         </dependency>
         <!--web容器-->
@@ -106,15 +104,9 @@
                     <resource>
                         <directory>src/main/java</directory>
                         <filtering>false</filtering>
-                    </resource>
-                    <!-- 把放在根目录下的脚本文件.sh,.bat拷贝到bin目录中 -->
-                    <resource>
-                        <directory>.</directory>
-                        <includes>
-                            <include>**/*.sh</include>
-                            <include>**/*.bat</include>
-                        </includes>
-                        <targetPath>${project.build.directory}/bin</targetPath>
+                        <excludes>
+                            <exclude>**/*.java</exclude>
+                        </excludes>
                     </resource>
                 </resources>
             </build>
@@ -182,9 +174,6 @@
                             <Class-Path>resources/</Class-Path>
                         </manifestEntries>
                     </archive>
-                    <excludes>
-                        <exclude>*.java</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
