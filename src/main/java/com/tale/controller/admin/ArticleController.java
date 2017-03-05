@@ -111,7 +111,7 @@ public class ArticleController extends BaseController {
     public RestResponse publishArticle(@QueryParam String title, @QueryParam String content,
                                        @QueryParam String tags, @QueryParam String categories,
                                        @QueryParam String status, @QueryParam String slug,
-                                       @QueryParam String fmt_type,
+                                       @QueryParam String fmt_type,@QueryParam String thumb_img,
                                        @QueryParam Boolean allow_comment, @QueryParam Boolean allow_ping, @QueryParam Boolean allow_feed) {
 
         Users users = this.user();
@@ -122,6 +122,7 @@ public class ArticleController extends BaseController {
         contents.setStatus(status);
         contents.setSlug(slug);
         contents.setType(Types.ARTICLE);
+        contents.setThumb_img(thumb_img);
         contents.setFmt_type(fmt_type);
         if (null != allow_comment) {
             contents.setAllow_comment(allow_comment);
@@ -175,6 +176,7 @@ public class ArticleController extends BaseController {
                                       @QueryParam String content,@QueryParam String fmt_type,
                                       @QueryParam String tags, @QueryParam String categories,
                                       @QueryParam String status, @QueryParam String slug,
+                                      @QueryParam String thumb_img,
                                       @QueryParam Boolean allow_comment, @QueryParam Boolean allow_ping, @QueryParam Boolean allow_feed) {
 
         Users users = this.user();
@@ -185,6 +187,7 @@ public class ArticleController extends BaseController {
         contents.setStatus(status);
         contents.setFmt_type(fmt_type);
         contents.setSlug(slug);
+        contents.setThumb_img(thumb_img);
         if (null != allow_comment) {
             contents.setAllow_comment(allow_comment);
         }

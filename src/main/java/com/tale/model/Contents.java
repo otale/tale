@@ -40,6 +40,9 @@ public class Contents implements Serializable {
     // 内容类型，markdown或者html
     private String fmt_type;
 
+    // 文章缩略图
+    private String thumb_img;
+
     // 标签列表
     private String tags;
 
@@ -198,5 +201,13 @@ public class Contents implements Serializable {
 
     public void setFmt_type(String fmt_type) {
         this.fmt_type = fmt_type;
+    }
+
+    public String getThumb_img() {
+        return thumb_img;
+    }
+
+    public void setThumb_img(String thumb_img) {
+        this.thumb_img = thumb_img;
     }
 }

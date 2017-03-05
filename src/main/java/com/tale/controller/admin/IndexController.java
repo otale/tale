@@ -235,7 +235,8 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(value = "advanced", method = HttpMethod.POST)
-    public String doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips, @QueryParam String plugin_name){
+    @JSON
+    public RestResponse doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips, @QueryParam String plugin_name){
         // 清除缓存
         if(StringKit.isNotBlank(cache_key)){
             if(cache_key.equals("*")){
@@ -263,7 +264,7 @@ public class IndexController extends BaseController {
             }
             optionsService.deleteOption(key);
         }
-        return "admin/advanced";
+        return RestResponse.ok();
     }
 
     /**

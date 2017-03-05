@@ -1,9 +1,13 @@
 var mditor, htmlEditor;
 var tale = new $.tale();
+var attach_url = $('#attach_url').val();
+// 每60秒自动保存一次草稿
+var refreshIntervalId = setInterval("autoSave()", 60 * 1000);
+
 $(document).ready(function () {
 
     mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
-
+    // 富文本编辑器
     htmlEditor = $('.summernote').summernote({
         lang: 'zh-CN',
         height: 340,
@@ -55,9 +59,6 @@ $(document).ready(function () {
         htmlEditor.summernote("code", "");
     }
 
-    // 每10秒自动保存一次草稿
-    setInterval("autoSave()", 10 * 1000);
-
     /*
      * 切换编辑器
      * */
@@ -106,6 +107,67 @@ $(document).ready(function () {
             off: '关闭'
         }
     });
+
+    if($('#thumb-toggle').attr('thumb_url') != ''){
+        $('#thumb-toggle').toggles({
+            on: true,
+            text: {
+                on: '开启',
+                off: '关闭'
+            }
+        });
+        $('#thumb-toggle').attr('on', 'true');
+        $('#dropzone').css('background-image', 'url('+ $('#thumb-container').attr('thumb_url') +')');
+        $('#dropzone').css('background-size', 'cover');
+        $('#dropzone-container').show();
+    } else {
+        $('#thumb-toggle').toggles({
+            off: true,
+            text: {
+                on: '开启',
+                off: '关闭'
+            }
+        });
+        $('#thumb-toggle').attr('on', 'false');
+        $('#dropzone-container').hide();
+    }
+
+    Dropzone.autoDiscover = false;
+
+    var thumbdropzone = $('.dropzone');
+
+    // 缩略图上传
+    $("#dropzone").dropzone({
+        url: "/admin/attach/upload",
+        filesizeBase:1024,//定义字节算法 默认1000
+        maxFilesize: '10', //MB
+        fallback:function(){
+            tale.alertError('暂不支持您的浏览器上传!');
+        },
+        acceptedFiles: 'image/*',
+        dictFileTooBig:'您的文件超过10MB!',
+        dictInvalidInputType:'不支持您上传的类型',
+        init: function() {
+            this.on('success', function (files, result) {
+                console.log("upload success..");
+                console.log(" result => " + result);
+                if(result && result.success){
+                    var url = attach_url + result.payload[0].fkey;
+                    console.log('url => ' + url);
+                    thumbdropzone.css('background-image', 'url('+ url +')');
+                    thumbdropzone.css('background-size', 'cover');
+                    $('.dz-image').hide();
+                    $('#thumb_img').val(url);
+                }
+            });
+            this.on('error', function (a, errorMessage, result) {
+                if(!result.success && result.msg){
+                    tale.alertError(result.msg || '缩略图上传失败');
+                }
+            });
+        }
+    });
+
 });
 
 /*
@@ -149,6 +211,7 @@ function subArticle(status) {
         tale.alertWarn('请输入文章内容');
         return;
     }
+    clearInterval(refreshIntervalId);
     $('#content-editor').val(content);
     $("#articleForm #status").val(status);
     $("#articleForm #categories").val($('#multiple-sel').val());
@@ -176,37 +239,52 @@ function subArticle(status) {
 
 function allow_comment(obj) {
     var this_ = $(obj);
-    var on = this_.find('.toggle-on.active').length;
-    var off = this_.find('.toggle-off.active').length;
-    if (on == 1) {
-        $('#allow_comment').val(false);
-    }
-    if (off == 1) {
-        $('#allow_comment').val(true);
+    var on = this_.attr('on');
+    if (on == 'true') {
+        this_.attr('on', 'false');
+        $('#allow_comment').val('false');
+    } else {
+        this_.attr('on', 'true');
+        $('#allow_comment').val('true');
     }
 }
 
 function allow_ping(obj) {
     var this_ = $(obj);
-    var on = this_.find('.toggle-on.active').length;
-    var off = this_.find('.toggle-off.active').length;
-    if (on == 1) {
-        $('#allow_ping').val(false);
-    }
-    if (off == 1) {
-        $('#allow_ping').val(true);
+    var on = this_.attr('on');
+    if (on == 'true') {
+        this_.attr('on', 'false');
+        $('#allow_ping').val('false');
+    } else {
+        this_.attr('on', 'true');
+        $('#allow_ping').val('true');
     }
 }
 
 
 function allow_feed(obj) {
     var this_ = $(obj);
-    var on = this_.find('.toggle-on.active').length;
-    var off = this_.find('.toggle-off.active').length;
-    if (on == 1) {
-        $('#allow_feed').val(false);
+    var on = this_.attr('on');
+    if (on == 'true') {
+        this_.attr('on', 'false');
+        $('#allow_feed').val('false');
+    } else {
+        this_.attr('on', 'true');
+        $('#allow_feed').val('true');
     }
-    if (off == 1) {
-        $('#allow_feed').val(true);
+}
+
+function add_thumbimg(obj) {
+    var this_ = $(obj);
+    var on = this_.attr('on');
+    console.log(on);
+    if (on == 'true') {
+        this_.attr('on', 'false');
+        $('#dropzone-container').addClass('hide');
+        $('#thumb_img').val('');
+    } else {
+        this_.attr('on', 'true');
+        $('#dropzone-container').removeClass('hide');
+        $('#dropzone-container').show();
     }
 }

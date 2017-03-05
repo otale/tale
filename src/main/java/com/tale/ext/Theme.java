@@ -287,6 +287,9 @@ public final class Theme {
         if (null == contents) {
             return "";
         }
+        if(StringKit.isNotBlank(contents.getThumb_img())){
+            return contents.getThumb_img();
+        }
         String content = article(contents.getContent());
         String img = Commons.show_thumb(content);
         if (StringKit.isNotBlank(img)) {
