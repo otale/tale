@@ -199,6 +199,7 @@ public class ArticleController extends BaseController {
         contents.setCategories(categories);
         try {
             contentsService.updateArticle(contents);
+            return RestResponse.ok(cid);
         } catch (Exception e) {
             String msg = "文章编辑失败";
             if (e instanceof TipException) {
@@ -208,7 +209,6 @@ public class ArticleController extends BaseController {
             }
             return RestResponse.fail(msg);
         }
-        return RestResponse.ok();
     }
 
     /**

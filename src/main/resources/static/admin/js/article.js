@@ -13,7 +13,7 @@ $(document).ready(function () {
             onImageUpload: function(files) {
                 var data=new FormData();
                 data.append('image_up',files[0]);
-                //调用上传图片
+                tale.showLoading();
                 $.ajax({
                     url: '/admin/attach/upload',     //上传图片请求的路径
                     method: 'POST',            //方法
@@ -22,6 +22,7 @@ $(document).ready(function () {
                     dataType:'json',
                     contentType: false,        //<code class="javascript comments"> 告诉jQuery,在request head里不要设置Content-Type
                     success: function(result) {
+                        tale.hideLoading();
                         if(result && result.success){
                             var url = $('#attach_url').val() + result.payload[0].fkey;
                             console.log('url =>' + url);

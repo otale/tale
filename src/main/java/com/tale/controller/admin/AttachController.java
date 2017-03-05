@@ -117,7 +117,10 @@ public class AttachController extends BaseController {
                 }
             });
             if(errorFiles.size() > 0){
-                return RestResponse.fail();
+                RestResponse restResponse = new RestResponse();
+                restResponse.setSuccess(false);
+                restResponse.setPayload(errorFiles);
+                return restResponse;
             }
             return RestResponse.ok(urls);
         } catch (Exception e) {
