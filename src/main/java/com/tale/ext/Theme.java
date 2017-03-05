@@ -360,7 +360,7 @@ public final class Theme {
      *
      * @return
      */
-    public static List<MetaDto> categries(int limit) {
+    public static List<MetaDto> categories(int limit) {
         if (null == siteService) {
             return EMPTY;
         }
@@ -372,7 +372,7 @@ public final class Theme {
      * @param limit
      * @return
      */
-    public static List<MetaDto> rand_categries(int limit) {
+    public static List<MetaDto> rand_categories(int limit) {
         if (null == siteService) {
             return EMPTY;
         }
@@ -384,8 +384,8 @@ public final class Theme {
      *
      * @return
      */
-    public static List<MetaDto> categries() {
-        return categries(TaleConst.MAX_POSTS);
+    public static List<MetaDto> categories() {
+        return categories(TaleConst.MAX_POSTS);
     }
 
     /**
