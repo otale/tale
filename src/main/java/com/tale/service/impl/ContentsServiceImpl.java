@@ -10,6 +10,7 @@ import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.init.TaleConst;
 import com.tale.model.Contents;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
@@ -51,22 +52,25 @@ public class ContentsServiceImpl implements ContentsService {
     }
 
     @Override
-    public void publish(Contents contents) {
+    public Integer publish(Contents contents) {
         if (null == contents)
             throw new TipException("文章对象为空");
         if (StringKit.isBlank(contents.getTitle()))
             throw new TipException("文章标题不能为空");
+        if (contents.getTitle().length() > TaleConst.MAX_TITLE_COUNT) {
+            throw new TipException("文章标题最多可以输入"+ TaleConst.MAX_TITLE_COUNT +"个字符");
+        }
+
         if (StringKit.isBlank(contents.getContent()))
             throw new TipException("文章内容不能为空");
-        if (contents.getTitle().length() > 200)
-            throw new TipException("文章标题过长");
-        if (contents.getContent().length() > 10000)
-            throw new TipException("文章内容过长");
+        // 最多可以输入5w个字
+        if (contents.getContent().length() > TaleConst.MAX_TEXT_COUNT)
+            throw new TipException("文章内容最多可以输入"+ TaleConst.MAX_TEXT_COUNT +"个字符");
         if (null == contents.getAuthor_id())
             throw new TipException("请登录后发布文章");
 
         if (StringKit.isNotBlank(contents.getSlug())) {
-            if(contents.getSlug().length() < 5){
+            if (contents.getSlug().length() < 5) {
                 throw new TipException("路径太短了");
             }
             if (!TaleUtils.isPath(contents.getSlug())) throw new TipException("您输入的路径不合法");
@@ -88,6 +92,8 @@ public class ContentsServiceImpl implements ContentsService {
 
         metasService.saveMetas(cid, tags, Types.TAG);
         metasService.saveMetas(cid, categories, Types.CATEGORY);
+
+        return cid;
     }
 
     @Override
@@ -98,15 +104,14 @@ public class ContentsServiceImpl implements ContentsService {
         if (StringKit.isBlank(contents.getTitle())) {
             throw new TipException("文章标题不能为空");
         }
+        if (contents.getTitle().length() > TaleConst.MAX_TITLE_COUNT) {
+            throw new TipException("文章标题最多可以输入"+ TaleConst.MAX_TITLE_COUNT +"个字符");
+        }
         if (StringKit.isBlank(contents.getContent())) {
             throw new TipException("文章内容不能为空");
         }
-        if (contents.getTitle().length() > 200) {
-            throw new TipException("文章标题过长");
-        }
-        if (contents.getContent().length() > 10000) {
-            throw new TipException("文章内容过长");
-        }
+        if (contents.getContent().length() > TaleConst.MAX_TEXT_COUNT)
+            throw new TipException("文章内容最多可以输入"+ TaleConst.MAX_TEXT_COUNT +"个字符");
         if (null == contents.getAuthor_id()) {
             throw new TipException("请登录后发布文章");
         }

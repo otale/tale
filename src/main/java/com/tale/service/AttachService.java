@@ -17,7 +17,7 @@ public interface AttachService {
      * @param ftype
      * @param author
      */
-    void save(String fname, String fkey, String ftype, Integer author);
+    Attach save(String fname, String fkey, String ftype, Integer author);
 
     /**
      * 删除附件

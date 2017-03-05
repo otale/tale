@@ -6,6 +6,8 @@
 <link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.css" rel="stylesheet"/>
 <link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet"/>
 <link href="/static/admin/plugins/md/css/style.css" rel="stylesheet"/>
+<link href="http://mditor.com/demo/css/mokit.min.css" rel="stylesheet"/>
+<link href="//cdn.bootcss.com/summernote/0.8.2/summernote.css" rel="stylesheet">
 <style>
     #tags_tagsinput {
         background-color: #fafafa;
@@ -19,6 +21,31 @@
     #tags_addTag {
         margin-top: -5px;
     }
+
+    .mditor .editor{
+        font-size: 14px;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    .note-toolbar {
+        text-align: center;
+    }
+
+    .note-editor.note-frame {
+        border: none;
+    }
+
+    .note-editor .note-toolbar {
+        background-color: #f5f5f5;
+        padding-bottom: 10px;
+    }
+
+    .note-toolbar .note-btn-group {
+        margin: 0;
+    }
+
+    .note-toolbar .note-btn {
+        border: none;
+    }
 </style>
 <div class="row">
     <div class="col-sm-12">
@@ -31,6 +58,9 @@
         </h4>
     </div>
     <div class="col-md-12">
+
+        <input type="hidden" id="attach_url" value="${attach_url}" />
+
         <form id="articleForm" role="form" novalidate="novalidate">
             <input type="hidden" name="categories" id="categories"/>
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
@@ -39,6 +69,7 @@
             <input type="hidden" name="allow_ping" value="${contents.allow_ping ?! true}" id="allow_ping"/>
             <input type="hidden" name="allow_feed" value="${contents.allow_feed ?! true}" id="allow_feed"/>
             <input type="hidden" name="content" id="content-editor"/>
+            <input type="hidden" name="fmt_type" id="fmt_type" value="${contents.fmt_type ?! 'markdown'}"/>
 
             <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
                 <input type="text" class="form-control" placeholder="请输入文章标题（必须）" name="title" required
@@ -71,10 +102,18 @@
                 </select>
             </div>
             <div class="clearfix"></div>
-            <div class="form-group">
-                <textarea style="height: 350px" autocomplete="off" id="text" name="text" class="markdown-textarea">${contents.content ?! ''}</textarea>
+            <div id="md-container" class="form-group col-md-12">
+                <textarea id="md-editor" class="#if(null != contents && contents.fmt_type == 'html') hide #end">${contents.content ?! ''}</textarea>
             </div>
-
+            <div id="html-container" class="form-group col-md-12">
+                <div class="summernote">${contents.content ?! ''}</div>
+            </div>
+            <div class="form-group col-xs-12">
+                <div class="pull-right">
+                    <a id="switch-btn" href="javascript:void(0)" class="btn btn-purple btn-sm waves-effect waves-light switch-editor">#if(null != contents &&
+                        contents.fmt_type == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
+                </div>
+            </div>
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">开启评论</label>
                 <div class="col-sm-8">
@@ -119,15 +158,14 @@
 <script src="/static/admin/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
 
 <script src="/static/admin/plugins/md/js/jquery.scrollto.js"></script>
-<script src="/static/admin/plugins/md/js/pagedown.js"></script>
-<script src="/static/admin/plugins/md/js/pagedown-extra.js"></script>
-<script src="/static/admin/plugins/md/js/diff.js"></script>
-<script src="/static/admin/plugins/md/js/md.js"></script>
+<script src="http://mditor.com/demo/js/mditor.min.js"></script>
+<script src="//cdn.bootcss.com/wysihtml5/0.3.0/wysihtml5.min.js"></script>
+<script src="//cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
+<script src="//cdn.bootcss.com/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
 
 <script src="//cdn.bootcss.com/multi-select/0.9.12/js/jquery.multi-select.min.js"></script>
 <script src="//cdn.bootcss.com/select2/3.4.8/select2.min.js"></script>
 <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
-<script src="/static/admin/js/article.js"></script>
-
+<script src="/static/admin/js/article.js?v=${version}" type="text/javascript"></script>
 </body>
 </html>

@@ -17,6 +17,14 @@ public class Attach implements Serializable {
     private Integer author_id;
     private Integer created;
 
+    public Attach(){
+
+    }
+
+    public Attach(String fname) {
+        this.fname = fname;
+    }
+
     public Integer getId() {
         return id;
     }

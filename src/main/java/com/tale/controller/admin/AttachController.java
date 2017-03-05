@@ -77,6 +77,7 @@ public class AttachController extends BaseController {
     /**
      * 上传文件接口
      *
+     *  返回格式
      * @param request
      * @return
      */
@@ -90,7 +91,8 @@ public class AttachController extends BaseController {
         Integer uid = users.getUid();
         Map<String, FileItem> fileItemMap = request.fileItems();
         Collection<FileItem> fileItems = fileItemMap.values();
-        List<String> errorFiles = new ArrayList<>();
+        List<Attach> errorFiles = new ArrayList<>();
+        List<Attach> urls = new ArrayList<>();
         try {
             fileItems.forEach((FileItem f) -> {
                 String fname = f.fileName();
@@ -107,16 +109,26 @@ public class AttachController extends BaseController {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    attachService.save(fname, fkey, ftype, uid);
+                    Attach attach = attachService.save(fname, fkey, ftype, uid);
+                    urls.add(attach);
                     siteService.cleanCache(Types.C_STATISTICS);
                 } else {
-                    errorFiles.add(fname);
+                    errorFiles.add(new Attach(fname));
                 }
             });
+            if(errorFiles.size() > 0){
+                return RestResponse.fail();
+            }
+            return RestResponse.ok(urls);
         } catch (Exception e) {
-            return RestResponse.fail();
+            String msg = "文件上传失败";
+            if(e instanceof TipException){
+                msg = e.getMessage();
+            } else {
+                LOGGER.error(msg, e);
+            }
+            return RestResponse.fail(msg);
         }
-        return RestResponse.ok(errorFiles);
     }
 
     @Route(value = "delete")

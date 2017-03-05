@@ -28,7 +28,7 @@ public interface ContentsService {
      * 发布文章
      * @param contents
      */
-    void publish(Contents contents);
+    Integer publish(Contents contents);
 
     /**
      * 编辑文章

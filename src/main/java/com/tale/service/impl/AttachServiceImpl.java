@@ -19,7 +19,7 @@ public class AttachServiceImpl implements AttachService {
     private ActiveRecord activeRecord;
 
     @Override
-    public void save(String fname, String fkey, String ftype, Integer author) {
+    public Attach save(String fname, String fkey, String ftype, Integer author) {
         Attach attach = new Attach();
         attach.setFname(fname);
         attach.setAuthor_id(author);
@@ -27,6 +27,7 @@ public class AttachServiceImpl implements AttachService {
         attach.setFtype(ftype);
         attach.setCreated(DateKit.getCurrentUnixTime());
         activeRecord.insert(attach);
+        return attach;
     }
 
     @Override

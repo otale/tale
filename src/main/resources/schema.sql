@@ -16,7 +16,8 @@ CREATE TABLE t_comments (coid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, cid IN
 
 -- 表：t_contents
 DROP TABLE IF EXISTS t_contents;
-CREATE TABLE t_contents (cid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, title VARCHAR (255) NOT NULL, slug VARCHAR (255) CONSTRAINT idx_u_slug UNIQUE, created INTEGER (10) NOT NULL, modified INTEGER (10), content TEXT UNIQUE, author_id INTEGER (10) NOT NULL, type VARCHAR (16) NOT NULL, status VARCHAR (16) NOT NULL, tags VARCHAR (200), categories VARCHAR (200), hits INTEGER (10) DEFAULT (0), comments_num INTEGER (1) DEFAULT (0), allow_comment INTEGER (1) DEFAULT (1), allow_ping INTEGER (1), allow_feed INTEGER (1));
+
+CREATE TABLE t_contents ( cid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, title VARCHAR (255) NOT NULL, slug VARCHAR (255) CONSTRAINT idx_u_slug UNIQUE, created INTEGER (10) NOT NULL, modified INTEGER (10), content TEXT UNIQUE, author_id INTEGER (10) NOT NULL, type VARCHAR (16) NOT NULL, status VARCHAR (16) NOT NULL, fmt_type VARCHAR (16) DEFAULT ('markdown'), tags VARCHAR (200), categories VARCHAR (200), hits INTEGER (10) DEFAULT (0), comments_num INTEGER (1) DEFAULT (0), allow_comment INTEGER (1) DEFAULT (1), allow_ping INTEGER (1), allow_feed INTEGER (1) );
 INSERT INTO t_contents (cid, title, slug, created, modified, content, author_id, type, status, tags, categories, hits, comments_num, allow_comment, allow_ping, allow_feed) VALUES (1, '关于', 'about', 1487853610, 1487872488, '### Hello World
 
 这是我的关于页面
