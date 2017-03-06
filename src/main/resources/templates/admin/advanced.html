@@ -1,4 +1,5 @@
 #include('./header.html',{active:'advanced', title:'高级选项'})
+<link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
 <div class="row">
     <div class="col-sm-12">
         <h4 class="page-title">高级选项</h4>
@@ -33,6 +34,25 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">伪静态设置</label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <div class="input-group-addon">${site_url()}/article/123</div>
+                                <input type="text" name="rewrite_url" class="form-control" placeholder=".html">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">允许重新安装</label>
+                        <div class="col-md-9">
+                            <div class="toggle toggle-success allow-${options.allow_install}"
+                                 onclick="allow_reinstall(this);"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="allow_install" id="allow_install" value="${options.allow_install ?! 0}"/>
+
                     <div class="clearfix pull-right">
                         <button type="button" class="btn btn-primary waves-effect waves-light" onclick="saveSetting()">
                             保存设置
@@ -64,6 +84,7 @@
 
 </div>
 #include('./footer.html')
+<script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
 <script type="text/javascript">
     var tale = new $.tale();
     /**
@@ -113,6 +134,34 @@
             }
         });
     }
+
+    /**
+     * 设置是否允许重新安装
+     */
+    function allow_reinstall(obj) {
+        var isInstall = $('#allow_install').val();
+        if(isInstall==0){
+            $('#allow_install').val(1);
+        } else {
+            $('#allow_install').val(0);
+        }
+    }
+
+    $('.allow-1').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+
+    $('.allow-0').toggles({
+        off: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
 
 </script>
 </body>

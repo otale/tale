@@ -1,5 +1,6 @@
 package com.tale.controller.admin;
 
+import com.blade.Blade;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.kit.Tools;
@@ -236,7 +237,9 @@ public class IndexController extends BaseController {
      */
     @Route(value = "advanced", method = HttpMethod.POST)
     @JSON
-    public RestResponse doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips, @QueryParam String plugin_name){
+    public RestResponse doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips,
+                                   @QueryParam String plugin_name, @QueryParam String rewrite_url,
+                                   @QueryParam String allow_install){
         // 清除缓存
         if(StringKit.isNotBlank(cache_key)){
             if(cache_key.equals("*")){
@@ -264,6 +267,24 @@ public class IndexController extends BaseController {
             }
             optionsService.deleteOption(key);
         }
+        // 是否允许重新安装
+        if(StringKit.isNotBlank(allow_install)){
+            optionsService.saveOption("allow_install", allow_install);
+            TaleConst.OPTIONS.asMap().put("allow_install", allow_install);
+        }
+
+        String db_rewrite = TaleConst.OPTIONS.get("rewrite_url", "");
+        if(db_rewrite.length() > 0){
+            Blade.$().delRoute("/:pagename" + rewrite_url);
+            Blade.$().routeMatcher().update();
+        }
+
+        if(StringKit.isBlank(rewrite_url)){
+            Blade.$().route("/:pagename" + rewrite_url, com.tale.controller.IndexController.class, "page");
+            Blade.$().routeMatcher().update();
+        }
+
+        optionsService.saveOption("rewrite_url", rewrite_url);
         return RestResponse.ok();
     }
 

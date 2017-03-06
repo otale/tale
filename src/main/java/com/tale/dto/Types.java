@@ -25,6 +25,8 @@ public interface Types {
 
     String C_STATISTICS = "sys:statistics";
 
+    String C_ARTICLE_HITS = "article:hits";
+
     String NEXT = "next";
     String PREV = "prev";
 
@@ -37,4 +39,5 @@ public interface Types {
      * 网站要过滤，禁止访问的ip列表
      */
     String BLOCK_IPS = "site_block_ips";
+
 }
