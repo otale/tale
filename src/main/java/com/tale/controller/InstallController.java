@@ -56,7 +56,10 @@ public class InstallController extends BaseController {
     public RestResponse doInstall(@QueryParam String site_title, @QueryParam String site_url,
                                   @QueryParam String admin_user, @QueryParam String admin_email,
                                   @QueryParam String admin_pwd) {
-
+        if(FileKit.exist(AttachController.CLASSPATH + "install.lock")
+                && TaleConst.OPTIONS.getInt("allow_install", 0)!=1){
+            return RestResponse.fail("请勿重复安装");
+        }
         try {
             if (StringKit.isBlank(site_title) ||
                     StringKit.isBlank(site_url) ||
