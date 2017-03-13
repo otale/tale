@@ -13,3 +13,6 @@ bin/
 
 # logs file #
 logs/
+
+# database file #
+tale.db
