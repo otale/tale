@@ -91,6 +91,8 @@ public class InstallController extends BaseController {
             }
             optionsService.saveOption("site_title", site_title);
             optionsService.saveOption("site_url", site_url);
+            optionsService.saveOption("site_logo", "/templates/themes/default/static/img/logo.png");
+            optionsService.saveOption("site_author", site_title);
 
             Config config = new Config();
             config.addAll(optionsService.getOptions());
