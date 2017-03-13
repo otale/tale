@@ -5,8 +5,12 @@
 
 <link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.css" rel="stylesheet"/>
 <link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet"/>
-<link href="/static/admin/plugins/md/css/style.css" rel="stylesheet"/>
-<style>
+<link href="//unpkg.com/mditor@1.0.8/dist/css/mditor.min.css" rel="stylesheet"/>
+
+<link href="//cdn.bootcss.com/summernote/0.8.2/summernote.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
+
+<style rel="stylesheet">
     #tags_tagsinput {
         background-color: #fafafa;
         border: 1px solid #eeeeee;
@@ -18,6 +22,52 @@
 
     #tags_addTag {
         margin-top: -5px;
+    }
+
+    .mditor .editor{
+        font-size: 14px;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    .note-toolbar {
+        text-align: center;
+    }
+
+    .note-editor.note-frame {
+        border: none;
+    }
+
+    .note-editor .note-toolbar {
+        background-color: #f5f5f5;
+        padding-bottom: 10px;
+    }
+
+    .note-toolbar .note-btn-group {
+        margin: 0;
+    }
+
+    .note-toolbar .note-btn {
+        border: none;
+    }
+
+    #articleForm #dropzone {
+        min-height: 200px;
+        background-color: #dbdde0;
+        line-height:200px;
+        margin-bottom: 10px;
+    }
+    #articleForm .dropzone {
+        border: 1px dashed #8662c6;
+        border-radius: 5px;
+        background: white;
+    }
+    #articleForm .dropzone .dz-message {
+        font-weight: 400;
+    }
+    #articleForm .dropzone .dz-message .note {
+        font-size: 0.8em;
+        font-weight: 200;
+        display: block;
+        margin-top: 1.4rem;
     }
 </style>
 <div class="row">
@@ -31,6 +81,9 @@
         </h4>
     </div>
     <div class="col-md-12">
+
+        <input type="hidden" id="attach_url" value="${attach_url}" />
+
         <form id="articleForm" role="form" novalidate="novalidate">
             <input type="hidden" name="categories" id="categories"/>
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
@@ -39,6 +92,7 @@
             <input type="hidden" name="allow_ping" value="${contents.allow_ping ?! true}" id="allow_ping"/>
             <input type="hidden" name="allow_feed" value="${contents.allow_feed ?! true}" id="allow_feed"/>
             <input type="hidden" name="content" id="content-editor"/>
+            <input type="hidden" name="fmt_type" id="fmt_type" value="${contents.fmt_type ?! 'markdown'}"/>
 
             <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
                 <input type="text" class="form-control" placeholder="请输入文章标题（必须）" name="title" required
@@ -71,15 +125,26 @@
                 </select>
             </div>
             <div class="clearfix"></div>
-            <div class="form-group">
-                <textarea style="height: 350px" autocomplete="off" id="text" name="text" class="markdown-textarea">${contents.content ?! ''}</textarea>
+
+            <div class="form-group col-xs-12">
+                <div class="pull-right">
+                    <a id="switch-btn" href="javascript:void(0)" class="btn btn-purple btn-sm waves-effect waves-light switch-editor">#if(null != contents &&
+                        contents.fmt_type == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
+                </div>
+            </div>
+
+            <div id="md-container" class="form-group col-md-12">
+                <textarea id="md-editor" class="#if(null != contents && contents.fmt_type == 'html') hide #end">${contents.content ?! ''}</textarea>
+            </div>
+            <div id="html-container" class="form-group col-md-12">
+                <div class="summernote">${contents.content ?! ''}</div>
             </div>
 
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">开启评论</label>
                 <div class="col-sm-8">
                     <div class="toggle toggle-success allow-${contents.allow_comment ?! true}"
-                         onclick="allow_comment(this);"></div>
+                         onclick="allow_comment(this);" on="${contents.allow_comment ?! true}"></div>
                 </div>
             </div>
 
@@ -87,7 +152,7 @@
                 <label class="col-sm-4">允许Ping</label>
                 <div class="col-sm-8">
                     <div class="toggle toggle-success allow-${contents.allow_ping ?! true}"
-                         onclick="allow_ping(this);"></div>
+                         onclick="allow_ping(this);" on="${contents.allow_ping ?! true}"></div>
                 </div>
             </div>
 
@@ -95,8 +160,24 @@
                 <label class="col-sm-4">允许订阅</label>
                 <div class="col-sm-8">
                     <div class="toggle toggle-success allow-${contents.allow_feed ?! true}"
-                         onclick="allow_feed(this);"></div>
+                         onclick="allow_feed(this);" on="${contents.allow_feed ?! true}"></div>
                 </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label class="col-sm-5">添加缩略图</label>
+                <div class="col-sm-7">
+                    <div id="thumb-toggle" class="toggle toggle-success" on="false" thumb_url="${contents.thumb_img ?! ''}" onclick="add_thumbimg(this);"></div>
+                </div>
+            </div>
+
+            <div id="dropzone-container" class="form-group col-md-12 hide">
+                <div class="dropzone dropzone-previews" id="dropzone">
+                    <div class="dz-message">
+                        <p>可以为你的文章添加一张缩略图 ;)</p>
+                    </div>
+                </div>
+                <input type="hidden" name="thumb_img" id="thumb_img"/>
             </div>
 
             <div class="clearfix"></div>
@@ -118,16 +199,16 @@
 <script src="/static/admin/plugins/tagsinput/jquery.tagsinput.min.js"></script>
 <script src="/static/admin/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
 
-<script src="/static/admin/plugins/md/js/jquery.scrollto.js"></script>
-<script src="/static/admin/plugins/md/js/pagedown.js"></script>
-<script src="/static/admin/plugins/md/js/pagedown-extra.js"></script>
-<script src="/static/admin/plugins/md/js/diff.js"></script>
-<script src="/static/admin/plugins/md/js/md.js"></script>
+<script src="//unpkg.com/mditor@1.0.8/dist/js/mditor.min.js"></script>
+<script src="//cdn.bootcss.com/wysihtml5/0.3.0/wysihtml5.min.js"></script>
+<script src="//cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
+<script src="//cdn.bootcss.com/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
 
 <script src="//cdn.bootcss.com/multi-select/0.9.12/js/jquery.multi-select.min.js"></script>
 <script src="//cdn.bootcss.com/select2/3.4.8/select2.min.js"></script>
 <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
-<script src="/static/admin/js/article.js"></script>
+<script src="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.js"></script>
 
+<script src="/static/admin/js/article.js?v=${version}" type="text/javascript"></script>
 </body>
 </html>

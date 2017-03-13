@@ -45,7 +45,10 @@
                         <input name="file" type="file" multiple="multiple">
                     </div>
                     <div class="dz-message">
-                        将文件拖至此处或点击上传.
+                        <p>将文件拖至此处或点击上传.${attach_url}</p>
+                        <p>
+                            <span style="font-size: 16px; color: #d0d0d0;">一次最多可以上传10个文件</span>
+                        </p>
                     </div>
                 </form>
             </div>
@@ -64,9 +67,9 @@
 
         #for(attach : attachs.list)
         <div class="col-md-2 text-center m-t-10">
-            <a href="${site_url(attach.fkey)}" target="_blank">
+            <a href="${attach_url}${attach.fkey}" target="_blank">
                 <img class="attach-img"
-                     src="#if(attach.ftype == 'image') ${attach.fkey} #else /static/admin/images/attach.png #end"
+                     src="#if(attach.ftype == 'image') ${attach_url}${attach.fkey} #else /static/admin/images/attach.png #end"
                      title="${attach.fname}"/>
             </a>
             <div class="clearfix m-t-10">
@@ -74,7 +77,7 @@
                       data-original-title="${attach.fname}">${substr(attach.fname, 12)}</span>
             </div>
             <div class="clearfix">
-                <button url="${site_url(attach.fkey)}" type="button"
+                <button url="${attach_url}${attach.fkey}" type="button"
                         class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
                     <i class="fa fa-copy"></i> <span>复制</span>
                 </button>
@@ -85,9 +88,7 @@
             </div>
         </div>
         #end
-
         #call pageAdminNav(attachs)
-
         #end
     </div>
 </div>
@@ -103,12 +104,28 @@
 
     $("#dropzone").dropzone({
         url: "/admin/attach/upload",
-        init: function () {
-            this.on("success", function (file) {
-                console.log(file);
-                setTimeout(function () {
-                    window.location.reload();
-                }, 200);
+        filesizeBase:1024,//定义字节算法 默认1000
+        maxFiles: $.constant().MAX_FILES,//最大文件数量
+        maxFilesize: '${max_file_size}', //MB
+        fallback:function(){
+            tale.alertError('暂不支持您的浏览器上传!');
+        },
+        uploadMultiple: true,
+        dictFileTooBig:'您的文件超过'+ ${max_file_size} +'MB!',
+        dictInvalidInputType:'不支持您上传的类型',
+        dictMaxFilesExceeded:'您的文件超过'+ $.constant().MAX_FILES+'个!',
+        init: function() {
+            this.on('queuecomplete', function (files) {
+                tale.alertOkAndReload('上传成功');
+            });
+            this.on('error', function (a, errorMessage, result) {
+                if(!result.success && result.msg){
+                    tale.alertError(result.msg || '上传失败');
+                }
+            });
+            this.on('maxfilesreached', function () {
+                this.removeAllFiles(true);
+                tale.alertWarn('文件数量超出限制');
             });
         }
     });
@@ -128,13 +145,13 @@
 
     function delAttach(id) {
         tale.alertConfirm({
-            title:'确定删除该附件吗?',
+            title: '确定删除该附件吗?',
             then: function () {
                 tale.post({
-                    url : '/admin/attach/delete',
+                    url: '/admin/attach/delete',
                     data: {id: id},
                     success: function (result) {
-                        if(result && result.success){
+                        if (result && result.success) {
                             tale.alertOkAndReload('附件删除成功');
                         } else {
                             tale.alertError(result.msg || '附件删除失败');

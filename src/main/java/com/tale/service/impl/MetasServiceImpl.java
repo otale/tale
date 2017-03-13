@@ -8,12 +8,10 @@ import com.blade.kit.StringKit;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.init.TaleConst;
 import com.tale.model.Contents;
 import com.tale.model.Metas;
 import com.tale.model.Relationships;
 import com.tale.service.MetasService;
-import com.tale.utils.TaleUtils;
 
 import java.util.List;
 
@@ -27,22 +25,6 @@ public class MetasServiceImpl implements MetasService {
     public List<Metas> getMetas(String types) {
         if (StringKit.isNotBlank(types)) {
             return activeRecord.list(new Take(Metas.class).eq("type", types).orderby("sort desc, mid desc"));
-        }
-        return null;
-    }
-
-    @Override
-    public List<MetaDto> getMetaList(String type, String orderby, int limit) {
-        if (StringKit.isNotBlank(type)) {
-            if(StringKit.isBlank(orderby)){
-                orderby = "count desc, a.mid desc";
-            }
-            if(limit < 1 || limit > TaleConst.MAX_POSTS){
-                limit = 10;
-            }
-            String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
-                    "where a.type = ? group by a.mid order by ? limit ?";
-            return activeRecord.list(MetaDto.class, sql, type, orderby, limit);
         }
         return null;
     }
@@ -83,8 +65,7 @@ public class MetasServiceImpl implements MetasService {
             metas.setSlug(name);
             metas.setName(name);
             metas.setType(type);
-            Long mid_ = activeRecord.insert(metas);
-            mid = mid_.intValue();
+            mid = activeRecord.insert(metas);
         }
         if (mid != 0) {
             int count = activeRecord.count(new Take(Relationships.class).eq("cid", cid).eq("mid", mid));
@@ -112,15 +93,20 @@ public class MetasServiceImpl implements MetasService {
                 for (Relationships r : rlist) {
                     Contents contents = activeRecord.byId(Contents.class, r.getCid());
                     if (null != contents) {
+                        boolean isUpdate = false;
                         Contents temp = new Contents();
                         temp.setCid(r.getCid());
                         if (type.equals(Types.CATEGORY)) {
                             temp.setCategories(reMeta(name, contents.getCategories()));
+                            isUpdate = true;
                         }
                         if (type.equals(Types.TAG)) {
                             temp.setTags(reMeta(name, contents.getTags()));
+                            isUpdate = true;
                         }
-                        activeRecord.update(temp);
+                        if(isUpdate){
+                            activeRecord.update(temp);
+                        }
                     }
                 }
             }

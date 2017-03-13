@@ -15,11 +15,11 @@
 
                 #tag social("github")
                 <a class="social github" target="blank"
-                   href="http://github.com/${site_option('social_github')}">Github</a>
+                   href="https://github.com/${site_option('social_github')}">Github</a>
                 #end
 
                 #tag social("twitter")
-                <a class="social twitter" target="blank" href="http://weibo.com/${site_option('social_twitter')}">Twitter</a>
+                <a class="social twitter" target="blank" href="https://twitter.com/${site_option('social_twitter')}">Twitter</a>
                 #end
             </div>
         </div>
@@ -29,7 +29,7 @@
             <div class="meta-item meta-copyright">
                 <div class="meta-copyright-info">
                     <a href="${site_url()}" class="info-logo">
-                        <img src="/static/user/img/logo.png" alt="${site_title()}">
+                        <img src="/templates/themes/default/static/img/logo.png" alt="${site_title()}">
                     </a>
                     <div class="info-text">
                         <p>一生有所追求.</p>
@@ -42,9 +42,9 @@
 
             <div class="meta-item meta-posts">
                 <h3 class="meta-title">最新文章</h3>
-                #for(post : recent_articles(8))
+                #for(article : recent_articles(8))
                 <li>
-                    <a href="${permalink(post)}">${post.title}</a>
+                    <a href="${permalink()}">${title()}</a>
                 </li>
                 #end
             </div>

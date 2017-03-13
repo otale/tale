@@ -1,9 +1,9 @@
 # Tale 视频教程
 
 1. 开发环境快速开始
-    - [IDEA](http://v.youku.com/v_show/id_XMjUzMzAwODE0OA==.html)
+    - [IDEA](https://v.qq.com/x/page/b0379xmo0ad.html)
     - [Eclipse](https://v.qq.com/x/page/x0379l5ttpq.html)
-2. [部署到服务器](http://v.youku.com/v_show/id_XMjUzMzExNzA0OA==.html)
+2. [部署到服务器](https://v.qq.com/x/page/b0379544hqe.html)
 3. 常见问题解决
 
 ## 视频中的脚本

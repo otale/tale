@@ -11,12 +11,14 @@ import com.tale.controller.BaseController;
 import com.tale.dto.LogActions;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Contents;
 import com.tale.model.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.LogService;
 import com.tale.service.MetasService;
+import com.tale.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,9 @@ public class PageController extends BaseController {
     @Inject
     private LogService logService;
 
+    @Inject
+    private SiteService siteService;
+
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.PAGE).page(1, TaleConst.MAX_POSTS, "created desc"));
@@ -46,6 +51,7 @@ public class PageController extends BaseController {
 
     @Route(value = "new", method = HttpMethod.GET)
     public String newPage(Request request) {
+        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
         return "admin/page_edit";
     }
 
@@ -53,6 +59,7 @@ public class PageController extends BaseController {
     public String editPage(@PathParam String cid, Request request) {
         Contents contents = contentsService.getContents(cid);
         request.attribute("contents", contents);
+        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
         return "admin/page_edit";
     }
 
@@ -60,7 +67,8 @@ public class PageController extends BaseController {
     @JSON
     public RestResponse publishPage(@QueryParam String title, @QueryParam String content,
                                     @QueryParam String status, @QueryParam String slug,
-                                    @QueryParam Integer allow_comment, @QueryParam Integer allow_ping) {
+                                    @QueryParam String fmt_type,
+                                    @QueryParam Boolean allow_comment) {
 
         Users users = this.user();
         Contents contents = new Contents();
@@ -68,17 +76,15 @@ public class PageController extends BaseController {
         contents.setContent(content);
         contents.setStatus(status);
         contents.setSlug(slug);
+        contents.setFmt_type(fmt_type);
         contents.setType(Types.PAGE);
-        if (null != allow_comment) {
-            contents.setAllow_comment(allow_comment == 1);
-        }
-        if (null != allow_ping) {
-            contents.setAllow_ping(allow_ping == 1);
-        }
+        contents.setAllow_comment(allow_comment);
+        contents.setAllow_ping(true);
         contents.setAuthor_id(users.getUid());
 
         try {
             contentsService.publish(contents);
+            siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "页面发布失败";
             if (e instanceof TipException) {
@@ -94,9 +100,9 @@ public class PageController extends BaseController {
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
     public RestResponse modifyArticle(@QueryParam Integer cid, @QueryParam String title,
-                                      @QueryParam String content,
+                                      @QueryParam String content,@QueryParam String fmt_type,
                                       @QueryParam String status, @QueryParam String slug,
-                                      @QueryParam Integer allow_comment, @QueryParam Integer allow_ping) {
+                                      @QueryParam Boolean allow_comment) {
 
         Users users = this.user();
         Contents contents = new Contents();
@@ -104,14 +110,11 @@ public class PageController extends BaseController {
         contents.setTitle(title);
         contents.setContent(content);
         contents.setStatus(status);
+        contents.setFmt_type(fmt_type);
         contents.setSlug(slug);
         contents.setType(Types.PAGE);
-        if (null != allow_comment) {
-            contents.setAllow_comment(allow_comment == 1);
-        }
-        if (null != allow_ping) {
-            contents.setAllow_ping(allow_ping == 1);
-        }
+        contents.setAllow_comment(allow_comment);
+        contents.setAllow_ping(true);
         contents.setAuthor_id(users.getUid());
         try {
             contentsService.updateArticle(contents);
@@ -132,6 +135,7 @@ public class PageController extends BaseController {
     public RestResponse delete(@QueryParam int cid, Request request) {
         try {
             contentsService.delete(cid);
+            siteService.cleanCache(Types.C_STATISTICS);
             logService.save(LogActions.DEL_PAGE, cid+"", request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "页面删除失败";

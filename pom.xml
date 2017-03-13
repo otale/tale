@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.junicorn</groupId>
+    <groupId>org.junicorn</groupId>
     <artifactId>tale</artifactId>
-    <version>1.0</version>
+    <version>1.2.10</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mysql.version>5.1.38</mysql.version>
+        <sqlite.version>3.15.1</sqlite.version>
         <druid.version>1.0.24</druid.version>
-        <blade.version>1.7.1-alpha</blade.version>
+        <blade.version>1.7.1-release</blade.version>
         <blade-jdbc.version>0.1.5</blade-jdbc.version>
         <blade-tpl.verion>0.0.9</blade-tpl.verion>
         <blade-embed-jetty.version>0.1.2</blade-embed-jetty.version>
-        <mysql.version>5.1.38</mysql.version>
     </properties>
 
     <dependencies>
@@ -26,18 +25,23 @@
             <artifactId>blade-core</artifactId>
             <version>${blade.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.bladejava</groupId>
+            <artifactId>blade-kit</artifactId>
+            <version>1.4.1-alpha</version>
+        </dependency>
+
         <!-- 数据库操作 -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>${sqlite.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.bladejava</groupId>
             <artifactId>blade-jdbc</artifactId>
             <version>${blade-jdbc.version}</version>
-        </dependency>
-
-        <!--连接池-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${druid.version}</version>
         </dependency>
 
         <!-- 模板引擎 -->
@@ -53,17 +57,16 @@
             <artifactId>commonmark</artifactId>
             <version>0.8.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.commonmark</groupId>
+            <artifactId>commonmark-ext-gfm-tables</artifactId>
+            <version>0.8.0</version>
+        </dependency>
         <!--web容器-->
         <dependency>
             <groupId>com.bladejava</groupId>
             <artifactId>blade-embed-jetty</artifactId>
             <version>${blade-embed-jetty.version}</version>
-        </dependency>
-        <!-- 数据库 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
         </dependency>
         <!--RSS输出-->
         <dependency>
@@ -77,6 +80,7 @@
             <artifactId>emoji-java</artifactId>
             <version>3.2.0</version>
         </dependency>
+
     </dependencies>
 
     <repositories>
@@ -92,18 +96,48 @@
         </repository>
     </repositories>
 
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/java</directory>
+                        <filtering>false</filtering>
+                        <excludes>
+                            <exclude>**/*.java</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/java</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                    <resource>
+                        <directory>src/main/test</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                    <resource>
+                        <directory>src/test/resources</directory>
+                        <filtering>false</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <finalName>tale</finalName>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <filtering>false</filtering>
-            </resource>
-            <!--<resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>-->
-        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -113,7 +147,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--mvn clean package assembly:single -Dmaven.test.skip=true-->
+            <!--mvn clean package assembly:single -Pprod -Dmaven.test.skip=true-->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>

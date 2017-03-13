@@ -1,9 +1,7 @@
 package com.tale.utils;
 
 import com.blade.context.WebContextHolder;
-import com.blade.kit.DateKit;
-import com.blade.kit.StringKit;
-import com.blade.kit.Tools;
+import com.blade.kit.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.wrapper.Session;
@@ -12,10 +10,14 @@ import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Item;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
+import com.tale.controller.admin.AttachController;
 import com.tale.ext.Commons;
+import com.tale.ext.Theme;
 import com.tale.init.TaleConst;
 import com.tale.model.Contents;
 import com.tale.model.Users;
+import org.commonmark.Extension;
+import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -24,10 +26,10 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.text.Normalizer;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,10 +45,7 @@ public class TaleUtils {
      */
     private static final int one_month = 30 * 24 * 60 * 60;
 
-    /**
-     * markdown解析器
-     */
-    private static Parser parser = Parser.builder().build();
+    private static Random r = new Random();
 
     /**
      * 匹配邮箱正则
@@ -146,8 +145,11 @@ public class TaleUtils {
         if (StringKit.isBlank(markdown)) {
             return "";
         }
+
+        List<Extension> extensions = Arrays.asList(TablesExtension.create());
+        Parser parser = Parser.builder().extensions(extensions).build();
         Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
         String content = renderer.render(document);
         content = Commons.emoji(content);
 
@@ -242,9 +244,9 @@ public class TaleUtils {
             Item item = new Item();
             item.setTitle(post.getTitle());
             Content content = new Content();
-            content.setValue(Commons.article(post.getContent()));
+            content.setValue(Theme.article(post.getContent()));
             item.setContent(content);
-            item.setLink(Commons.permalink(post.getCid(), post.getSlug()));
+            item.setLink(Theme.permalink(post.getCid(), post.getSlug()));
             item.setPubDate(DateKit.getDateByUnixTime(post.getCreated()));
             items.add(item);
         });
@@ -255,10 +257,11 @@ public class TaleUtils {
 
     /**
      * 替换HTML脚本
+     *
      * @param value
      * @return
      */
-    public static String cleanXSS(String value){
+    public static String cleanXSS(String value) {
         //You'll need to remove the spaces from the html entities below
         value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
         value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
@@ -336,7 +339,7 @@ public class TaleUtils {
         FileInputStream in = new FileInputStream(file);
         byte[] buffer = new byte[1024];
         int length;
-        while ((length = in.read(buffer)) > 0){
+        while ((length = in.read(buffer)) > 0) {
             out.write(buffer, 0, length);
         }
         in.close();
@@ -344,4 +347,53 @@ public class TaleUtils {
         out.close();
     }
 
+    /**
+     * 获取某个范围内的随机数
+     *
+     * @param max   最大值
+     * @param len   取多少个
+     * @return
+     */
+    public static int[] random(int max, int len) {
+        int values[] = new int[max];
+        int temp1, temp2, temp3;
+        for (int i = 0; i < values.length; i++) {
+            values[i] = i + 1;
+        }
+        //随机交换values.length次
+        for (int i = 0; i < values.length; i++) {
+            temp1 = Math.abs(r.nextInt()) % (values.length - 1); //随机产生一个位置
+            temp2 = Math.abs(r.nextInt()) % (values.length - 1); //随机产生另一个位置
+            if (temp1 != temp2) {
+                temp3 = values[temp1];
+                values[temp1] = values[temp2];
+                values[temp2] = temp3;
+            }
+        }
+        return Arrays.copyOf(values, len);
+    }
+
+    /**
+     * 将list转为 (1, 2, 4) 这样的sql输出
+     * @param list
+     * @param <T>
+     * @return
+     */
+    public static <T> String listToInSql(java.util.List<T> list){
+        StringBuffer sbuf = new StringBuffer();
+        list.forEach( item -> sbuf.append(',').append(item.toString()));
+        sbuf.append(')');
+        return '(' + sbuf.substring(1);
+    }
+
+    public static final String upDir = AttachController.CLASSPATH.substring(0, AttachController.CLASSPATH.length() - 1);
+
+    public static String getFileKey(String name){
+        String prefix = "/upload/" + DateKit.dateFormat(new Date(), "yyyy/MM");
+        String dir = upDir + prefix;
+        if (!FileKit.exist(dir)) {
+            new File(dir).mkdirs();
+        }
+        return prefix + "/" + com.blade.kit.UUID.UU32() + "." + FileKit.getExtension(name);
+    }
 }

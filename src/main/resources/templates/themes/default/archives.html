@@ -2,7 +2,7 @@
 <div class="main-content archive-page clearfix">
     <div class="categorys-item">
         #for(archive : archives)
-        <div class="categorys-title">${archive.date}</div>
+        <div class="categorys-title">${archive.date_str}</div>
         <div class="post-lists">
             <div class="post-lists-body">
                 #for(article : archive.articles)
@@ -10,10 +10,10 @@
                     <div class="post-list-item-container">
                         <div class="item-label">
                             <div class="item-title">
-                                <a href="${(permalink(article.cid, article.slug))}">${article.title}</a>
+                                <a href="${(permalink())}">${title()}</a>
                             </div>
                             <div class="item-meta clearfix">
-                                <div class="item-meta-date">发布于 ${fmtdate(article.created)}</div>
+                                <div class="item-meta-date">发布于 ${created('yyyy-MM-dd')}</div>
                             </div>
                         </div>
                     </div>
