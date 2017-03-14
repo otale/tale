@@ -362,8 +362,8 @@ public class IndexController extends BaseController {
             if (StringKit.isNotBlank(url)) {
                 response.cookie("tale_remember_url", URLEncoder.encode(url, "UTF-8"), 7 * 24 * 60 * 60);
             }
-            // 设置对每个文章1分钟可以评论一次
-            cache.hset(Types.COMMENTS_FREQUENCY, val, 1, 60);
+            // 设置对每个文章30秒可以评论一次
+            cache.hset(Types.COMMENTS_FREQUENCY, val, 1, 30);
             siteService.cleanCache(Types.C_STATISTICS);
             request.attribute("del_csrf_token", token);
             return RestResponse.ok();

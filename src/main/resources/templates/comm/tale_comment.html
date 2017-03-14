@@ -1,16 +1,6 @@
 <script type="text/javascript">
 (function () {
     window.TaleComment = {
-        dom : function (id) {
-            return document.getElementById(id);
-        },
-        create : function (tag, attr) {
-            var el = document.createElement(tag);
-            for (var key in attr) {
-                el.setAttribute(key, attr[key]);
-            }
-            return el;
-        },
         reply : function (coid) {
             $('#comment-form input[name=coid]').val(coid);
             $("html,body").animate({scrollTop: $('div.comment-container').offset().top}, 500);
