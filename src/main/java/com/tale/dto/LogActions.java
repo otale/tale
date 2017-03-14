@@ -13,6 +13,8 @@ public interface LogActions {
 
     String UP_INFO = "修改个人信息";
 
+    String DEL_ATTACH = "删除附件";
+
     String DEL_ARTICLE = "删除文章";
 
     String DEL_PAGE = "删除页面";

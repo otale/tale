@@ -144,7 +144,7 @@ public class AttachController extends BaseController {
             siteService.cleanCache(Types.C_STATISTICS);
             String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
             FileKit.delete(upDir + attach.getFkey());
-            logService.save(LogActions.DEL_ARTICLE, attach.getFkey(), request.address(), this.getUid());
+            logService.save(LogActions.DEL_ATTACH, attach.getFkey(), request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "附件删除失败";
             if (e instanceof TipException) msg = e.getMessage();
