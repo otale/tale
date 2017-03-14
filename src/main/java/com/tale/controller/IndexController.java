@@ -365,6 +365,7 @@ public class IndexController extends BaseController {
             // 设置对每个文章1分钟可以评论一次
             cache.hset(Types.COMMENTS_FREQUENCY, val, 1, 60);
             siteService.cleanCache(Types.C_STATISTICS);
+            request.attribute("del_csrf_token", token);
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "评论发布失败";

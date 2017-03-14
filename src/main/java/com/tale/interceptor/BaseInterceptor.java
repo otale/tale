@@ -68,8 +68,9 @@ public class BaseInterceptor implements Interceptor {
         String method = request.method();
         if(method.equals("GET")){
             String csrf_token = UUID.UU64();
-            // 默认存储30分钟
-            cache.hset(Types.CSRF_TOKEN, csrf_token, uri, TaleConst.BCONF.getInt("app.csrf-token-timeout", 30) * 60);
+            // 默认存储20分钟
+            int timeout = TaleConst.BCONF.getInt("app.csrf-token-timeout", 20) * 60;
+            cache.hset(Types.CSRF_TOKEN, csrf_token, uri, timeout);
             request.attribute("_csrf_token", csrf_token);
         }
         return true;
@@ -78,7 +79,7 @@ public class BaseInterceptor implements Interceptor {
 
     @Override
     public boolean after(Request request, Response response) {
-        String _csrf_token = request.query("_csrf_token");
+        String _csrf_token = request.attribute("del_csrf_token");
         if(StringKit.isNotBlank(_csrf_token)){
             // 移除本次token
             cache.hdel(Types.CSRF_TOKEN, _csrf_token);
