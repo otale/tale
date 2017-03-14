@@ -12,3 +12,6 @@ target/
 
 # logs file #
 logs/
+
+# database file #
+tale.db
