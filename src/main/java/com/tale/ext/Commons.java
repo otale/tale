@@ -27,7 +27,7 @@ public final class Commons {
     private static final List EMPTY = new ArrayList(0);
 
     private static final Random rand = new Random();
-    
+
     private static final String TEMPLATES = "/templates/";
 
     public static void setSiteService(SiteService ss) {
@@ -74,6 +74,24 @@ public final class Commons {
     }
 
     /**
+     * 网站 logo
+     *
+     * @return
+     */
+    public static String site_logo() {
+        return site_option("site_logo").isEmpty() ? "/templates/themes/default/static/img/logo.png" : site_option("site_logo");
+    }
+
+    /**
+     * 网站作者
+     *
+     * @return
+     */
+    public static String site_author() {
+        return site_option("site_author").isEmpty() ? "otale" : site_option("site_author");
+    }
+
+    /**
      * 网站配置项
      *
      * @param key
@@ -99,9 +117,10 @@ public final class Commons {
 
     /**
      * 返回站点设置的描述信息
+     *
      * @return
      */
-    public static String site_description(){
+    public static String site_description() {
         return site_option("site_description");
     }
 
@@ -166,6 +185,7 @@ public final class Commons {
 
     /**
      * 格式化日期
+     *
      * @param date
      * @param fmt
      * @return
@@ -190,23 +210,24 @@ public final class Commons {
 
     /**
      * 获取随机数
+     *
      * @param max
      * @param str
      * @return
      */
-    public static String random(int max, String str){
+    public static String random(int max, String str) {
         return UUID.random(1, max) + str;
     }
 
     /**
      * An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!
-     *
+     * <p>
      * 这种格式的字符转换为emoji表情
      *
      * @param value
      * @return
      */
-    public static String emoji(String value){
+    public static String emoji(String value) {
         return EmojiParser.parseToUnicode(value);
     }
 
