@@ -43,10 +43,19 @@ public class OptionsServiceImpl implements OptionsService {
 
     @Override
     public Map<String, String> getOptions() {
+        return getOptions(null);
+    }
+
+    @Override
+    public Map<String, String> getOptions(String key) {
         Map<String, String> options = new HashMap<>();
-        List<Options> optionsList = activeRecord.list(new Options());
-        for (Options option : optionsList) {
-            options.put(option.getName(), option.getValue());
+        Take take = new Take(Options.class);
+        if(StringKit.isNotBlank(key)){
+            take.like("name", key + "%");
+        }
+        List<Options> optionsList = activeRecord.list(take);
+        if(null != optionsList){
+            optionsList.forEach(option -> options.put(option.getName(), option.getValue()));
         }
         return options;
     }

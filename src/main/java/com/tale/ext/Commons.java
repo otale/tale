@@ -55,6 +55,15 @@ public final class Commons {
     }
 
     /**
+     * 返回当前主题名称
+     *
+     * @return
+     */
+    public static String site_theme() {
+        return site_option("site_theme", "default");
+    }
+
+    /**
      * 返回网站链接下的全址
      *
      * @param sub 后面追加的地址

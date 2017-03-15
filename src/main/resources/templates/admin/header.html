@@ -96,12 +96,12 @@
                         </ul>
                     </li>
 
-                    <li #if(active=='setting') class="active" #end>
-                        <a href="/admin/setting" class="waves-effect #if(active=='setting') active #end"><i class="fa fa-gear" aria-hidden="true"></i><span> 系统设置 </span></a>
+                    <li #if(active=='themes') class="active" #end>
+                        <a href="/admin/themes" class="waves-effect #if(active=='themes') active #end"><i class="fa fa-diamond" aria-hidden="true"></i><span> 主题 </span></a>
                     </li>
 
-                    <li #if(active=='advanced') class="active" #end>
-                        <a href="/admin/advanced" class="waves-effect #if(active=='advanced') active #end"><i class="fa fa-sliders" aria-hidden="true"></i><span> 高级选项 </span></a>
+                    <li #if(active=='setting') class="active" #end>
+                        <a href="/admin/setting" class="waves-effect #if(active=='setting') active #end"><i class="fa fa-gear" aria-hidden="true"></i><span> 系统设置 </span></a>
                     </li>
 
                     #for(item : plugin_menus)

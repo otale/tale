@@ -23,6 +23,8 @@ public interface LogActions {
 
     String SYS_SETTING = "保存系统设置";
 
+    String THEME_SETTING = "主题设置";
+
     String INIT_SITE = "初始化站点";
 
     String RELOAD_SYS = "重启系统";

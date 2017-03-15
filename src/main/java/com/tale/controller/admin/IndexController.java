@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -86,16 +85,6 @@ public class IndexController extends BaseController {
     public String setting(Request request) {
         Map<String, String> options = optionsService.getOptions();
         request.attribute("options", options);
-        // 读取主题
-        String themesDir = AttachController.CLASSPATH + "templates/themes";
-        File[] themesFile = new File(themesDir).listFiles();
-        List<String> themems = new ArrayList<>(themesFile.length);
-        for(File f : themesFile){
-            if(f.isDirectory()){
-                themems.add(f.getName());
-            }
-        }
-        request.attribute("themes", themems);
         return "admin/setting";
     }
 
@@ -113,9 +102,6 @@ public class IndexController extends BaseController {
             config.addAll(optionsService.getOptions());
             TaleConst.OPTIONS = config;
 
-            if (StringKit.isNotBlank(site_theme)) {
-                BaseController.THEME = "themes/" + site_theme;
-            }
             logService.save(LogActions.SYS_SETTING, JSONKit.toJSONString(querys), request.address(), this.getUid());
             return RestResponse.ok();
         } catch (Exception e) {
@@ -217,18 +203,6 @@ public class IndexController extends BaseController {
             }
             return RestResponse.fail(msg);
         }
-    }
-
-    /**
-     * 后台高级选项页面
-     *
-     * @return
-     */
-    @Route(value = "advanced", method = HttpMethod.GET)
-    public String advanced(Request request){
-        Map<String, String> options = optionsService.getOptions();
-        request.attribute("options", options);
-        return "admin/advanced";
     }
 
     /**
