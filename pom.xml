@@ -11,7 +11,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sqlite.version>3.15.1</sqlite.version>
-        <druid.version>1.0.24</druid.version>
         <blade.version>1.7.2-alpha</blade.version>
         <blade-jdbc.version>0.1.6-alpha</blade-jdbc.version>
         <blade-tpl.verion>0.0.9</blade-tpl.verion>
