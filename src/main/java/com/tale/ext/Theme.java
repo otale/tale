@@ -570,4 +570,17 @@ public final class Theme {
     public static String theme_option(String key){
         return TaleConst.OPTIONS.get("theme_option_" + key);
     }
+
+    /**
+     * 返回是否是某个页面
+     * @param pageName
+     * @return
+     */
+    public static boolean is_slug(String pageName){
+        Contents contents = current_article();
+        if(null != contents && Types.PAGE.equals(contents.getType()) && contents.getSlug().equals(pageName)){
+            return true;
+        }
+        return false;
+    }
 }

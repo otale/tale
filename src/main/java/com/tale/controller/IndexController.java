@@ -222,6 +222,12 @@ public class IndexController extends BaseController {
         return this.search(request, keyword, 1, limit);
     }
 
+    @Route(values = {"search", "search.html"})
+    public String search(Request request, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+        String keyword = request.query("s");
+        return this.search(request, keyword, 1, limit);
+    }
+
     @Route(values = {"search/:keyword/:page", "search/:keyword/:page.html"}, method = HttpMethod.GET)
     public String search(Request request, @PathParam String keyword, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
 
