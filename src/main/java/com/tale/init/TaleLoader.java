@@ -1,5 +1,6 @@
 package com.tale.init;
 
+import com.blade.Blade;
 import com.blade.config.BConfig;
 import com.blade.kit.FileKit;
 import com.tale.controller.admin.AttachController;
@@ -42,6 +43,10 @@ public final class TaleLoader {
                 bConfig.addStatic(new String[]{themePath + "/style.css", themePath + "/screenshot.png", themePath + "/static"});
             }
         }
+    }
+
+    public static void loadTheme(String themePath){
+        Blade.$().embedServer().addStatic(themePath + "/style.css", themePath + "/screenshot.png", themePath + "/static");
     }
 
     public static void loadPlugins(BConfig bConfig) {

@@ -1,5 +1,6 @@
 package com.tale.controller.admin;
 
+import com.blade.Blade;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.FileKit;
 import com.blade.kit.StringKit;
@@ -18,6 +19,7 @@ import com.tale.dto.ThemeDto;
 import com.tale.exception.TipException;
 import com.tale.ext.Commons;
 import com.tale.init.TaleConst;
+import com.tale.init.TaleLoader;
 import com.tale.service.LogService;
 import com.tale.service.OptionsService;
 import org.slf4j.Logger;
@@ -55,6 +57,10 @@ public class ThemeController extends BaseController {
                     themeDto.setHasSetting(true);
                 }
                 themes.add(themeDto);
+                try {
+                    String themePath = "/templates/themes/" + f.getName();
+                    TaleLoader.loadTheme(themePath);
+                } catch (Exception e){}
             }
         }
         request.attribute("current_theme", Commons.site_theme());
@@ -114,12 +120,19 @@ public class ThemeController extends BaseController {
     public RestResponse activeTheme(Request request, @QueryParam String site_theme) {
         try {
             optionsService.saveOption("site_theme", site_theme);
+            optionsService.deleteOption("theme_option_");
+
             TaleConst.OPTIONS.put("site_theme", site_theme);
             BaseController.THEME = "themes/" + site_theme;
+
+            String themePath = "/templates/themes/" + site_theme;
+            try {
+                TaleLoader.loadTheme(themePath);
+            } catch (Exception e){}
             logService.save(LogActions.THEME_SETTING, site_theme, request.address(), this.getUid());
             return RestResponse.ok();
         } catch (Exception e) {
-            String msg = "激活主题失败";
+            String msg = "主题启用失败";
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {

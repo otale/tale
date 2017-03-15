@@ -2,24 +2,24 @@
     <div class="footer-social">
         <div class="footer-container clearfix">
             <div class="social-list">
-                #tag social("weibo")
-                <a class="social weibo" target="blank" href="http://weibo.com/${site_option('social_weibo')}">微博</a>
+                #if(null != theme_option('social_weibo'))
+                <a class="social weibo" target="blank" href="http://weibo.com/${theme_option('social_weibo')}">微博</a>
                 #end
 
-                #tag social("zhihu")
+                #if(null != theme_option('social_zhihu'))
                 <a class="social zhihu" target="blank"
-                   href="https://www.zhihu.com/people/${site_option('social_zhihu')}">知乎</a>
+                   href="https://www.zhihu.com/people/${theme_option('social_zhihu')}">知乎</a>
                 #end
 
                 <a class="social rss" target="blank" href="/feed">RSS</a>
 
-                #tag social("github")
+                #if(null != theme_option('social_github'))
                 <a class="social github" target="blank"
-                   href="https://github.com/${site_option('social_github')}">Github</a>
+                   href="https://github.com/${theme_option('social_github')}">Github</a>
                 #end
 
-                #tag social("twitter")
-                <a class="social twitter" target="blank" href="https://twitter.com/${site_option('social_twitter')}">Twitter</a>
+                #if(null != theme_option('social_twitter'))
+                <a class="social twitter" target="blank" href="https://twitter.com/${theme_option('social_twitter')}">Twitter</a>
                 #end
             </div>
         </div>

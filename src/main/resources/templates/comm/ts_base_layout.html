@@ -11,10 +11,10 @@ ${bodyContent}
     /**
      * 保存全局设置
      */
-    function saveSetting() {
-        var param = $('#global-form').serialize();
+    function saveThemeOptions(formId) {
+        var param = $('#' + formId).serialize();
         tale.post({
-            url : '/admin/setting',
+            url : '/admin/themes/setting',
             data: param,
             success: function (result) {
                 if(result && result.success){
