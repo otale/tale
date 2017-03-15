@@ -58,8 +58,7 @@ public class ThemeController extends BaseController {
                 }
                 themes.add(themeDto);
                 try {
-                    String themePath = "/templates/themes/" + f.getName();
-                    TaleLoader.loadTheme(themePath);
+                    Blade.$().embedServer().addStatic("/templates/themes/" + f.getName() + "/screenshot.png");
                 } catch (Exception e){}
             }
         }
