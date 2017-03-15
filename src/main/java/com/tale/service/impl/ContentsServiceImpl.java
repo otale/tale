@@ -124,8 +124,10 @@ public class ContentsServiceImpl implements ContentsService {
 
         activeRecord.update(contents);
 
-        String sql = "delete from t_relationships where cid = ?";
-        activeRecord.execute(sql, cid);
+        if (!StringKit.equals(contents.getType(), Types.PAGE)) {
+            String sql = "delete from t_relationships where cid = ?";
+            activeRecord.execute(sql, cid);
+        }
 
         metasService.saveMetas(cid, contents.getTags(), Types.TAG);
         metasService.saveMetas(cid, contents.getCategories(), Types.CATEGORY);
