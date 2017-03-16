@@ -15,6 +15,11 @@ demo website：https://tale.biezhi.me
 
 [QuickStart](https://github.com/otale/tale/wiki/QuickStart)&nbsp; | &nbsp;[Contribution](https://github.com/otale/tale/issues/new)&nbsp; | &nbsp;[Donate](donate.md)&nbsp; | &nbsp;[Video](video.md)&nbsp; | &nbsp;[中文](README_ZH.md)
 
+Here is a throughput graph of the repository for the last few weeks:
+
+[![Throughput Graph](https://graphs.waffle.io/otale/tale/throughput.svg)](https://waffle.io/otale/tale/metrics/throughput)
+
+
 ## Feature
 
 + Simple design, beautiful interface

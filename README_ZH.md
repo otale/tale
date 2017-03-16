@@ -11,11 +11,14 @@
 演示站点：https://tale.biezhi.me
 
 [![Build Status](https://img.shields.io/travis/otale/tale.svg?style=flat-square)](https://travis-ci.org/otale/tale)
+![Version 1.2.11](https://img.shields.io/badge/version-1.2.11-yellow.svg?style=flat-square)
 [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/otale/tale/blob/master/LICENSE)
 [![@biezhi on weibo](https://img.shields.io/badge/weibo-%40biezhi-red.svg?style=flat-square)](http://weibo.com/u/5238733773)
 [![Gitter](https://badges.gitter.im/biezhi/tale-group.svg)](https://gitter.im/tale-group)
 
 [开始使用](https://github.com/otale/tale/wiki)&nbsp; | &nbsp;[参与贡献](contribution.md)&nbsp; | &nbsp;[捐赠](donate.md)&nbsp; | &nbsp;[视频教程](video.md)&nbsp; | &nbsp;[English](README.md)
+
+[![Throughput Graph](https://graphs.waffle.io/otale/tale/throughput.svg)](https://waffle.io/otale/tale/metrics/throughput)
 
 ## 特性
 
