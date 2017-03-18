@@ -6,7 +6,7 @@
 
     <groupId>org.junicorn</groupId>
     <artifactId>tale</artifactId>
-    <version>1.2.11</version>
+    <version>1.2.12</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

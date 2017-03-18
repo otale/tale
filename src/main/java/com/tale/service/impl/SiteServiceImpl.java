@@ -88,7 +88,7 @@ public class SiteServiceImpl implements SiteService {
         // 最新文章
         if (Types.RECENT_ARTICLE.equals(type)) {
             cp = activeRecord.page(new Take(Contents.class)
-                    .eq("status", Types.PUBLISH).eq("type", Types.ARTICLE).page(1, limit, "created"));
+                    .eq("status", Types.PUBLISH).eq("type", Types.ARTICLE).page(1, limit, "created desc"));
         }
 
         // 随机文章
