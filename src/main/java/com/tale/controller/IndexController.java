@@ -93,7 +93,7 @@ public class IndexController extends BaseController {
      * @param limit
      * @return
      */
-    @Route(values = {"page/:p", "page/:pageIndex.html"}, method = HttpMethod.GET)
+    @Route(values = {"page/:pageIndex", "page/:pageIndex.html"}, method = HttpMethod.GET)
     public String index(Request request, @PathParam int pageIndex, @QueryParam(value = "limit", defaultValue = "12") int limit) {
         pageIndex = pageIndex < 0 || pageIndex > TaleConst.MAX_PAGE ? 1 : pageIndex;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(pageIndex, limit, "created desc");
