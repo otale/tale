@@ -76,12 +76,12 @@ public class InstallController extends BaseController {
                 return RestResponse.fail("邮箱格式不正确");
             }
 
-            Users users = new Users();
-            users.setUsername(admin_user);
-            users.setPassword(admin_pwd);
-            users.setEmail(admin_email);
+            Users temp = new Users();
+            temp.setUsername(admin_user);
+            temp.setPassword(admin_pwd);
+            temp.setEmail(admin_email);
 
-            siteService.initSite(users);
+            siteService.initSite(temp);
 
             if (site_url.endsWith("/")) {
                 site_url = site_url.substring(0, site_url.length() - 1);

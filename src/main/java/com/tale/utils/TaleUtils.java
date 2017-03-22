@@ -338,9 +338,9 @@ public class TaleUtils {
         OutputStream out = response.outputStream();
         FileInputStream in = new FileInputStream(file);
         byte[] buffer = new byte[1024];
-        int length;
-        while ((length = in.read(buffer)) > 0) {
-            out.write(buffer, 0, length);
+        int len;
+        while ((len = in.read(buffer)) > 0) {
+            out.write(buffer, 0, len);
         }
         in.close();
         out.flush();
