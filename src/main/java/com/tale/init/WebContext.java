@@ -63,9 +63,9 @@ public class WebContext implements BeanProcessor, WebContextListener {
                 macros.add(macroName);
             }
         }
-        StringBuffer macroBuf = new StringBuffer();
-        macros.forEach(s -> macroBuf.append(',').append(s));
-        templateEngine.addConfig("jetx.import.macros", macroBuf.substring(1));
+        StringBuffer sbuf = new StringBuffer();
+        macros.forEach(s -> sbuf.append(',').append(s));
+        templateEngine.addConfig("jetx.import.macros", sbuf.substring(1));
 
         GlobalResolver resolver = templateEngine.getGlobalResolver();
         resolver.registerFunctions(Commons.class);

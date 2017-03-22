@@ -65,8 +65,8 @@ public class IndexController extends BaseController {
      * 自定义页面
      */
     @Route(values = {"/:pagename", "/:pagename.html"}, method = HttpMethod.GET)
-    public String page(@PathParam String pagename, Request request) {
-        Contents contents = contentsService.getContents(pagename);
+    public String page(@PathParam String cid, Request request) {
+        Contents contents = contentsService.getContents(cid);
         if (null == contents) {
             return this.render_404();
         }
@@ -89,18 +89,18 @@ public class IndexController extends BaseController {
      * 首页分页
      *
      * @param request
-     * @param pageIndex
+     * @param page
      * @param limit
      * @return
      */
     @Route(values = {"page/:pageIndex", "page/:pageIndex.html"}, method = HttpMethod.GET)
-    public String index(Request request, @PathParam int pageIndex, @QueryParam(value = "limit", defaultValue = "12") int limit) {
-        pageIndex = pageIndex < 0 || pageIndex > TaleConst.MAX_PAGE ? 1 : pageIndex;
-        Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(pageIndex, limit, "created desc");
+    public String index(Request request, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+        page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
+        Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(page, limit, "created desc");
         Paginator<Contents> articles = contentsService.getArticles(take);
         request.attribute("articles", articles);
-        if (pageIndex > 1) {
-            this.title(request, "第" + pageIndex + "页");
+        if (page > 1) {
+            this.title(request, "第" + page + "页");
         }
         request.attribute("is_home", true);
         request.attribute("page_prefix", "/page");
