@@ -11,7 +11,7 @@
 演示站点：https://tale.biezhi.me
 
 [![Build Status](https://img.shields.io/travis/otale/tale.svg?style=flat-square)](https://travis-ci.org/otale/tale)
-![Version 1.2.13](https://img.shields.io/badge/version-1.2.11-yellow.svg?style=flat-square)
+![Version 1.2.13](https://img.shields.io/badge/version-1.2.12-yellow.svg?style=flat-square)
 [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/otale/tale/blob/master/LICENSE)
 [![@biezhi on weibo](https://img.shields.io/badge/weibo-%40biezhi-red.svg?style=flat-square)](http://weibo.com/u/5238733773)
 [![Gitter](https://badges.gitter.im/biezhi/tale-group.svg)](https://gitter.im/tale-group)
