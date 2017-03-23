@@ -36,7 +36,7 @@ public class TaleConst {
     /**
      * 文章最多可以输入的文字数
      */
-    public static final int MAX_TEXT_COUNT = 50000;
+    public static final int MAX_TEXT_COUNT = 200000;
 
     /**
      * 文章标题最多可以输入的文字个数

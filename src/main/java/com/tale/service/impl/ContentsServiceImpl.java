@@ -64,7 +64,8 @@ public class ContentsServiceImpl implements ContentsService {
         if (StringKit.isBlank(contents.getContent()))
             throw new TipException("文章内容不能为空");
         // 最多可以输入5w个字
-        if (contents.getContent().length() > TaleConst.MAX_TEXT_COUNT)
+        int len = contents.getContent().length();
+        if (len > TaleConst.MAX_TEXT_COUNT)
             throw new TipException("文章内容最多可以输入"+ TaleConst.MAX_TEXT_COUNT +"个字符");
         if (null == contents.getAuthor_id())
             throw new TipException("请登录后发布文章");
