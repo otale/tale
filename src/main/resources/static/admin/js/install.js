@@ -5,10 +5,6 @@
 
     "use strict";
     var tale = new $.tale();
-
-    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-    var regex = new RegExp(expression);
-
     var FormWizard = function () {
     };
     //creates form with validation
@@ -80,3 +76,4 @@
         //init
         $.FormWizard = new FormWizard, $.FormWizard.Constructor = FormWizard
 }(window.jQuery), $.FormWizard.init();
+document.getElementById('site_url').value = document.location.origin;
