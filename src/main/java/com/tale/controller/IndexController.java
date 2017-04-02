@@ -113,7 +113,7 @@ public class IndexController extends BaseController {
     @Route(values = {"article/:cid", "article/:cid.html"}, method = HttpMethod.GET)
     public String post(Request request, @PathParam String cid) {
         Contents contents = contentsService.getContents(cid);
-        if (null == contents) {
+        if (null == contents || Types.DRAFT.equals(contents.getStatus())) {
             return this.render_404();
         }
         request.attribute("article", contents);
