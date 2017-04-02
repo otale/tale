@@ -321,6 +321,58 @@ public final class Theme {
     }
 
     /**
+     * 当前文章的下一篇文章链接
+     * @return
+     */
+    public static String theNext(){
+        Contents contents = article_next();
+        if(null != contents){
+            return theNext(title(contents));
+        }
+        return "";
+    }
+
+    /**
+     * 当前文章的下一篇文章链接
+     *
+     * @param title 文章标题
+     * @return
+     */
+    public static String theNext(String title){
+        Contents contents = article_next();
+        if(null != contents){
+            return "<a href=\""+ permalink(contents) +"\" title=\"" + title(contents) + "\">"+ title +"</a>";
+        }
+        return "";
+    }
+
+    /**
+     * 当前文章的下一篇文章链接
+     * @return
+     */
+    public static String thePrev(){
+        Contents contents = article_prev();
+        if(null != contents){
+            return thePrev(title(contents));
+        }
+        return "";
+    }
+
+    /**
+     * 当前文章的下一篇文章链接
+     *
+     * @param title 文章标题
+     * @return
+     */
+    public static String thePrev(String title){
+        Contents contents = article_prev();
+        if(null != contents){
+            return "<a href=\""+ permalink(contents) +"\" title=\""+ title(contents) +"\">"+ title +"</a>";
+        }
+        return "";
+    }
+
+    /**
      * 最新文章
      *
      * @param limit
