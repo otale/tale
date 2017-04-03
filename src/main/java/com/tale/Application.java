@@ -10,5 +10,4 @@ public class Application {
         TaleLoader.init();
         $().start(Application.class);
     }
-
 }
