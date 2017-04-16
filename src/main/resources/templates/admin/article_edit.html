@@ -106,7 +106,7 @@
 
             <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
                 <input name="tags" id="tags" type="text" class="form-control" placeholder="请填写文章标签"
-                       value="${contents.tags ?! ''}"/>
+                       value="${contents.tags ?! 'aaa'}"/>
             </div>
 
             <div class="form-group col-md-6">
@@ -130,14 +130,19 @@
                 <div class="pull-right">
                     <a id="switch-btn" href="javascript:void(0)" class="btn btn-purple btn-sm waves-effect waves-light switch-editor">#if(null != contents &&
                         contents.fmt_type == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
+                    &nbsp;<span>切换编辑器会丢失当前输入内容</span>
                 </div>
             </div>
 
             <div id="md-container" class="form-group col-md-12">
-                <textarea id="md-editor" class="#if(null != contents && contents.fmt_type == 'html') hide #end">${contents.content ?! ''}</textarea>
+                <textarea id="md-editor" class="#if(null != contents && contents.fmt_type != 'html') hide #end">${contents.content ?! ''}</textarea>
             </div>
             <div id="html-container" class="form-group col-md-12">
-                <div class="summernote">${contents.content ?! ''}</div>
+                <div class="summernote">
+                    #if(null != contents && contents.fmt_type == 'html')
+                    ${contents.content ?! ''}
+                    #end
+                </div>
             </div>
 
             <div class="form-group col-md-3 col-sm-4">
