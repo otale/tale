@@ -6,13 +6,13 @@
 
     <groupId>org.junicorn</groupId>
     <artifactId>tale</artifactId>
-    <version>1.2.14</version>
+    <version>1.2.15</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sqlite.version>3.15.1</sqlite.version>
         <blade.version>1.7.2-alpha</blade.version>
-        <blade-jdbc.version>0.1.6-alpha</blade-jdbc.version>
+        <blade-jdbc.version>0.1.6-beta</blade-jdbc.version>
         <blade-tpl.verion>0.0.9</blade-tpl.verion>
         <blade-embed-jetty.version>0.1.3</blade-embed-jetty.version>
     </properties>
