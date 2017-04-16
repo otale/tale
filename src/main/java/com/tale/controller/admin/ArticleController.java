@@ -57,11 +57,18 @@ public class ArticleController extends BaseController {
     @Route(value = "", method = HttpMethod.GET)
     public String index(@QueryParam(value = "page", defaultValue = "1") int page,
                         @QueryParam(value = "limit", defaultValue = "15") int limit,
-                        @QueryParam(value = "category", defaultValue = "null") CATEGORY category,
+                        @QueryParam(value = "category", defaultValue = "null") String category,
                         Request request) {
 
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
         request.attribute("articles", contentsPaginator);
+
+
+        //获取分类
+        List<Metas> categories = metasService.getMetas(Types.CATEGORY);
+        request.attribute("categories", categories);
+        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
+
 
         /**
          * 第一次使用列表
@@ -70,13 +77,8 @@ public class ArticleController extends BaseController {
         /**
          * 第n次使用列表
          */
-        //分类
-        List<Metas> categories = metasService.getMetas(Types.CATEGORY);
+
         request.attribute("category",category);
-
-        request.attribute("categories", categories);
-        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-
         return "admin/article_list";
     }
 

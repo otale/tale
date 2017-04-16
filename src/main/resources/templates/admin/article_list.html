@@ -9,9 +9,8 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <form id="cform" class="form-inline" role="form">
-                    <input type="hidden" id="mid"/>
-
-                    <select id="multiple-sel" class="select2 form-control" multiple="multiple" data-placeholder="请选择分类...">
+                    <select id="multiple-sel" name="category" class="select2 form-control" multiple="multiple"
+                            data-placeholder="请选择分类...">
                         #if(null == categories)
                         <option value="默认分类" selected>默认分类</option>
                         #else
@@ -32,6 +31,8 @@
             </div>
         </div>
     </div>
+
+
 
     <div class="col-md-12">
         <table class="table table-striped table-bordered">
