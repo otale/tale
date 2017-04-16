@@ -70,13 +70,13 @@ public class ArticleController extends BaseController {
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
 
 
-        /**
-         * 第一次使用列表
-         */
+        if(category == null){
+            System.out.print("aa");  //首次进入文章管理首页
+        }else {
+            System.out.print("ff");  //非首次进入文章管理首页
+        }
 
-        /**
-         * 第n次使用列表
-         */
+
 
         request.attribute("category",category);
         return "admin/article_list";
