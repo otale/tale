@@ -48,6 +48,7 @@ public class ArticleController extends BaseController {
 
     /**
      * 文章管理首页
+     *
      * @param page
      * @param limit
      * @param request
@@ -55,15 +56,25 @@ public class ArticleController extends BaseController {
      */
     @Route(value = "", method = HttpMethod.GET)
     public String index(@QueryParam(value = "page", defaultValue = "1") int page,
-                        @QueryParam(value = "limit", defaultValue = "15") int limit, Request request) {
+                        @QueryParam(value = "limit", defaultValue = "15") int limit,
+                        @QueryParam(value = "categoty", defaultValue = "null") CATEGORY category,
+                        Request request) {
 
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
         request.attribute("articles", contentsPaginator);
+
+        //分类
+        List<Metas> categories = metasService.getMetas(Types.CATEGORY);
+        request.attribute("category",category);
+        request.attribute("categories", categories);
+        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
+
         return "admin/article_list";
     }
 
     /**
      * 文章发布页面
+     *
      * @param request
      * @return
      */
@@ -77,6 +88,7 @@ public class ArticleController extends BaseController {
 
     /**
      * 文章编辑页面
+     *
      * @param cid
      * @param request
      * @return
@@ -111,7 +123,7 @@ public class ArticleController extends BaseController {
     public RestResponse publishArticle(@QueryParam String title, @QueryParam String content,
                                        @QueryParam String tags, @QueryParam String categories,
                                        @QueryParam String status, @QueryParam String slug,
-                                       @QueryParam String fmt_type,@QueryParam String thumb_img,
+                                       @QueryParam String fmt_type, @QueryParam String thumb_img,
                                        @QueryParam Boolean allow_comment, @QueryParam Boolean allow_ping, @QueryParam Boolean allow_feed) {
 
         Users users = this.user();
@@ -173,7 +185,7 @@ public class ArticleController extends BaseController {
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
     public RestResponse modifyArticle(@QueryParam Integer cid, @QueryParam String title,
-                                      @QueryParam String content,@QueryParam String fmt_type,
+                                      @QueryParam String content, @QueryParam String fmt_type,
                                       @QueryParam String tags, @QueryParam String categories,
                                       @QueryParam String status, @QueryParam String slug,
                                       @QueryParam String thumb_img,
@@ -227,7 +239,7 @@ public class ArticleController extends BaseController {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);
-            logService.save(LogActions.DEL_ARTICLE, cid+"", request.address(), this.getUid());
+            logService.save(LogActions.DEL_ARTICLE, cid + "", request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "文章删除失败";
             if (e instanceof TipException) {

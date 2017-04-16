@@ -10,9 +10,21 @@
             <div class="panel-body">
                 <form id="cform" class="form-inline" role="form">
                     <input type="hidden" id="mid"/>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="cname" placeholder="请输入分类名称">
-                    </div>
+
+                    <select id="multiple-sel" class="select2 form-control" multiple="multiple" data-placeholder="请选择分类...">
+                        #if(null == categories)
+                        <option value="默认分类" selected>默认分类</option>
+                        #else
+
+                        #for(c : categories)
+                        <option value="${c.name}" #if(null !=contents && exist_cat(c, contents.categories)) selected #end>
+                            ${c.name}
+                        </option>
+                        #end
+
+                        #end
+                    </select>
+
                     <button id="save-category-btn" type="button"
                             class="btn btn-success waves-effect waves-light m-l-10">查询
                     </button>

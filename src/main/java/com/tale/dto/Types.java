@@ -1,6 +1,7 @@
 package com.tale.dto;
 
 /**
+ * 常量表
  * Created by biezhi on 2017/2/21.
  */
 public interface Types {
