@@ -16,5 +16,4 @@ logs/
 # database file #
 tale.db
 
-
 *.out

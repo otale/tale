@@ -18,6 +18,14 @@ public class AttachServiceImpl implements AttachService {
     @Inject
     private ActiveRecord activeRecord;
 
+    /** TODO
+     * 对数据的封装应该放在web层
+     * @param fname
+     * @param fkey
+     * @param ftype
+     * @param author
+     * @return
+     */
     @Override
     public Attach save(String fname, String fkey, String ftype, Integer author) {
         Attach attach = new Attach();
