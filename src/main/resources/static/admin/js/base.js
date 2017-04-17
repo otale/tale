@@ -39,6 +39,8 @@ $.tale.prototype.alertOkAndReload = function (text) {
     }});
 };
 
+
+
 /**
  * 警告弹框
  * @param options

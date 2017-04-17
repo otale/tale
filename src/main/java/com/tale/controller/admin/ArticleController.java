@@ -59,23 +59,17 @@ public class ArticleController extends BaseController {
                         @QueryParam(value = "limit", defaultValue = "15") int limit,
                         @QueryParam(value = "category",defaultValue = "") String category,
                         Request request) {
-
-        Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
-        request.attribute("articles", contentsPaginator);
-
         //获取分类
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         request.attribute("categories", categories);
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
 
-
-        if("".equals(category)){
-            System.out.print("aa");  //首次进入文章管理首页
-        }else {
-            System.out.print("ff");  //非首次进入文章管理首页
-        }
-
         request.attribute("category",category);
+
+        //文章
+        Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
+        request.attribute("articles", contentsPaginator);
+
         return "admin/article_list";
     }
 

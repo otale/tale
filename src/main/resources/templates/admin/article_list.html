@@ -9,23 +9,31 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-body">
-                <form  method="post" action="/admin/article">
-                        <select name="category">
-                            <option value="默认分类" selected>默认分类</option>
-                            <option value="1111">1111</option>
-                            <option value="2222">2222</option>
-                            <option value="3333">3333</option>
-                        </select>
 
-                    <button id="select-category-btn" type="button"
-                            class="btn btn-success waves-effect waves-light m-l-10">查询
-                    </button>
-                </form>
+                <select id="category_select">
+                    #if(null == categories)
+                    <option value="默认分类" selected>默认分类</option>
+                    #else
+
+                    #for(c : categories)
+                    <option value="${c.name}" #if(null !=category && exist_cat(c,category)) selected #end>
+                        ${c.name}
+                    </option>
+                    #end
+
+                    #end
+                </select>
+
+                <button id="select-category-btn" type="button"
+                        class="btn btn-success waves-effect waves-light m-l-10">查询
+                </button>
+
             </div>
         </div>
     </div>
     <!-- 分类筛选 end  -->
 
+    <!-- 列表 start -->
     <div class="col-md-12">
         <table class="table table-striped table-bordered">
             <thead>
@@ -73,12 +81,16 @@
         </table>
         #call pageAdminNav(articles)
     </div>
+
+    <!-- 列表 -->
 </div>
 
 #include('./footer.html')
 
 <script type="text/javascript">
     var tale = new $.tale();
+
+    //删除文章
     function delPost(cid) {
         tale.alertConfirm({
             title: '确定删除该文章吗?',
@@ -98,17 +110,14 @@
         });
     }
 
+    //查询
     $("#select-category-btn").click(function () {
+        var category = $("#category_select").val();
 
-        console.log("111");
+        var url = "/admin/article";
 
-        tale.post({
-            url: '/admin/article',
-            data: {category: "1111"},
-            success: function (result) {
-               console.log("查询成功")
-            }
-        });
+        $.post(url, {category: category});
+//
     })
 
 </script>
