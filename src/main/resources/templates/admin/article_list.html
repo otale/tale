@@ -113,11 +113,13 @@
     //查询
     $("#select-category-btn").click(function () {
         var category = $("#category_select").val();
-
         var url = "/admin/article";
 
         $.post(url, {category: category});
-//
+        tale.post({
+            url:url,
+            data:
+        }
     })
 
 </script>

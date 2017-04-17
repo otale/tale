@@ -57,18 +57,26 @@ public class ArticleController extends BaseController {
     @Route(value = "", method = HttpMethod.ALL)
     public String index(@QueryParam(value = "page", defaultValue = "1") int page,
                         @QueryParam(value = "limit", defaultValue = "15") int limit,
-                        @QueryParam(value = "category",defaultValue = "") String category,
+                        @QueryParam(value = "category", defaultValue = "") String category,
                         Request request) {
         //获取分类
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         request.attribute("categories", categories);
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
 
-        request.attribute("category",category);
+        request.attribute("category", category);
 
-        //文章
+        //按照分类查找文章
+        // TODO blade没有条件查询
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
+
+        if (!"".equals(category)) {
+            List list = contentsService.siftCategory(contentsPaginator.getList(),category);
+            contentsPaginator.setList(list);
+        }
+
         request.attribute("articles", contentsPaginator);
+        //TODO Paginator.total值没有更改
 
         return "admin/article_list";
     }

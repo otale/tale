@@ -17,6 +17,7 @@ import com.tale.service.MetasService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,7 +59,7 @@ public class ContentsServiceImpl implements ContentsService {
         if (StringKit.isBlank(contents.getTitle()))
             throw new TipException("文章标题不能为空");
         if (contents.getTitle().length() > TaleConst.MAX_TITLE_COUNT) {
-            throw new TipException("文章标题最多可以输入"+ TaleConst.MAX_TITLE_COUNT +"个字符");
+            throw new TipException("文章标题最多可以输入" + TaleConst.MAX_TITLE_COUNT + "个字符");
         }
 
         if (StringKit.isBlank(contents.getContent()))
@@ -66,7 +67,7 @@ public class ContentsServiceImpl implements ContentsService {
         // 最多可以输入5w个字
         int len = contents.getContent().length();
         if (len > TaleConst.MAX_TEXT_COUNT)
-            throw new TipException("文章内容最多可以输入"+ TaleConst.MAX_TEXT_COUNT +"个字符");
+            throw new TipException("文章内容最多可以输入" + TaleConst.MAX_TEXT_COUNT + "个字符");
         if (null == contents.getAuthor_id())
             throw new TipException("请登录后发布文章");
 
@@ -106,13 +107,13 @@ public class ContentsServiceImpl implements ContentsService {
             throw new TipException("文章标题不能为空");
         }
         if (contents.getTitle().length() > TaleConst.MAX_TITLE_COUNT) {
-            throw new TipException("文章标题最多可以输入"+ TaleConst.MAX_TITLE_COUNT +"个字符");
+            throw new TipException("文章标题最多可以输入" + TaleConst.MAX_TITLE_COUNT + "个字符");
         }
         if (StringKit.isBlank(contents.getContent())) {
             throw new TipException("文章内容不能为空");
         }
         if (contents.getContent().length() > TaleConst.MAX_TEXT_COUNT)
-            throw new TipException("文章内容最多可以输入"+ TaleConst.MAX_TEXT_COUNT +"个字符");
+            throw new TipException("文章内容最多可以输入" + TaleConst.MAX_TEXT_COUNT + "个字符");
         if (null == contents.getAuthor_id()) {
             throw new TipException("请登录后发布文章");
         }
@@ -168,5 +169,18 @@ public class ContentsServiceImpl implements ContentsService {
         }
         return paginator;
     }
+
+    @Override
+    public List<Contents> siftCategory(List<Contents> contentList, String category) {
+        List<Contents> list = new ArrayList<>();
+        for (Contents content : contentList) {
+            if (content.getCategories().equals(category)) {
+                list.add(content);
+            }
+        }
+
+        return list;
+    }
+
 
 }
