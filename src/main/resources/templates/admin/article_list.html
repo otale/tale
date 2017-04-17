@@ -115,11 +115,7 @@
         var category = $("#category_select").val();
         var url = "/admin/article";
 
-        $.post(url, {category: category});
-        tale.post({
-            url:url,
-            data:
-        }
+        window.location.href = url + "?category=" + category;
     })
 
 </script>
