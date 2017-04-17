@@ -54,7 +54,7 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "", method = HttpMethod.GET)
+    @Route(value = "", method = HttpMethod.ALL)
     public String index(@QueryParam(value = "page", defaultValue = "1") int page,
                         @QueryParam(value = "limit", defaultValue = "15") int limit,
                         @QueryParam(value = "category",defaultValue = "") String category,
@@ -62,7 +62,6 @@ public class ArticleController extends BaseController {
 
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
         request.attribute("articles", contentsPaginator);
-
 
         //获取分类
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
@@ -75,8 +74,6 @@ public class ArticleController extends BaseController {
         }else {
             System.out.print("ff");  //非首次进入文章管理首页
         }
-
-
 
         request.attribute("category",category);
         return "admin/article_list";

@@ -6,21 +6,16 @@
     </div>
 
     <!-- 分类筛选 start -->
-
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-body">
-                <form id="cform" class="form-inline" role="form">
-                    <div class="form-group col-md-6">
-                        <select id="multiple-sel2" class="form-control" multiple="multiple"
-                                data-placeholder="请选择分类...">
+                <form  method="post" action="/admin/article">
+                        <select name="category">
                             <option value="默认分类" selected>默认分类</option>
                             <option value="1111">1111</option>
                             <option value="2222">2222</option>
                             <option value="3333">3333</option>
                         </select>
-                    </div>
-                    <div class="clearfix"></div>
 
                     <button id="select-category-btn" type="button"
                             class="btn btn-success waves-effect waves-light m-l-10">查询
@@ -29,7 +24,6 @@
             </div>
         </div>
     </div>
-
     <!-- 分类筛选 end  -->
 
     <div class="col-md-12">
@@ -103,8 +97,21 @@
             }
         });
     }
-</script>
 
+    $("#select-category-btn").click(function () {
+
+        console.log("111");
+
+        tale.post({
+            url: '/admin/article',
+            data: {category: "1111"},
+            success: function (result) {
+               console.log("查询成功")
+            }
+        });
+    })
+
+</script>
 
 
 </body>
