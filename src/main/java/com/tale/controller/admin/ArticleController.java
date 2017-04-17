@@ -57,7 +57,7 @@ public class ArticleController extends BaseController {
     @Route(value = "", method = HttpMethod.GET)
     public String index(@QueryParam(value = "page", defaultValue = "1") int page,
                         @QueryParam(value = "limit", defaultValue = "15") int limit,
-                        @QueryParam(value = "category", defaultValue = "null") String category,
+                        @QueryParam(value = "category",defaultValue = "") String category,
                         Request request) {
 
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
@@ -70,7 +70,7 @@ public class ArticleController extends BaseController {
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
 
 
-        if(category == null){
+        if("".equals(category)){
             System.out.print("aa");  //首次进入文章管理首页
         }else {
             System.out.print("ff");  //非首次进入文章管理首页
