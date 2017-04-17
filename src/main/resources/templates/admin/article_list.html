@@ -1,28 +1,109 @@
 #include('./header.html',{active:'article', title:'文章管理'})
+<link href="/static/admin/plugins/tagsinput/jquery.tagsinput.css" rel="stylesheet">
+<link href="/static/admin/plugins/select2/dist/css/select2-bootstrap.css" rel="stylesheet">
+<link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.css" rel="stylesheet"/>
+<link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet"/>
+<link href="//unpkg.com/mditor@1.0.8/dist/css/mditor.min.css" rel="stylesheet"/>
+
+<link href="//cdn.bootcss.com/summernote/0.8.2/summernote.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
+
+
+<style rel="stylesheet">
+    #tags_tagsinput {
+        background-color: #fafafa;
+        border: 1px solid #eeeeee;
+    }
+
+    #tags_addTag input {
+        width: 100%;
+    }
+
+    #tags_addTag {
+        margin-top: -5px;
+    }
+
+    .mditor .editor {
+        font-size: 14px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .note-toolbar {
+        text-align: center;
+    }
+
+    .note-editor.note-frame {
+        border: none;
+    }
+
+    .note-editor .note-toolbar {
+        background-color: #f5f5f5;
+        padding-bottom: 10px;
+    }
+
+    .note-toolbar .note-btn-group {
+        margin: 0;
+    }
+
+    .note-toolbar .note-btn {
+        border: none;
+    }
+
+    #articleForm #dropzone {
+        min-height: 200px;
+        background-color: #dbdde0;
+        line-height: 200px;
+        margin-bottom: 10px;
+    }
+
+    #articleForm .dropzone {
+        border: 1px dashed #8662c6;
+        border-radius: 5px;
+        background: white;
+    }
+
+    #articleForm .dropzone .dz-message {
+        font-weight: 400;
+    }
+
+    #articleForm .dropzone .dz-message .note {
+        font-size: 0.8em;
+        font-weight: 200;
+        display: block;
+        margin-top: 1.4rem;
+    }
+</style>
+
 <div class="row">
     <div class="col-sm-12">
         <h4 class="page-title">文章管理</h4>
     </div>
 
 
+    <!-- 分类筛选 -->
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-body">
                 <form id="cform" class="form-inline" role="form">
-                    <select id="multiple-sel" name="category" class="select2 form-control" multiple="multiple"
-                            data-placeholder="请选择分类...">
-                        #if(null == categories)
-                        <option value="默认分类" selected>默认分类</option>
-                        #else
+                    <div class="form-group col-md-6">
+                        <select id="multiple-sel" name="category" class="select2 form-control" multiple="multiple"
+                                data-placeholder="请选择分类...">
+                            #if(null == categories)
+                            <option value="默认分类" selected>默认分类</option>
+                            #else
 
-                        #for(c : categories)
-                        <option value="${c.name}" #if(null !=contents && exist_cat(c, contents.categories)) selected #end>
-                            ${c.name}
-                        </option>
-                        #end
+                            #for(c : categories)
+                            <option value="${c.name}" #if(null !=contents && exist_cat(c, contents.categories)) selected
+                                    #end>
+                                ${c.name}
+                            </option>
+                            #end
 
-                        #end
-                    </select>
+                            #end
+                        </select>
+                    </div>
 
                     <button id="save-category-btn" type="button"
                             class="btn btn-success waves-effect waves-light m-l-10">查询
@@ -31,7 +112,6 @@
             </div>
         </div>
     </div>
-
 
 
     <div class="col-md-12">
@@ -89,23 +169,37 @@
     var tale = new $.tale();
     function delPost(cid) {
         tale.alertConfirm({
-            title:'确定删除该文章吗?',
+            title: '确定删除该文章吗?',
             then: function () {
-               tale.post({
-                   url : '/admin/article/delete',
-                   data: {cid: cid},
-                   success: function (result) {
-                       if(result && result.success){
-                           tale.alertOkAndReload('文章删除成功');
-                       } else {
-                           tale.alertError(result.msg || '文章删除失败');
-                       }
-                   }
-               });
-           }
+                tale.post({
+                    url: '/admin/article/delete',
+                    data: {cid: cid},
+                    success: function (result) {
+                        if (result && result.success) {
+                            tale.alertOkAndReload('文章删除成功');
+                        } else {
+                            tale.alertError(result.msg || '文章删除失败');
+                        }
+                    }
+                });
+            }
         });
     }
 </script>
+
+<script src="/static/admin/plugins/tagsinput/jquery.tagsinput.min.js"></script>
+<script src="/static/admin/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
+
+<script src="//unpkg.com/mditor@1.0.8/dist/js/mditor.min.js"></script>
+<script src="//cdn.bootcss.com/wysihtml5/0.3.0/wysihtml5.min.js"></script>
+<script src="//cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
+<script src="//cdn.bootcss.com/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
+
+<script src="//cdn.bootcss.com/multi-select/0.9.12/js/jquery.multi-select.min.js"></script>
+<script src="//cdn.bootcss.com/select2/3.4.8/select2.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
+<script src="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.js"></script>
+
 
 </body>
 </html>
