@@ -1,28 +1,18 @@
 #include('./header.html',{active:'article', title:'文章管理'})
 
-<link href="/static/admin/plugins/tagsinput/jquery.tagsinput.css" rel="stylesheet">
-<link href="/static/admin/plugins/select2/dist/css/select2-bootstrap.css" rel="stylesheet">
-<link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
-
-<link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.css" rel="stylesheet"/>
-<link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet"/>
-<link href="//unpkg.com/mditor@1.0.8/dist/css/mditor.min.css" rel="stylesheet"/>
-
-<link href="//cdn.bootcss.com/summernote/0.8.2/summernote.css" rel="stylesheet">
-<link href="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
-
 <div class="row">
     <div class="col-sm-12">
         <h4 class="page-title">文章管理</h4>
     </div>
 
     <!-- 分类筛选 start -->
+
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-body">
                 <form id="cform" class="form-inline" role="form">
                     <div class="form-group col-md-6">
-                        <select id="multiple-sel2" class="select2 form-control" multiple="multiple"
+                        <select id="multiple-sel2" class="form-control" multiple="multiple"
                                 data-placeholder="请选择分类...">
                             <option value="默认分类" selected>默认分类</option>
                             <option value="1111">1111</option>
@@ -39,25 +29,6 @@
             </div>
         </div>
     </div>
-
-    <form id="articleForm" role="form" novalidate="novalidate">
-        <div class="form-group col-md-6">
-            <select id="multiple-sel" class="select2 form-control" multiple="multiple" data-placeholder="请选择分类...">
-                #if(null == categories)
-                <option value="默认分类" selected>默认分类</option>
-                #else
-
-                #for(c : categories)
-                <option value="${c.name}" #if(null !=contents && exist_cat(c, contents.categories)) selected #end>
-                    ${c.name}
-                </option>
-                #end
-
-                #end
-            </select>
-        </div>
-        <div class="clearfix"></div>
-    </form>
 
     <!-- 分类筛选 end  -->
 
@@ -134,18 +105,6 @@
     }
 </script>
 
-<script src="/static/admin/plugins/tagsinput/jquery.tagsinput.min.js"></script>
-<script src="/static/admin/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
-
-<script src="//unpkg.com/mditor@1.0.8/dist/js/mditor.min.js"></script>
-<script src="//cdn.bootcss.com/wysihtml5/0.3.0/wysihtml5.min.js"></script>
-<script src="//cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
-<script src="//cdn.bootcss.com/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
-
-<script src="//cdn.bootcss.com/multi-select/0.9.12/js/jquery.multi-select.min.js"></script>
-<script src="//cdn.bootcss.com/select2/3.4.8/select2.min.js"></script>
-<script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
-<script src="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.js"></script>
 
 
 </body>
