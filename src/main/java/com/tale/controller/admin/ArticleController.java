@@ -68,6 +68,14 @@ public class ArticleController extends BaseController {
 
         //文章
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
+
+
+        if (!"".equals(category)) {
+            List list = contentsService.siftCategory(contentsPaginator.getList(),category);
+            contentsPaginator.setList(list);
+        }
+
+
         request.attribute("articles", contentsPaginator);
 
         return "admin/article_list";

@@ -57,4 +57,11 @@ public interface ContentsService {
      */
     Paginator<Contents> getArticles(Integer mid, int page, int limit);
 
+
+    /**
+     * 按照分类筛选文章
+     * @param category
+     * @return
+     */
+    List<Contents> siftCategory(List<Contents> contentList,String category);
 }
