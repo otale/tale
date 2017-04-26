@@ -17,6 +17,7 @@ import com.tale.service.MetasService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -169,4 +170,16 @@ public class ContentsServiceImpl implements ContentsService {
         return paginator;
     }
 
+
+    @Override
+    public List<Contents> siftCategory(List<Contents> contentList, String category) {
+        List<Contents> list = new ArrayList<>();
+        for (Contents content : contentList) {
+            if (content.getCategories().equals(category)) {
+                list.add(content);
+            }
+        }
+
+        return list;
+    }
 }

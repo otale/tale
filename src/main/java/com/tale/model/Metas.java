@@ -4,7 +4,10 @@ import com.blade.jdbc.annotation.Table;
 
 import java.io.Serializable;
 
-//
+/**
+ * 元素实体
+ * 对应t_metas表
+ */
 @Table(name = "t_metas", pk = "mid")
 public class Metas implements Serializable {
 
