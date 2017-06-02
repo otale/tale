@@ -1,0 +1,144 @@
+#include('./header.html',{active:'menu', title:'菜单管理'})
+<div class="col-sm-12">
+    <h4 class="page-title">菜单管理</h4>
+</div>
+
+<div class="row">
+    <div class="panel panel-default">
+
+        <div class="container panel-body">
+            <div class="row clearfix">
+                <form onsubmit="test()">
+                    <div class="col-md-2 column">
+                        <!--生成表格，带选择框，-->
+                        <!---->
+                        <!--<div id="dataList" data-spy="scroll" data-target="#navbar-example" data-offset="0"-->
+                        <!--style="overflow:auto; position: relative;margin-bottom: 15px">-->
+                        <!--</div>-->
+                        <div class="dd" id="nestable">
+                            <ol id="dataList" class="dd-list"  style="min-width: 262px;min-height: 120px">
+                                <li class="dd-nodrag">
+                                    <div class="sele">页面</div>
+                                </li>
+                            </ol>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3 column">
+
+                        <div class="dd" id="nestable2" style="min-width: 262px;min-height: 120px">
+                            <ol id="menuList" class="dd-list dd-nodrag" style="min-width: 262px;min-height: 120px">
+                                <li class="dd-nodrag">
+                                    <div class="sele">菜单</div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+    var menus = ${articles};
+    $(document).ready(function () {
+
+        var updateOutput = function (e) {
+            var list = e.length ? e : $(e.target),
+                output = list.data('output');
+            if (window.JSON) {
+                //output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
+            } else {
+                output.val('JSON browser support required for this demo.');
+            }
+        };
+
+        // activate Nestable for list 1
+        $('#nestable').nestable({
+            maxDepth:1,
+            group: 1
+        })
+            .on('change', updateOutput);
+
+        // activate Nestable for list 2
+        $('#nestable2').nestable({
+            maxDepth:1,
+            group: 1
+        })
+            .on('change', updateOutput);
+
+        // output initial serialised data
+        updateOutput($('#nestable').data('output', $('#nestable-output')));
+        updateOutput($('#nestable2').data('output', $('#nestable2-output')));
+
+        $('#nestable-menu').on('click', function (e) {
+            var target = $(e.target),
+                action = target.data('action');
+            if (action === 'expand-all') {
+                $('.dd').nestable('expandAll');
+            }
+            if (action === 'collapse-all') {
+                $('.dd').nestable('collapseAll');
+            }
+        });
+
+        $('#nestable3').nestable();
+
+    });
+
+    $(document).ready(function () {
+            for (let menuItem in menus) {
+                let html = createMenuItem(menuItem);
+                $("#dataList").append(html);
+            }
+        }
+    );
+    let dataSize = menus.length;
+
+    function frishData() {
+        for (let a = 0; a < dataSize; a++) {
+            if ($("#dataInput" + a).prop('checked')) {
+                addItem(a);
+            }
+        }
+    }
+
+    function frishMenu() {
+        for (let a = 0; a < menus.length - dataSize; a++) {
+            if ($("#menuInput" + a).prop('checked')) {
+                removeItem(a)
+            }
+
+        }
+
+    }
+
+    function addItem(id) {
+        let html = createMenuItem(id)
+        $("#menuList").append(html)
+        $("#dataItem" + id).remove();
+    }
+
+    function removeItem(id) {
+        let html = createMenuItem(id);
+        $("#dataList").append(html)
+        $("#menuInput" + id).remove();
+    }
+    function createMenuItem(id) {
+        return '<li id="menuItem' + id + '" class="dd-item" data-id="'
+            + id
+            + '"><div class="dd-handle">'
+            + menus[id].title
+            + '</div></li>';
+
+    }
+
+    function createDataItem(id) {
+        return '<div id="dataItem' + id + '" class="sele"><label><input id="dataInput' + id + '" type="checkbox" value="">'
+            + menus[id].title
+            + '</label></div>';
+    }
+</script>
