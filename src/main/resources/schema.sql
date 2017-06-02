@@ -72,24 +72,17 @@ CREATE TABLE t_contents (
   allow_feed    INTEGER(1)
 );
 
-INSERT INTO t_contents (cid, title, slug, created, modified, content, author_id, type, status, tags, categories, hits, comments_num, allow_comment, allow_ping, allow_feed)
+INSERT INTO t_contents (cid, title, slug, created, modified, content, author_id, type, status, tags,menu, categories, hits, comments_num, allow_comment, allow_ping, allow_feed)
 VALUES (1, '关于', 'about', 1487853610, 1487872488, '### Hello World
-
-CREATE TABLE t_contents ( cid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, title VARCHAR (255) NOT NULL, slug VARCHAR (255) CONSTRAINT idx_u_slug UNIQUE, thumb_img VARCHAR(255), created INTEGER (10) NOT NULL, modified INTEGER (10), content TEXT, author_id INTEGER (10) NOT NULL, type VARCHAR (16) NOT NULL, status VARCHAR (16) NOT NULL, fmt_type VARCHAR (16) DEFAULT ('markdown'), tags VARCHAR (200), categories VARCHAR (200), hits INTEGER (10) DEFAULT (0), comments_num INTEGER (1) DEFAULT (0), allow_comment INTEGER (1) DEFAULT (1), allow_ping INTEGER (1), allow_feed INTEGER (1) );
-INSERT INTO t_contents (cid, title, slug, created, modified, content, author_id, type, status, tags, categories, hits, comments_num, allow_comment, allow_ping, allow_feed) VALUES (1, '关于', 'about', 1487853610, 1487872488, '### Hello World
 
 
 这是我的关于页面
 
 ### 当然还有其他
 
-具体你来写点什么吧', 1, 'page', 'publish', NULL, NULL, 0, 0, 1, 1, 1);
-<<<<<<< HEAD
+具体你来写点什么吧', 1, 'page', 'publish', NULL,1, NULL, 0, 0, 1, 1, 1);
 INSERT INTO t_contents (cid, title, slug, created, modified, content, author_id, type, status, tags, menu, categories, hits, comments_num, allow_comment, allow_ping, allow_feed)
 VALUES (2, '第一篇文章', NULL, 1487861184, 1487872798, '## Hello  World.
-
-INSERT INTO t_contents (cid, title, slug, created, modified, content, author_id, type, status, tags, categories, hits, comments_num, allow_comment, allow_ping, allow_feed) VALUES (2, '第一篇文章', NULL, 1487861184, 1487872798, '## Hello  World.
->>>>>>> e3b4600c0a03f9ce2ae57d3029e323e13237951f
 
 > 第一篇文章总得写点儿什么?...
 
@@ -103,7 +96,7 @@ public static void main(String[] args){
     System.out.println(\"Hello Tale.\");
 }
 
-```', 1, 'post', 'publish', '', '默认分类', 10, 0, 1, 1, 1);
+```', 1, 'post', 'publish', '',0, '默认分类', 10, 0, 1, 1, 1);
 
 -- 表：t_logs
 DROP TABLE IF EXISTS t_logs;
@@ -154,9 +147,7 @@ CREATE TABLE t_users (
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = ON;
 
-SELECT *
-FROM t_contents AS content
-WHERE content.menu > 0 AND content.type=page;
+
 
 
 CREATE TABLE t_relationships (cid INTEGER (10) NOT NULL, mid INTEGER (10) NOT NULL);

@@ -46,7 +46,6 @@ public class Contents implements Serializable {
     // 标签列表
     private String tags;
 
-
     private int menu;
 
     // 分类列表

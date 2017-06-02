@@ -24,8 +24,6 @@ import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 /**
  * 登录，退出
  * Created by biezhi on 2017/2/21.
