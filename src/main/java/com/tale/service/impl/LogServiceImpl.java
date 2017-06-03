@@ -1,7 +1,7 @@
 package com.tale.service.impl;
 
+import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by biezhi on 2017/2/26.
  */
-@Service
+@Bean
 public class LogServiceImpl implements LogService {
 
     @Inject
@@ -28,7 +28,7 @@ public class LogServiceImpl implements LogService {
         logs.setData(data);
         logs.setIp(ip);
         logs.setAuthor_id(author_id);
-        logs.setCreated(DateKit.getCurrentUnixTime());
+        logs.setCreated((int) DateKit.nowUnix());
         activeRecord.insert(logs);
     }
 

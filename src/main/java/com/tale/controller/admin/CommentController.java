@@ -4,13 +4,10 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.StringKit;
-import com.blade.mvc.annotation.Controller;
-import com.blade.mvc.annotation.JSON;
-import com.blade.mvc.annotation.QueryParam;
-import com.blade.mvc.annotation.Route;
+import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.Comment;
 import com.tale.dto.Types;
@@ -27,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by biezhi on 2017/2/26.
  */
-@Controller("admin/comments")
+@Path("admin/comments")
 public class CommentController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommentController.class);
@@ -38,9 +35,9 @@ public class CommentController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @Route(value = "", method = HttpMethod.GET)
-    public String index(@QueryParam(value = "page", defaultValue = "1") int page,
-                        @QueryParam(value = "limit", defaultValue = "15") int limit, Request request) {
+    @GetRoute(values = "")
+    public String index(@QueryParam(defaultValue = "1") int page,
+                        @QueryParam(defaultValue = "15") int limit, Request request) {
         Users users = this.user();
         Paginator<Comments> commentsPaginator = commentsService.getComments(new Take(Comments.class).notEq("author_id", users.getUid()).page(page, limit, "coid desc"));
         request.attribute("comments", commentsPaginator);
@@ -52,7 +49,7 @@ public class CommentController extends BaseController {
      * @param coid
      * @return
      */
-    @Route(value = "delete", method = HttpMethod.POST)
+    @PostRoute(values = "delete")
     @JSON
     public RestResponse delete(@QueryParam Integer coid) {
         try {
@@ -74,7 +71,7 @@ public class CommentController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(value = "status", method = HttpMethod.POST)
+    @PostRoute(values = "status")
     @JSON
     public RestResponse delete(@QueryParam Integer coid, @QueryParam String status) {
         try {
@@ -95,7 +92,7 @@ public class CommentController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(value = "", method = HttpMethod.POST)
+    @PostRoute(values = "")
     @JSON
     public RestResponse reply(@QueryParam Integer coid, @QueryParam String content, Request request) {
         if(null == coid || StringKit.isBlank(content)){

@@ -1,5 +1,6 @@
 package com.tale.service;
 
+import java.util.List;
 import java.util.Map;
 
 public interface OptionsService {
@@ -9,7 +10,7 @@ public interface OptionsService {
      *
      * @param options
      */
-    void saveOptions(Map<String, String> options);
+    void saveOptions(Map<String, List<String>> options);
 
     /**
      * 保存配置

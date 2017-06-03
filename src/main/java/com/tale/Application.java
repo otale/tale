@@ -1,14 +1,14 @@
 package com.tale;
 
+import com.blade.Blade;
 import com.tale.init.TaleLoader;
-
-import static com.blade.Blade.$;
 
 public class Application {
 
     public static void main(String[] args) throws Exception {
-        TaleLoader.init();
-        $().start(Application.class);
+        Blade blade = Blade.me();
+        TaleLoader.init(blade);
+        blade.start(Application.class, args);
     }
 
 }

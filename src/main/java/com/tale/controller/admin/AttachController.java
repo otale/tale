@@ -3,16 +3,15 @@ package com.tale.controller.admin;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.FileKit;
-import com.blade.kit.Tools;
-import com.blade.mvc.annotation.Controller;
+import com.blade.kit.IOKit;
 import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.multipart.FileItem;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.LogActions;
 import com.tale.dto.Types;
@@ -30,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +41,7 @@ import java.util.Map;
  *
  * Created by biezhi on 2017/2/21.
  */
-@Controller("admin/attach")
+@Path("admin/attach")
 public class AttachController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AttachController.class);
@@ -64,9 +65,9 @@ public class AttachController extends BaseController {
      * @param limit
      * @return
      */
-    @Route(value = "", method = HttpMethod.GET)
-    public String index(Request request, @QueryParam(value = "page", defaultValue = "1") int page,
-                        @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    @Route(values = "", method = HttpMethod.GET)
+    public String index(Request request, @QueryParam(defaultValue = "1") int page,
+                        @QueryParam(defaultValue = "12") int limit) {
         Paginator<Attach> attachPaginator = attachService.getAttachs(new Take(Attach.class).page(page, limit, "id desc"));
         request.attribute("attachs", attachPaginator);
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
@@ -81,7 +82,7 @@ public class AttachController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "upload", method = HttpMethod.POST)
+    @Route(values = "upload", method = HttpMethod.POST)
     @JSON
     public RestResponse upload(Request request) {
 
@@ -104,7 +105,7 @@ public class AttachController extends BaseController {
 
                     File file = new File(filePath);
                     try {
-                        Tools.copyFileUsingFileChannels(f.file(), file);
+                        IOKit.copyFileUsingFileChannels(f.file(), file);
                         f.file().delete();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -134,7 +135,7 @@ public class AttachController extends BaseController {
         }
     }
 
-    @Route(value = "delete")
+    @Route(values = "delete")
     @JSON
     public RestResponse delete(@QueryParam Integer id, Request request) {
         try {
@@ -143,7 +144,7 @@ public class AttachController extends BaseController {
             attachService.delete(id);
             siteService.cleanCache(Types.C_STATISTICS);
             String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
-            FileKit.delete(upDir + attach.getFkey());
+            Files.delete(Paths.get(upDir + attach.getFkey()));
             logService.save(LogActions.DEL_ATTACH, attach.getFkey(), request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "附件删除失败";

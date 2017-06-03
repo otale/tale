@@ -5,9 +5,8 @@ import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
-import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.LogActions;
 import com.tale.dto.Types;
@@ -29,7 +28,7 @@ import java.util.List;
  * 文章管理控制器
  * Created by biezhi on 2017/2/21.
  */
-@Controller("admin/article")
+@Path("admin/article")
 public class ArticleController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticleController.class);
@@ -53,9 +52,9 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "", method = HttpMethod.GET)
-    public String index(@QueryParam(value = "page", defaultValue = "1") int page,
-                        @QueryParam(value = "limit", defaultValue = "15") int limit, Request request) {
+    @GetRoute(values = "")
+    public String index(@QueryParam(defaultValue = "1") int page,
+                        @QueryParam(defaultValue = "15") int limit, Request request) {
 
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
         request.attribute("articles", contentsPaginator);
@@ -67,7 +66,7 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "publish", method = HttpMethod.GET)
+    @GetRoute(values = "publish")
     public String newArticle(Request request) {
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         request.attribute("categories", categories);
@@ -81,7 +80,7 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "/:cid", method = HttpMethod.GET)
+    @GetRoute(values = "/:cid")
     public String editArticle(@PathParam String cid, Request request) {
         Contents contents = contentsService.getContents(cid);
         request.attribute("contents", contents);
@@ -106,12 +105,12 @@ public class ArticleController extends BaseController {
      * @param allow_feed
      * @return
      */
-    @Route(value = "publish", method = HttpMethod.POST)
+    @PostRoute(values = "publish")
     @JSON
     public RestResponse publishArticle(@QueryParam String title, @QueryParam String content,
                                        @QueryParam String tags, @QueryParam String categories,
                                        @QueryParam String status, @QueryParam String slug,
-                                       @QueryParam String fmt_type,@QueryParam String thumb_img,
+                                       @QueryParam String fmt_type, @QueryParam String thumb_img,
                                        @QueryParam Boolean allow_comment, @QueryParam Boolean allow_ping, @QueryParam Boolean allow_feed) {
 
         Users users = this.user();
@@ -170,7 +169,7 @@ public class ArticleController extends BaseController {
      * @param allow_feed
      * @return
      */
-    @Route(value = "modify", method = HttpMethod.POST)
+    @PostRoute(values = "modify")
     @JSON
     public RestResponse modifyArticle(@QueryParam Integer cid, @QueryParam String title,
                                       @QueryParam String content,@QueryParam String fmt_type,
@@ -221,7 +220,7 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "delete")
+    @Route(values = "delete")
     @JSON
     public RestResponse delete(@QueryParam int cid, Request request) {
         try {

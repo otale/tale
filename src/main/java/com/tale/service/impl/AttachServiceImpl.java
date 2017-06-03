@@ -1,10 +1,11 @@
 package com.tale.service.impl;
 
+import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
+import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
 import com.tale.model.Attach;
 import com.tale.service.AttachService;
@@ -12,7 +13,7 @@ import com.tale.service.AttachService;
 /**
  * Created by biezhi on 2017/2/23.
  */
-@Service
+@Bean
 public class AttachServiceImpl implements AttachService {
 
     @Inject
@@ -25,7 +26,7 @@ public class AttachServiceImpl implements AttachService {
         attach.setAuthor_id(author);
         attach.setFkey(fkey);
         attach.setFtype(ftype);
-        attach.setCreated(DateKit.getCurrentUnixTime());
+        attach.setCreated(DateKit.nowUnix());
         activeRecord.insert(attach);
         return attach;
     }

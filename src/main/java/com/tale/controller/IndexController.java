@@ -3,15 +3,15 @@ package com.tale.controller;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.IPKit;
 import com.blade.kit.PatternKit;
 import com.blade.kit.StringKit;
+import com.blade.mvc.Const;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
-import com.blade.mvc.http.wrapper.Session;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.http.Session;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.dto.Archive;
 import com.tale.dto.ErrorCode;
 import com.tale.dto.MetaDto;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URLEncoder;
 import java.util.List;
 
-@Controller
+@Path
 public class IndexController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
@@ -56,8 +56,8 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @Route(value = "/", method = HttpMethod.GET)
-    public String index(Request request, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    @Route(values = "/", method = HttpMethod.GET)
+    public String index(Request request, @QueryParam(defaultValue = "12") int limit) {
         return this.index(request, 1, limit);
     }
 
@@ -94,7 +94,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(values = {"page/:page", "page/:page.html"}, method = HttpMethod.GET)
-    public String index(Request request, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    public String index(Request request, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(page, limit, "created desc");
         Paginator<Contents> articles = contentsService.getArticles(take);
@@ -146,13 +146,13 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(values = {"category/:keyword", "category/:keyword.html"}, method = HttpMethod.GET)
-    public String categories(Request request, @PathParam String keyword, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    public String categories(Request request, @PathParam String keyword, @QueryParam(defaultValue = "12") int limit) {
         return this.categories(request, keyword, 1, limit);
     }
 
     @Route(values = {"category/:keyword/:page", "category/:keyword/:page.html"}, method = HttpMethod.GET)
     public String categories(Request request, @PathParam String keyword,
-                             @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+                             @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         MetaDto metaDto = metasService.getMeta(Types.CATEGORY, keyword);
         if (null == metaDto) {
@@ -178,7 +178,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(values = {"tag/:name", "tag/:name.html"}, method = HttpMethod.GET)
-    public String tags(Request request, @PathParam String name, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    public String tags(Request request, @PathParam String name, @QueryParam(defaultValue = "12") int limit) {
         return this.tags(request, name, 1, limit);
     }
 
@@ -192,7 +192,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(values = {"tag/:name/:page", "tag/:name/:page.html"}, method = HttpMethod.GET)
-    public String tags(Request request, @PathParam String name, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    public String tags(Request request, @PathParam String name, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         MetaDto metaDto = metasService.getMeta(Types.TAG, name);
@@ -218,18 +218,18 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(values = {"search/:keyword", "search/:keyword.html"}, method = HttpMethod.GET)
-    public String search(Request request, @PathParam String keyword, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    public String search(Request request, @PathParam String keyword, @QueryParam(defaultValue = "12") int limit) {
         return this.search(request, keyword, 1, limit);
     }
 
     @Route(values = {"search", "search.html"})
-    public String search(Request request, @QueryParam(value = "limit", defaultValue = "12") int limit) {
-        String keyword = request.query("s");
+    public String search(Request request, @QueryParam(defaultValue = "12") int limit) {
+        String keyword = request.query("s").orElse("");
         return this.search(request, keyword, 1, limit);
     }
 
     @Route(values = {"search/:keyword/:page", "search/:keyword/:page.html"}, method = HttpMethod.GET)
-    public String search(Request request, @PathParam String keyword, @PathParam int page, @QueryParam(value = "limit", defaultValue = "12") int limit) {
+    public String search(Request request, @PathParam String keyword, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH)
@@ -280,7 +280,8 @@ public class IndexController extends BaseController {
                 .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, TaleConst.MAX_POSTS, "created desc"));
         try {
             String xml = TaleUtils.getRssXml(contentsPaginator.getList());
-            response.xml(xml);
+            response.contentType(Const.CONTENT_TYPE_XML);
+            response.body(xml);
         } catch (Exception e) {
             LOGGER.error("生成RSS失败", e);
         }
@@ -292,7 +293,7 @@ public class IndexController extends BaseController {
      * @param session
      * @param response
      */
-    @Route("logout")
+    @Route(values = "logout")
     public void logout(Session session, Response response) {
         TaleUtils.logout(session, response);
     }
@@ -300,7 +301,7 @@ public class IndexController extends BaseController {
     /**
      * 评论操作
      */
-    @Route(value = "comment", method = HttpMethod.POST)
+    @Route(values = "comment", method = HttpMethod.POST)
     @JSON
     public RestResponse comment(Request request, Response response,
                                 @QueryParam Integer cid, @QueryParam Integer coid,
@@ -341,7 +342,7 @@ public class IndexController extends BaseController {
             return RestResponse.fail("请输入200个字符以内的评论");
         }
 
-        String val = IPKit.getIpAddrByRequest(request.raw()) + ":" + cid;
+        String val = request.address() + ":" + cid;
         Integer count = cache.hget(Types.COMMENTS_FREQUENCY, val);
         if (null != count && count > 0) {
             return RestResponse.fail("您发表评论太快了，请过会再试");

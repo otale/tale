@@ -1,13 +1,13 @@
-package com.tale.interceptor;
+package com.tale.webhook;
 
+import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.kit.IPKit;
 import com.blade.kit.StringKit;
 import com.blade.kit.UUID;
-import com.blade.mvc.annotation.Intercept;
+import com.blade.mvc.hook.Invoker;
+import com.blade.mvc.hook.WebHook;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
-import com.blade.mvc.interceptor.Interceptor;
 import com.tale.dto.Types;
 import com.tale.init.TaleConst;
 import com.tale.model.Users;
@@ -17,10 +17,10 @@ import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Intercept
-public class BaseInterceptor implements Interceptor {
+@Bean
+public class BaseWebHook implements WebHook {
 
-    private static final Logger LOGGE = LoggerFactory.getLogger(BaseInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseWebHook.class);
 
     @Inject
     private UsersService usersService;
@@ -28,10 +28,12 @@ public class BaseInterceptor implements Interceptor {
     private MapCache cache = MapCache.single();
 
     @Override
-    public boolean before(Request request, Response response) {
+    public boolean before(Invoker invoker) {
+        Request request = invoker.request();
+        Response response = invoker.response();
 
         String uri = request.uri();
-        String ip = IPKit.getIpAddrByRequest(request.raw());
+        String ip = request.address();
 
         // 禁止该ip访问
         if(TaleConst.BLOCK_IPS.contains(ip)){
@@ -39,11 +41,11 @@ public class BaseInterceptor implements Interceptor {
             return false;
         }
 
-        LOGGE.info("UserAgent: {}", request.userAgent());
-        LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, ip);
+        log.info("UserAgent: {}", request.userAgent());
+        log.info("用户访问地址: {}, 来路地址: {}", uri, ip);
 
         if (!TaleConst.INSTALL && !uri.startsWith("/install")) {
-            response.go("/install");
+            response.redirect("/install");
             return false;
         }
 
@@ -59,7 +61,7 @@ public class BaseInterceptor implements Interceptor {
 
             if(uri.startsWith("/admin") && !uri.startsWith("/admin/login")){
                 if(null == user){
-                    response.go("/admin/login");
+                    response.redirect("/admin/login");
                     return false;
                 }
                 request.attribute("plugin_menus", TaleConst.plugin_menus);
@@ -76,9 +78,9 @@ public class BaseInterceptor implements Interceptor {
         return true;
     }
 
-
     @Override
-    public boolean after(Request request, Response response) {
+    public boolean after(Invoker invoker) {
+        Request request = invoker.request();
         String _csrf_token = request.attribute("del_csrf_token");
         if(StringKit.isNotBlank(_csrf_token)){
             // 移除本次token
@@ -86,5 +88,4 @@ public class BaseInterceptor implements Interceptor {
         }
         return true;
     }
-
 }

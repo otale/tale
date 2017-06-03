@@ -1,13 +1,13 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by biezhi on 2017/2/21.
  */
-@Controller("admin/category")
+@Path("admin/category")
 public class CategoryController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
@@ -34,7 +34,7 @@ public class CategoryController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @Route(value = "", method = HttpMethod.GET)
+    @Route(values = "", method = HttpMethod.GET)
     public String index(Request request) {
         List<MetaDto> categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
         List<MetaDto> tags = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
@@ -43,7 +43,7 @@ public class CategoryController extends BaseController {
         return "admin/category";
     }
 
-    @Route(value = "save", method = HttpMethod.POST)
+    @Route(values = "save", method = HttpMethod.POST)
     @JSON
     public RestResponse saveCategory(@QueryParam String cname, @QueryParam Integer mid) {
         try {
@@ -61,7 +61,7 @@ public class CategoryController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(value = "delete")
+    @Route(values = "delete")
     @JSON
     public RestResponse delete(@QueryParam int mid) {
         try {

@@ -1,11 +1,14 @@
 package com.tale.service.impl;
 
+import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.ar.SampleActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.*;
+import com.blade.kit.BladeKit;
+import com.blade.kit.DateKit;
+import com.blade.kit.EncrypKit;
+import com.blade.kit.StringKit;
 import com.tale.controller.admin.AttachController;
 import com.tale.dto.*;
 import com.tale.exception.TipException;
@@ -21,12 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
  * Created by biezhi on 2017/2/23.
  */
-@Service
+@Bean
 public class SiteServiceImpl implements SiteService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SiteService.class);
@@ -50,10 +55,10 @@ public class SiteServiceImpl implements SiteService {
 
     @Override
     public void initSite(Users users) {
-        String pwd = Tools.md5(users.getUsername() + users.getPassword());
+        String pwd = EncrypKit.md5(users.getUsername() + users.getPassword());
         users.setPassword(pwd);
         users.setScreen_name(users.getUsername());
-        users.setCreated(DateKit.getCurrentUnixTime());
+        users.setCreated((int) DateKit.nowUnix());
         Integer uid = activeRecord.insert(users);
 
         try {
@@ -94,7 +99,7 @@ public class SiteServiceImpl implements SiteService {
         // 随机文章
         if (Types.RANDOM_ARTICLE.equals(type)) {
             List<Integer> cids = activeRecord.list(Integer.class, "select cid from t_contents where type = ? and status = ? order by rand() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
-            if (CollectionKit.isNotEmpty(cids)) {
+            if (BladeKit.isNotEmpty(cids)) {
                 Integer[] inCids = cids.toArray(new Integer[cids.size()]);
                 return activeRecord.list(new Take(Contents.class).in("cid", inCids));
             }
@@ -141,17 +146,17 @@ public class SiteServiceImpl implements SiteService {
         if (null != archives) {
             archives.forEach(archive -> {
                 String date_str = archive.getDate_str();
-                Date sd = DateKit.dateFormat(date_str, "yyyy年MM月");
+                Date sd = DateKit.toDate(date_str, "yyyy年MM月");
                 archive.setDate(sd);
 
-                int start = DateKit.getUnixTimeByDate(sd);
+                int start = (int) DateKit.toUnix(sd);
 
                 Calendar calender = Calendar.getInstance();
                 calender.setTime(sd);
                 calender.add(Calendar.MONTH, 1);
                 Date endSd = calender.getTime();
 
-                int end = DateKit.getUnixTimeByDate(endSd) - 1;
+                int end = DateKit.toUnix(endSd) - 1;
                 List<Contents> contentss = activeRecord.list(new Take(Contents.class)
                         .eq("type", Types.ARTICLE)
                         .eq("status", Types.PUBLISH)
@@ -177,13 +182,13 @@ public class SiteServiceImpl implements SiteService {
             if (StringKit.isBlank(bk_path)) {
                 throw new TipException("请输入备份文件存储路径");
             }
-            if (!FileKit.isDirectory(bk_path)) {
+            if (!Files.isDirectory(Paths.get(bk_path))) {
                 throw new TipException("请输入一个存在的目录");
             }
             String bkAttachDir = AttachController.CLASSPATH + "upload";
             String bkThemesDir = AttachController.CLASSPATH + "templates/themes";
 
-            String fname = DateKit.dateFormat(new Date(), fmt) + "_" + StringKit.getRandomNumber(5) + ".zip";
+            String fname = DateKit.toString(new Date(), fmt) + "_" + StringKit.rand(5) + ".zip";
 
             String attachPath = bk_path + "/" + "attachs_" + fname;
             String themesPath = bk_path + "/" + "themes_" + fname;
@@ -196,10 +201,10 @@ public class SiteServiceImpl implements SiteService {
         }
         // 备份数据库
         if("db".equals(bk_type)){
-            String filePath = "upload/" + DateKit.getToday("yyyyMMddHHmmss") + "_" + StringKit.getRandomNumber(8) + ".db";
+            String filePath = "upload/" + DateKit.toString(new Date(), "yyyyMMddHHmmss") + "_" + StringKit.rand(8) + ".db";
             String cp = AttachController.CLASSPATH + filePath;
-            FileKit.createParentDir(cp);
-            FileKit.copy(SqliteJdbc.DB_PATH, cp);
+            Files.createDirectory(Paths.get(cp));
+            Files.copy(Paths.get(SqliteJdbc.DB_PATH), Paths.get(cp));
             backResponse.setSql_path("/" + filePath);
             // 10秒后删除备份文件
             new Timer().schedule(new TimerTask() {
@@ -233,7 +238,7 @@ public class SiteServiceImpl implements SiteService {
         // 随机获取项目
         if (Types.RANDOM_META.equals(searchType)) {
             List<Integer> mids = activeRecord.list(Integer.class, "select mid from t_metas where type = ? order by rand() * mid limit ?", type, limit);
-            if (CollectionKit.isNotEmpty(mids)) {
+            if (BladeKit.isNotEmpty(mids)) {
                 String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                         "where a.mid in "+ in + "group by a.mid order by count desc, a.mid desc";

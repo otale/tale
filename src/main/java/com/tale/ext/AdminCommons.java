@@ -1,7 +1,6 @@
 package com.tale.ext;
 
 import com.blade.kit.StringKit;
-import com.blade.kit.Tools;
 import com.tale.model.Metas;
 
 /**
@@ -18,7 +17,7 @@ public final class AdminCommons {
      * @return
      */
     public static boolean exist_cat(Metas category, String cats) {
-        String[] arr = StringKit.split(cats, ",");
+        String[] arr = cats.split(",");
         if (null != arr && arr.length > 0) {
             for (String c : arr) {
                 if (c.trim().equals(category.getName())) {
@@ -32,7 +31,7 @@ public final class AdminCommons {
     private static final String[] COLORS = {"default", "primary", "success", "info", "warning", "danger", "inverse", "purple", "pink"};
 
     public static String rand_color() {
-        int r = Tools.rand(0, COLORS.length - 1);
+        int r = StringKit.rand(0, COLORS.length - 1);
         return COLORS[r];
     }
 

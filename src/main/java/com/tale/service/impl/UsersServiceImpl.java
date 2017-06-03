@@ -1,16 +1,16 @@
 package com.tale.service.impl;
 
+import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.core.Take;
+import com.blade.kit.EncrypKit;
 import com.blade.kit.StringKit;
-import com.blade.kit.Tools;
 import com.tale.exception.TipException;
 import com.tale.model.Users;
 import com.tale.service.UsersService;
 
-@Service
+@Bean
 public class UsersServiceImpl implements UsersService {
 
     @Inject
@@ -43,7 +43,7 @@ public class UsersServiceImpl implements UsersService {
         if (count < 1) {
             throw new TipException("不存在该用户");
         }
-        String pwd = Tools.md5(username, password);
+        String pwd = EncrypKit.md5(username, password);
         Users users = activeRecord.one(new Take(Users.class).eq("username", username).eq("password", pwd));
         if (null == users) {
             throw new TipException("用户名或密码错误");

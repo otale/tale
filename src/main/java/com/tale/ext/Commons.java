@@ -42,7 +42,7 @@ public final class Commons {
      * @return
      */
     public static boolean is_empty(Paginator paginator) {
-        return null == paginator || CollectionKit.isEmpty(paginator.getList());
+        return null == paginator || BladeKit.isEmpty(paginator.getList());
     }
 
     /**
@@ -159,7 +159,7 @@ public final class Commons {
         if (StringKit.isBlank(email)) {
             return avatarUrl;
         }
-        String hash = Tools.md5(email.trim().toLowerCase());
+        String hash = EncrypKit.md5(email.trim().toLowerCase());
         return avatarUrl + "/" + hash;
     }
 
@@ -180,7 +180,7 @@ public final class Commons {
      * @return
      */
     public static String fmtdate(Date date, String fmt) {
-        return DateKit.dateFormat(date, fmt);
+        return DateKit.toString(date, fmt);
     }
 
     /**
@@ -192,7 +192,7 @@ public final class Commons {
      */
     public static String fmtdate(Integer unixTime, String patten) {
         if (null != unixTime && StringKit.isNotBlank(patten)) {
-            return DateKit.formatDateByUnixTime(unixTime, patten);
+            return DateKit.toString(unixTime, patten);
         }
         return "";
     }

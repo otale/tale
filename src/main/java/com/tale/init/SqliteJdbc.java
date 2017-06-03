@@ -1,17 +1,16 @@
 package com.tale.init;
 
-import com.blade.Blade;
-import com.blade.kit.IOKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.stream.Collectors;
 
 /**
  * Sqlite 数据库操作
@@ -40,9 +39,9 @@ public final class SqliteJdbc {
     /**
      * 测试连接并导入数据库
      */
-    public static void importSql() {
+    public static void importSql(boolean devMode) {
         try {
-            if(Blade.$().isDev()){
+            if (devMode) {
                 DB_PATH = System.getProperty("user.dir") + "/" + DB_NAME;
                 DB_SRC = "jdbc:sqlite://" + DB_PATH;
             }
@@ -53,9 +52,10 @@ public final class SqliteJdbc {
             if (count == 0) {
                 String cp = SqliteJdbc.class.getClassLoader().getResource("").getPath();
                 InputStreamReader isr = new InputStreamReader(new FileInputStream(cp + "schema.sql"), "UTF-8");
-                String sql = IOKit.toString(isr);
-                statement.executeUpdate(sql);
-                LOGGER.info("initialize import database.");
+
+                String sql = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
+                int r = statement.executeUpdate(sql);
+                LOGGER.info("initialize import database - {}", r);
             }
             rs.close();
             statement.close();

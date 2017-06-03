@@ -1,7 +1,7 @@
 package com.tale.service.impl;
 
+import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.PageRow;
@@ -19,7 +19,7 @@ import com.vdurmont.emoji.EmojiParser;
 
 import java.util.List;
 
-@Service
+@Bean
 public class ContentsServiceImpl implements ContentsService {
 
     @Inject
@@ -82,7 +82,7 @@ public class ContentsServiceImpl implements ContentsService {
 
         contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
 
-        int time = DateKit.getCurrentUnixTime();
+        int time = (int) DateKit.nowUnix();
         contents.setCreated(time);
         contents.setModified(time);
 
@@ -116,7 +116,7 @@ public class ContentsServiceImpl implements ContentsService {
         if (null == contents.getAuthor_id()) {
             throw new TipException("请登录后发布文章");
         }
-        int time = DateKit.getCurrentUnixTime();
+        int time = (int) DateKit.nowUnix();
         contents.setModified(time);
 
         Integer cid = contents.getCid();
@@ -125,7 +125,7 @@ public class ContentsServiceImpl implements ContentsService {
 
         activeRecord.update(contents);
 
-        if (!StringKit.equals(contents.getType(), Types.PAGE)) {
+        if (!contents.getType().equals(Types.PAGE)) {
             String sql = "delete from t_relationships where cid = ?";
             activeRecord.execute(sql, cid);
         }

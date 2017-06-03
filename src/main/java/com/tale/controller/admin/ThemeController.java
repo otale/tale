@@ -1,18 +1,12 @@
 package com.tale.controller.admin;
 
 import com.blade.Blade;
+import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
-import com.blade.kit.FileKit;
-import com.blade.kit.StringKit;
-import com.blade.kit.base.Config;
-import com.blade.kit.json.JSONKit;
-import com.blade.mvc.annotation.Controller;
-import com.blade.mvc.annotation.JSON;
-import com.blade.mvc.annotation.QueryParam;
-import com.blade.mvc.annotation.Route;
-import com.blade.mvc.http.HttpMethod;
+import com.blade.kit.JsonKit;
+import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.LogActions;
 import com.tale.dto.ThemeDto;
@@ -26,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +29,7 @@ import java.util.Map;
 /**
  * 主题控制器
  */
-@Controller("admin/themes")
+@Path("admin/themes")
 public class ThemeController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThemeController.class);
@@ -44,7 +40,7 @@ public class ThemeController extends BaseController {
     @Inject
     private LogService logService;
 
-    @Route(value = "", method = HttpMethod.GET)
+    @GetRoute(values = "")
     public String index(Request request) {
         // 读取主题
         String themesDir = AttachController.CLASSPATH + "templates/themes";
@@ -53,12 +49,12 @@ public class ThemeController extends BaseController {
         for(File f : themesFile){
             if(f.isDirectory()){
                 ThemeDto themeDto = new ThemeDto(f.getName());
-                if(FileKit.exist(f.getPath() + "/setting.html")){
+                if (Files.exists(Paths.get(f.getPath() + "/setting.html"))) {
                     themeDto.setHasSetting(true);
                 }
                 themes.add(themeDto);
                 try {
-                    Blade.$().embedServer().addStatic("/templates/themes/" + f.getName() + "/screenshot.png");
+                    Blade.me().addStatics("/templates/themes/" + f.getName() + "/screenshot.png");
                 } catch (Exception e){}
             }
         }
@@ -72,7 +68,7 @@ public class ThemeController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "setting", method = HttpMethod.GET)
+    @GetRoute(values = "setting")
     public String setting(Request request) {
         Map<String, String> themeOptions = optionsService.getOptions("theme_option_");
         request.attribute("theme_options", themeOptions);
@@ -84,18 +80,16 @@ public class ThemeController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "setting", method = HttpMethod.POST)
+    @PostRoute(values = "setting")
     @JSON
     public RestResponse saveSetting(Request request) {
         try {
-            Map<String, String> querys = request.querys();
+            Map<String, List<String>> querys = request.querys();
             optionsService.saveOptions(querys);
 
-            Config config = new Config();
-            config.addAll(optionsService.getOptions());
-            TaleConst.OPTIONS = config;
+            TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
 
-            logService.save(LogActions.THEME_SETTING, JSONKit.toJSONString(querys), request.address(), this.getUid());
+            logService.save(LogActions.THEME_SETTING, JsonKit.toString(querys), request.address(), this.getUid());
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "主题设置失败";
@@ -114,14 +108,14 @@ public class ThemeController extends BaseController {
      * @param site_theme
      * @return
      */
-    @Route(value = "active", method = HttpMethod.POST)
+    @PostRoute(values = "active")
     @JSON
     public RestResponse activeTheme(Request request, @QueryParam String site_theme) {
         try {
             optionsService.saveOption("site_theme", site_theme);
             optionsService.deleteOption("theme_option_");
 
-            TaleConst.OPTIONS.put("site_theme", site_theme);
+            TaleConst.OPTIONS.set("site_theme", site_theme);
             BaseController.THEME = "themes/" + site_theme;
 
             String themePath = "/templates/themes/" + site_theme;

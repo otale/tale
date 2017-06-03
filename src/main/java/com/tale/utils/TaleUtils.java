@@ -1,10 +1,11 @@
 package com.tale.utils;
 
-import com.blade.context.WebContextHolder;
-import com.blade.kit.*;
+import com.blade.kit.DateKit;
+import com.blade.kit.EncrypKit;
+import com.blade.kit.StringKit;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
-import com.blade.mvc.http.wrapper.Session;
+import com.blade.mvc.http.Session;
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Item;
@@ -25,8 +26,8 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.List;
@@ -63,7 +64,7 @@ public class TaleUtils {
      */
     public static void setCookie(Response response, Integer uid) {
         try {
-            String val = Tools.enAes(uid.toString(), TaleConst.AES_SALT);
+            String val = new String(EncrypKit.encryptAES(uid.toString().getBytes(), TaleConst.AES_SALT.getBytes()));
             boolean isSSL = Commons.site_url().startsWith("https");
             response.cookie("/", TaleConst.USER_IN_COOKIE, val, one_month, isSSL);
         } catch (Exception e) {
@@ -77,7 +78,7 @@ public class TaleUtils {
      * @return
      */
     public static Users getLoginUser() {
-        Session session = WebContextHolder.session();
+        Session session = com.blade.mvc.WebContext.request().session();
         if (null == session) {
             return null;
         }
@@ -105,14 +106,16 @@ public class TaleUtils {
      */
     public static Integer getCookieUid(Request request) {
         if (null != request) {
-            String value = request.cookie(TaleConst.USER_IN_COOKIE);
-            if (StringKit.isNotBlank(value)) {
+            Optional<String> c = request.cookie(TaleConst.USER_IN_COOKIE);
+            if (c.isPresent()) {
                 try {
-                    String uid = Tools.deAes(value, TaleConst.AES_SALT);
+                    String value = c.get();
+                    String uid = new String(EncrypKit.decryptAES(value.getBytes(), TaleConst.AES_SALT.getBytes()));
                     return StringKit.isNotBlank(uid) && StringKit.isNumber(uid) ? Integer.valueOf(uid) : null;
                 } catch (Exception e) {
                 }
             }
+
         }
         return null;
     }
@@ -130,7 +133,7 @@ public class TaleUtils {
         if (arr.length == 1) {
             return "'" + arr[0] + "'";
         }
-        String a = StringKit.join(arr, "','");
+        String a = String.join("','", arr);
         a = a.substring(2) + "'";
         return a;
     }
@@ -235,9 +238,9 @@ public class TaleUtils {
      */
     public static String getRssXml(java.util.List<Contents> articles) throws FeedException {
         Channel channel = new Channel("rss_2.0");
-        channel.setTitle(TaleConst.OPTIONS.get("site_title"));
+        channel.setTitle(TaleConst.OPTIONS.get("site_title", ""));
         channel.setLink(Commons.site_url());
-        channel.setDescription(TaleConst.OPTIONS.get("site_description"));
+        channel.setDescription(TaleConst.OPTIONS.get("site_description", ""));
         channel.setLanguage("zh-CN");
         java.util.List<Item> items = new ArrayList<>();
         articles.forEach(post -> {
@@ -247,7 +250,7 @@ public class TaleUtils {
             content.setValue(Theme.article(post.getContent()));
             item.setContent(content);
             item.setLink(Theme.permalink(post.getCid(), post.getSlug()));
-            item.setPubDate(DateKit.getDateByUnixTime(post.getCreated()));
+            item.setPubDate(DateKit.toDate(post.getCreated()));
             items.add(item);
         });
         channel.setItems(items);
@@ -328,30 +331,15 @@ public class TaleUtils {
     }
 
     public static void download(Response response, String filePath) throws Exception {
-
-        response.contentType("application/octet-stream");
-        response.header("Content-Transfer-Encoding", "binary");
-
         File file = new File(filePath);
-        String fname = file.getName();
-        response.header("Content-Disposition", "attachment; filename=" + fname);
-        OutputStream out = response.outputStream();
-        FileInputStream in = new FileInputStream(file);
-        byte[] buffer = new byte[1024];
-        int len;
-        while ((len = in.read(buffer)) > 0) {
-            out.write(buffer, 0, len);
-        }
-        in.close();
-        out.flush();
-        out.close();
+        response.donwload(file.getName(), file);
     }
 
     /**
      * 获取某个范围内的随机数
      *
-     * @param max   最大值
-     * @param len   取多少个
+     * @param max 最大值
+     * @param len 取多少个
      * @return
      */
     public static int[] random(int max, int len) {
@@ -375,25 +363,26 @@ public class TaleUtils {
 
     /**
      * 将list转为 (1, 2, 4) 这样的sql输出
+     *
      * @param list
      * @param <T>
      * @return
      */
-    public static <T> String listToInSql(java.util.List<T> list){
+    public static <T> String listToInSql(java.util.List<T> list) {
         StringBuffer sbuf = new StringBuffer();
-        list.forEach( item -> sbuf.append(',').append(item.toString()));
+        list.forEach(item -> sbuf.append(',').append(item.toString()));
         sbuf.append(')');
         return '(' + sbuf.substring(1);
     }
 
     public static final String upDir = AttachController.CLASSPATH.substring(0, AttachController.CLASSPATH.length() - 1);
 
-    public static String getFileKey(String name){
-        String prefix = "/upload/" + DateKit.dateFormat(new Date(), "yyyy/MM");
+    public static String getFileKey(String name) {
+        String prefix = "/upload/" + DateKit.toString(new Date(), "yyyy/MM");
         String dir = upDir + prefix;
-        if (!FileKit.exist(dir)) {
+        if (!Files.exists(Paths.get(dir))) {
             new File(dir).mkdirs();
         }
-        return prefix + "/" + com.blade.kit.UUID.UU32() + "." + FileKit.getExtension(name);
+        return prefix + "/" + com.blade.kit.UUID.UU32() + "." + StringKit.fileExt(name);
     }
 }

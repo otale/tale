@@ -1,13 +1,9 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.mvc.annotation.Controller;
-import com.blade.mvc.annotation.JSON;
-import com.blade.mvc.annotation.QueryParam;
-import com.blade.mvc.annotation.Route;
-import com.blade.mvc.http.HttpMethod;
+import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
@@ -22,7 +18,7 @@ import java.util.List;
 /**
  * Created by biezhi on 2017/2/21.
  */
-@Controller("admin/links")
+@Path("admin/links")
 public class LinksController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinksController.class);
@@ -33,18 +29,18 @@ public class LinksController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @Route(value = "", method = HttpMethod.GET)
+    @GetRoute(values = "")
     public String index(Request request) {
         List<Metas> metass = metasService.getMetas(Types.LINK);
         request.attribute("links", metass);
         return "admin/links";
     }
 
-    @Route(value = "save", method = HttpMethod.POST)
+    @PostRoute(values = "save")
     @JSON
     public RestResponse saveLink(@QueryParam String title, @QueryParam String url,
                                  @QueryParam String logo, @QueryParam Integer mid,
-                                 @QueryParam(value = "sort", defaultValue = "0") int sort) {
+                                 @QueryParam(defaultValue = "0") int sort) {
         try {
             Metas metas = new Metas();
             metas.setName(title);
@@ -71,7 +67,7 @@ public class LinksController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(value = "delete")
+    @Route(values = "delete")
     @JSON
     public RestResponse delete(@QueryParam int mid) {
         try {

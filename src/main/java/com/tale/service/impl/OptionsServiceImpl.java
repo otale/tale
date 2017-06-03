@@ -1,7 +1,7 @@
 package com.tale.service.impl;
 
+import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.kit.StringKit;
@@ -12,16 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Bean
 public class OptionsServiceImpl implements OptionsService {
 
     @Inject
     private ActiveRecord activeRecord;
 
     @Override
-    public void saveOptions(Map<String, String> options) {
+    public void saveOptions(Map<String, List<String>> options) {
         if (null != options && !options.isEmpty()) {
-            options.forEach((k, v) -> saveOption(k, v));
+            options.forEach((k, v) -> saveOption(k, v.get(0)));
         }
     }
 

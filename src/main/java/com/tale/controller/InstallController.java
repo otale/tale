@@ -1,17 +1,16 @@
 package com.tale.controller;
 
 
+import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
-import com.blade.kit.FileKit;
 import com.blade.kit.StringKit;
-import com.blade.kit.base.Config;
-import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.admin.AttachController;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
@@ -22,7 +21,10 @@ import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Controller("install")
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+@Path("install")
 public class InstallController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InstallController.class);
@@ -38,12 +40,12 @@ public class InstallController extends BaseController {
      *
      * @return
      */
-    @Route(value = "/", method = HttpMethod.GET)
+    @Route(values = "/", method = HttpMethod.GET)
     public String index(Request request) {
-        boolean existInstall = FileKit.exist(AttachController.CLASSPATH + "install.lock");
+        boolean existInstall = Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"));
         int allow_reinstall = TaleConst.OPTIONS.getInt("allow_install", 0);
 
-        if(allow_reinstall == 1){
+        if (allow_reinstall == 1) {
             request.attribute("is_install", false);
         } else {
             request.attribute("is_install", existInstall);
@@ -51,13 +53,13 @@ public class InstallController extends BaseController {
         return "install";
     }
 
-    @Route(value = "/", method = HttpMethod.POST)
+    @Route(values = "/", method = HttpMethod.POST)
     @JSON
     public RestResponse doInstall(@QueryParam String site_title, @QueryParam String site_url,
                                   @QueryParam String admin_user, @QueryParam String admin_email,
                                   @QueryParam String admin_pwd) {
-        if(FileKit.exist(AttachController.CLASSPATH + "install.lock")
-                && TaleConst.OPTIONS.getInt("allow_install", 0)!=1){
+        if (Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"))
+                && TaleConst.OPTIONS.getInt("allow_install", 0) != 1) {
             return RestResponse.fail("请勿重复安装");
         }
         try {
@@ -92,9 +94,7 @@ public class InstallController extends BaseController {
             optionsService.saveOption("site_title", site_title);
             optionsService.saveOption("site_url", site_url);
 
-            Config config = new Config();
-            config.addAll(optionsService.getOptions());
-            TaleConst.OPTIONS = config;
+            TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
         } catch (Exception e) {
             String msg = "安装失败";
             if (e instanceof TipException) {
