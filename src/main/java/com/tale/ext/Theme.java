@@ -620,7 +620,7 @@ public final class Theme {
      * @return
      */
     public static String theme_option(String key){
-        return TaleConst.OPTIONS.get("theme_option_" + key, "");
+        return TaleConst.OPTIONS.get("theme_option_" + key, null);
     }
 
     /**

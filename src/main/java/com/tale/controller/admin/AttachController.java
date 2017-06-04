@@ -3,7 +3,6 @@ package com.tale.controller.admin;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.IOKit;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.QueryParam;
@@ -27,7 +26,6 @@ import com.tale.utils.TaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,7 +36,7 @@ import java.util.Map;
 
 /**
  * 附件管理
- *
+ * <p>
  * Created by biezhi on 2017/2/21.
  */
 @Path("admin/attach")
@@ -77,8 +75,9 @@ public class AttachController extends BaseController {
 
     /**
      * 上传文件接口
+     * <p>
+     * 返回格式
      *
-     *  返回格式
      * @param request
      * @return
      */
@@ -98,17 +97,16 @@ public class AttachController extends BaseController {
             fileItems.forEach((FileItem f) -> {
                 String fname = f.fileName();
 
-                if(f.file().length() / 1024 <= TaleConst.MAX_FILE_SIZE){
+                if ((f.length() / 1024) <= TaleConst.MAX_FILE_SIZE) {
                     String fkey = TaleUtils.getFileKey(fname);
-                    String ftype = TaleUtils.isImage(f.file()) ? Types.IMAGE : Types.FILE;
+
+                    String ftype = f.contentType().contains("image") ? Types.IMAGE : Types.FILE;
                     String filePath = TaleUtils.upDir + fkey;
 
-                    File file = new File(filePath);
                     try {
-                        IOKit.copyFileUsingFileChannels(f.file(), file);
-                        f.file().delete();
+                        Files.write(Paths.get(filePath), f.data());
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        LOGGER.error("", e);
                     }
                     Attach attach = attachService.save(fname, fkey, ftype, uid);
                     urls.add(attach);
@@ -117,7 +115,7 @@ public class AttachController extends BaseController {
                     errorFiles.add(new Attach(fname));
                 }
             });
-            if(errorFiles.size() > 0){
+            if (errorFiles.size() > 0) {
                 RestResponse restResponse = new RestResponse();
                 restResponse.setSuccess(false);
                 restResponse.setPayload(errorFiles);
@@ -126,7 +124,7 @@ public class AttachController extends BaseController {
             return RestResponse.ok(urls);
         } catch (Exception e) {
             String msg = "文件上传失败";
-            if(e instanceof TipException){
+            if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
                 LOGGER.error(msg, e);

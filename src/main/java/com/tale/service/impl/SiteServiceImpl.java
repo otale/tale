@@ -146,7 +146,7 @@ public class SiteServiceImpl implements SiteService {
         if (null != archives) {
             archives.forEach(archive -> {
                 String date_str = archive.getDate_str();
-                Date sd = DateKit.toDate(date_str, "yyyy年MM月");
+                Date sd = DateKit.toDate(date_str + "01", "yyyy年MM月dd");
                 archive.setDate(sd);
 
                 int start = (int) DateKit.toUnix(sd);
