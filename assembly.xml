@@ -33,6 +33,13 @@
             </excludes>
         </dependencySet>
         <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <scope>system</scope>
+            <excludes>
+                <exclude>${project.groupId}:${project.artifactId}</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>${project.groupId}:${project.artifactId}</include>

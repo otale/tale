@@ -1,0 +1,78 @@
+<script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/admin/plugins/bootstrap-fileinput/js/fileinput.js" type="text/javascript"></script>
+<link href="/static/admin/plugins/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="/static/admin/plugins/bootstrap-fileinput/js/locales/zh.js"></script>
+
+<div class="modal fade" id="InputPicModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    上传图片
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="height: 300px">
+                    <input id="picFile" type="file">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick="uploadPic()">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<script>
+
+    initFileInput("picFile", '');
+
+    function initFileInput(ctrlName, uploadUrl) {
+        var control = $('#' + ctrlName);
+        control.fileinput({
+            language: 'zh', //设置语言
+            uploadUrl: uploadUrl, //上传的地址
+            allowedPreviewTypes: ['image'],
+            showPreview: true,
+            maxFileSize: 2000,
+            allowedFileExtensions: ['jpg', 'png', 'gif'],//接收的文件后缀
+            showUpload: false, //是否显示上传按钮
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary" //按钮样式
+        });
+    }
+
+    function uploadPic() {
+        var input = document.getElementById("picFile");
+        var data = new FormData();
+        data.append('image_up', input.files[0]);
+        $.ajax({
+            url: '../../admin/pic',     //上传图片请求的路径
+            method: 'POST',            //方法
+            data: data,                 //数据
+            processData: false,        //告诉jQuery不要加工数据
+            dataType: 'json',
+            contentType: false,        //<code class="javascript comments"> 告诉jQuery,在request head里不要设置Content-Type
+            success: function (result) {
+                tale.hideLoading();
+                if (result && result.success) {
+                    let msg = JSON.parse(result.payload);
+                    mditor.value+='![alt](${options.zimg_address}/'+msg.info.md5+'?p=0)';
+                    picModal('hide')
+                } else {
+                    tale.alertError(result.msg || '图片上传失败');
+                }
+            }
+        });
+    }
+
+</script>

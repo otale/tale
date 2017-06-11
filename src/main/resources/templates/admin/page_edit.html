@@ -1,27 +1,41 @@
 #include('./header.html',{has_sub:'other', active:'page', title:'保存页面'})
 <link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
 
-<link href="//unpkg.com/mditor@1.0.8/dist/css/mditor.min.css" rel="stylesheet"/>
+<link href="//unpkg.com/mditor@1.2.9/dist/css/mditor.min.css" rel="stylesheet"/>
 <link href="//cdn.bootcss.com/summernote/0.8.2/summernote.css" rel="stylesheet">
 
 <style rel="stylesheet">
-    .mditor .editor{
-        font-size: 14px;
-        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    /*.md-editor .editor {*/
+    /*font-size: 14px;*/
+    /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+    /*}*/
+    textarea {
+        font-size: 12px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
+
+    .mditor .editor {
+        font-size: 14px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
     .note-toolbar {
         text-align: center;
     }
+
     .note-editor.note-frame {
         border: none;
     }
+
     .note-editor .note-toolbar {
         background-color: #f5f5f5;
         padding-bottom: 10px;
     }
+
     .note-toolbar .note-btn-group {
         margin: 0;
     }
+
     .note-toolbar .note-btn {
         border: none;
     }
@@ -38,7 +52,7 @@
     </div>
     <div class="col-md-12">
 
-        <input type="hidden" id="attach_url" value="${attach_url}" />
+        <input type="hidden" id="attach_url" value="${attach_url}"/>
 
         <form id="articleForm" role="form" novalidate="novalidate">
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
@@ -46,6 +60,7 @@
             <input type="hidden" name="content" id="content-editor"/>
             <input type="hidden" name="fmt_type" id="fmt_type" value="${contents.fmt_type ?! 'markdown'}"/>
             <input type="hidden" name="allow_comment" value="${contents.allow_comment ?! true}" id="allow_comment"/>
+            <input type="hidden" name="theMenu" value="${contents.menu ?! true}" id="theMenu"/>
 
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="请输入页面标题" name="title" required=""
@@ -59,7 +74,8 @@
 
             <div class="form-group col-xs-12">
                 <div class="pull-right">
-                    <a id="switch-btn" href="javascript:void(0)" class="btn btn-purple btn-sm waves-effect waves-light switch-editor">#if(null != contents &&
+                    <a id="switch-btn" href="javascript:void(0)"
+                       class="btn btn-purple btn-sm waves-effect waves-light switch-editor">#if(null != contents &&
                         contents.fmt_type == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
                 </div>
             </div>
@@ -78,55 +94,93 @@
                          onclick="allow_comment(this);" on="${contents.allow_comment ?! true}"></div>
                 </div>
             </div>
+            <div class="form-group col-md-3 col-sm-4">
+
+                <label class="col-sm-4">设置为菜单</label>
+                <div class="col-sm-8">
+                    <div id="menu" class="toggle toggle-success"
+                         onclick="save_menu(this);" ></div>
+                </div>
+            </div>
 
             <div class="clearfix"></div>
 
             <div class="text-right">
-                <button type="button" class="btn btn-primary waves-effect waves-light" onclick="subArticle('publish');">保存页面</button>
-                <button type="button" class="btn btn-warning waves-effect waves-light" onclick="subArticle('draft');">存为草稿</button>
+                <button type="button" class="btn btn-primary waves-effect waves-light" onclick="subArticle('publish');">
+                    保存页面
+                </button>
+                <button type="button" class="btn btn-warning waves-effect waves-light" onclick="subArticle('draft');">
+                    存为草稿
+                </button>
+                <!--<button type="button" class="btn btn-warning waves-effect waves-light" data-toggle="modal" data-target="#myModal">存为草稿</button>-->
             </div>
         </form>
     </div>
-
 </div>
+#include('./modalInputPic.html')
 #include('./footer.html')
-<script src="//unpkg.com/mditor@1.0.8/dist/js/mditor.min.js"></script>
+<script src="//unpkg.com/mditor@1.2.9/dist/js/mditor.min.js"></script>
 <script src="//cdn.bootcss.com/wysihtml5/0.3.0/wysihtml5.min.js"></script>
 <script src="//cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
 <script src="//cdn.bootcss.com/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
 
 <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
 <script type="text/javascript">
-    var mditor, htmlEditor;
+    var mditor;
+    var htmlEditor;
+
     var tale = new $.tale();
     var attach_url = $('#attach_url').val();
     // 每60秒自动保存一次草稿
     var refreshIntervalId = setInterval("autoSave()", 60 * 1000);
-
     $(document).ready(function () {
 
         mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
+
+        var ismenu = ${contents!=null?(contents.menu!=0?true:false):false};
+        if (ismenu) {
+            $('#menu').attr('on', 'true');
+            var obj = document.getElementById('menu');
+            obj.className += ' allow-true'
+        }else {
+
+            $('#menu').attr('on', 'false');
+            var obj = document.getElementById('menu');
+            obj.className += ' allow-false'
+        }
+
+        mditor.on('ready', function () {
+            if (${options.allow_zimg} === 1)
+            {
+                let btn = mditor.toolbar.getItem('image');
+                btn.handler = function () {
+                    picModal('show');
+//                $('#InputPicModal').modal('show');
+//                this.editor.wrapSelectText('![alt](', ')');
+                };
+            }
+        });
         // 富文本编辑器
         htmlEditor = $('.summernote').summernote({
             lang: 'zh-CN',
             height: 340,
             placeholder: '写点儿什么吧...',
             //上传图片的接口
-            callbacks:{
-                onImageUpload: function(files) {
-                    var data=new FormData();
-                    data.append('image_up',files[0]);
+            callbacks: {
+                onImageUpload: function (files) {
+                    var data = new FormData();
+                    data.append('image_up', files[0]);
                     tale.showLoading();
                     $.ajax({
                         url: '/admin/attach/upload',     //上传图片请求的路径
                         method: 'POST',            //方法
-                        data:data,                 //数据
+                        data: data,                 //数据
                         processData: false,        //告诉jQuery不要加工数据
-                        dataType:'json',
+                        dataType: 'json',
                         contentType: false,        //<code class="javascript comments"> 告诉jQuery,在request head里不要设置Content-Type
-                        success: function(result) {
+                        success: function (result) {
                             tale.hideLoading();
-                            if(result && result.success){
+                            if (result && result.success) {
                                 var url = $('#attach_url').val() + result.payload[0].fkey;
                                 console.log('url =>' + url);
                                 htmlEditor.summernote('insertImage', url);
@@ -202,7 +256,7 @@
     /*
      * 自动保存为草稿
      * */
-    function  autoSave() {
+    function autoSave() {
         var content = $('#fmt_type').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
         var title = $('#articleForm input[name=title]').val();
         if (title != '' && content != '') {
@@ -276,6 +330,19 @@
             $('#allow_comment').val('true');
         }
     }
+
+    function save_menu(obj) {
+        var this_ = $(obj);
+        var on = this_.attr('on');
+        if (on == 'true') {
+            this_.attr('on', 'false');
+            $('#theMenu').val('false');
+        } else {
+            this_.attr('on', 'true');
+            $('#theMenu').val('true');
+        }
+    }
+
 </script>
 </body>
 </html>

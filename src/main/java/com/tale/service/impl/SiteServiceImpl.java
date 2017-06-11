@@ -46,6 +46,10 @@ public class SiteServiceImpl implements SiteService {
     @Inject
     private CommentsService commentsService;
 
+
+    @Inject
+    private MenuService menuService;
+
     public MapCache mapCache = new MapCache();
 
     @Override
@@ -195,7 +199,7 @@ public class SiteServiceImpl implements SiteService {
             backResponse.setTheme_path(themesPath);
         }
         // 备份数据库
-        if("db".equals(bk_type)){
+        if ("db".equals(bk_type)) {
             String filePath = "upload/" + DateKit.getToday("yyyyMMddHHmmss") + "_" + StringKit.getRandomNumber(8) + ".db";
             String cp = AttachController.CLASSPATH + filePath;
             FileKit.createParentDir(cp);
@@ -236,7 +240,7 @@ public class SiteServiceImpl implements SiteService {
             if (CollectionKit.isNotEmpty(mids)) {
                 String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
-                        "where a.mid in "+ in + "group by a.mid order by count desc, a.mid desc";
+                        "where a.mid in " + in + "group by a.mid order by count desc, a.mid desc";
                 return activeRecord.list(MetaDto.class, sql);
             }
         }
@@ -245,10 +249,12 @@ public class SiteServiceImpl implements SiteService {
 
     @Override
     public Contents getNhContent(String type, Integer cid) {
-        if(Types.NEXT.equals(type)){
+
+        if (Types.NEXT.equals(type)) {
             return activeRecord.one(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).gt("cid", cid));
         }
-        if(Types.PREV.equals(type)){
+        if (Types.PREV.equals(type)) {
+
             return activeRecord.one(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).lt("cid", cid));
         }
         return null;
@@ -260,6 +266,13 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
+
+    public List<Contents> getMenus() {
+        return menuService.getMenus();
+    }
+
+    @Override
+
     public void cleanCache(String key) {
         if (StringKit.isNotBlank(key)) {
             if ("*".equals(key)) {

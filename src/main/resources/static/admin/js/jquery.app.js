@@ -209,7 +209,7 @@
 //this full screen
 var toggle_fullscreen = function () {
 
-}
+};
 
 function executeFunctionByName(functionName, context /*, args */) {
     var args = [].slice.call(arguments).splice(2);
@@ -283,4 +283,9 @@ function toggle_slimscroll(item) {
         $(item).css("overflow", "hidden").parent().css("overflow", "hidden");
         $(item).siblings(".slimScrollBar").css("visibility", "visible");
     }
+}
+
+function picModal(show) {
+    $('#InputPicModal').modal(show);
+
 }

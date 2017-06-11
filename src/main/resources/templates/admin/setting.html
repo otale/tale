@@ -90,6 +90,22 @@
                         </div>
                     </div>
                     <input type="hidden" name="allow_install" id="allow_install" value="${options.allow_install ?! 0}"/>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">zimg图片服务器</label>
+                        <div class="col-md-9">
+                            <div class="toggle toggle-success allow-${options.allow_zimg}"
+                                 onclick="allow_zimg(this);"></div>
+                        </div>
+                    </div>
+
+                    <div id="zimg_address" class="form-group" >
+                        <label class="col-md-3 control-label">zimg地址</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="zimg_address" value="${options.zimg_address ?! ''}" placeholder="请输入zimg访问地址(默认：http://127.0.0.1:4869)"/>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="allow_zimg" id="allow_zimg" value="${options.allow_zimg ?! 0}"/>
 
                     <div class="clearfix pull-right">
                         <button type="button" class="btn btn-primary waves-effect waves-light" onclick="saveAdvanced()">
@@ -109,11 +125,16 @@
             <div class="panel-body">
                 <form id="backupForm" class="form-inline" role="form">
                     <div class="form-group col-md-6">
-                        <input id="backup_dir" style="width: 100%;" class="form-control" placeholder="请输入备份存放的磁盘路径" required="" aria-required="true" type="text">
+                        <input id="backup_dir" style="width: 100%;" class="form-control" placeholder="请输入备份存放的磁盘路径"
+                               required="" aria-required="true" type="text">
                     </div>
 
-                    <button type="button" class="btn btn-success waves-effect waves-light m-l-10" onclick="backup('attach');">备份文件</button>
-                    <button type="button" class="btn btn-danger waves-effect waves-light m-l-10" onclick="backup('db')">导出数据库SQL</button>
+                    <button type="button" class="btn btn-success waves-effect waves-light m-l-10"
+                            onclick="backup('attach');">备份文件
+                    </button>
+                    <button type="button" class="btn btn-danger waves-effect waves-light m-l-10" onclick="backup('db')">
+                        导出数据库SQL
+                    </button>
                 </form>
             </div>
         </div>
@@ -132,10 +153,10 @@
     function saveSetting() {
         var param = $('#global-form').serialize();
         tale.post({
-            url : '/admin/setting',
+            url: '/admin/setting',
             data: param,
             success: function (result) {
-                if(result && result.success){
+                if (result && result.success) {
                     tale.alertOk('设置保存成功');
                 } else {
                     tale.alertError(result.msg || '设置保存失败');
@@ -172,16 +193,16 @@
             bk_path: $('#backup_dir').val()
         };
         tale.post({
-            url : '/admin/backup',
+            url: '/admin/backup',
             data: param,
             success: function (result) {
-                if(result && result.success){
-                    if(result.payload && result.payload.attach_path){
-                        swal('备份成功', '您的附件备份在 <mark>'+ result.payload.attach_path +'</mark><br/><br/>' +
-                            '主题备份存储在 <mark>'+ result.payload.theme_path +'</mark>', 'success');
+                if (result && result.success) {
+                    if (result.payload && result.payload.attach_path) {
+                        swal('备份成功', '您的附件备份在 <mark>' + result.payload.attach_path + '</mark><br/><br/>' +
+                            '主题备份存储在 <mark>' + result.payload.theme_path + '</mark>', 'success');
                         $('#backup_dir').val('');
                     }
-                    if(result.payload.sql_path){
+                    if (result.payload.sql_path) {
                         window.location.href = result.payload.sql_path;
                     }
                 } else {
@@ -196,10 +217,21 @@
      */
     function allow_reinstall(obj) {
         var isInstall = $('#allow_install').val();
-        if(isInstall==0){
+        if (isInstall == 0) {
             $('#allow_install').val(1);
         } else {
             $('#allow_install').val(0);
+        }
+    }
+
+    function allow_zimg(obj) {
+        var isInstall = $('#allow_zimg').val();
+        if (isInstall == 0) {
+            $('#allow_zimg').val(1);
+            $('#zimg_address').show(500);
+        } else {
+            $('#allow_zimg').val(0);
+            $('#zimg_address').hide(500);
         }
     }
 

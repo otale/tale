@@ -213,7 +213,8 @@ public class IndexController extends BaseController {
     @JSON
     public RestResponse doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips,
                                    @QueryParam String plugin_name, @QueryParam String rewrite_url,
-                                   @QueryParam String allow_install){
+                                   @QueryParam String allow_install, @QueryParam String allow_zimg,
+                                   @QueryParam String zimg_address){
         // 清除缓存
         if(StringKit.isNotBlank(cache_key)){
             if(cache_key.equals("*")){
@@ -246,6 +247,16 @@ public class IndexController extends BaseController {
             optionsService.saveOption("allow_install", allow_install);
             TaleConst.OPTIONS.asMap().put("allow_install", allow_install);
         }
+        if(StringKit.isNotBlank(allow_zimg)){
+            optionsService.saveOption("allow_zimg", allow_zimg);
+            TaleConst.OPTIONS.asMap().put("allow_zimg", allow_zimg);
+        }
+        if(StringKit.isNotBlank(zimg_address)){
+            optionsService.saveOption("zimg_address", zimg_address);
+            TaleConst.OPTIONS.asMap().put("zimg_address", zimg_address);
+        }
+
+
 
         String db_rewrite = TaleConst.OPTIONS.get("rewrite_url", "");
         if(db_rewrite.length() > 0){

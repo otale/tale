@@ -18,6 +18,7 @@ import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.ext.Commons;
+import com.tale.ext.Theme;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;

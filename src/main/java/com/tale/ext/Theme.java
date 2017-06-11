@@ -2,7 +2,6 @@ package com.tale.ext;
 
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.StringKit;
-import com.tale.controller.BaseController;
 import com.tale.dto.Comment;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
@@ -72,6 +71,15 @@ public final class Theme {
             p = value.toString();
         }
         return p + " - " + Commons.site_option("site_title", "Tale 博客");
+    }
+
+    /**
+     * 返回菜单列表
+     *
+     * @return
+     */
+    public static List<Contents> menus() {
+        return siteService.getMenus();
     }
 
     /**
