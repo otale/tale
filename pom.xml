@@ -92,6 +92,13 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.16</version>
         </dependency>
+        <dependency>
+            <groupId>com.lzd.zimg.upload</groupId>
+            <artifactId>zimgupload</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/ZimgUpload.jar</systemPath>
+        </dependency>
 
     </dependencies>
 
@@ -183,7 +190,7 @@
                         </manifest>
                         <manifestEntries>
                             <!-- 在Class-Path下添加配置文件的路径 -->
-                            <Class-Path>resources/</Class-Path>
+                            <Class-Path>resources/ lib/zimgupload-1.0.jar</Class-Path>
                         </manifestEntries>
                     </archive>
                 </configuration>

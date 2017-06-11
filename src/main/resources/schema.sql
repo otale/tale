@@ -38,13 +38,6 @@ CREATE TABLE t_comments (
   parent    INTEGER(10) DEFAULT (0)
 );
 
-CREATE TABLE t_attach (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, fname VARCHAR (100) NOT NULL, ftype VARCHAR (50), fkey VARCHAR (100) NOT NULL, author_id INTEGER (10) NOT NULL, created INTEGER (10) NOT NULL);
-
--- 表：t_comments
-DROP TABLE IF EXISTS t_comments;
-CREATE TABLE t_comments (coid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, cid INTEGER DEFAULT (0) NOT NULL, created INTEGER (10) NOT NULL, author VARCHAR (200) NOT NULL, author_id INTEGER (10) DEFAULT (0), owner_id INTEGER (10) DEFAULT (0), mail VARCHAR (200) NOT NULL, url VARCHAR (200), ip VARCHAR (64), agent VARCHAR (200), content TEXT NOT NULL, type VARCHAR (16), status VARCHAR (16), parent INTEGER (10) DEFAULT (0));
-
-
 -- 表：t_contents
 DROP TABLE IF EXISTS t_contents;
 
@@ -121,6 +114,8 @@ INSERT INTO t_options (name, value, description) VALUES ('allow_install', '0', '
 INSERT INTO t_options (name, value, description) VALUES ('site_theme', 'default', NULL);
 INSERT INTO t_options (name, value, description) VALUES ('site_keywords', '博客系统,Blade框架,Tale', NULL);
 INSERT INTO t_options (name, value, description) VALUES ('site_description', '博客系统,Blade框架,Tale', NULL);
+INSERT INTO t_options (name, value, description) VALUES ('allow_zimg', '0', '是否支持zimg图片服务器');
+INSERT INTO t_options (name, value, description) VALUES ('zimg_address', 'http://127.0.0.1:4869', 'zimg访问地址');
 
 -- 表：t_relationships
 DROP TABLE IF EXISTS t_relationships;
@@ -146,15 +141,3 @@ CREATE TABLE t_users (
 
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = ON;
-
-
-
-
-CREATE TABLE t_relationships (cid INTEGER (10) NOT NULL, mid INTEGER (10) NOT NULL);
-
--- 表：t_users
-DROP TABLE IF EXISTS t_users;
-CREATE TABLE t_users (uid INTEGER PRIMARY KEY UNIQUE NOT NULL, username VARCHAR (64) UNIQUE NOT NULL, password VARCHAR (64) NOT NULL, email VARCHAR (100), home_url VARCHAR (255), screen_name VARCHAR (100), created INTEGER (10) NOT NULL, activated INTEGER (10), logged INTEGER (10), group_name VARCHAR (16));
-
-COMMIT TRANSACTION;
-PRAGMA foreign_keys = on;

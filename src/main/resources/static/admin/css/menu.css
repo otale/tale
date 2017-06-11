@@ -37,6 +37,7 @@
     margin: 0;
     padding: 0;
     min-height: 20px;
+    min-width: 240px;
     font-size: 13px;
     line-height: 20px;
 }
@@ -44,6 +45,7 @@
 .dd-handle {
     display: block;
     height: 30px;
+    min-width: 240px;
     margin: 5px 0;
     padding: 5px 10px;
     color: #333;
@@ -112,6 +114,7 @@
 .dd-empty {
     border: 1px dashed #bbb;
     min-height: 100px;
+    min-width: 240px;
     background-color: #e5e5e5;
     background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
     -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
@@ -157,34 +160,6 @@
     margin: 20px 0;
 }
 
-#nestable-output,
-#nestable2-output {
-    width: 100%;
-    height: 7em;
-    font-size: 0.75em;
-    line-height: 1.333333em;
-    font-family: Consolas, monospace;
-    padding: 5px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-}
-
-#nestable2 .dd-handle {
-    color: #fff;
-    border: 1px solid #999;
-    background: #bbb;
-    background: -webkit-linear-gradient(top, #bbb 0%, #999 100%);
-    background: -moz-linear-gradient(top, #bbb 0%, #999 100%);
-    background: linear-gradient(top, #bbb 0%, #999 100%);
-}
-
-#nestable2 .dd-handle:hover {
-    background: #bbb;
-}
-
-#nestable2 .dd-item > button:before {
-    color: #fff;
-}
 
 @media only screen and (min-width: 700px) {
 
@@ -305,10 +280,10 @@
     -moz-box-sizing: border-box;
 }
 
-.sele:hover {
-    color: #2ea8e5;
-    background: #fff;
-}
+/*.sele:hover {*/
+/*color: #2ea8e5;*/
+/*background: #fff;*/
+/*}*/
 
 .button-menu-center {
     padding-left: 30px;

@@ -55,6 +55,9 @@
         <div class="navbar-mobile-menu" onclick="">
             <span class="icon-menu cross"><span class="middle"></span></span>
             <ul>
+                #for(menu : menus())
+                <li><a href="${site_url('/'+menu.slug)}">${menu.title}</a></li>
+                #end
                 <li><a href="${site_url('/archives')}">归档</a></li>
                 <li><a href="${site_url('/links')}">友链</a></li>
                 <li><a href="${site_url('/about')}">关于</a></li>

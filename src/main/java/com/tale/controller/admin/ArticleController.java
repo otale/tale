@@ -16,14 +16,12 @@ import com.tale.ext.Commons;
 import com.tale.model.Contents;
 import com.tale.model.Metas;
 import com.tale.model.Users;
-import com.tale.service.ContentsService;
-import com.tale.service.LogService;
-import com.tale.service.MetasService;
-import com.tale.service.SiteService;
+import com.tale.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 文章管理控制器
@@ -46,6 +44,9 @@ public class ArticleController extends BaseController {
     @Inject
     private SiteService siteService;
 
+    @Inject
+    private OptionsService optionsService;
+
     /**
      * 文章管理首页
      * @param page
@@ -58,6 +59,7 @@ public class ArticleController extends BaseController {
                         @QueryParam(value = "limit", defaultValue = "15") int limit, Request request) {
 
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
+
         request.attribute("articles", contentsPaginator);
         return "admin/article_list";
     }
@@ -70,6 +72,8 @@ public class ArticleController extends BaseController {
     @Route(value = "publish", method = HttpMethod.GET)
     public String newArticle(Request request) {
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
+        Map<String, String> options = optionsService.getOptions();
+        request.attribute("options", options);
         request.attribute("categories", categories);
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
         return "admin/article_edit";
@@ -77,12 +81,15 @@ public class ArticleController extends BaseController {
 
     /**
      * 文章编辑页面
+     *
      * @param cid
      * @param request
      * @return
      */
     @Route(value = "/:cid", method = HttpMethod.GET)
     public String editArticle(@PathParam String cid, Request request) {
+        Map<String, String> options = optionsService.getOptions();
+        request.attribute("options", options);
         Contents contents = contentsService.getContents(cid);
         request.attribute("contents", contents);
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);

@@ -1,150 +1,169 @@
 #include('./header.html',{active:'menu', title:'菜单管理'})
 <div class="col-sm-12">
     <h4 class="page-title">菜单管理</h4>
+    <!--todo 添加一个按钮，用于提交-->
 </div>
 
 <div class="row">
-    <div class="panel panel-default">
 
-        <div class="container panel-body">
-            <div class="row clearfix">
-                <form onsubmit="test()">
-                    <div class="col-md-2 column">
-                        <!--生成表格，带选择框，-->
-                        <!---->
-                        <!--<div id="dataList" data-spy="scroll" data-target="#navbar-example" data-offset="0"-->
-                        <!--style="overflow:auto; position: relative;margin-bottom: 15px">-->
-                        <!--</div>-->
-                        <div class="dd" id="nestable">
-                            <ol id="dataList" class="dd-list"  style="min-width: 262px;min-height: 120px">
-                                <li class="dd-nodrag">
-                                    <div class="sele">页面</div>
-                                </li>
-                            </ol>
-                        </div>
-
+    <div class="container">
+        <div class="row clearfix">
+            <form onsubmit="test()">
+                <div class="col-md-4 column panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            已有页面
+                        </h3>
                     </div>
-                    <div class="col-md-3 column">
-
-                        <div class="dd" id="nestable2" style="min-width: 262px;min-height: 120px">
-                            <ol id="menuList" class="dd-list dd-nodrag" style="min-width: 262px;min-height: 120px">
-                                <li class="dd-nodrag">
-                                    <div class="sele">菜单</div>
-                                </li>
-                            </ol>
-                        </div>
+                    <div class="dd panel-body" id="dataRoot" style="min-height: 200px">
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-4 column panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            菜单页面
+                        </h3>
+                    </div>
+                    <div class="dd panel-body" id="menuRoot" style="min-height: 200px">
+                    </div>
+                </div>
+            </form>
         </div>
+        <div class="col-md-7"></div>
+        <button type="button" class="col-md-1 btn btn-sm btn-default" style="margin-right: 6px" onclick="reset()">取消</button>
+        <button type="button" class="col-md-1 btn btn-sm btn-primary" onclick="submit()">保存</button>
     </div>
 </div>
-</div>
+#include('./footer.html')
 
-
-<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script src="/static/admin/js/jquery.nestable.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
 
 
 <script>
+    var tale = new $.tale();
     var menus = ${articles};
+    let dataSize = 0;
+    let menuSize = 0;
+    let menuData = '[]';
+    let pageData = '[]';
     $(document).ready(function () {
 
-        var updateOutput = function (e) {
-            var list = e.length ? e : $(e.target),
-                output = list.data('output');
+        init();
+        var decodeMsg = function () {
+//            var list = e.length ? e : $(e.target);
+            var menuList = $('#menuRoot');
+            let pageList = $('#dataRoot');
             if (window.JSON) {
-                //output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
+                menuData = window.JSON.stringify(menuList.nestable('serialize'));
+                pageData = window.JSON.stringify(pageList.nestable('serialize'));
+
             } else {
-                output.val('JSON browser support required for this demo.');
+                menuData = '[]';
+                pageData = '[]';
             }
+
         };
 
         // activate Nestable for list 1
-        $('#nestable').nestable({
-            maxDepth:1,
+        $('#dataRoot').nestable({
+            maxDepth: 1,
             group: 1
-        })
-            .on('change', updateOutput);
+        }).on('change', decodeMsg);
 
         // activate Nestable for list 2
-        $('#nestable2').nestable({
-            maxDepth:1,
+        $('#menuRoot').nestable({
+            maxDepth: 1,
             group: 1
-        })
-            .on('change', updateOutput);
+        }).on('change', decodeMsg);
 
         // output initial serialised data
-        updateOutput($('#nestable').data('output', $('#nestable-output')));
-        updateOutput($('#nestable2').data('output', $('#nestable2-output')));
 
-        $('#nestable-menu').on('click', function (e) {
-            var target = $(e.target),
-                action = target.data('action');
-            if (action === 'expand-all') {
-                $('.dd').nestable('expandAll');
-            }
-            if (action === 'collapse-all') {
-                $('.dd').nestable('collapseAll');
-            }
-        });
-
-        $('#nestable3').nestable();
 
     });
 
-    $(document).ready(function () {
-            for (let menuItem in menus) {
-                let html = createMenuItem(menuItem);
-                $("#dataList").append(html);
-            }
+    function init() {
+        addRoot();
+        console.log("aaa");
+
+        for (let menuItem in menus) {
+            addItem(menuItem)
         }
-    );
-    let dataSize = menus.length;
+        if (!(dataSize === 0 && menuSize === 0)) {
+            if (dataSize === 0) {
+                $("#dataRoot").append(createEmpetItem());
+            } else if (menuSize === 0) {
+                $("#menuRoot").append(createEmpetItem());
 
-    function frishData() {
-        for (let a = 0; a < dataSize; a++) {
-            if ($("#dataInput" + a).prop('checked')) {
-                addItem(a);
             }
-        }
-    }
-
-    function frishMenu() {
-        for (let a = 0; a < menus.length - dataSize; a++) {
-            if ($("#menuInput" + a).prop('checked')) {
-                removeItem(a)
-            }
-
+        } else {
+//            todo 添加没有界面的提示，并提供跳转添加页面的链接
         }
 
     }
 
     function addItem(id) {
-        let html = createMenuItem(id)
-        $("#menuList").append(html)
-        $("#dataItem" + id).remove();
+        let html = createMenuItem(id);
+        if (menus[id].menu > 0) {
+            $("#menuList").append(html);
+            menuSize++;
+        } else {
+            $("#dataList").append(html);
+            dataSize++;
+        }
+
     }
 
-    function removeItem(id) {
-        let html = createMenuItem(id);
-        $("#dataList").append(html)
-        $("#menuInput" + id).remove();
+    function submit() {
+        $.post('/admin/menu/save',{
+            pageData:pageData,
+            menuData:menuData
+        },function (result) {
+            if (result.success) {
+
+                tale.alertOk(result.payload || '保存成功');
+            }else {
+                tale.alertError(result.payload || '保存成功')
+            }
+        });
+
     }
+
+    function reset() {
+        $('#menuRoot').empty();
+        $('#dataRoot').empty();
+        init();
+    }
+
+    function addRoot() {
+        let hasMenu = false;
+        let hasPage = false;
+        for (let i in menus) {
+            if (menus[i].menu > 0 && !hasMenu) {
+                let html = '<ol id="menuList" class="dd-list" style="min-height: 120px"></ol>';
+                $("#menuRoot").append(html);
+                hasMenu = true;
+            } else if (menus[i].menu === 0&& !hasPage) {
+                let html = '<ol id="dataList" class="dd-list" style="min-height: 120px"></ol>';
+                $("#dataRoot").append(html);
+                hasPage = true;
+            }
+        }
+    }
+
     function createMenuItem(id) {
         return '<li id="menuItem' + id + '" class="dd-item" data-id="'
-            + id
+            + menus[id].cid
             + '"><div class="dd-handle">'
             + menus[id].title
             + '</div></li>';
 
     }
 
-    function createDataItem(id) {
-        return '<div id="dataItem' + id + '" class="sele"><label><input id="dataInput' + id + '" type="checkbox" value="">'
-            + menus[id].title
-            + '</label></div>';
+    function createEmpetItem() {
+        return '<li class="dd-empty"></li>'
     }
 </script>

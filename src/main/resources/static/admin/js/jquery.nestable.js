@@ -4,6 +4,7 @@
  */
 ;(function($, window, document, undefined)
 {
+    var canDrowEnpty;
     var hasTouch = 'ontouchstart' in document;
 
     /**
@@ -86,6 +87,7 @@
 
             var onStartEvent = function(e)
             {
+                canDrowEnpty = true;
                 var handle = $(e.target);
                 if (!handle.hasClass(list.options.handleClass)) {
                     if (handle.closest('.' + list.options.noDragClass).length) {
@@ -102,7 +104,6 @@
                 if (list.isTouch && e.touches.length !== 1) {
                     return;
                 }
-
                 e.preventDefault();
                 list.dragStart(e.touches ? e.touches[0] : e);
             };
@@ -118,6 +119,7 @@
             var onEndEvent = function(e)
             {
                 if (list.dragEl) {
+                    canDrowEnpty = false;
                     e.preventDefault();
                     list.dragStop(e.touches ? e.touches[0] : e);
                 }
@@ -446,7 +448,8 @@
                 if (!parent.children().length) {
                     this.unsetParent(parent.parent());
                 }
-                if (!this.dragRootEl.find(opt.itemNodeName).length) {
+                if (!this.dragRootEl.find(opt.itemNodeName).length && canDrowEnpty) {
+                    canDrowEnpty = false;
                     this.dragRootEl.append('<div class="' + opt.emptyClass + '"/>');
                 }
                 // parent root list has changed

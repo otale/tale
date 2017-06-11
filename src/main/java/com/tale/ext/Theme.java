@@ -74,7 +74,6 @@ public final class Theme {
     }
 
     /**
-<<<<<<< HEAD
      * 返回菜单列表
      *
      * @return
@@ -84,8 +83,6 @@ public final class Theme {
     }
 
     /**
-=======
->>>>>>> 22ed78ace550d299c810448249101e9f323a63e8
      * 返回文章链接地址
      *
      * @return
