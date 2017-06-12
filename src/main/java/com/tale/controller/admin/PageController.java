@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 页面设置
  * Created by biezhi on 2017/2/21.
  */
 @Controller("admin/page")

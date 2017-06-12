@@ -10,6 +10,7 @@ public interface Types {
     String ARTICLE = "post";
     String PUBLISH = "publish";
     String PAGE = "page";
+    String MENU = "menu";
     String DRAFT = "draft";
     String LINK = "link";
     String IMAGE = "image";

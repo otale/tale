@@ -29,10 +29,16 @@
 <![endif]-->
 <header id="header" class="header bg-white">
     <div class="navbar-container">
+        <!--todo 有空改成文字形式，并添加博客说明-->
         <a href="${site_url()}" class="navbar-logo">
             <img src="${theme_option('logo_url') ?! theme_url('/static/img/logo.png')}" alt="${site_title()}"/>
         </a>
         <div class="navbar-menu">
+            <!--todo 改成界面可以设置替换-->
+            #for(menu : menus())
+            <a href="${site_url('/'+menu.slug)}">${menu.title}</a>
+            #end
+
             <a href="${site_url('/archives')}">归档</a>
             <a href="${site_url('/links')}">友链</a>
             <a href="${site_url('/about')}">关于</a>

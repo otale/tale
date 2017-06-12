@@ -2,11 +2,7 @@ package com.tale.service;
 
 import com.blade.jdbc.model.Paginator;
 import com.tale.dto.*;
-import com.tale.model.Comments;
-import com.tale.model.Contents;
-import com.tale.model.Users;
-
-import java.awt.*;
+import com.tale.model.*;
 import java.util.List;
 
 /**
@@ -99,4 +95,6 @@ public interface SiteService {
      * @return
      */
     Paginator<Comment> getComments(Integer cid, int page, int limit);
+
+    List<Contents> getMenus();
 }

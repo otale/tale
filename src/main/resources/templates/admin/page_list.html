@@ -53,13 +53,14 @@
     var tale = new $.tale();
     function delPost(cid) {
         tale.alertConfirm({
-            title:'确定删除这个页面吗?',
+            title: '确定删除这个页面吗?',
             then: function () {
                 tale.post({
-                    url : '/admin/page/delete',
+                    url: '/admin/page/delete',
                     data: {cid: cid},
                     success: function (result) {
-                        if(result && result.success){
+                        if (result && result.success) {
+
                             tale.alertOkAndReload('页面删除成功');
                         } else {
                             tale.alertError(result.msg || '页面删除失败');

@@ -46,6 +46,8 @@ public class Contents implements Serializable {
     // 标签列表
     private String tags;
 
+    private int menu;
+
     // 分类列表
     private String categories;
 
@@ -137,6 +139,15 @@ public class Contents implements Serializable {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+
+    public int getMenu() {
+        return menu;
+    }
+
+    public void setMenu(int menu) {
+        this.menu = menu;
     }
 
     public String getCategories() {
