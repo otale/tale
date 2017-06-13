@@ -63,7 +63,7 @@ public class AttachController extends BaseController {
      * @param limit
      * @return
      */
-    @Route(values = "", method = HttpMethod.GET)
+    @Route(value = "", method = HttpMethod.GET)
     public String index(Request request, @QueryParam(defaultValue = "1") int page,
                         @QueryParam(defaultValue = "12") int limit) {
         Paginator<Attach> attachPaginator = attachService.getAttachs(new Take(Attach.class).page(page, limit, "id desc"));
@@ -81,7 +81,7 @@ public class AttachController extends BaseController {
      * @param request
      * @return
      */
-    @Route(values = "upload", method = HttpMethod.POST)
+    @Route(value = "upload", method = HttpMethod.POST)
     @JSON
     public RestResponse upload(Request request) {
 
@@ -133,7 +133,7 @@ public class AttachController extends BaseController {
         }
     }
 
-    @Route(values = "delete")
+    @Route(value = "delete")
     @JSON
     public RestResponse delete(@QueryParam Integer id, Request request) {
         try {

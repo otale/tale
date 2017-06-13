@@ -38,7 +38,7 @@ public class AuthController extends BaseController {
     @Inject
     private LogService logService;
 
-    @Route(values = "login", method = HttpMethod.GET)
+    @Route(value = "login", method = HttpMethod.GET)
     public String login(Response response) {
         if (null != this.user()) {
             response.redirect("/admin/index");
@@ -47,7 +47,7 @@ public class AuthController extends BaseController {
         return "admin/login";
     }
 
-    @Route(values = "login", method = HttpMethod.POST)
+    @Route(value = "login", method = HttpMethod.POST)
     @JSON
     public RestResponse doLogin(@QueryParam String username,
                                 @QueryParam String password,

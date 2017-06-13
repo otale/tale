@@ -34,7 +34,7 @@ public class CategoryController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @Route(values = "", method = HttpMethod.GET)
+    @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
         List<MetaDto> categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
         List<MetaDto> tags = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
@@ -43,7 +43,7 @@ public class CategoryController extends BaseController {
         return "admin/category";
     }
 
-    @Route(values = "save", method = HttpMethod.POST)
+    @Route(value = "save", method = HttpMethod.POST)
     @JSON
     public RestResponse saveCategory(@QueryParam String cname, @QueryParam Integer mid) {
         try {
@@ -61,7 +61,7 @@ public class CategoryController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(values = "delete")
+    @Route(value = "delete")
     @JSON
     public RestResponse delete(@QueryParam int mid) {
         try {

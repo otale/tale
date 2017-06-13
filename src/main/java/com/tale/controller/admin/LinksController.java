@@ -29,14 +29,14 @@ public class LinksController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @GetRoute(values = "")
+    @GetRoute(value = "")
     public String index(Request request) {
         List<Metas> metass = metasService.getMetas(Types.LINK);
         request.attribute("links", metass);
         return "admin/links";
     }
 
-    @PostRoute(values = "save")
+    @PostRoute(value = "save")
     @JSON
     public RestResponse saveLink(@QueryParam String title, @QueryParam String url,
                                  @QueryParam String logo, @QueryParam Integer mid,
@@ -67,7 +67,7 @@ public class LinksController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(values = "delete")
+    @Route(value = "delete")
     @JSON
     public RestResponse delete(@QueryParam int mid) {
         try {

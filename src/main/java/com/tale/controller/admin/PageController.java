@@ -42,20 +42,20 @@ public class PageController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @Route(values = "", method = HttpMethod.GET)
+    @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.PAGE).page(1, TaleConst.MAX_POSTS, "created desc"));
         request.attribute("articles", contentsPaginator);
         return "admin/page_list";
     }
 
-    @Route(values = "new", method = HttpMethod.GET)
+    @Route(value = "new", method = HttpMethod.GET)
     public String newPage(Request request) {
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
         return "admin/page_edit";
     }
 
-    @Route(values = "/:cid", method = HttpMethod.GET)
+    @Route(value = "/:cid", method = HttpMethod.GET)
     public String editPage(@PathParam String cid, Request request) {
         Contents contents = contentsService.getContents(cid);
         request.attribute("contents", contents);
@@ -63,7 +63,7 @@ public class PageController extends BaseController {
         return "admin/page_edit";
     }
 
-    @Route(values = "publish", method = HttpMethod.POST)
+    @Route(value = "publish", method = HttpMethod.POST)
     @JSON
     public RestResponse publishPage(@QueryParam String title, @QueryParam String content,
                                     @QueryParam String status, @QueryParam String slug,
@@ -97,7 +97,7 @@ public class PageController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(values = "modify", method = HttpMethod.POST)
+    @Route(value = "modify", method = HttpMethod.POST)
     @JSON
     public RestResponse modifyArticle(@QueryParam Integer cid, @QueryParam String title,
                                       @QueryParam String content,@QueryParam String fmt_type,
@@ -130,7 +130,7 @@ public class PageController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(values = "delete")
+    @Route(value = "delete")
     @JSON
     public RestResponse delete(@QueryParam int cid, Request request) {
         try {

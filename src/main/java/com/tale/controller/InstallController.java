@@ -40,7 +40,7 @@ public class InstallController extends BaseController {
      *
      * @return
      */
-    @Route(values = "/", method = HttpMethod.GET)
+    @Route(value = "/", method = HttpMethod.GET)
     public String index(Request request) {
         boolean existInstall = Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"));
         int allow_reinstall = TaleConst.OPTIONS.getInt("allow_install", 0);
@@ -53,7 +53,7 @@ public class InstallController extends BaseController {
         return "install";
     }
 
-    @Route(values = "/", method = HttpMethod.POST)
+    @Route(value = "/", method = HttpMethod.POST)
     @JSON
     public RestResponse doInstall(@QueryParam String site_title, @QueryParam String site_url,
                                   @QueryParam String admin_user, @QueryParam String admin_email,

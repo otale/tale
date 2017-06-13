@@ -62,7 +62,7 @@ public class IndexController extends BaseController {
     /**
      * 仪表盘
      */
-    @Route(values = {"/", "index"}, method = HttpMethod.GET)
+    @Route(value = {"/", "index"}, method = HttpMethod.GET)
     public String index(Request request) {
         List<Comments> comments = siteService.recentComments(5);
         List<Contents> contents = siteService.getContens(Types.RECENT_ARTICLE, 5);
@@ -80,7 +80,7 @@ public class IndexController extends BaseController {
     /**
      * 系统设置
      */
-    @Route(values = "setting", method = HttpMethod.GET)
+    @Route(value = "setting", method = HttpMethod.GET)
     public String setting(Request request) {
         Map<String, String> options = optionsService.getOptions();
         request.attribute("options", options);
@@ -90,7 +90,7 @@ public class IndexController extends BaseController {
     /**
      * 保存系统设置
      */
-    @Route(values = "setting", method = HttpMethod.POST)
+    @Route(value = "setting", method = HttpMethod.POST)
     @JSON
     public RestResponse saveSetting(@QueryParam String site_theme, Request request) {
         try {
@@ -116,7 +116,7 @@ public class IndexController extends BaseController {
     /**
      * 个人设置页面
      */
-    @Route(values = "profile", method = HttpMethod.GET)
+    @Route(value = "profile", method = HttpMethod.GET)
     public String profile() {
         return "admin/profile";
     }
@@ -124,7 +124,7 @@ public class IndexController extends BaseController {
     /**
      * 保存个人信息
      */
-    @Route(values = "profile", method = HttpMethod.POST)
+    @Route(value = "profile", method = HttpMethod.POST)
     @JSON
     public RestResponse saveProfile(@QueryParam String screen_name, @QueryParam String email, Request request) {
         Users users = this.user();
@@ -142,7 +142,7 @@ public class IndexController extends BaseController {
     /**
      * 修改密码
      */
-    @Route(values = "password", method = HttpMethod.POST)
+    @Route(value = "password", method = HttpMethod.POST)
     @JSON
     public RestResponse upPwd(@QueryParam String old_password, @QueryParam String password, Request request) {
         Users users = this.user();
@@ -180,7 +180,7 @@ public class IndexController extends BaseController {
      * 系统备份
      * @return
      */
-    @Route(values = "backup", method = HttpMethod.POST)
+    @Route(value = "backup", method = HttpMethod.POST)
     @JSON
     public RestResponse backup(@QueryParam String bk_type, @QueryParam String bk_path,
                                Request request) {
@@ -207,7 +207,7 @@ public class IndexController extends BaseController {
      * 保存高级选项设置
      * @return
      */
-    @Route(values = "advanced", method = HttpMethod.POST)
+    @Route(value = "advanced", method = HttpMethod.POST)
     @JSON
     public RestResponse doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips,
                                    @QueryParam String plugin_name, @QueryParam String rewrite_url,
@@ -253,7 +253,7 @@ public class IndexController extends BaseController {
      * @param sleep
      * @return
      */
-    @Route(values = "reload", method = HttpMethod.GET)
+    @Route(value = "reload", method = HttpMethod.GET)
     public void reload(@QueryParam(defaultValue = "0") int sleep, Request request) {
         if(sleep < 0 || sleep > 999){
             sleep = 10;

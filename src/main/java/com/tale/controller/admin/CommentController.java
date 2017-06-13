@@ -35,7 +35,7 @@ public class CommentController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @GetRoute(values = "")
+    @GetRoute(value = "")
     public String index(@QueryParam(defaultValue = "1") int page,
                         @QueryParam(defaultValue = "15") int limit, Request request) {
         Users users = this.user();
@@ -49,7 +49,7 @@ public class CommentController extends BaseController {
      * @param coid
      * @return
      */
-    @PostRoute(values = "delete")
+    @PostRoute(value = "delete")
     @JSON
     public RestResponse delete(@QueryParam Integer coid) {
         try {
@@ -71,7 +71,7 @@ public class CommentController extends BaseController {
         return RestResponse.ok();
     }
 
-    @PostRoute(values = "status")
+    @PostRoute(value = "status")
     @JSON
     public RestResponse delete(@QueryParam Integer coid, @QueryParam String status) {
         try {
@@ -92,7 +92,7 @@ public class CommentController extends BaseController {
         return RestResponse.ok();
     }
 
-    @PostRoute(values = "")
+    @PostRoute(value = "")
     @JSON
     public RestResponse reply(@QueryParam Integer coid, @QueryParam String content, Request request) {
         if(null == coid || StringKit.isBlank(content)){

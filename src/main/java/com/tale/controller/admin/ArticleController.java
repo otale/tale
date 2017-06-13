@@ -52,7 +52,7 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @GetRoute(values = "")
+    @GetRoute(value = "")
     public String index(@QueryParam(defaultValue = "1") int page,
                         @QueryParam(defaultValue = "15") int limit, Request request) {
 
@@ -66,7 +66,7 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @GetRoute(values = "publish")
+    @GetRoute(value = "publish")
     public String newArticle(Request request) {
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         request.attribute("categories", categories);
@@ -80,7 +80,7 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @GetRoute(values = "/:cid")
+    @GetRoute(value = "/:cid")
     public String editArticle(@PathParam String cid, Request request) {
         Contents contents = contentsService.getContents(cid);
         request.attribute("contents", contents);
@@ -105,7 +105,7 @@ public class ArticleController extends BaseController {
      * @param allow_feed
      * @return
      */
-    @PostRoute(values = "publish")
+    @PostRoute(value = "publish")
     @JSON
     public RestResponse publishArticle(@QueryParam String title, @QueryParam String content,
                                        @QueryParam String tags, @QueryParam String categories,
@@ -169,7 +169,7 @@ public class ArticleController extends BaseController {
      * @param allow_feed
      * @return
      */
-    @PostRoute(values = "modify")
+    @PostRoute(value = "modify")
     @JSON
     public RestResponse modifyArticle(@QueryParam Integer cid, @QueryParam String title,
                                       @QueryParam String content,@QueryParam String fmt_type,
@@ -220,7 +220,7 @@ public class ArticleController extends BaseController {
      * @param request
      * @return
      */
-    @Route(values = "delete")
+    @Route(value = "delete")
     @JSON
     public RestResponse delete(@QueryParam int cid, Request request) {
         try {

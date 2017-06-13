@@ -40,7 +40,7 @@ public class ThemeController extends BaseController {
     @Inject
     private LogService logService;
 
-    @GetRoute(values = "")
+    @GetRoute(value = "")
     public String index(Request request) {
         // 读取主题
         String themesDir = AttachController.CLASSPATH + "templates/themes";
@@ -68,7 +68,7 @@ public class ThemeController extends BaseController {
      * @param request
      * @return
      */
-    @GetRoute(values = "setting")
+    @GetRoute(value = "setting")
     public String setting(Request request) {
         Map<String, String> themeOptions = optionsService.getOptions("theme_option_");
         request.attribute("theme_options", themeOptions);
@@ -80,7 +80,7 @@ public class ThemeController extends BaseController {
      * @param request
      * @return
      */
-    @PostRoute(values = "setting")
+    @PostRoute(value = "setting")
     @JSON
     public RestResponse saveSetting(Request request) {
         try {
@@ -108,7 +108,7 @@ public class ThemeController extends BaseController {
      * @param site_theme
      * @return
      */
-    @PostRoute(values = "active")
+    @PostRoute(value = "active")
     @JSON
     public RestResponse activeTheme(Request request, @QueryParam String site_theme) {
         try {
