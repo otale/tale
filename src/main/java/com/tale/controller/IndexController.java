@@ -7,7 +7,6 @@ import com.blade.kit.PatternKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.Const;
 import com.blade.mvc.annotation.*;
-import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.Session;
@@ -56,7 +55,7 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @Route(values = "/", method = HttpMethod.GET)
+    @GetRoute
     public String index(Request request, @QueryParam(defaultValue = "12") int limit) {
         return this.index(request, 1, limit);
     }
@@ -64,7 +63,7 @@ public class IndexController extends BaseController {
     /**
      * 自定义页面
      */
-    @Route(values = {"/:cid", "/:cid.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"/:cid", "/:cid.html"})
     public String page(@PathParam String cid, Request request) {
         Contents contents = contentsService.getContents(cid);
         if (null == contents) {
@@ -93,8 +92,9 @@ public class IndexController extends BaseController {
      * @param limit
      * @return
      */
-    @Route(values = {"page/:page", "page/:page.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"page/:page", "page/:page.html"})
     public String index(Request request, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
+
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(page, limit, "created desc");
         Paginator<Contents> articles = contentsService.getArticles(take);
@@ -110,7 +110,7 @@ public class IndexController extends BaseController {
     /**
      * 文章页
      */
-    @Route(values = {"article/:cid", "article/:cid.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"article/:cid", "article/:cid.html"})
     public String post(Request request, @PathParam String cid) {
         Contents contents = contentsService.getContents(cid);
         if (null == contents || Types.DRAFT.equals(contents.getStatus())) {
@@ -145,12 +145,12 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @Route(values = {"category/:keyword", "category/:keyword.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"category/:keyword", "category/:keyword.html"})
     public String categories(Request request, @PathParam String keyword, @QueryParam(defaultValue = "12") int limit) {
         return this.categories(request, keyword, 1, limit);
     }
 
-    @Route(values = {"category/:keyword/:page", "category/:keyword/:page.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"category/:keyword/:page", "category/:keyword/:page.html"})
     public String categories(Request request, @PathParam String keyword,
                              @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
@@ -177,7 +177,7 @@ public class IndexController extends BaseController {
      * @param name
      * @return
      */
-    @Route(values = {"tag/:name", "tag/:name.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"tag/:name", "tag/:name.html"})
     public String tags(Request request, @PathParam String name, @QueryParam(defaultValue = "12") int limit) {
         return this.tags(request, name, 1, limit);
     }
@@ -191,7 +191,7 @@ public class IndexController extends BaseController {
      * @param limit
      * @return
      */
-    @Route(values = {"tag/:name/:page", "tag/:name/:page.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"tag/:name/:page", "tag/:name/:page.html"})
     public String tags(Request request, @PathParam String name, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
@@ -217,18 +217,18 @@ public class IndexController extends BaseController {
      * @param keyword
      * @return
      */
-    @Route(values = {"search/:keyword", "search/:keyword.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"search/:keyword", "search/:keyword.html"})
     public String search(Request request, @PathParam String keyword, @QueryParam(defaultValue = "12") int limit) {
         return this.search(request, keyword, 1, limit);
     }
 
-    @Route(values = {"search", "search.html"})
+    @GetRoute(values = {"search", "search.html"})
     public String search(Request request, @QueryParam(defaultValue = "12") int limit) {
         String keyword = request.query("s").orElse("");
         return this.search(request, keyword, 1, limit);
     }
 
-    @Route(values = {"search/:keyword/:page", "search/:keyword/:page.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"search/:keyword/:page", "search/:keyword/:page.html"})
     public String search(Request request, @PathParam String keyword, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
@@ -249,7 +249,7 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @Route(values = {"archives", "archives.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"archives", "archives.html"})
     public String archives(Request request) {
         List<Archive> archives = siteService.getArchives();
         request.attribute("archives", archives);
@@ -262,7 +262,7 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @Route(values = {"links", "links.html"}, method = HttpMethod.GET)
+    @GetRoute(values = {"links", "links.html"})
     public String links(Request request) {
         List<Metas> links = metasService.getMetas(Types.LINK);
         request.attribute("links", links);
@@ -274,7 +274,7 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @Route(values = {"feed", "feed.xml"}, method = HttpMethod.GET)
+    @GetRoute(values = {"feed", "feed.xml"})
     public void feed(Response response) {
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class)
                 .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, TaleConst.MAX_POSTS, "created desc"));
@@ -301,12 +301,13 @@ public class IndexController extends BaseController {
     /**
      * 评论操作
      */
-    @Route(values = "comment", method = HttpMethod.POST)
+    @PostRoute(values = "comment")
     @JSON
     public RestResponse comment(Request request, Response response,
                                 @QueryParam Integer cid, @QueryParam Integer coid,
                                 @QueryParam String author, @QueryParam String mail,
-                                @QueryParam String url, @QueryParam String text, @QueryParam String _csrf_token) {
+                                @QueryParam String url, @QueryParam String text,
+                                @QueryParam String _csrf_token) {
 
         String ref = request.header("Referer");
         if (StringKit.isBlank(ref) || StringKit.isBlank(_csrf_token)) {

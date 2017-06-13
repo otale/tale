@@ -2,10 +2,9 @@ package com.tale.controller.admin;
 
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
-import com.blade.kit.BladeKit;
 import com.blade.kit.EncrypKit;
+import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
-import com.blade.kit.ason.Ason;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.QueryParam;
@@ -95,13 +94,13 @@ public class IndexController extends BaseController {
     @JSON
     public RestResponse saveSetting(@QueryParam String site_theme, Request request) {
         try {
-            Map<String, List<String>> querys = request.querys();
+            Map<String, List<String>> querys = request.parameters();
             optionsService.saveOptions(querys);
 
             Environment config = Environment.of(optionsService.getOptions());
             TaleConst.OPTIONS = config;
 
-            logService.save(LogActions.SYS_SETTING, Ason.serialize(querys).toString(), request.address(), this.getUid());
+            logService.save(LogActions.SYS_SETTING, JsonKit.toString(querys), request.address(), this.getUid());
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "保存设置失败";
@@ -135,7 +134,7 @@ public class IndexController extends BaseController {
             temp.setScreen_name(screen_name);
             temp.setEmail(email);
             usersService.update(temp);
-            logService.save(LogActions.UP_INFO, Ason.serialize(temp).toString(), request.address(), this.getUid());
+            logService.save(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid());
         }
         return RestResponse.ok();
     }

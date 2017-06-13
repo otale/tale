@@ -3,13 +3,13 @@ package com.tale.init;
 
 import com.blade.Blade;
 import com.blade.Environment;
+import com.blade.event.BeanProcessor;
 import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.ar.SampleActiveRecord;
 import com.blade.kit.StringKit;
-import com.blade.lifecycle.BeanProcessor;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
 import com.tale.controller.BaseController;
 import com.tale.controller.admin.AttachController;
@@ -49,7 +49,7 @@ public class WebContext implements BeanProcessor {
     private Environment environment;
 
     @Override
-    public void prev(Blade blade) {
+    public void preHandle(Blade blade) {
         Ioc ioc = blade.ioc();
         SqliteJdbc.importSql(blade.devMode());
 

@@ -84,7 +84,7 @@ public class ThemeController extends BaseController {
     @JSON
     public RestResponse saveSetting(Request request) {
         try {
-            Map<String, List<String>> querys = request.querys();
+            Map<String, List<String>> querys = request.parameters();
             optionsService.saveOptions(querys);
 
             TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
