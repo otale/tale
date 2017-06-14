@@ -25,7 +25,7 @@ public final class SqliteJdbc {
     }
 
     public static final String DB_NAME = "tale.db";
-    public static String DB_PATH = SqliteJdbc.class.getClassLoader().getResource("").getPath() + DB_NAME;
+    public static String DB_PATH = SqliteJdbc.class.getResource("/").getPath() + DB_NAME;
     public static String DB_SRC = "jdbc:sqlite://" + DB_PATH;
 
     static {
@@ -41,10 +41,15 @@ public final class SqliteJdbc {
      */
     public static void importSql(boolean devMode) {
         try {
+
             if (devMode) {
                 DB_PATH = System.getProperty("user.dir") + "/" + DB_NAME;
                 DB_SRC = "jdbc:sqlite://" + DB_PATH;
             }
+
+            LOGGER.info("load sqlite database path [{}]", DB_PATH);
+            LOGGER.info("load sqlite database src [{}]", DB_SRC);
+
             Connection con = DriverManager.getConnection(DB_SRC);
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='t_options'");
