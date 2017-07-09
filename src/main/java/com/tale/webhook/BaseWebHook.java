@@ -44,6 +44,10 @@ public class BaseWebHook implements WebHook {
         log.info("UserAgent: {}", request.userAgent());
         log.info("用户访问地址: {}, 来路地址: {}", uri, ip);
 
+        if (uri.startsWith("/static")) {
+            return true;
+        }
+
         if (!TaleConst.INSTALL && !uri.startsWith("/install")) {
             response.redirect("/install");
             return false;

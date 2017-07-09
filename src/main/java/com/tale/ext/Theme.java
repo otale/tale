@@ -2,7 +2,6 @@ package com.tale.ext;
 
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.StringKit;
-import com.tale.controller.BaseController;
 import com.tale.dto.Comment;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
@@ -16,6 +15,8 @@ import jetbrick.template.runtime.InterpretContext;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,12 +36,13 @@ public final class Theme {
 
     /**
      * 获取header keywords
+     *
      * @return
      */
-    public static String meta_keywords(){
+    public static String meta_keywords() {
         InterpretContext ctx = InterpretContext.current();
         Object value = ctx.getValueStack().getValue("keywords");
-        if(null != value){
+        if (null != value) {
             return value.toString();
         }
         return Commons.site_option("site_keywords");
@@ -48,12 +50,13 @@ public final class Theme {
 
     /**
      * 获取header description
+     *
      * @return
      */
-    public static String meta_description(){
+    public static String meta_description() {
         InterpretContext ctx = InterpretContext.current();
         Object value = ctx.getValueStack().getValue("description");
-        if(null != value){
+        if (null != value) {
             return value.toString();
         }
         return Commons.site_option("site_description");
@@ -61,14 +64,15 @@ public final class Theme {
 
     /**
      * header title
+     *
      * @return
      */
-    public static String head_title(){
+    public static String head_title() {
         InterpretContext ctx = InterpretContext.current();
         Object value = ctx.getValueStack().getValue("title");
 
         String p = "首页";
-        if(null != value){
+        if (null != value) {
             p = value.toString();
         }
         return p + " - " + Commons.site_option("site_title", "Tale 博客");
@@ -157,6 +161,34 @@ public final class Theme {
     }
 
     /**
+     * 当前文章的分类列表
+     *
+     * @return
+     * @since b1.3.0
+     */
+    public static List<String> category_list() {
+        Contents contents = current_article();
+        if (null != contents && StringKit.isNotBlank(contents.getCategories())) {
+            return Arrays.asList(contents.getCategories().split(","));
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * 当前文章的标签列表
+     *
+     * @return
+     * @since b1.3.0
+     */
+    public static List<String> tag_list() {
+        Contents contents = current_article();
+        if (null != contents && StringKit.isNotBlank(contents.getTags())) {
+            return Arrays.asList(contents.getTags().split(","));
+        }
+        return Collections.emptyList();
+    }
+
+    /**
      * 显示分类
      *
      * @param categories
@@ -195,9 +227,10 @@ public final class Theme {
 
     /**
      * 显示文章浏览量
+     *
      * @return
      */
-    public static String views(){
+    public static String views() {
         Contents contents = current_article();
         return null != contents ? contents.getHits().toString() : "0";
     }
@@ -223,15 +256,17 @@ public final class Theme {
 
     /**
      * 获取文章摘要
+     *
      * @param len
      * @return
      */
-    public static String excerpt(int len){
+    public static String excerpt(int len) {
         return intro(len);
     }
 
     /**
      * 获取文章摘要
+     *
      * @param len
      * @return
      */
@@ -287,7 +322,7 @@ public final class Theme {
         if (null == contents) {
             return "";
         }
-        if(StringKit.isNotBlank(contents.getThumb_img())){
+        if (StringKit.isNotBlank(contents.getThumb_img())) {
             return contents.getThumb_img();
         }
         String content = article(contents.getContent());
@@ -303,9 +338,10 @@ public final class Theme {
 
     /**
      * 获取当前文章的下一篇
+     *
      * @return
      */
-    public static Contents article_next(){
+    public static Contents article_next() {
         Contents cur = current_article();
         return null != cur ? siteService.getNhContent(Types.NEXT, cur.getCid()) : null;
     }
@@ -315,18 +351,19 @@ public final class Theme {
      *
      * @return
      */
-    public static Contents article_prev(){
+    public static Contents article_prev() {
         Contents cur = current_article();
         return null != cur ? siteService.getNhContent(Types.PREV, cur.getCid()) : null;
     }
 
     /**
      * 当前文章的下一篇文章链接
+     *
      * @return
      */
-    public static String theNext(){
+    public static String theNext() {
         Contents contents = article_next();
-        if(null != contents){
+        if (null != contents) {
             return theNext(title(contents));
         }
         return "";
@@ -338,21 +375,22 @@ public final class Theme {
      * @param title 文章标题
      * @return
      */
-    public static String theNext(String title){
+    public static String theNext(String title) {
         Contents contents = article_next();
-        if(null != contents){
-            return "<a href=\""+ permalink(contents) +"\" title=\"" + title(contents) + "\">"+ title +"</a>";
+        if (null != contents) {
+            return "<a href=\"" + permalink(contents) + "\" title=\"" + title(contents) + "\">" + title + "</a>";
         }
         return "";
     }
 
     /**
      * 当前文章的下一篇文章链接
+     *
      * @return
      */
-    public static String thePrev(){
+    public static String thePrev() {
         Contents contents = article_prev();
-        if(null != contents){
+        if (null != contents) {
             return thePrev(title(contents));
         }
         return "";
@@ -364,10 +402,10 @@ public final class Theme {
      * @param title 文章标题
      * @return
      */
-    public static String thePrev(String title){
+    public static String thePrev(String title) {
         Contents contents = article_prev();
-        if(null != contents){
-            return "<a href=\""+ permalink(contents) +"\" title=\""+ title(contents) +"\">"+ title +"</a>";
+        if (null != contents) {
+            return "<a href=\"" + permalink(contents) + "\" title=\"" + title(contents) + "\">" + title + "</a>";
         }
         return "";
     }
@@ -387,6 +425,7 @@ public final class Theme {
 
     /**
      * 随机获取文章
+     *
      * @param limit
      * @return
      */
@@ -424,6 +463,7 @@ public final class Theme {
 
     /**
      * 随机获取limit个分类
+     *
      * @param limit
      * @return
      */
@@ -448,7 +488,7 @@ public final class Theme {
      *
      * @return
      */
-        public static List<MetaDto> tags(int limit) {
+    public static List<MetaDto> tags(int limit) {
         if (null == siteService) {
             return EMPTY;
         }
@@ -457,6 +497,7 @@ public final class Theme {
 
     /**
      * 随机获取limit个标签
+     *
      * @param limit
      * @return
      */
@@ -529,6 +570,7 @@ public final class Theme {
 
     /**
      * 返回文章标题
+     *
      * @param contents
      * @return
      */
@@ -538,21 +580,23 @@ public final class Theme {
 
     /**
      * 返回所有友链
+     *
      * @return
      */
-    public static List<MetaDto> links(){
+    public static List<MetaDto> links() {
         List<MetaDto> links = siteService.getMetas(Types.RECENT_META, Types.LINK, TaleConst.MAX_POSTS);
         return links;
     }
 
     /**
      * 返回社交账号链接
-     * @param socialtype
+     *
+     * @param type
      * @return
      */
-    public static String social_link(String socialtype) {
-        String id = Commons.site_option("social_" + socialtype);
-        switch (socialtype){
+    public static String social_link(String type) {
+        String id = Commons.site_option("social_" + type);
+        switch (type) {
             case "github":
                 return "https://github.com/" + id;
             case "weibo":
@@ -561,19 +605,21 @@ public final class Theme {
                 return "https://twitter.com/" + id;
             case "zhihu":
                 return "https://www.zhihu.com/people/" + id;
+            default:
+                return null;
         }
-        return "";
     }
 
     /**
      * 获取当前文章/页面的评论
+     *
      * @param limit
      * @return
      */
-    public static Paginator<Comment> comments(int limit){
+    public static Paginator<Comment> comments(int limit) {
         Contents contents = current_article();
-        if(null == contents){
-            return new Paginator<>(0,limit);
+        if (null == contents) {
+            return new Paginator<>(0, limit);
         }
         InterpretContext ctx = InterpretContext.current();
         Object value = ctx.getValueStack().getValue("cp");
@@ -605,9 +651,9 @@ public final class Theme {
      * @param value     评论组装文本
      * @return
      */
-    public static String comments_num(String noComment, String value){
+    public static String comments_num(String noComment, String value) {
         Contents contents = current_article();
-        if(null == contents){
+        if (null == contents) {
             return noComment;
         }
         return contents.getComments_num() > 0 ? String.format(value, contents.getComments_num()) : noComment;
@@ -619,18 +665,19 @@ public final class Theme {
      * @param key
      * @return
      */
-    public static String theme_option(String key){
+    public static String theme_option(String key) {
         return TaleConst.OPTIONS.get("theme_option_" + key, null);
     }
 
     /**
      * 返回是否是某个页面
+     *
      * @param pageName
      * @return
      */
-    public static boolean is_slug(String pageName){
+    public static boolean is_slug(String pageName) {
         Contents contents = current_article();
-        if(null != contents && Types.PAGE.equals(contents.getType()) && contents.getSlug().equals(pageName)){
+        if (null != contents && Types.PAGE.equals(contents.getType()) && contents.getSlug().equals(pageName)) {
             return true;
         }
         return false;
