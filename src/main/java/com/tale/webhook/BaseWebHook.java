@@ -4,12 +4,12 @@ import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.kit.UUID;
-import com.blade.mvc.hook.Invoker;
+import com.blade.mvc.hook.Signature;
 import com.blade.mvc.hook.WebHook;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
-import com.tale.model.dto.Types;
 import com.tale.init.TaleConst;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Users;
 import com.tale.service.UsersService;
 import com.tale.utils.MapCache;
@@ -28,9 +28,9 @@ public class BaseWebHook implements WebHook {
     private MapCache cache = MapCache.single();
 
     @Override
-    public boolean before(Invoker invoker) {
-        Request request = invoker.request();
-        Response response = invoker.response();
+    public boolean before(Signature signature) {
+        Request request = signature.request();
+        Response response = signature.response();
 
         String uri = request.uri();
         String ip = request.address();
@@ -83,8 +83,8 @@ public class BaseWebHook implements WebHook {
     }
 
     @Override
-    public boolean after(Invoker invoker) {
-        Request request = invoker.request();
+    public boolean after(Signature signature) {
+        Request request = signature.request();
         String _csrf_token = request.attribute("del_csrf_token");
         if(StringKit.isNotBlank(_csrf_token)){
             // 移除本次token
