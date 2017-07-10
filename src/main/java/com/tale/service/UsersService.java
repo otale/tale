@@ -1,6 +1,6 @@
 package com.tale.service;
 
-import com.tale.model.Users;
+import com.tale.model.entity.Users;
 
 public interface UsersService {
 

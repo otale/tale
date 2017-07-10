@@ -5,12 +5,12 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.kit.StringKit;
-import com.tale.dto.MetaDto;
-import com.tale.dto.Types;
+import com.tale.model.dto.MetaDto;
+import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.model.Contents;
-import com.tale.model.Metas;
-import com.tale.model.Relationships;
+import com.tale.model.entity.Contents;
+import com.tale.model.entity.Metas;
+import com.tale.model.entity.Relationships;
 import com.tale.service.MetasService;
 
 import java.util.List;

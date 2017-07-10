@@ -1,4 +1,4 @@
-package com.tale.model;
+package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.tale.extension;
 
 import com.blade.kit.StringKit;
-import com.tale.model.Metas;
+import com.tale.model.entity.Metas;
 
 /**
  * 后台公共函数

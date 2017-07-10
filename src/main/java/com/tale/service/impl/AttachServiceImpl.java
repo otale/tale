@@ -6,7 +6,7 @@ import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.DateKit;
-import com.tale.model.Attach;
+import com.tale.model.entity.Attach;
 import com.tale.service.AttachService;
 
 /**

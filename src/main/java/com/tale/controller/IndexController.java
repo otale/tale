@@ -3,7 +3,6 @@ package com.tale.controller;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.PatternKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.Const;
 import com.blade.mvc.annotation.*;
@@ -11,22 +10,21 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.Session;
 import com.blade.mvc.ui.RestResponse;
-import com.tale.dto.Archive;
-import com.tale.dto.ErrorCode;
-import com.tale.dto.MetaDto;
-import com.tale.dto.Types;
+import com.tale.model.dto.Archive;
+import com.tale.model.dto.ErrorCode;
+import com.tale.model.dto.MetaDto;
+import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
-import com.tale.model.Comments;
-import com.tale.model.Contents;
-import com.tale.model.Metas;
+import com.tale.model.entity.Comments;
+import com.tale.model.entity.Contents;
+import com.tale.model.entity.Metas;
 import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
-import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
@@ -323,52 +321,52 @@ public class IndexController extends BaseController {
             return RestResponse.fail(ErrorCode.BAD_REQUEST);
         }
 
-        if (null == cid || StringKit.isBlank(author) || StringKit.isBlank(mail) || StringKit.isBlank(text)) {
-            return RestResponse.fail("请输入完整后评论");
-        }
-
-        if (author.length() > 50) {
-            return RestResponse.fail("姓名过长");
-        }
-
-        if (!TaleUtils.isEmail(mail)) {
-            return RestResponse.fail("请输入正确的邮箱格式");
-        }
-
-        if (StringKit.isNotBlank(url) && !PatternKit.isURL(url)) {
-            return RestResponse.fail("请输入正确的URL格式");
-        }
-
-        if (text.length() > 200) {
-            return RestResponse.fail("请输入200个字符以内的评论");
-        }
-
-        String val = request.address() + ":" + cid;
+//        if (null == cid || StringKit.isBlank(author) || StringKit.isBlank(mail) || StringKit.isBlank(text)) {
+//            return RestResponse.fail("请输入完整后评论");
+//        }
+//
+//        if (author.length() > 50) {
+//            return RestResponse.fail("姓名过长");
+//        }
+//
+//        if (!TaleUtils.isEmail(mail)) {
+//            return RestResponse.fail("请输入正确的邮箱格式");
+//        }
+//
+//        if (StringKit.isNotBlank(url) && !PatternKit.isURL(url)) {
+//            return RestResponse.fail("请输入正确的URL格式");
+//        }
+//
+//        if (text.length() > 200) {
+//            return RestResponse.fail("请输入200个字符以内的评论");
+//        }
+//
+        String val = request.address() + ":" + comments.getCid();
         Integer count = cache.hget(Types.COMMENTS_FREQUENCY, val);
         if (null != count && count > 0) {
             return RestResponse.fail("您发表评论太快了，请过会再试");
         }
-
-        author = TaleUtils.cleanXSS(author);
-        text = TaleUtils.cleanXSS(text);
-
-        author = EmojiParser.parseToAliases(author);
-        text = EmojiParser.parseToAliases(text);
-
-        Comments comments = new Comments();
-        comments.setAuthor(author);
-        comments.setCid(cid);
-        comments.setIp(request.address());
-        comments.setUrl(url);
-        comments.setContent(text);
-        comments.setMail(mail);
-        comments.setParent(coid);
+//
+//        author = TaleUtils.cleanXSS(author);
+//        text = TaleUtils.cleanXSS(text);
+//
+//        author = EmojiParser.parseToAliases(author);
+//        text = EmojiParser.parseToAliases(text);
+//
+//        Comments comments = new Comments();
+//        comments.setAuthor(author);
+//        comments.setCid(cid);
+//        comments.setIp(request.address());
+//        comments.setUrl(url);
+//        comments.setContent(text);
+//        comments.setMail(mail);
+//        comments.setParent(coid);
         try {
             commentsService.saveComment(comments);
-            response.cookie("tale_remember_author", URLEncoder.encode(author, "UTF-8"), 7 * 24 * 60 * 60);
-            response.cookie("tale_remember_mail", URLEncoder.encode(mail, "UTF-8"), 7 * 24 * 60 * 60);
-            if (StringKit.isNotBlank(url)) {
-                response.cookie("tale_remember_url", URLEncoder.encode(url, "UTF-8"), 7 * 24 * 60 * 60);
+            response.cookie("tale_remember_author", URLEncoder.encode(comments.getAuthor(), "UTF-8"), 7 * 24 * 60 * 60);
+            response.cookie("tale_remember_mail", URLEncoder.encode(comments.getMail(), "UTF-8"), 7 * 24 * 60 * 60);
+            if (StringKit.isNotBlank(comments.getUrl())) {
+                response.cookie("tale_remember_url", URLEncoder.encode(comments.getUrl(), "UTF-8"), 7 * 24 * 60 * 60);
             }
             // 设置对每个文章30秒可以评论一次
             cache.hset(Types.COMMENTS_FREQUENCY, val, 1, 30);

@@ -14,7 +14,7 @@ import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.admin.AttachController;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
-import com.tale.model.Users;
+import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;

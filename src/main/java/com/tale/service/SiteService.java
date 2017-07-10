@@ -1,12 +1,11 @@
 package com.tale.service;
 
 import com.blade.jdbc.model.Paginator;
-import com.tale.dto.*;
-import com.tale.model.Comments;
-import com.tale.model.Contents;
-import com.tale.model.Users;
+import com.tale.model.dto.*;
+import com.tale.model.entity.Comments;
+import com.tale.model.entity.Contents;
+import com.tale.model.entity.Users;
 
-import java.awt.*;
 import java.util.List;
 
 /**

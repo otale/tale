@@ -2,8 +2,8 @@ package com.tale.service;
 
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.tale.dto.Comment;
-import com.tale.model.Comments;
+import com.tale.model.dto.Comment;
+import com.tale.model.entity.Comments;
 
 public interface CommentsService {
 

@@ -7,7 +7,7 @@ import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.DateKit;
 import com.tale.init.TaleConst;
-import com.tale.model.Logs;
+import com.tale.model.entity.Logs;
 import com.tale.service.LogService;
 
 import java.util.List;

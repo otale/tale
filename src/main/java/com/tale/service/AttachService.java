@@ -2,7 +2,7 @@ package com.tale.service;
 
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.tale.model.Attach;
+import com.tale.model.entity.Attach;
 
 /**
  * Created by biezhi on 2017/2/23.

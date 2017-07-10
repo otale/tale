@@ -8,17 +8,15 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.dto.Types;
+import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.model.Comments;
-import com.tale.model.Users;
+import com.tale.model.entity.Comments;
+import com.tale.model.entity.Users;
 import com.tale.service.CommentsService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 评论管理

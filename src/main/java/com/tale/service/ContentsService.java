@@ -2,10 +2,7 @@ package com.tale.service;
 
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.tale.dto.Archive;
-import com.tale.model.Contents;
-
-import java.util.List;
+import com.tale.model.entity.Contents;
 
 public interface ContentsService {
 

@@ -2,7 +2,7 @@ package com.tale.init;
 
 
 import com.blade.Environment;
-import com.tale.dto.PluginMenu;
+import com.tale.model.dto.PluginMenu;
 
 import java.util.*;
 

@@ -1,12 +1,16 @@
-package com.tale.dto;
+package com.tale.model.dto;
 
-import com.tale.model.Comments;
+import com.tale.model.entity.Comments;
+import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
 /**
  * Created by biezhi on 2017/2/24.
  */
+@Data
+@ToString(callSuper = true)
 public class Comment extends Comments {
 
     private int levels;
@@ -26,19 +30,4 @@ public class Comment extends Comments {
         setCid(comments.getCid());
     }
 
-    public int getLevels() {
-        return levels;
-    }
-
-    public void setLevels(int levels) {
-        this.levels = levels;
-    }
-
-    public List<Comments> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<Comments> children) {
-        this.children = children;
-    }
 }

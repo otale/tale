@@ -1,6 +1,6 @@
 package com.tale.service;
 
-import com.tale.model.Logs;
+import com.tale.model.entity.Logs;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tale.model;
+package com.tale.model.entity;
 
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;

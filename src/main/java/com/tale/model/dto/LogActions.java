@@ -1,4 +1,4 @@
-package com.tale.dto;
+package com.tale.model.dto;
 
 /**
  * 日志操作常量

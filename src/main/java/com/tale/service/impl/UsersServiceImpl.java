@@ -7,7 +7,7 @@ import com.blade.jdbc.core.Take;
 import com.blade.kit.EncrypKit;
 import com.blade.kit.StringKit;
 import com.tale.exception.TipException;
-import com.tale.model.Users;
+import com.tale.model.entity.Users;
 import com.tale.service.UsersService;
 
 /**
