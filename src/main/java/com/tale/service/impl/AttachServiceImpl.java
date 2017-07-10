@@ -5,12 +5,13 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.ActiveRecord;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
 import com.tale.model.Attach;
 import com.tale.service.AttachService;
 
 /**
+ * 附件Service实现
+ * <p>
  * Created by biezhi on 2017/2/23.
  */
 @Bean
@@ -33,7 +34,7 @@ public class AttachServiceImpl implements AttachService {
 
     @Override
     public Attach byId(Integer id) {
-        if(null != id){
+        if (null != id) {
             return activeRecord.byId(Attach.class, id);
         }
         return null;

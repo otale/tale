@@ -18,7 +18,7 @@ import com.tale.dto.LogActions;
 import com.tale.dto.Statistics;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.ext.Commons;
+import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -29,8 +29,7 @@ import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import com.tale.service.UsersService;
 import jetbrick.util.ShellUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.Arrays;
@@ -42,10 +41,9 @@ import java.util.concurrent.TimeUnit;
  * 后台控制器
  * Created by biezhi on 2017/2/21.
  */
+@Slf4j
 @Path("admin")
 public class IndexController extends BaseController {
-
-    private static final Logger log = LoggerFactory.getLogger(IndexController.class);
 
     @Inject
     private OptionsService optionsService;

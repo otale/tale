@@ -10,6 +10,11 @@ import com.tale.exception.TipException;
 import com.tale.model.Users;
 import com.tale.service.UsersService;
 
+/**
+ * 用户Service实现
+ *
+ * @author biezhi
+ */
 @Bean
 public class UsersServiceImpl implements UsersService {
 

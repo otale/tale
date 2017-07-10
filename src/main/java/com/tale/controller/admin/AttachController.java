@@ -15,7 +15,7 @@ import com.tale.controller.BaseController;
 import com.tale.dto.LogActions;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.ext.Commons;
+import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Attach;
 import com.tale.model.Users;
@@ -23,8 +23,7 @@ import com.tale.service.AttachService;
 import com.tale.service.LogService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,10 +38,9 @@ import java.util.Map;
  * <p>
  * Created by biezhi on 2017/2/21.
  */
+@Slf4j
 @Path("admin/attach")
 public class AttachController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AttachController.class);
 
     public static final String CLASSPATH = AttachController.class.getClassLoader().getResource("").getPath();
 
@@ -85,7 +83,7 @@ public class AttachController extends BaseController {
     @JSON
     public RestResponse upload(Request request) {
 
-        LOGGER.info("UPLOAD DIR = {}", TaleUtils.upDir);
+        log.info("UPLOAD DIR = {}", TaleUtils.upDir);
 
         Users users = this.user();
         Integer uid = users.getUid();
@@ -106,7 +104,7 @@ public class AttachController extends BaseController {
                     try {
                         Files.write(Paths.get(filePath), f.data());
                     } catch (IOException e) {
-                        LOGGER.error("", e);
+                        log.error("", e);
                     }
                     Attach attach = attachService.save(fname, fkey, ftype, uid);
                     urls.add(attach);
@@ -127,7 +125,7 @@ public class AttachController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -147,7 +145,7 @@ public class AttachController extends BaseController {
         } catch (Exception e) {
             String msg = "附件删除失败";
             if (e instanceof TipException) msg = e.getMessage();
-            else LOGGER.error(msg, e);
+            else log.error(msg, e);
             return RestResponse.fail(msg);
         }
         return RestResponse.ok();

@@ -1,4 +1,4 @@
-package com.tale.ext;
+package com.tale.extension;
 
 import com.blade.kit.StringKit;
 import com.tale.model.Metas;

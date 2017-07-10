@@ -12,7 +12,7 @@ import com.blade.kit.StringKit;
 import com.tale.controller.admin.AttachController;
 import com.tale.dto.*;
 import com.tale.exception.TipException;
-import com.tale.ext.Theme;
+import com.tale.extension.Theme;
 import com.tale.init.SqliteJdbc;
 import com.tale.init.TaleConst;
 import com.tale.model.*;
@@ -29,24 +29,18 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
+ * 站点Service实现
+ * <p>
  * Created by biezhi on 2017/2/23.
  */
 @Bean
 public class SiteServiceImpl implements SiteService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SiteService.class);
-
     @Inject
     private SampleActiveRecord activeRecord;
 
     @Inject
-    private OptionsService optionsService;
-
-    @Inject
     private LogService logService;
-
-    @Inject
-    private MetasService metasService;
 
     @Inject
     private CommentsService commentsService;
@@ -200,7 +194,7 @@ public class SiteServiceImpl implements SiteService {
             backResponse.setTheme_path(themesPath);
         }
         // 备份数据库
-        if("db".equals(bk_type)){
+        if ("db".equals(bk_type)) {
             String filePath = "upload/" + DateKit.toString(new Date(), "yyyyMMddHHmmss") + "_" + StringKit.rand(8) + ".db";
             String cp = AttachController.CLASSPATH + filePath;
             Files.createDirectory(Paths.get(cp));
@@ -241,7 +235,7 @@ public class SiteServiceImpl implements SiteService {
             if (BladeKit.isNotEmpty(mids)) {
                 String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
-                        "where a.mid in "+ in + "group by a.mid order by count desc, a.mid desc";
+                        "where a.mid in " + in + "group by a.mid order by count desc, a.mid desc";
                 return activeRecord.list(MetaDto.class, sql);
             }
         }
@@ -250,10 +244,10 @@ public class SiteServiceImpl implements SiteService {
 
     @Override
     public Contents getNhContent(String type, Integer cid) {
-        if(Types.NEXT.equals(type)){
+        if (Types.NEXT.equals(type)) {
             return activeRecord.one(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).gt("cid", cid));
         }
-        if(Types.PREV.equals(type)){
+        if (Types.PREV.equals(type)) {
             return activeRecord.one(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).lt("cid", cid));
         }
         return null;

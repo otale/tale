@@ -1,10 +1,16 @@
 package com.tale.model;
 
 import com.blade.jdbc.annotation.Table;
+import lombok.Data;
 
 import java.io.Serializable;
 
-//
+/**
+ * 数据关系
+ *
+ * @author biezhi
+ */
+@Data
 @Table(name = "t_relationships", pk = "mid")
 public class Relationships implements Serializable {
 
@@ -15,25 +21,5 @@ public class Relationships implements Serializable {
 
     // 项目主键
     private Integer mid;
-
-    public Relationships() {
-    }
-
-    public Integer getCid() {
-        return cid;
-    }
-
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
-
-    public Integer getMid() {
-        return mid;
-    }
-
-    public void setMid(Integer mid) {
-        this.mid = mid;
-    }
-
 
 }

@@ -16,7 +16,7 @@ import com.tale.dto.ErrorCode;
 import com.tale.dto.MetaDto;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.ext.Commons;
+import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Comments;
 import com.tale.model.Contents;
@@ -27,16 +27,14 @@ import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
 import java.util.List;
 
+@Slf4j
 @Path
 public class IndexController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
 
     @Inject
     private ContentsService contentsService;
@@ -283,7 +281,7 @@ public class IndexController extends BaseController {
             response.contentType(Const.CONTENT_TYPE_XML);
             response.body(xml);
         } catch (Exception e) {
-            LOGGER.error("生成RSS失败", e);
+            log.error("生成RSS失败", e);
         }
     }
 
@@ -304,17 +302,19 @@ public class IndexController extends BaseController {
     @PostRoute(value = "comment")
     @JSON
     public RestResponse comment(Request request, Response response,
-                                @QueryParam Integer cid, @QueryParam Integer coid,
-                                @QueryParam String author, @QueryParam String mail,
-                                @QueryParam String url, @QueryParam String text,
+                                @HeaderParam("Referer") String referer,
+                                Comments comments,
+//                                @QueryParam Integer cid, @QueryParam Integer coid,
+//                                @QueryParam String author, @QueryParam String mail,
+//                                @QueryParam String url,
+                                @QueryParam String text,
                                 @QueryParam String _csrf_token) {
 
-        String ref = request.header("Referer");
-        if (StringKit.isBlank(ref) || StringKit.isBlank(_csrf_token)) {
+        if (StringKit.isBlank(referer) || StringKit.isBlank(_csrf_token) || null == comments) {
             return RestResponse.fail(ErrorCode.BAD_REQUEST);
         }
 
-        if (!ref.startsWith(Commons.site_url())) {
+        if (!referer.startsWith(Commons.site_url())) {
             return RestResponse.fail("非法评论来源");
         }
 
@@ -380,7 +380,7 @@ public class IndexController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

@@ -1,10 +1,16 @@
 package com.tale.model;
 
 import com.blade.jdbc.annotation.Table;
+import lombok.Data;
 
 import java.io.Serializable;
 
-//
+/**
+ * 内容
+ *
+ * @author biezhi
+ */
+@Data
 @Table(name = "t_contents", pk = "cid")
 public class Contents implements Serializable {
 
@@ -64,150 +70,4 @@ public class Contents implements Serializable {
     // 允许出现在聚合中
     private Boolean allow_feed;
 
-    public Contents() {
-    }
-
-    public Integer getCid() {
-        return cid;
-    }
-
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public Integer getCreated() {
-        return created;
-    }
-
-    public void setCreated(Integer created) {
-        this.created = created;
-    }
-
-    public Integer getModified() {
-        return modified;
-    }
-
-    public void setModified(Integer modified) {
-        this.modified = modified;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Integer getAuthor_id() {
-        return author_id;
-    }
-
-    public void setAuthor_id(Integer author_id) {
-        this.author_id = author_id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
-    public String getCategories() {
-        return categories;
-    }
-
-    public void setCategories(String categories) {
-        this.categories = categories;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getComments_num() {
-        return comments_num;
-    }
-
-    public void setComments_num(Integer comments_num) {
-        this.comments_num = comments_num;
-    }
-
-    public Boolean getAllow_comment() {
-        return allow_comment;
-    }
-
-    public void setAllow_comment(Boolean allow_comment) {
-        this.allow_comment = allow_comment;
-    }
-
-    public Boolean getAllow_ping() {
-        return allow_ping;
-    }
-
-    public void setAllow_ping(Boolean allow_ping) {
-        this.allow_ping = allow_ping;
-    }
-
-    public Boolean getAllow_feed() {
-        return allow_feed;
-    }
-
-    public void setAllow_feed(Boolean allow_feed) {
-        this.allow_feed = allow_feed;
-    }
-
-    public Integer getHits() {
-        return hits;
-    }
-
-    public void setHits(Integer hits) {
-        this.hits = hits;
-    }
-
-    public String getFmt_type() {
-        return fmt_type;
-    }
-
-    public void setFmt_type(String fmt_type) {
-        this.fmt_type = fmt_type;
-    }
-
-    public String getThumb_img() {
-        return thumb_img;
-    }
-
-    public void setThumb_img(String thumb_img) {
-        this.thumb_img = thumb_img;
-    }
 }

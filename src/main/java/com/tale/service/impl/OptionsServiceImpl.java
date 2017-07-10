@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 配置选项Service实现
+ *
+ * @author biezhi
+ */
 @Bean
 public class OptionsServiceImpl implements OptionsService {
 

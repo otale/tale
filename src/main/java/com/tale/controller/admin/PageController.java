@@ -11,30 +11,26 @@ import com.tale.controller.BaseController;
 import com.tale.dto.LogActions;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.ext.Commons;
+import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.Contents;
 import com.tale.model.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.LogService;
-import com.tale.service.MetasService;
 import com.tale.service.SiteService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 页面管理
+ *
  * Created by biezhi on 2017/2/21.
  */
+@Slf4j
 @Path("admin/page")
 public class PageController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PageController.class);
-
     @Inject
     private ContentsService contentsService;
-
-    @Inject
-    private MetasService metasService;
 
     @Inject
     private LogService logService;
@@ -90,7 +86,7 @@ public class PageController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -123,7 +119,7 @@ public class PageController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -142,7 +138,7 @@ public class PageController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

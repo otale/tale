@@ -15,18 +15,20 @@ import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 /**
+ * 分类管理
+ *
  * Created by biezhi on 2017/2/21.
  */
+@Slf4j
 @Path("admin/category")
 public class CategoryController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
 
     @Inject
     private MetasService metasService;
@@ -54,7 +56,7 @@ public class CategoryController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -72,7 +74,7 @@ public class CategoryController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

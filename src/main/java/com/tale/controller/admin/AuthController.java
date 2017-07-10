@@ -20,17 +20,15 @@ import com.tale.model.Users;
 import com.tale.service.LogService;
 import com.tale.service.UsersService;
 import com.tale.utils.TaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 登录，退出
  * Created by biezhi on 2017/2/21.
  */
+@Slf4j
 @Path("admin")
 public class AuthController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     @Inject
     private UsersService usersService;
@@ -72,7 +70,7 @@ public class AuthController extends BaseController {
             temp.setUid(user.getUid());
             temp.setLogged(DateKit.nowUnix());
             usersService.update(temp);
-            LOGGER.info("登录成功：{}", username);
+            log.info("登录成功：{}", username);
             cache.set("login_error_count", 0);
             logService.save(LogActions.LOGIN, username, request.address(), user.getUid());
         } catch (Exception e) {
@@ -82,7 +80,7 @@ public class AuthController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

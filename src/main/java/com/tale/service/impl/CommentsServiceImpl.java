@@ -19,6 +19,11 @@ import com.tale.utils.TaleUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 评论Service实现
+ *
+ * @author biezhi
+ */
 @Bean
 public class CommentsServiceImpl implements CommentsService {
 
@@ -45,7 +50,7 @@ public class CommentsServiceImpl implements CommentsService {
         if (StringKit.isBlank(comments.getContent())) {
             throw new TipException("评论内容不能为空");
         }
-        if(comments.getContent().length() < 5 || comments.getContent().length() > 2000){
+        if (comments.getContent().length() < 5 || comments.getContent().length() > 2000) {
             throw new TipException("评论字数在5-2000个字符");
         }
         if (null == comments.getCid()) {
@@ -70,14 +75,14 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public void delete(Integer coid, Integer cid){
+    public void delete(Integer coid, Integer cid) {
         if (null == coid) {
             throw new TipException("主键为空");
         }
         try {
             activeRecord.delete(Comments.class, coid);
-            Contents contents = contentsService.getContents(cid+"");
-            if(null != contents && contents.getComments_num() > 0){
+            Contents contents = contentsService.getContents(cid + "");
+            if (null != contents && contents.getComments_num() > 0) {
                 Contents temp = new Contents();
                 temp.setCid(cid);
                 temp.setComments_num(contents.getComments_num() - 1);
@@ -132,7 +137,7 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public Paginator<Comments> getComments(Take take) {
-        if(null != take){
+        if (null != take) {
             return activeRecord.page(take);
         }
         return null;
@@ -140,7 +145,7 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public Comments byId(Integer coid) {
-        if(null != coid){
+        if (null != coid) {
             return activeRecord.byId(Comments.class, coid);
         }
         return null;
@@ -148,7 +153,7 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public void update(Comments comments) {
-        if(null != comments && null != comments.getCoid()){
+        if (null != comments && null != comments.getCoid()) {
             activeRecord.update(comments);
         }
     }

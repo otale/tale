@@ -18,16 +18,14 @@ import com.tale.model.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+@Slf4j
 @Path("install")
 public class InstallController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(InstallController.class);
 
     @Inject
     private SiteService siteService;
@@ -100,7 +98,7 @@ public class InstallController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

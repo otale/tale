@@ -11,13 +11,12 @@ import com.tale.controller.BaseController;
 import com.tale.dto.LogActions;
 import com.tale.dto.ThemeDto;
 import com.tale.exception.TipException;
-import com.tale.ext.Commons;
+import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.init.TaleLoader;
 import com.tale.service.LogService;
 import com.tale.service.OptionsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -29,10 +28,9 @@ import java.util.Map;
 /**
  * 主题控制器
  */
+@Slf4j
 @Path("admin/themes")
 public class ThemeController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ThemeController.class);
 
     @Inject
     private OptionsService optionsService;
@@ -96,7 +94,7 @@ public class ThemeController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -129,7 +127,7 @@ public class ThemeController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

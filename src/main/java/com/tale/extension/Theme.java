@@ -1,4 +1,4 @@
-package com.tale.ext;
+package com.tale.extension;
 
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.StringKit;

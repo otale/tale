@@ -19,6 +19,11 @@ import com.vdurmont.emoji.EmojiParser;
 
 import java.util.List;
 
+/**
+ * 内容Service实现
+ *
+ * @author biezhi
+ */
 @Bean
 public class ContentsServiceImpl implements ContentsService {
 

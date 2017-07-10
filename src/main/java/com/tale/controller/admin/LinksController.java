@@ -10,18 +10,20 @@ import com.tale.exception.TipException;
 import com.tale.model.Metas;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 /**
+ * 友链管理
+ *
  * Created by biezhi on 2017/2/21.
  */
+@Slf4j
 @Path("admin/links")
 public class LinksController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LinksController.class);
 
     @Inject
     private MetasService metasService;
@@ -60,7 +62,7 @@ public class LinksController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -78,7 +80,7 @@ public class LinksController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

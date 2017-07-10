@@ -5,11 +5,9 @@ import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
-import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.dto.Comment;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.model.Comments;
@@ -18,16 +16,18 @@ import com.tale.service.CommentsService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 评论管理
+ *
  * Created by biezhi on 2017/2/26.
  */
+@Slf4j
 @Path("admin/comments")
 public class CommentController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommentController.class);
 
     @Inject
     private CommentsService commentsService;
@@ -64,7 +64,7 @@ public class CommentController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -85,7 +85,7 @@ public class CommentController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -132,7 +132,7 @@ public class CommentController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

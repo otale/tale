@@ -11,7 +11,7 @@ import com.tale.controller.BaseController;
 import com.tale.dto.LogActions;
 import com.tale.dto.Types;
 import com.tale.exception.TipException;
-import com.tale.ext.Commons;
+import com.tale.extension.Commons;
 import com.tale.model.Contents;
 import com.tale.model.Metas;
 import com.tale.model.Users;
@@ -19,8 +19,7 @@ import com.tale.service.ContentsService;
 import com.tale.service.LogService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -28,10 +27,9 @@ import java.util.List;
  * 文章管理控制器
  * Created by biezhi on 2017/2/21.
  */
+@Slf4j
 @Path("admin/article")
 public class ArticleController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ArticleController.class);
 
     @Inject
     private ContentsService contentsService;
@@ -148,7 +146,7 @@ public class ArticleController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -207,7 +205,7 @@ public class ArticleController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -232,7 +230,7 @@ public class ArticleController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

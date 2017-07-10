@@ -15,6 +15,11 @@ import com.tale.service.MetasService;
 
 import java.util.List;
 
+/**
+ * 元数据Service实现
+ *
+ * @author biezhi
+ */
 @Bean
 public class MetasServiceImpl implements MetasService {
 
@@ -104,7 +109,7 @@ public class MetasServiceImpl implements MetasService {
                             temp.setTags(reMeta(name, contents.getTags()));
                             isUpdate = true;
                         }
-                        if(isUpdate){
+                        if (isUpdate) {
                             activeRecord.update(temp);
                         }
                     }

@@ -13,6 +13,8 @@ import com.tale.service.LogService;
 import java.util.List;
 
 /**
+ * 日志Service实现
+ * <p>
  * Created by biezhi on 2017/2/26.
  */
 @Bean
