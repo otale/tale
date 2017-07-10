@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sqlite.version>3.15.1</sqlite.version>
-        <blade-mvc.version>2.0.0</blade-mvc.version>
+        <blade-mvc.version>2.0.1-alpha</blade-mvc.version>
         <blade-jdbc.version>0.1.6-beta</blade-jdbc.version>
         <blade-tpl.verion>0.1.0</blade-tpl.verion>
         <commonmark.version>0.9.0</commonmark.version>
@@ -69,6 +69,13 @@
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
             <version>${emoji.version}</version>
+        </dependency>
+
+        <!-- 验证 -->
+        <dependency>
+            <groupId>com.bladejava</groupId>
+            <artifactId>blade-validator</artifactId>
+            <version>0.0.1</version>
         </dependency>
 
         <!-- lombok -->

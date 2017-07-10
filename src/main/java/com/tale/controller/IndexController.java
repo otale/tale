@@ -10,13 +10,14 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.Session;
 import com.blade.mvc.ui.RestResponse;
+import com.blade.validator.annotation.Valid;
+import com.tale.exception.TipException;
+import com.tale.extension.Commons;
+import com.tale.init.TaleConst;
 import com.tale.model.dto.Archive;
 import com.tale.model.dto.ErrorCode;
 import com.tale.model.dto.MetaDto;
 import com.tale.model.dto.Types;
-import com.tale.exception.TipException;
-import com.tale.extension.Commons;
-import com.tale.init.TaleConst;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
@@ -25,6 +26,7 @@ import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
+import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
@@ -272,10 +274,10 @@ public class IndexController extends BaseController {
      */
     @GetRoute(value = {"feed", "feed.xml"})
     public void feed(Response response) {
-        Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class)
+        Paginator<Contents> contentsServiceArticles = contentsService.getArticles(new Take(Contents.class)
                 .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, TaleConst.MAX_POSTS, "created desc"));
         try {
-            String xml = TaleUtils.getRssXml(contentsPaginator.getList());
+            String xml = TaleUtils.getRssXml(contentsServiceArticles.getList());
             response.contentType(Const.CONTENT_TYPE_XML);
             response.body(xml);
         } catch (Exception e) {
@@ -300,67 +302,30 @@ public class IndexController extends BaseController {
     @PostRoute(value = "comment")
     @JSON
     public RestResponse comment(Request request, Response response,
-                                @HeaderParam("Referer") String referer,
-                                Comments comments,
-//                                @QueryParam Integer cid, @QueryParam Integer coid,
-//                                @QueryParam String author, @QueryParam String mail,
-//                                @QueryParam String url,
-                                @QueryParam String text,
-                                @QueryParam String _csrf_token) {
+                                @HeaderParam String Referer, @Valid Comments comments) {
 
-        if (StringKit.isBlank(referer) || StringKit.isBlank(_csrf_token) || null == comments) {
+        if (StringKit.isBlank(Referer)) {
             return RestResponse.fail(ErrorCode.BAD_REQUEST);
         }
 
-        if (!referer.startsWith(Commons.site_url())) {
+        if (!Referer.startsWith(Commons.site_url())) {
             return RestResponse.fail("非法评论来源");
         }
 
-        String token = cache.hget(Types.CSRF_TOKEN, _csrf_token);
-        if (StringKit.isBlank(token)) {
-            return RestResponse.fail(ErrorCode.BAD_REQUEST);
-        }
-
-//        if (null == cid || StringKit.isBlank(author) || StringKit.isBlank(mail) || StringKit.isBlank(text)) {
-//            return RestResponse.fail("请输入完整后评论");
-//        }
-//
-//        if (author.length() > 50) {
-//            return RestResponse.fail("姓名过长");
-//        }
-//
-//        if (!TaleUtils.isEmail(mail)) {
-//            return RestResponse.fail("请输入正确的邮箱格式");
-//        }
-//
-//        if (StringKit.isNotBlank(url) && !PatternKit.isURL(url)) {
-//            return RestResponse.fail("请输入正确的URL格式");
-//        }
-//
-//        if (text.length() > 200) {
-//            return RestResponse.fail("请输入200个字符以内的评论");
-//        }
-//
         String val = request.address() + ":" + comments.getCid();
         Integer count = cache.hget(Types.COMMENTS_FREQUENCY, val);
         if (null != count && count > 0) {
             return RestResponse.fail("您发表评论太快了，请过会再试");
         }
-//
-//        author = TaleUtils.cleanXSS(author);
-//        text = TaleUtils.cleanXSS(text);
-//
-//        author = EmojiParser.parseToAliases(author);
-//        text = EmojiParser.parseToAliases(text);
-//
-//        Comments comments = new Comments();
-//        comments.setAuthor(author);
-//        comments.setCid(cid);
-//        comments.setIp(request.address());
-//        comments.setUrl(url);
-//        comments.setContent(text);
-//        comments.setMail(mail);
-//        comments.setParent(coid);
+
+        comments.setAuthor(TaleUtils.cleanXSS(comments.getAuthor()));
+        comments.setContent(TaleUtils.cleanXSS(comments.getContent()));
+
+        comments.setAuthor(EmojiParser.parseToAliases(comments.getAuthor()));
+        comments.setContent(EmojiParser.parseToAliases(comments.getContent()));
+        comments.setIp(request.address());
+        comments.setParent(comments.getCoid());
+
         try {
             commentsService.saveComment(comments);
             response.cookie("tale_remember_author", URLEncoder.encode(comments.getAuthor(), "UTF-8"), 7 * 24 * 60 * 60);
@@ -368,10 +333,11 @@ public class IndexController extends BaseController {
             if (StringKit.isNotBlank(comments.getUrl())) {
                 response.cookie("tale_remember_url", URLEncoder.encode(comments.getUrl(), "UTF-8"), 7 * 24 * 60 * 60);
             }
+
             // 设置对每个文章30秒可以评论一次
             cache.hset(Types.COMMENTS_FREQUENCY, val, 1, 30);
             siteService.cleanCache(Types.C_STATISTICS);
-            request.attribute("del_csrf_token", token);
+
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "评论发布失败";

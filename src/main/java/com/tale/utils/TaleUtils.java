@@ -332,7 +332,7 @@ public class TaleUtils {
 
     public static void download(Response response, String filePath) throws Exception {
         File file = new File(filePath);
-        response.donwload(file.getName(), file);
+        response.download(file.getName(), file);
     }
 
     /**
