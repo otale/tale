@@ -10,6 +10,7 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.Session;
 import com.blade.mvc.ui.RestResponse;
+import com.blade.security.web.csrf.CsrfToken;
 import com.blade.validator.annotation.Valid;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
@@ -61,6 +62,7 @@ public class IndexController extends BaseController {
     /**
      * 自定义页面
      */
+    @CsrfToken(newToken = true)
     @GetRoute(value = {"/:cid", "/:cid.html"})
     public String page(@PathParam String cid, Request request) {
         Contents contents = contentsService.getContents(cid);
@@ -108,6 +110,7 @@ public class IndexController extends BaseController {
     /**
      * 文章页
      */
+    @CsrfToken(newToken = true)
     @GetRoute(value = {"article/:cid", "article/:cid.html"})
     public String post(Request request, @PathParam String cid) {
         Contents contents = contentsService.getContents(cid);
@@ -260,6 +263,7 @@ public class IndexController extends BaseController {
      *
      * @return
      */
+    @CsrfToken(newToken = true)
     @GetRoute(value = {"links", "links.html"})
     public String links(Request request) {
         List<Metas> links = metasService.getMetas(Types.LINK);
@@ -299,6 +303,7 @@ public class IndexController extends BaseController {
     /**
      * 评论操作
      */
+    @CsrfToken(valid = true)
     @PostRoute(value = "comment")
     @JSON
     public RestResponse comment(Request request, Response response,

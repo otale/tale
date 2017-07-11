@@ -14,6 +14,7 @@ public abstract class BaseController {
 
     protected MapCache cache = MapCache.single();
 
+
     public String render(String viewName) {
         return THEME + "/" + viewName;
     }
