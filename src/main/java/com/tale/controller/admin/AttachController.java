@@ -93,16 +93,16 @@ public class AttachController extends BaseController {
         List<Attach> urls = new ArrayList<>();
         try {
             fileItems.forEach((FileItem f) -> {
-                String fname = f.fileName();
+                String fname = f.getFileName();
 
-                if ((f.length() / 1024) <= TaleConst.MAX_FILE_SIZE) {
+                if ((f.getLength() / 1024) <= TaleConst.MAX_FILE_SIZE) {
                     String fkey = TaleUtils.getFileKey(fname);
 
-                    String ftype = f.contentType().contains("image") ? Types.IMAGE : Types.FILE;
+                    String ftype    = f.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
                     String filePath = TaleUtils.upDir + fkey;
 
                     try {
-                        Files.write(Paths.get(filePath), f.data());
+                        Files.write(Paths.get(filePath), f.getData());
                     } catch (IOException e) {
                         log.error("", e);
                     }

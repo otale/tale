@@ -64,7 +64,7 @@ public class TaleUtils {
      */
     public static void setCookie(Response response, Integer uid) {
         try {
-            String val = new String(EncrypKit.encryptAES(uid.toString().getBytes(), TaleConst.AES_SALT.getBytes()));
+            String  val   = new String(EncrypKit.encryptAES(uid.toString().getBytes(), TaleConst.AES_SALT.getBytes()));
             boolean isSSL = Commons.site_url().startsWith("https");
             response.cookie("/", TaleConst.USER_IN_COOKIE, val, one_month, isSSL);
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class TaleUtils {
             if (c.isPresent()) {
                 try {
                     String value = c.get();
-                    String uid = new String(EncrypKit.decryptAES(value.getBytes(), TaleConst.AES_SALT.getBytes()));
+                    String uid   = new String(EncrypKit.decryptAES(value.getBytes(), TaleConst.AES_SALT.getBytes()));
                     return StringKit.isNotBlank(uid) && StringKit.isNumber(uid) ? Integer.valueOf(uid) : null;
                 } catch (Exception e) {
                 }
@@ -150,10 +150,10 @@ public class TaleUtils {
         }
 
         List<Extension> extensions = Arrays.asList(TablesExtension.create());
-        Parser parser = Parser.builder().extensions(extensions).build();
-        Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
-        String content = renderer.render(document);
+        Parser          parser     = Parser.builder().extensions(extensions).build();
+        Node            document   = parser.parse(markdown);
+        HtmlRenderer    renderer   = HtmlRenderer.builder().extensions(extensions).build();
+        String          content    = renderer.render(document);
         content = Commons.emoji(content);
 
         // 支持网易云音乐输出
@@ -164,6 +164,7 @@ public class TaleUtils {
         if (TaleConst.BCONF.getBoolean("app.support_gist", true) && content.contains("https://gist.github.com/")) {
             content = content.replaceAll("&lt;script src=\"https://gist.github.com/(\\w+)/(\\w+)\\.js\">&lt;/script>", "<script src=\"https://gist.github.com/$1/$2\\.js\"></script>");
         }
+
         return content;
     }
 
@@ -229,6 +230,8 @@ public class TaleUtils {
         return false;
     }
 
+    private static final Pattern pattern = Pattern.compile("[0x1f]*");
+
     /**
      * 获取RSS输出
      *
@@ -247,7 +250,22 @@ public class TaleUtils {
             Item item = new Item();
             item.setTitle(post.getTitle());
             Content content = new Content();
-            content.setValue(Theme.article(post.getContent()));
+            String  value   = Theme.article(post.getContent());
+
+            char[] xmlChar = value.toCharArray();
+            for (int i = 0; i < xmlChar.length; ++i) {
+                if (xmlChar[i] > 0xFFFD) {
+                    //直接替换掉0xb
+                    xmlChar[i] = ' ';
+                } else if (xmlChar[i] < 0x20 && xmlChar[i] != 't' & xmlChar[i] != 'n' & xmlChar[i] != 'r') {
+                    //直接替换掉0xb
+                    xmlChar[i] = ' ';
+                }
+            }
+
+            value = new String(xmlChar);
+
+            content.setValue(value);
             item.setContent(content);
             item.setLink(Theme.permalink(post.getCid(), post.getSlug()));
             item.setPubDate(DateKit.toDate(post.getCreated()));
@@ -256,6 +274,14 @@ public class TaleUtils {
         channel.setItems(items);
         WireFeedOutput out = new WireFeedOutput();
         return out.outputString(channel);
+//        try {
+//            return out.outputString(channel);
+//        } catch (org.jdom.IllegalDataException e) {
+//            //e.printStackTrace();
+//
+//        } catch (Exception e) {
+//            throw e;
+//        }
     }
 
     /**
@@ -379,7 +405,7 @@ public class TaleUtils {
 
     public static String getFileKey(String name) {
         String prefix = "/upload/" + DateKit.toString(new Date(), "yyyy/MM");
-        String dir = upDir + prefix;
+        String dir    = upDir + prefix;
         if (!Files.exists(Paths.get(dir))) {
             new File(dir).mkdirs();
         }

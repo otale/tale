@@ -282,7 +282,7 @@ public class IndexController extends BaseController {
                 .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, TaleConst.MAX_POSTS, "created desc"));
         try {
             String xml = TaleUtils.getRssXml(contentsServiceArticles.getList());
-            response.contentType(Const.CONTENT_TYPE_XML);
+            response.contentType("text/xml; charset=utf-8");
             response.body(xml);
         } catch (Exception e) {
             log.error("生成RSS失败", e);
