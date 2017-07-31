@@ -67,6 +67,11 @@ $(document).ready(function () {
         var this_ = $(this);
         if (type == 'markdown') {
             // 切换为富文本编辑器
+            if($('#md-container .markdown-body').html().length > 0){
+                $('#html-container .note-editable').empty().html($('#md-container .markdown-body').html());
+                $('#html-container .note-placeholder').hide();
+
+            }
             mditor.value = '';
             $('#md-container').hide();
             $('#html-container').show();
@@ -74,6 +79,10 @@ $(document).ready(function () {
             $('#fmt_type').val('html');
         } else {
             // 切换为markdown编辑器
+            if($('#html-container .note-editable').html().length > 0){
+                mditor.value = '';
+                mditor.value = toMarkdown($('#html-container .note-editable').html());
+            }
             $('#html-container').hide();
             $('#md-container').show();
             $('#fmt_type').val('markdown');
