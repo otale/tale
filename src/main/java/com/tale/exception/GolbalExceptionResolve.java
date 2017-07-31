@@ -2,7 +2,7 @@ package com.tale.exception;
 
 import com.blade.exception.ExceptionResolve;
 import com.blade.ioc.annotation.Bean;
-import com.blade.mvc.hook.Invoker;
+import com.blade.mvc.hook.Signature;
 import com.blade.mvc.ui.RestResponse;
 import com.blade.validator.exception.ValidateException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 public class GolbalExceptionResolve implements ExceptionResolve {
 
     @Override
-    public boolean handle(Exception e, Invoker invoker) {
+    public boolean handle(Exception e, Signature signature) {
         if (e instanceof ValidateException) {
             ValidateException validateException = (ValidateException) e;
             String msg = validateException.getErrMsg();
-            invoker.response().json(RestResponse.fail(msg));
+            signature.response().json(RestResponse.fail(msg));
             return false;
         }
         return true;

@@ -6,12 +6,12 @@
 
     <groupId>io.github.junicorn</groupId>
     <artifactId>tale</artifactId>
-    <version>1.3.0-alpha</version>
+    <version>1.3.0-alpha1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sqlite.version>3.15.1</sqlite.version>
-        <blade-mvc.version>2.0.1-alpha</blade-mvc.version>
+        <blade-mvc.version>2.0.1-alpha2</blade-mvc.version>
         <blade-jdbc.version>0.1.6-beta</blade-jdbc.version>
         <blade-tpl.verion>0.1.0</blade-tpl.verion>
         <commonmark.version>0.9.0</commonmark.version>
@@ -151,7 +151,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--mvn clean package assembly:single -Pprod -Dmaven.test.skip=true-->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
