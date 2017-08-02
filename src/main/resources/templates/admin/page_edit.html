@@ -202,7 +202,7 @@
     /*
      * 自动保存为草稿
      * */
-    function  autoSave() {
+    function autoSave() {
         var content = $('#fmt_type').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
         var title = $('#articleForm input[name=title]').val();
         if (title != '' && content != '') {
@@ -216,9 +216,9 @@
                 data: params,
                 success: function (result) {
                     if (result && result.success) {
-                        $('#articleForm #cid').val(result.payload);
+                        tale.toastrOk('自动保存成功');
                     } else {
-                        tale.alertError(result.msg || '保存文章失败');
+                        tale.toastrError(result.msg || '自动保存文章失败');
                     }
                 }
             });
