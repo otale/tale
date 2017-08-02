@@ -100,6 +100,70 @@ $.tale.prototype.alertBox = function (options) {
 };
 
 /**
+ * 无打扰信息框
+ * @param options
+ */
+$.tale.prototype.toastrInfo = function (options) {
+    options = options.length ? {text:options} : ( options || {} );
+    this.toastrBox(options);
+    toastr.info(options.text);
+}
+
+/**
+ * 无打扰错误框
+ * @param options
+ */
+$.tale.prototype.toastrError = function (options) {
+    options = options.length ? {text:options} : ( options || {} );
+    this.toastrBox(options);
+    toastr.error(options.text);
+}
+
+/**
+ * 无打扰警告框
+ * @param options
+ */
+$.tale.prototype.toastrWarn = function (options) {
+    options = options.length ? {text:options} : ( options || {} );
+    this.toastrBox(options);
+    toastr.warning(options.text);
+}
+
+/**
+ * 无打扰成功提示
+ * @param options
+ */
+$.tale.prototype.toastrOk = function (options) {
+    options = options.length ? {text:options} : ( options || {} );
+    this.toastrBox(options);
+    toastr.success(options.text);
+}
+
+/**
+ * 公共无打扰提示
+ * @param options
+ */
+$.tale.prototype.toastrBox = function (options) {
+    toastr.options = {
+        "closeButton": options.close || false,
+        "debug": options.debug || false,
+        "newestOnTop": options.onTop || false,
+        "progressBar": options.bar ||  false,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "1500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+}
+
+/**
  * 全局post函数
  *
  * @param options   参数
