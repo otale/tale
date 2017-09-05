@@ -3,20 +3,17 @@ package com.tale.controller.admin;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
-import com.blade.mvc.annotation.JSON;
-import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.QueryParam;
-import com.blade.mvc.annotation.Route;
+import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.multipart.FileItem;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.LogActions;
-import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
+import com.tale.model.dto.LogActions;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Attach;
 import com.tale.model.entity.Users;
 import com.tale.service.AttachService;
@@ -25,6 +22,7 @@ import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -42,7 +40,7 @@ import java.util.Map;
 @Path("admin/attach")
 public class AttachController extends BaseController {
 
-    public static final String CLASSPATH = AttachController.class.getClassLoader().getResource("").getPath();
+    public static final String CLASSPATH = new File(AttachController.class.getResource("/").getPath()).getPath() + File.separatorChar;
 
     @Inject
     private AttachService attachService;
@@ -62,8 +60,8 @@ public class AttachController extends BaseController {
      * @return
      */
     @Route(value = "", method = HttpMethod.GET)
-    public String index(Request request, @QueryParam(defaultValue = "1") int page,
-                        @QueryParam(defaultValue = "12") int limit) {
+    public String index(Request request, @Param(defaultValue = "1") int page,
+                        @Param(defaultValue = "12") int limit) {
         Paginator<Attach> attachPaginator = attachService.getAttachs(new Take(Attach.class).page(page, limit, "id desc"));
         request.attribute("attachs", attachPaginator);
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
@@ -133,7 +131,7 @@ public class AttachController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam Integer id, Request request) {
+    public RestResponse delete(@Param Integer id, Request request) {
         try {
             Attach attach = attachService.byId(id);
             if (null == attach) return RestResponse.fail("不存在该附件");
