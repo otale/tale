@@ -53,7 +53,7 @@ public class WebContext implements BeanProcessor {
         Ioc ioc = blade.ioc();
         SqliteJdbc.importSql(blade.devMode());
 
-        ExtSql2o sql2o = new ExtSql2o(SqliteJdbc.DB_SRC);
+        ExtSql2o     sql2o        = new ExtSql2o(SqliteJdbc.DB_SRC);
         ActiveRecord activeRecord = new SampleActiveRecord(sql2o);
         ioc.addBean(activeRecord);
         Commons.setSiteService(ioc.getBean(SiteService.class));
@@ -64,18 +64,13 @@ public class WebContext implements BeanProcessor {
         JetbrickTemplateEngine templateEngine = new JetbrickTemplateEngine();
 
         List<String> macros = new ArrayList<>(8);
-        macros.add("/comm/macros.html");
+        macros.add(File.separatorChar + "comm" + File.separatorChar + "macros.html");
         // 扫描主题下面的所有自定义宏
-        String themeDir = AttachController.CLASSPATH + "templates/themes";
-        try {
-            themeDir = new URI(themeDir).getPath();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
         File[] dir = new File(themeDir).listFiles();
         for (File f : dir) {
-            if (f.isDirectory() && Files.exists(Paths.get(f.getPath() + "/macros.html"))) {
-                String macroName = "/themes/" + f.getName() + "/macros.html";
+            if (f.isDirectory() && Files.exists(Paths.get(f.getPath() + File.separatorChar + "macros.html"))) {
+                String macroName = File.separatorChar + "themes" + File.separatorChar + f.getName() + File.separatorChar + "macros.html";
                 macros.add(macroName);
             }
         }
@@ -111,7 +106,7 @@ public class WebContext implements BeanProcessor {
             RewriteUtils.rewrite(db_rewrite);
         }
 
-        BaseController.THEME = "themes/" + Commons.site_option("site_theme");
+        BaseController.THEME = "themes" + File.separatorChar + Commons.site_option("site_theme");
 
         TaleConst.BCONF = environment;
     }

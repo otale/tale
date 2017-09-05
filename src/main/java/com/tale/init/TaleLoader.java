@@ -30,24 +30,18 @@ public final class TaleLoader {
     }
 
     public static void loadThemes() {
-
-        String themeDir = AttachController.CLASSPATH + "templates/themes";
-        try {
-            themeDir = new URI(themeDir).getPath();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
         File[] dir = new File(themeDir).listFiles();
         for (File f : dir) {
-            if (f.isDirectory() && Files.isDirectory(Paths.get(f.getPath() + "/static"))) {
-                String themePath = "/templates/themes/" + f.getName();
-                blade.addStatics(new String[]{themePath + "/style.css", themePath + "/screenshot.png", themePath + "/static"});
+            if (f.isDirectory() && Files.isDirectory(Paths.get(f.getPath() + File.separatorChar + "static"))) {
+                String themePath = File.separatorChar + "templates" + File.separatorChar + "themes" + File.separatorChar + f.getName();
+                blade.addStatics(new String[]{themePath + File.separatorChar + "style.css", themePath + File.separatorChar + "screenshot.png", themePath + File.separatorChar + "static"});
             }
         }
     }
 
     public static void loadTheme(String themePath) {
-        blade.addStatics(themePath + "/style.css", themePath + "/screenshot.png", themePath + "/static");
+        blade.addStatics(themePath + File.separatorChar + "style.css", themePath + File.separatorChar + "screenshot.png", themePath + File.separatorChar + "static");
     }
 
     public static void loadPlugins() {
@@ -69,12 +63,12 @@ public final class TaleLoader {
         try {
             if (pluginFile.isFile() && pluginFile.getName().endsWith(".jar")) {
                 URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-                Method add = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+                Method         add         = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
                 add.setAccessible(true);
                 add.invoke(classLoader, pluginFile.toURI().toURL());
 
                 String pluginName = pluginFile.getName().substring(6);
-                blade.addStatics(new String[]{"/templates/plugins/" + pluginName + "/static"});
+                blade.addStatics(new String[]{File.separatorChar+"templates"+File.separatorChar+"plugins" + File.separatorChar + pluginName + File.separatorChar + "static"});
             }
         } catch (Exception e) {
             throw new RuntimeException("插件 [" + pluginFile.getName() + "] 加载失败");
