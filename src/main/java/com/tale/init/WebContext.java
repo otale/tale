@@ -67,11 +67,6 @@ public class WebContext implements BeanProcessor {
         macros.add(File.separatorChar + "comm" + File.separatorChar + "macros.html");
         // 扫描主题下面的所有自定义宏
         String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
-//        try {
-//            themeDir = new URI(themeDir).getPath();
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
         File[] dir = new File(themeDir).listFiles();
         for (File f : dir) {
             if (f.isDirectory() && Files.exists(Paths.get(f.getPath() + File.separatorChar + "macros.html"))) {

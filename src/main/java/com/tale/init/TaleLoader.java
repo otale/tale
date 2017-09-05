@@ -31,11 +31,6 @@ public final class TaleLoader {
 
     public static void loadThemes() {
         String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
-//        try {
-//            themeDir = new URI(themeDir).getPath();
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
         File[] dir = new File(themeDir).listFiles();
         for (File f : dir) {
             if (f.isDirectory() && Files.isDirectory(Paths.get(f.getPath() + File.separatorChar + "static"))) {
