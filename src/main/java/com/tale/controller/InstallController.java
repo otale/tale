@@ -5,8 +5,8 @@ import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
@@ -53,9 +53,9 @@ public class InstallController extends BaseController {
 
     @Route(value = "/", method = HttpMethod.POST)
     @JSON
-    public RestResponse doInstall(@QueryParam String site_title, @QueryParam String site_url,
-                                  @QueryParam String admin_user, @QueryParam String admin_email,
-                                  @QueryParam String admin_pwd) {
+    public RestResponse doInstall(@Param String site_title, @Param String site_url,
+                                  @Param String admin_user, @Param String admin_email,
+                                  @Param String admin_pwd) {
         if (Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"))
                 && TaleConst.OPTIONS.getInt("allow_install", 0) != 1) {
             return RestResponse.fail("请勿重复安装");

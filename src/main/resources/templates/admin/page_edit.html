@@ -210,13 +210,16 @@
             $("#articleForm #status").val('draft');
             $("#articleForm #categories").val($('#multiple-sel').val());
             var params = $("#articleForm").serialize();
-            var url = $('#articleForm #cid').val() != '' ? '/admin/page/modify' : '/admin/page/publish';
+            var cid = $('#articleForm #cid').val();
+            var url = cid != '' ? '/admin/page/modify' : '/admin/page/publish';
             tale.post({
                 url: url,
                 data: params,
                 success: function (result) {
                     if (result && result.success) {
-                        $('#articleForm #cid').val(result.payload);
+                        if(!cid || cid == ''){
+                            $('#articleForm #cid').val(result.payload);
+                        }
                     } else {
                         tale.alertError(result.msg || '保存文章失败');
                     }

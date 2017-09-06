@@ -55,7 +55,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @GetRoute
-    public String index(Request request, @QueryParam(defaultValue = "12") int limit) {
+    public String index(Request request, @Param(defaultValue = "12") int limit) {
         return this.index(request, 1, limit);
     }
 
@@ -93,7 +93,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @GetRoute(value = {"page/:page", "page/:page.html"})
-    public String index(Request request, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
+    public String index(Request request, @PathParam int page, @Param(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(page, limit, "created desc");
@@ -147,13 +147,13 @@ public class IndexController extends BaseController {
      * @return
      */
     @GetRoute(value = {"category/:keyword", "category/:keyword.html"})
-    public String categories(Request request, @PathParam String keyword, @QueryParam(defaultValue = "12") int limit) {
+    public String categories(Request request, @PathParam String keyword, @Param(defaultValue = "12") int limit) {
         return this.categories(request, keyword, 1, limit);
     }
 
     @GetRoute(value = {"category/:keyword/:page", "category/:keyword/:page.html"})
     public String categories(Request request, @PathParam String keyword,
-                             @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
+                             @PathParam int page, @Param(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         MetaDto metaDto = metasService.getMeta(Types.CATEGORY, keyword);
         if (null == metaDto) {
@@ -179,7 +179,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @GetRoute(value = {"tag/:name", "tag/:name.html"})
-    public String tags(Request request, @PathParam String name, @QueryParam(defaultValue = "12") int limit) {
+    public String tags(Request request, @PathParam String name, @Param(defaultValue = "12") int limit) {
         return this.tags(request, name, 1, limit);
     }
 
@@ -193,7 +193,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @GetRoute(value = {"tag/:name/:page", "tag/:name/:page.html"})
-    public String tags(Request request, @PathParam String name, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
+    public String tags(Request request, @PathParam String name, @PathParam int page, @Param(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         MetaDto metaDto = metasService.getMeta(Types.TAG, name);
@@ -219,18 +219,18 @@ public class IndexController extends BaseController {
      * @return
      */
     @GetRoute(value = {"search/:keyword", "search/:keyword.html"})
-    public String search(Request request, @PathParam String keyword, @QueryParam(defaultValue = "12") int limit) {
+    public String search(Request request, @PathParam String keyword, @Param(defaultValue = "12") int limit) {
         return this.search(request, keyword, 1, limit);
     }
 
     @GetRoute(value = {"search", "search.html"})
-    public String search(Request request, @QueryParam(defaultValue = "12") int limit) {
+    public String search(Request request, @Param(defaultValue = "12") int limit) {
         String keyword = request.query("s").orElse("");
         return this.search(request, keyword, 1, limit);
     }
 
     @GetRoute(value = {"search/:keyword/:page", "search/:keyword/:page.html"})
-    public String search(Request request, @PathParam String keyword, @PathParam int page, @QueryParam(defaultValue = "12") int limit) {
+    public String search(Request request, @PathParam String keyword, @PathParam int page, @Param(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH)

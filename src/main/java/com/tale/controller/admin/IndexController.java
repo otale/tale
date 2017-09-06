@@ -6,20 +6,20 @@ import com.blade.kit.EncrypKit;
 import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
+import com.tale.exception.TipException;
+import com.tale.extension.Commons;
+import com.tale.init.TaleConst;
 import com.tale.model.dto.BackResponse;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Statistics;
 import com.tale.model.dto.Types;
-import com.tale.exception.TipException;
-import com.tale.extension.Commons;
-import com.tale.init.TaleConst;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Logs;
@@ -90,7 +90,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "setting", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveSetting(@QueryParam String site_theme, Request request) {
+    public RestResponse saveSetting(@Param String site_theme, Request request) {
         try {
             Map<String, List<String>> querys = request.parameters();
             optionsService.saveOptions(querys);
@@ -124,7 +124,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "profile", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveProfile(@QueryParam String screen_name, @QueryParam String email, Request request) {
+    public RestResponse saveProfile(@Param String screen_name, @Param String email, Request request) {
         Users users = this.user();
         if (StringKit.isNotBlank(screen_name) && StringKit.isNotBlank(email)) {
             Users temp = new Users();
@@ -142,7 +142,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "password", method = HttpMethod.POST)
     @JSON
-    public RestResponse upPwd(@QueryParam String old_password, @QueryParam String password, Request request) {
+    public RestResponse upPwd(@Param String old_password, @Param String password, Request request) {
         Users users = this.user();
         if (StringKit.isBlank(old_password) || StringKit.isBlank(password)) {
             return RestResponse.fail("请确认信息输入完整");
@@ -180,7 +180,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "backup", method = HttpMethod.POST)
     @JSON
-    public RestResponse backup(@QueryParam String bk_type, @QueryParam String bk_path,
+    public RestResponse backup(@Param String bk_type, @Param String bk_path,
                                Request request) {
         if (StringKit.isBlank(bk_type)) {
             return RestResponse.fail("请确认信息输入完整");
@@ -207,9 +207,9 @@ public class IndexController extends BaseController {
      */
     @Route(value = "advanced", method = HttpMethod.POST)
     @JSON
-    public RestResponse doAdvanced(@QueryParam String cache_key, @QueryParam String block_ips,
-                                   @QueryParam String plugin_name, @QueryParam String rewrite_url,
-                                   @QueryParam String allow_install){
+    public RestResponse doAdvanced(@Param String cache_key, @Param String block_ips,
+                                   @Param String plugin_name, @Param String rewrite_url,
+                                   @Param String allow_install){
         // 清除缓存
         if(StringKit.isNotBlank(cache_key)){
             if(cache_key.equals("*")){
@@ -252,7 +252,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @Route(value = "reload", method = HttpMethod.GET)
-    public void reload(@QueryParam(defaultValue = "0") int sleep, Request request) {
+    public void reload(@Param(defaultValue = "0") int sleep, Request request) {
         if(sleep < 0 || sleep > 999){
             sleep = 10;
         }

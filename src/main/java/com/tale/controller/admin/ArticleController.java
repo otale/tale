@@ -8,10 +8,10 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.LogActions;
-import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
+import com.tale.model.dto.LogActions;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
 import com.tale.model.entity.Users;
@@ -51,8 +51,8 @@ public class ArticleController extends BaseController {
      * @return
      */
     @GetRoute(value = "")
-    public String index(@QueryParam(defaultValue = "1") int page,
-                        @QueryParam(defaultValue = "15") int limit, Request request) {
+    public String index(@Param(defaultValue = "1") int page,
+                        @Param(defaultValue = "15") int limit, Request request) {
 
         Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
         request.attribute("articles", contentsPaginator);
@@ -105,11 +105,11 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "publish")
     @JSON
-    public RestResponse publishArticle(@QueryParam String title, @QueryParam String content,
-                                       @QueryParam String tags, @QueryParam String categories,
-                                       @QueryParam String status, @QueryParam String slug,
-                                       @QueryParam String fmt_type, @QueryParam String thumb_img,
-                                       @QueryParam Boolean allow_comment, @QueryParam Boolean allow_ping, @QueryParam Boolean allow_feed) {
+    public RestResponse publishArticle(@Param String title, @Param String content,
+                                       @Param String tags, @Param String categories,
+                                       @Param String status, @Param String slug,
+                                       @Param String fmt_type, @Param String thumb_img,
+                                       @Param Boolean allow_comment, @Param Boolean allow_ping, @Param Boolean allow_feed) {
 
         Users users = this.user();
 
@@ -169,12 +169,12 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "modify")
     @JSON
-    public RestResponse modifyArticle(@QueryParam Integer cid, @QueryParam String title,
-                                      @QueryParam String content,@QueryParam String fmt_type,
-                                      @QueryParam String tags, @QueryParam String categories,
-                                      @QueryParam String status, @QueryParam String slug,
-                                      @QueryParam String thumb_img,
-                                      @QueryParam Boolean allow_comment, @QueryParam Boolean allow_ping, @QueryParam Boolean allow_feed) {
+    public RestResponse modifyArticle(@Param Integer cid, @Param String title,
+                                      @Param String content,@Param String fmt_type,
+                                      @Param String tags, @Param String categories,
+                                      @Param String status, @Param String slug,
+                                      @Param String thumb_img,
+                                      @Param Boolean allow_comment, @Param Boolean allow_ping, @Param Boolean allow_feed) {
 
         Users users = this.user();
         Contents contents = new Contents();
@@ -220,7 +220,7 @@ public class ArticleController extends BaseController {
      */
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam int cid, Request request) {
+    public RestResponse delete(@Param int cid, Request request) {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);
