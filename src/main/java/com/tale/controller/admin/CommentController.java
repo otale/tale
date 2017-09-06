@@ -8,8 +8,8 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Users;
 import com.tale.service.CommentsService;
@@ -34,8 +34,8 @@ public class CommentController extends BaseController {
     private SiteService siteService;
 
     @GetRoute(value = "")
-    public String index(@QueryParam(defaultValue = "1") int page,
-                        @QueryParam(defaultValue = "15") int limit, Request request) {
+    public String index(@Param(defaultValue = "1") int page,
+                        @Param(defaultValue = "15") int limit, Request request) {
         Users users = this.user();
         Paginator<Comments> commentsPaginator = commentsService.getComments(new Take(Comments.class).notEq("author_id", users.getUid()).page(page, limit, "coid desc"));
         request.attribute("comments", commentsPaginator);
@@ -49,7 +49,7 @@ public class CommentController extends BaseController {
      */
     @PostRoute(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam Integer coid) {
+    public RestResponse delete(@Param Integer coid) {
         try {
             Comments comments = commentsService.byId(coid);
             if(null == comments){
@@ -71,7 +71,7 @@ public class CommentController extends BaseController {
 
     @PostRoute(value = "status")
     @JSON
-    public RestResponse delete(@QueryParam Integer coid, @QueryParam String status) {
+    public RestResponse delete(@Param Integer coid, @Param String status) {
         try {
             Comments comments = new Comments();
             comments.setCoid(coid);
@@ -92,7 +92,7 @@ public class CommentController extends BaseController {
 
     @PostRoute(value = "")
     @JSON
-    public RestResponse reply(@QueryParam Integer coid, @QueryParam String content, Request request) {
+    public RestResponse reply(@Param Integer coid, @Param String content, Request request) {
         if(null == coid || StringKit.isBlank(content)){
             return RestResponse.fail("请输入完整后评论");
         }

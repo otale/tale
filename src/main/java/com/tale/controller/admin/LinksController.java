@@ -5,8 +5,8 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Metas;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
@@ -38,9 +38,9 @@ public class LinksController extends BaseController {
 
     @PostRoute(value = "save")
     @JSON
-    public RestResponse saveLink(@QueryParam String title, @QueryParam String url,
-                                 @QueryParam String logo, @QueryParam Integer mid,
-                                 @QueryParam(defaultValue = "0") int sort) {
+    public RestResponse saveLink(@Param String title, @Param String url,
+                                 @Param String logo, @Param Integer mid,
+                                 @Param(defaultValue = "0") int sort) {
         try {
             Metas metas = new Metas();
             metas.setName(title);
@@ -69,7 +69,7 @@ public class LinksController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam int mid) {
+    public RestResponse delete(@Param int mid) {
         try {
             metasService.delete(mid);
             siteService.cleanCache(Types.C_STATISTICS);

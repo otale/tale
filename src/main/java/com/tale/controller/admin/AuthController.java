@@ -4,8 +4,8 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
@@ -13,9 +13,9 @@ import com.blade.mvc.http.Response;
 import com.blade.mvc.http.Session;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.LogActions;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
+import com.tale.model.dto.LogActions;
 import com.tale.model.entity.Users;
 import com.tale.service.LogService;
 import com.tale.service.UsersService;
@@ -47,9 +47,9 @@ public class AuthController extends BaseController {
 
     @Route(value = "login", method = HttpMethod.POST)
     @JSON
-    public RestResponse doLogin(@QueryParam String username,
-                                @QueryParam String password,
-                                @QueryParam String remeber_me,
+    public RestResponse doLogin(@Param String username,
+                                @Param String password,
+                                @Param String remeber_me,
                                 Request request,
                                 Session session, Response response) {
 

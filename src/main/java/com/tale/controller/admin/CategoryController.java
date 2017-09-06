@@ -1,18 +1,15 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.mvc.annotation.JSON;
-import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.QueryParam;
-import com.blade.mvc.annotation.Route;
+import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.MetaDto;
-import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
+import com.tale.model.dto.MetaDto;
+import com.tale.model.dto.Types;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +42,7 @@ public class CategoryController extends BaseController {
 
     @Route(value = "save", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveCategory(@QueryParam String cname, @QueryParam Integer mid) {
+    public RestResponse saveCategory(@Param String cname, @Param Integer mid) {
         try {
             metasService.saveMeta(Types.CATEGORY, cname, mid);
             siteService.cleanCache(Types.C_STATISTICS);
@@ -63,7 +60,7 @@ public class CategoryController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam int mid) {
+    public RestResponse delete(@Param int mid) {
         try {
             metasService.delete(mid);
             siteService.cleanCache(Types.C_STATISTICS);

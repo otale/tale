@@ -61,10 +61,10 @@ public class PageController extends BaseController {
 
     @Route(value = "publish", method = HttpMethod.POST)
     @JSON
-    public RestResponse publishPage(@QueryParam String title, @QueryParam String content,
-                                    @QueryParam String status, @QueryParam String slug,
-                                    @QueryParam String fmt_type,
-                                    @QueryParam Boolean allow_comment) {
+    public RestResponse publishPage(@Param String title, @Param String content,
+                                    @Param String status, @Param String slug,
+                                    @Param String fmt_type,
+                                    @Param Boolean allow_comment) {
 
         Users users = this.user();
         Contents contents = new Contents();
@@ -95,10 +95,10 @@ public class PageController extends BaseController {
 
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
-    public RestResponse modifyArticle(@QueryParam Integer cid, @QueryParam String title,
-                                      @QueryParam String content,@QueryParam String fmt_type,
-                                      @QueryParam String status, @QueryParam String slug,
-                                      @QueryParam Boolean allow_comment) {
+    public RestResponse modifyArticle(@Param Integer cid, @Param String title,
+                                      @Param String content,@Param String fmt_type,
+                                      @Param String status, @Param String slug,
+                                      @Param Boolean allow_comment) {
 
         Users users = this.user();
         Contents contents = new Contents();
@@ -128,7 +128,7 @@ public class PageController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam int cid, Request request) {
+    public RestResponse delete(@Param int cid, Request request) {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);
