@@ -5,8 +5,6 @@ import com.tale.controller.admin.AttachController;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -31,17 +29,17 @@ public final class TaleLoader {
 
     public static void loadThemes() {
         String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
-        File[] dir = new File(themeDir).listFiles();
+        File[] dir      = new File(themeDir).listFiles();
         for (File f : dir) {
-            if (f.isDirectory() && Files.isDirectory(Paths.get(f.getPath() + File.separatorChar + "static"))) {
-                String themePath = File.separatorChar + "templates" + File.separatorChar + "themes" + File.separatorChar + f.getName();
-                blade.addStatics(new String[]{themePath + File.separatorChar + "style.css", themePath + File.separatorChar + "screenshot.png", themePath + File.separatorChar + "static"});
+            if (f.isDirectory() && Files.isDirectory(Paths.get(f.getPath() + "/static"))) {
+                String themePath = "/templates/themes/" + f.getName();
+                blade.addStatics(themePath + "/style.css", themePath + "/screenshot.png", themePath + "/static/");
             }
         }
     }
 
     public static void loadTheme(String themePath) {
-        blade.addStatics(themePath + File.separatorChar + "style.css", themePath + File.separatorChar + "screenshot.png", themePath + File.separatorChar + "static");
+        blade.addStatics(themePath + "/style.css", themePath + "/screenshot.png", themePath + "/static/");
     }
 
     public static void loadPlugins() {
@@ -68,7 +66,7 @@ public final class TaleLoader {
                 add.invoke(classLoader, pluginFile.toURI().toURL());
 
                 String pluginName = pluginFile.getName().substring(6);
-                blade.addStatics(new String[]{File.separatorChar+"templates"+File.separatorChar+"plugins" + File.separatorChar + pluginName + File.separatorChar + "static"});
+                blade.addStatics("/templates/plugins/" + pluginName + "/static/");
             }
         } catch (Exception e) {
             throw new RuntimeException("插件 [" + pluginFile.getName() + "] 加载失败");
