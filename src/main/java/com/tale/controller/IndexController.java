@@ -309,9 +309,9 @@ public class IndexController extends BaseController {
     public RestResponse comment(Request request, Response response,
                                 @HeaderParam String Referer, @Valid Comments comments) {
 
-//        if (StringKit.isBlank(Referer)) {
-//            return RestResponse.fail(ErrorCode.BAD_REQUEST);
-//        }
+        if (StringKit.isBlank(Referer)) {
+            return RestResponse.fail(ErrorCode.BAD_REQUEST);
+        }
 
         if (!Referer.startsWith(Commons.site_url())) {
             return RestResponse.fail("非法评论来源");
