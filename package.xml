@@ -19,10 +19,6 @@
             <directory>src/main/plugins/</directory>
             <outputDirectory>/plugins</outputDirectory>
         </fileSet>
-        <fileSet>
-            <directory>bin/</directory>
-            <outputDirectory>/bin</outputDirectory>
-        </fileSet>
     </fileSets>
 
     <dependencySets>
