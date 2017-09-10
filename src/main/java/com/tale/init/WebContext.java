@@ -51,7 +51,9 @@ public class WebContext implements BeanProcessor {
     @Override
     public void preHandle(Blade blade) {
         Ioc ioc = blade.ioc();
-        SqliteJdbc.importSql(blade.devMode());
+
+        boolean devMode = blade.environment().getBoolean("app.devMode", blade.environment().getBoolean("app.dev", true));
+        SqliteJdbc.importSql(devMode);
 
         ExtSql2o     sql2o        = new ExtSql2o(SqliteJdbc.DB_SRC);
         ActiveRecord activeRecord = new SampleActiveRecord(sql2o);
