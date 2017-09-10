@@ -1,9 +1,11 @@
 package com.tale.init;
 
+import com.blade.mvc.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -25,8 +27,8 @@ public final class SqliteJdbc {
     }
 
     public static final String DB_NAME = "tale.db";
-    public static String DB_PATH = SqliteJdbc.class.getResource("/").getPath() + DB_NAME;
-    public static String DB_SRC = "jdbc:sqlite://" + DB_PATH;
+    public static String DB_PATH;
+    public static String DB_SRC;
 
     static {
         try {
@@ -41,6 +43,12 @@ public final class SqliteJdbc {
      */
     public static void importSql(boolean devMode) {
         try {
+
+            DB_PATH = Const.CLASSPATH + File.separatorChar + DB_NAME;
+            DB_SRC = "jdbc:sqlite://" + DB_PATH;
+
+            System.out.println("CLASSPATH: " + Const.CLASSPATH);
+            System.out.println("DB_PATH: " + DB_PATH);
 
             if (devMode) {
                 DB_PATH = System.getProperty("user.dir") + "/" + DB_NAME;
