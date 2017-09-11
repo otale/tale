@@ -47,14 +47,12 @@ public final class SqliteJdbc {
             DB_PATH = Const.CLASSPATH + File.separatorChar + DB_NAME;
             DB_SRC = "jdbc:sqlite://" + DB_PATH;
 
-            System.out.println("CLASSPATH: " + Const.CLASSPATH);
-            System.out.println("DB_PATH: " + DB_PATH);
-
             if (devMode) {
                 DB_PATH = System.getProperty("user.dir") + "/" + DB_NAME;
                 DB_SRC = "jdbc:sqlite://" + DB_PATH;
             }
 
+            LOGGER.info("blade dev mode: {}", devMode);
             LOGGER.info("load sqlite database path [{}]", DB_PATH);
             LOGGER.info("load sqlite database src [{}]", DB_SRC);
 
