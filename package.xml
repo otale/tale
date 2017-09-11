@@ -19,6 +19,10 @@
             <directory>src/main/plugins/</directory>
             <outputDirectory>/plugins</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>bin/</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
     </fileSets>
 
     <dependencySets>
