@@ -52,7 +52,13 @@ public class WebContext implements BeanProcessor {
     public void preHandle(Blade blade) {
         Ioc ioc = blade.ioc();
 
-        boolean devMode = blade.environment().getBoolean("app.devMode", blade.environment().getBoolean("app.dev", true));
+        boolean devMode = true;
+        if(blade.environment().hasKey("app.dev")){
+            devMode = blade.environment().getBoolean("app.dev", true);
+        }
+        if(blade.environment().hasKey("app.devMode")){
+            devMode = blade.environment().getBoolean("app.devMode", true);
+        }
         SqliteJdbc.importSql(devMode);
 
         ExtSql2o     sql2o        = new ExtSql2o(SqliteJdbc.DB_SRC);
