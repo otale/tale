@@ -9,7 +9,7 @@
 demo website：https://tale.biezhi.me
 
 [![Build Status](https://img.shields.io/travis/otale/tale.svg?style=flat-square)](https://travis-ci.org/otale/tale)
-![Version 1.3.1-alpha1](https://img.shields.io/badge/version-1.3.1-yellow.svg?style=flat-square)
+![Version 1.3.1-beta](https://img.shields.io/badge/version-1.3.1-yellow.svg?style=flat-square)
 [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/otale/tale/blob/master/LICENSE)
 [![@biezhi on zhihu](https://img.shields.io/badge/zhihu-%40biezhi-red.svg?style=flat-square)](https://www.zhihu.com/people/biezhi)
 [![Gitter](https://badges.gitter.im/biezhi/tale-group.svg)](https://gitter.im/tale-group)
