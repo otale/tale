@@ -14,7 +14,7 @@
 [![@biezhi on zhihu](https://img.shields.io/badge/zhihu-%40biezhi-red.svg?style=flat-square)](https://www.zhihu.com/people/biezhi)
 [![Gitter](https://badges.gitter.im/biezhi/tale-group.svg)](https://gitter.im/tale-group)
 
-[开始使用](https://github.com/otale/tale/wiki)&nbsp; | &nbsp;[参与贡献](https://github.com/otale/tale/wiki/8.-%E5%8F%82%E4%B8%8E%E8%B4%A1%E7%8C%AE)&nbsp; | &nbsp;[捐赠](https://github.com/otale/tale/wiki/9.-%E6%8D%90%E8%B5%A0%E6%88%91%E4%BB%AC)&nbsp; | &nbsp;[视频教程](video.md)&nbsp; | &nbsp;[English](README.md)
+[开始使用](https://github.com/otale/tale/wiki)&nbsp; | &nbsp;[参与贡献](https://github.com/otale/tale/wiki/8.-%E5%8F%82%E4%B8%8E%E8%B4%A1%E7%8C%AE)&nbsp; | &nbsp;[捐赠](https://github.com/otale/tale/wiki/9.-%E6%8D%90%E8%B5%A0%E6%88%91%E4%BB%AC)&nbsp; | &nbsp;[视频教程](https://github.com/otale/tale/wiki/%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B)&nbsp; | &nbsp;[English](README.md)
 
 [![Throughput Graph](https://graphs.waffle.io/otale/tale/throughput.svg)](https://waffle.io/otale/tale/metrics/throughput)
 
