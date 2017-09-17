@@ -22,6 +22,7 @@ import com.tale.service.SiteService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 文章管理控制器
@@ -45,6 +46,7 @@ public class ArticleController extends BaseController {
 
     /**
      * 文章管理首页
+     *
      * @param page
      * @param limit
      * @param request
@@ -61,6 +63,7 @@ public class ArticleController extends BaseController {
 
     /**
      * 文章发布页面
+     *
      * @param request
      * @return
      */
@@ -74,14 +77,18 @@ public class ArticleController extends BaseController {
 
     /**
      * 文章编辑页面
+     *
      * @param cid
      * @param request
      * @return
      */
     @GetRoute(value = "/:cid")
     public String editArticle(@PathParam String cid, Request request) {
-        Contents contents = contentsService.getContents(cid);
-        request.attribute("contents", contents);
+        Optional<Contents> contents = contentsService.getContents(cid);
+        if (!contents.isPresent()) {
+            return render_404();
+        }
+        request.attribute("contents", contents.get());
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         request.attribute("categories", categories);
         request.attribute("active", "article");
@@ -170,13 +177,13 @@ public class ArticleController extends BaseController {
     @PostRoute(value = "modify")
     @JSON
     public RestResponse modifyArticle(@Param Integer cid, @Param String title,
-                                      @Param String content,@Param String fmt_type,
+                                      @Param String content, @Param String fmt_type,
                                       @Param String tags, @Param String categories,
                                       @Param String status, @Param String slug,
                                       @Param String thumb_img,
                                       @Param Boolean allow_comment, @Param Boolean allow_ping, @Param Boolean allow_feed) {
 
-        Users users = this.user();
+        Users    users    = this.user();
         Contents contents = new Contents();
         contents.setCid(cid);
         contents.setTitle(title);
@@ -224,7 +231,7 @@ public class ArticleController extends BaseController {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);
-            logService.save(LogActions.DEL_ARTICLE, cid+"", request.address(), this.getUid());
+            logService.save(LogActions.DEL_ARTICLE, cid + "", request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "文章删除失败";
             if (e instanceof TipException) {

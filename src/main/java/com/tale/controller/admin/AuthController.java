@@ -17,6 +17,7 @@ import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.LogActions;
 import com.tale.model.entity.Users;
+import com.tale.model.param.LoginParam;
 import com.tale.service.LogService;
 import com.tale.service.UsersService;
 import com.tale.utils.TaleUtils;
@@ -47,10 +48,7 @@ public class AuthController extends BaseController {
 
     @Route(value = "login", method = HttpMethod.POST)
     @JSON
-    public RestResponse doLogin(@Param String username,
-                                @Param String password,
-                                @Param String remeber_me,
-                                Request request,
+    public RestResponse doLogin(LoginParam loginParam, Request request,
                                 Session session, Response response) {
 
         Integer error_count = cache.get("login_error_count");
@@ -61,18 +59,18 @@ public class AuthController extends BaseController {
                 return RestResponse.fail("您输入密码已经错误超过3次，请10分钟后尝试");
             }
 
-            Users user = usersService.login(username, password);
+            Users user = usersService.login(loginParam);
             session.attribute(TaleConst.LOGIN_SESSION_KEY, user);
-            if (StringKit.isNotBlank(remeber_me)) {
+            if (StringKit.isNotBlank(loginParam.getRemeberMe())) {
                 TaleUtils.setCookie(response, user.getUid());
             }
             Users temp = new Users();
             temp.setUid(user.getUid());
             temp.setLogged(DateKit.nowUnix());
             usersService.update(temp);
-            log.info("登录成功：{}", username);
+            log.info("登录成功：{}", loginParam.getUsername());
             cache.set("login_error_count", 0);
-            logService.save(LogActions.LOGIN, username, request.address(), user.getUid());
+            logService.save(LogActions.LOGIN, loginParam.getUsername(), request.address(), user.getUid());
         } catch (Exception e) {
             error_count += 1;
             cache.set("login_error_count", error_count, 10 * 60);

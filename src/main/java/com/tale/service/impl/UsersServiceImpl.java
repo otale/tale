@@ -8,6 +8,7 @@ import com.blade.kit.EncrypKit;
 import com.blade.kit.StringKit;
 import com.tale.exception.TipException;
 import com.tale.model.entity.Users;
+import com.tale.model.param.LoginParam;
 import com.tale.service.UsersService;
 
 /**
@@ -38,18 +39,17 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Users login(String username, String password) {
+    public Users login(LoginParam loginParam) {
 
-        if (StringKit.isBlank(username) || StringKit.isBlank(password)) {
-            throw new TipException("用户名和密码不能为空");
-        }
-
-        int count = activeRecord.count(new Take(Users.class).eq("username", username));
+        int count = activeRecord.count(new Take(Users.class)
+                .eq("username", loginParam.getUsername()));
         if (count < 1) {
             throw new TipException("不存在该用户");
         }
-        String pwd = EncrypKit.md5(username, password);
-        Users users = activeRecord.one(new Take(Users.class).eq("username", username).eq("password", pwd));
+        String pwd = EncrypKit.md5(loginParam.getUsername(), loginParam.getPassword());
+        Users users = activeRecord.one(new Take(Users.class)
+                .eq("username", loginParam.getUsername())
+                .eq("password", pwd));
         if (null == users) {
             throw new TipException("用户名或密码错误");
         }

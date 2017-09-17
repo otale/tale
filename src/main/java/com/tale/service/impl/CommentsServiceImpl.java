@@ -18,6 +18,7 @@ import com.tale.utils.TaleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 评论Service实现
@@ -81,13 +82,18 @@ public class CommentsServiceImpl implements CommentsService {
         }
         try {
             activeRecord.delete(Comments.class, coid);
-            Contents contents = contentsService.getContents(cid + "");
-            if (null != contents && contents.getComments_num() > 0) {
-                Contents temp = new Contents();
-                temp.setCid(cid);
-                temp.setComments_num(contents.getComments_num() - 1);
-                contentsService.update(temp);
+            Optional<Contents> contents = contentsService.getContents(cid + "");
+            if (!contents.isPresent()) {
+                return;
             }
+
+            contents.filter(c -> c.getComments_num() > 0)
+                    .ifPresent(c -> {
+                        Contents temp = new Contents();
+                        temp.setCid(cid);
+                        temp.setComments_num(c.getComments_num() - 1);
+                        contentsService.update(temp);
+                    });
         } catch (Exception e) {
             throw e;
         }
@@ -99,13 +105,13 @@ public class CommentsServiceImpl implements CommentsService {
             Take take = new Take(Comments.class);
             take.eq("cid", cid).eq("parent", 0);
             take.page(page, limit, "coid desc");
-            Paginator<Comments> cp = activeRecord.page(take);
-            Paginator<Comment> commentPaginator = new Paginator<>(cp.getTotal(), page, limit);
+            Paginator<Comments> cp               = activeRecord.page(take);
+            Paginator<Comment>  commentPaginator = new Paginator<>(cp.getTotal(), page, limit);
             if (null != cp.getList()) {
-                List<Comments> parents = cp.getList();
-                List<Comment> comments = new ArrayList<>(parents.size());
+                List<Comments> parents  = cp.getList();
+                List<Comment>  comments = new ArrayList<>(parents.size());
                 parents.forEach(parent -> {
-                    Comment comment = new Comment(parent);
+                    Comment        comment  = new Comment(parent);
                     List<Comments> children = new ArrayList<>();
                     getChildren(children, comment.getCoid());
                     comment.setChildren(children);

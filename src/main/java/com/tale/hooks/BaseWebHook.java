@@ -1,4 +1,4 @@
-package com.tale.webhook;
+package com.tale.hooks;
 
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;

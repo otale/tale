@@ -1,6 +1,7 @@
 package com.tale.service;
 
 import com.tale.model.entity.Users;
+import com.tale.model.param.LoginParam;
 
 public interface UsersService {
 
@@ -14,15 +15,15 @@ public interface UsersService {
 
     /**
      * 更新用户信息
+     *
      * @param users
      */
     void update(Users users);
 
     /**
      * 用户登录
-     * @param username
-     * @param password
+     *
      * @return
      */
-    Users login(String username, String password);
+    Users login(LoginParam loginParam);
 }

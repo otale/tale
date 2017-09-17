@@ -4,6 +4,8 @@ import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.tale.model.entity.Contents;
 
+import java.util.Optional;
+
 public interface ContentsService {
 
     /**
@@ -12,7 +14,7 @@ public interface ContentsService {
      * @param id
      * @return
      */
-    Contents getContents(String id);
+    Optional<Contents> getContents(String id);
 
     /**
      * 根据Take条件查询分页信息

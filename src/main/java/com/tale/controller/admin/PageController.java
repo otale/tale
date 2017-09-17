@@ -20,9 +20,11 @@ import com.tale.service.LogService;
 import com.tale.service.SiteService;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Optional;
+
 /**
  * 页面管理
- *
+ * <p>
  * Created by biezhi on 2017/2/21.
  */
 @Slf4j
@@ -53,8 +55,11 @@ public class PageController extends BaseController {
 
     @Route(value = "/:cid", method = HttpMethod.GET)
     public String editPage(@PathParam String cid, Request request) {
-        Contents contents = contentsService.getContents(cid);
-        request.attribute("contents", contents);
+        Optional<Contents> contents = contentsService.getContents(cid);
+        if (!contents.isPresent()) {
+            return render_404();
+        }
+        request.attribute("contents", contents.get());
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
         return "admin/page_edit";
     }
@@ -66,7 +71,7 @@ public class PageController extends BaseController {
                                     @Param String fmt_type,
                                     @Param Boolean allow_comment) {
 
-        Users users = this.user();
+        Users    users    = this.user();
         Contents contents = new Contents();
         contents.setTitle(title);
         contents.setContent(content);
@@ -96,11 +101,11 @@ public class PageController extends BaseController {
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
     public RestResponse modifyArticle(@Param Integer cid, @Param String title,
-                                      @Param String content,@Param String fmt_type,
+                                      @Param String content, @Param String fmt_type,
                                       @Param String status, @Param String slug,
                                       @Param Boolean allow_comment) {
 
-        Users users = this.user();
+        Users    users    = this.user();
         Contents contents = new Contents();
         contents.setCid(cid);
         contents.setTitle(title);
@@ -132,7 +137,7 @@ public class PageController extends BaseController {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);
-            logService.save(LogActions.DEL_PAGE, cid+"", request.address(), this.getUid());
+            logService.save(LogActions.DEL_PAGE, cid + "", request.address(), this.getUid());
         } catch (Exception e) {
             String msg = "页面删除失败";
             if (e instanceof TipException) {

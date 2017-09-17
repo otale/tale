@@ -1,7 +1,7 @@
 package com.tale.utils;
 
 import com.blade.kit.DateKit;
-import com.blade.kit.EncrypKit;
+import com.blade.kit.Hashids;
 import com.blade.kit.StringKit;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
@@ -44,9 +44,10 @@ public class TaleUtils {
     /**
      * 一个月
      */
-    private static final int one_month = 30 * 24 * 60 * 60;
-
-    private static Random r = new Random();
+    private static final int     one_month  = 30 * 24 * 60 * 60;
+    private static final Random  r          = new Random();
+    private static final Hashids hashIds    = new Hashids(TaleConst.AES_SALT);
+    private static final long[]  hashPrefix = {-1, 2, 0, 1, 7, 0, 9};
 
     /**
      * 匹配邮箱正则
@@ -64,7 +65,10 @@ public class TaleUtils {
      */
     public static void setCookie(Response response, Integer uid) {
         try {
-            String  val   = new String(EncrypKit.encryptAES(uid.toString().getBytes(), TaleConst.AES_SALT.getBytes()));
+            hashPrefix[0] = uid;
+            String val = hashIds.encode(hashPrefix);
+            hashPrefix[0] = -1;
+//            String  val   = new String(EncrypKit.encryptAES(uid.toString().getBytes(), TaleConst.AES_SALT.getBytes()));
             boolean isSSL = Commons.site_url().startsWith("https");
             response.cookie("/", TaleConst.USER_IN_COOKIE, val, one_month, isSSL);
         } catch (Exception e) {
@@ -110,12 +114,13 @@ public class TaleUtils {
             if (c.isPresent()) {
                 try {
                     String value = c.get();
-                    String uid   = new String(EncrypKit.decryptAES(value.getBytes(), TaleConst.AES_SALT.getBytes()));
-                    return StringKit.isNotBlank(uid) && StringKit.isNumber(uid) ? Integer.valueOf(uid) : null;
+                    long[] ids   = hashIds.decode(value);
+                    if (null != ids && ids.length > 0) {
+                        return Long.valueOf(ids[0]).intValue();
+                    }
                 } catch (Exception e) {
                 }
             }
-
         }
         return null;
     }

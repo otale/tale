@@ -18,6 +18,7 @@ import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 内容Service实现
@@ -34,15 +35,15 @@ public class ContentsServiceImpl implements ContentsService {
     private MetasService metasService;
 
     @Override
-    public Contents getContents(String id) {
+    public Optional<Contents> getContents(String id) {
         if (StringKit.isNotBlank(id)) {
             if (StringKit.isNumber(id)) {
-                return activeRecord.byId(Contents.class, id);
+                return Optional.ofNullable(activeRecord.byId(Contents.class, id));
             } else {
-                return activeRecord.one(new Take(Contents.class).eq("slug", id));
+                return Optional.ofNullable(activeRecord.one(new Take(Contents.class).eq("slug", id)));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public Paginator<Contents> getContentsPage(Take take) {
@@ -91,7 +92,7 @@ public class ContentsServiceImpl implements ContentsService {
         contents.setCreated(time);
         contents.setModified(time);
 
-        String tags = contents.getTags();
+        String tags       = contents.getTags();
         String categories = contents.getCategories();
 
         Integer cid = activeRecord.insert(contents);
@@ -147,11 +148,11 @@ public class ContentsServiceImpl implements ContentsService {
 
     @Override
     public void delete(int cid) {
-        Contents contents = this.getContents(cid + "");
-        if (null != contents) {
+        Optional<Contents> contents = this.getContents(cid + "");
+        contents.ifPresent(content -> {
             activeRecord.delete(Contents.class, cid);
             activeRecord.execute("delete from t_relationships where cid = ?", cid);
-        }
+        });
     }
 
     @Override
@@ -160,7 +161,7 @@ public class ContentsServiceImpl implements ContentsService {
                 "where b.mid = ? and a.status = 'publish' and a.type = 'post'";
         int total = activeRecord.one(Integer.class, countSql, mid);
 
-        PageRow pageRow = new PageRow(page, limit);
+        PageRow             pageRow   = new PageRow(page, limit);
         Paginator<Contents> paginator = new Paginator<>(total, pageRow.getPage(), pageRow.getLimit());
 
         String sql = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +
