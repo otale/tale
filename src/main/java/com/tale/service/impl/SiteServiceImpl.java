@@ -2,9 +2,9 @@ package com.tale.service.impl;
 
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.ar.SampleActiveRecord;
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.core.ActiveRecord;
+import com.blade.jdbc.core.OrderBy;
+import com.blade.jdbc.page.Page;
 import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
 import com.blade.kit.EncrypKit;
@@ -16,7 +16,9 @@ import com.tale.init.SqliteJdbc;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.*;
 import com.tale.model.entity.*;
-import com.tale.service.*;
+import com.tale.service.CommentsService;
+import com.tale.service.LogService;
+import com.tale.service.SiteService;
 import com.tale.utils.MapCache;
 import com.tale.utils.TaleUtils;
 import com.tale.utils.ZipUtils;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 站点Service实现
@@ -33,9 +36,6 @@ import java.util.*;
  */
 @Bean
 public class SiteServiceImpl implements SiteService {
-
-    @Inject
-    private SampleActiveRecord activeRecord;
 
     @Inject
     private LogService logService;
@@ -50,12 +50,12 @@ public class SiteServiceImpl implements SiteService {
         String pwd = EncrypKit.md5(users.getUsername() + users.getPassword());
         users.setPassword(pwd);
         users.setScreen_name(users.getUsername());
-        users.setCreated((int) DateKit.nowUnix());
-        Integer uid = activeRecord.insert(users);
+        users.setCreated(DateKit.nowUnix());
+        Integer uid = users.save();
 
         try {
-            String cp = SiteServiceImpl.class.getClassLoader().getResource("").getPath();
-            File lock = new File(cp + "install.lock");
+            String cp   = SiteServiceImpl.class.getClassLoader().getResource("").getPath();
+            File   lock = new File(cp + "install.lock");
             lock.createNewFile();
             TaleConst.INSTALL = Boolean.TRUE;
             logService.save(LogActions.INIT_SITE, null, "", uid.intValue());
@@ -69,8 +69,8 @@ public class SiteServiceImpl implements SiteService {
         if (limit < 0 || limit > 10) {
             limit = 10;
         }
-        Paginator<Comments> cp = activeRecord.page(new Take(Comments.class).page(1, limit, "created desc"));
-        return cp.getList();
+        Page<Comments> commentsPage = new Comments().page(1, limit, "created desc");
+        return commentsPage.getRows();
     }
 
     @Override
@@ -80,23 +80,25 @@ public class SiteServiceImpl implements SiteService {
             limit = 10;
         }
 
-        Paginator<Contents> cp = new Paginator<>(1, 1);
-
         // 最新文章
         if (Types.RECENT_ARTICLE.equals(type)) {
-            cp = activeRecord.page(new Take(Contents.class)
-                    .eq("status", Types.PUBLISH).eq("type", Types.ARTICLE).page(1, limit, "created desc"));
+
+            Page<Contents> contentsPage = new Contents().where("status", Types.PUBLISH)
+                    .and("type", Types.ARTICLE)
+                    .page(1, limit, "created desc");
+
+            return contentsPage.getRows();
         }
 
         // 随机文章
         if (Types.RANDOM_ARTICLE.equals(type)) {
-            List<Integer> cids = activeRecord.list(Integer.class, "select cid from t_contents where type = ? and status = ? order by rand() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
+            List<Integer> cids = new ActiveRecord().queryAll("select cid from t_contents where type = ? and status = ? order by rand() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
             if (BladeKit.isNotEmpty(cids)) {
-                Integer[] inCids = cids.toArray(new Integer[cids.size()]);
-                return activeRecord.list(new Take(Contents.class).in("cid", inCids));
+                String inCids = cids.stream().map(Object::toString).collect(Collectors.joining(","));
+                return new Contents().where("cid", "in", "(" + inCids + ")").findAll();
             }
         }
-        return cp.getList();
+        return new ArrayList<>();
     }
 
     @Override
@@ -108,19 +110,18 @@ public class SiteServiceImpl implements SiteService {
         }
 
         statistics = new Statistics();
-        int articles = activeRecord.count(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH));
-        int pages = activeRecord.count(new Take(Contents.class).eq("type", Types.PAGE).eq("status", Types.PUBLISH));
-        int comments = activeRecord.count(new Take(Comments.class));
-        int attachs = activeRecord.count(new Take(Attach.class));
-        int links = activeRecord.count(new Take(Metas.class).eq("type", Types.LINK));
-        int tags = activeRecord.count(new Take(Metas.class).eq("type", Types.TAG));
-        int categories = activeRecord.count(new Take(Metas.class).eq("type", Types.CATEGORY));
+
+        long articles   = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).count();
+        long pages      = new Contents().where("type", Types.PAGE).and("status", Types.PUBLISH).count();
+        long comments   = new Comments().count();
+        long attachs    = new Attach().count();
+        long tags       = new Metas().where("type", Types.TAG).count();
+        long categories = new Metas().where("type", Types.CATEGORY).count();
 
         statistics.setArticles(articles);
         statistics.setPages(pages);
         statistics.setComments(comments);
         statistics.setAttachs(attachs);
-        statistics.setLinks(links);
         statistics.setTags(tags);
         statistics.setCategories(categories);
 
@@ -130,39 +131,40 @@ public class SiteServiceImpl implements SiteService {
 
     @Override
     public List<Archive> getArchives() {
-
-        String sql = "select strftime('%Y年%m月', datetime(created, 'unixepoch') ) as date_str, count(*) as count  from t_contents\n" +
+        String sql = "select strftime('%Y年%m月', datetime(created, 'unixepoch') ) as date_str, count(*) as count  from t_contents " +
                 "where type = 'post' and status = 'publish' group by date_str order by date_str desc";
-
-        List<Archive> archives = activeRecord.list(Archive.class, sql);
+        List<Archive> archives = new Archive().queryAll(sql);
         if (null != archives) {
-            archives.forEach(archive -> {
-                String date_str = archive.getDate_str();
-                Date sd = DateKit.toDate(date_str + "01", "yyyy年MM月dd");
-                archive.setDate(sd);
-
-                int start = (int) DateKit.toUnix(sd);
-
-                Calendar calender = Calendar.getInstance();
-                calender.setTime(sd);
-                calender.add(Calendar.MONTH, 1);
-                Date endSd = calender.getTime();
-
-                int end = DateKit.toUnix(endSd) - 1;
-                List<Contents> contentss = activeRecord.list(new Take(Contents.class)
-                        .eq("type", Types.ARTICLE)
-                        .eq("status", Types.PUBLISH)
-                        .gt("created", start).lt("created", end).orderby("created desc"));
-                archive.setArticles(contentss);
-            });
+            return archives.stream()
+                    .map(this::parseArchive)
+                    .collect(Collectors.toList());
         }
-        return archives;
+        return Collections.EMPTY_LIST;
+    }
+
+    private Archive parseArchive(Archive archive) {
+        String date_str = archive.getDate_str();
+        Date   sd       = DateKit.toDate(date_str + "01", "yyyy年MM月dd");
+        archive.setDate(sd);
+        int      start    = DateKit.toUnix(sd);
+        Calendar calender = Calendar.getInstance();
+        calender.setTime(sd);
+        calender.add(Calendar.MONTH, 1);
+        Date endSd = calender.getTime();
+        int  end   = DateKit.toUnix(endSd) - 1;
+        List<Contents> contents = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
+                .and("created", ">", start)
+                .and("created", "<", end)
+                .findAll(OrderBy.desc("created"));
+
+        archive.setArticles(contents);
+        return archive;
     }
 
     @Override
     public Comments getComment(Integer coid) {
         if (null != coid) {
-            return activeRecord.byId(Comments.class, coid);
+            return new Comments().find(coid);
         }
         return null;
     }
@@ -194,7 +196,7 @@ public class SiteServiceImpl implements SiteService {
         // 备份数据库
         if ("db".equals(bk_type)) {
             String filePath = "upload/" + DateKit.toString(new Date(), "yyyyMMddHHmmss") + "_" + StringKit.rand(8) + ".db";
-            String cp = AttachController.CLASSPATH + filePath;
+            String cp       = AttachController.CLASSPATH + filePath;
             Files.createDirectory(Paths.get(cp));
             Files.copy(Paths.get(SqliteJdbc.DB_PATH), Paths.get(cp));
             backResponse.setSql_path("/" + filePath);
@@ -210,7 +212,7 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public List<MetaDto> getMetas(String searchType, String type, int limit) {
+    public List<Metas> getMetas(String searchType, String type, int limit) {
 
         if (StringKit.isBlank(searchType) || StringKit.isBlank(type)) {
             return Theme.EMPTY;
@@ -224,17 +226,18 @@ public class SiteServiceImpl implements SiteService {
         if (Types.RECENT_META.equals(searchType)) {
             String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                     "where a.type = ? group by a.mid order by count desc, a.mid desc limit ?";
-            return activeRecord.list(MetaDto.class, sql, type, limit);
+            return new Metas().queryAll(sql, type, limit);
         }
 
         // 随机获取项目
         if (Types.RANDOM_META.equals(searchType)) {
-            List<Integer> mids = activeRecord.list(Integer.class, "select mid from t_metas where type = ? order by rand() * mid limit ?", type, limit);
+            List<Integer> mids = new ActiveRecord().queryAll("select mid from t_metas where type = ? order by rand() * mid limit ?", type, limit);
             if (BladeKit.isNotEmpty(mids)) {
                 String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                         "where a.mid in " + in + "group by a.mid order by count desc, a.mid desc";
-                return activeRecord.list(MetaDto.class, sql);
+
+                return new Metas().queryAll(sql);
             }
         }
         return Theme.EMPTY;
@@ -243,16 +246,16 @@ public class SiteServiceImpl implements SiteService {
     @Override
     public Contents getNhContent(String type, Integer cid) {
         if (Types.NEXT.equals(type)) {
-            return activeRecord.one(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).gt("cid", cid));
+            return new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).and("cid", ">", cid).find();
         }
         if (Types.PREV.equals(type)) {
-            return activeRecord.one(new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).lt("cid", cid));
+            return new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).and("cid", "<", cid).find();
         }
         return null;
     }
 
     @Override
-    public Paginator<Comment> getComments(Integer cid, int page, int limit) {
+    public Page<Comment> getComments(Integer cid, int page, int limit) {
         return commentsService.getComments(cid, page, limit);
     }
 

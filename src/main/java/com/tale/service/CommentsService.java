@@ -1,7 +1,6 @@
 package com.tale.service;
 
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.page.Page;
 import com.tale.model.dto.Comment;
 import com.tale.model.entity.Comments;
 
@@ -29,14 +28,7 @@ public interface CommentsService {
      * @param limit
      * @return
      */
-    Paginator<Comment> getComments(Integer cid, int page, int limit);
-
-    /**
-     * 分页管理评论
-     * @param take
-     * @return
-     */
-    Paginator<Comments> getComments(Take take);
+    Page<Comment> getComments(Integer cid, int page, int limit);
 
     /**
      * 根据主键查询评论
@@ -45,9 +37,4 @@ public interface CommentsService {
      */
     Comments byId(Integer coid);
 
-    /**
-     * 更新评论状态
-     * @param comments
-     */
-    void update(Comments comments);
 }

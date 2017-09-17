@@ -1,13 +1,13 @@
 package com.tale.extension;
 
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.page.Page;
 import com.blade.kit.StringKit;
-import com.tale.model.dto.Comment;
-import com.tale.model.dto.MetaDto;
-import com.tale.model.dto.Types;
 import com.tale.init.TaleConst;
+import com.tale.model.dto.Comment;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
+import com.tale.model.entity.Metas;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import jetbrick.template.runtime.InterpretContext;
@@ -40,8 +40,8 @@ public final class Theme {
      * @return
      */
     public static String meta_keywords() {
-        InterpretContext ctx = InterpretContext.current();
-        Object value = ctx.getValueStack().getValue("keywords");
+        InterpretContext ctx   = InterpretContext.current();
+        Object           value = ctx.getValueStack().getValue("keywords");
         if (null != value) {
             return value.toString();
         }
@@ -54,8 +54,8 @@ public final class Theme {
      * @return
      */
     public static String meta_description() {
-        InterpretContext ctx = InterpretContext.current();
-        Object value = ctx.getValueStack().getValue("description");
+        InterpretContext ctx   = InterpretContext.current();
+        Object           value = ctx.getValueStack().getValue("description");
         if (null != value) {
             return value.toString();
         }
@@ -68,8 +68,8 @@ public final class Theme {
      * @return
      */
     public static String head_title() {
-        InterpretContext ctx = InterpretContext.current();
-        Object value = ctx.getValueStack().getValue("title");
+        InterpretContext ctx   = InterpretContext.current();
+        Object           value = ctx.getValueStack().getValue("title");
 
         String p = "首页";
         if (null != value) {
@@ -196,7 +196,7 @@ public final class Theme {
      */
     public static String show_categories(String categories) throws UnsupportedEncodingException {
         if (StringKit.isNotBlank(categories)) {
-            String[] arr = categories.split(",");
+            String[]     arr  = categories.split(",");
             StringBuffer sbuf = new StringBuffer();
             for (String c : arr) {
                 sbuf.append("<a href=\"/category/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
@@ -215,7 +215,7 @@ public final class Theme {
     public static String show_tags(String split) throws UnsupportedEncodingException {
         Contents contents = current_article();
         if (StringKit.isNotBlank(contents.getTags())) {
-            String[] arr = contents.getTags().split(",");
+            String[]     arr  = contents.getTags().split(",");
             StringBuffer sbuf = new StringBuffer();
             for (String c : arr) {
                 sbuf.append(split).append("<a href=\"/tag/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
@@ -326,11 +326,11 @@ public final class Theme {
             return contents.getThumb_img();
         }
         String content = article(contents.getContent());
-        String img = Commons.show_thumb(content);
+        String img     = Commons.show_thumb(content);
         if (StringKit.isNotBlank(img)) {
             return img;
         }
-        int cid = contents.getCid();
+        int cid  = contents.getCid();
         int size = cid % 20;
         size = size == 0 ? 1 : size;
         return "/templates/themes/default/static/img/rand/" + size + ".jpg";
@@ -454,7 +454,7 @@ public final class Theme {
      *
      * @return
      */
-    public static List<MetaDto> categories(int limit) {
+    public static List<Metas> categories(int limit) {
         if (null == siteService) {
             return EMPTY;
         }
@@ -467,7 +467,7 @@ public final class Theme {
      * @param limit
      * @return
      */
-    public static List<MetaDto> rand_categories(int limit) {
+    public static List<Metas> rand_categories(int limit) {
         if (null == siteService) {
             return EMPTY;
         }
@@ -479,7 +479,7 @@ public final class Theme {
      *
      * @return
      */
-    public static List<MetaDto> categories() {
+    public static List<Metas> categories() {
         return categories(TaleConst.MAX_POSTS);
     }
 
@@ -488,7 +488,7 @@ public final class Theme {
      *
      * @return
      */
-    public static List<MetaDto> tags(int limit) {
+    public static List<Metas> tags(int limit) {
         if (null == siteService) {
             return EMPTY;
         }
@@ -501,7 +501,7 @@ public final class Theme {
      * @param limit
      * @return
      */
-    public static List<MetaDto> rand_tags(int limit) {
+    public static List<Metas> rand_tags(int limit) {
         if (null == siteService) {
             return EMPTY;
         }
@@ -513,7 +513,7 @@ public final class Theme {
      *
      * @return
      */
-    public static List<MetaDto> tags() {
+    public static List<Metas> tags() {
         return tags(TaleConst.MAX_POSTS);
     }
 
@@ -579,16 +579,6 @@ public final class Theme {
     }
 
     /**
-     * 返回所有友链
-     *
-     * @return
-     */
-    public static List<MetaDto> links() {
-        List<MetaDto> links = siteService.getMetas(Types.RECENT_META, Types.LINK, TaleConst.MAX_POSTS);
-        return links;
-    }
-
-    /**
      * 返回社交账号链接
      *
      * @param type
@@ -616,14 +606,14 @@ public final class Theme {
      * @param limit
      * @return
      */
-    public static Paginator<Comment> comments(int limit) {
+    public static Page<Comment> comments(int limit) {
         Contents contents = current_article();
         if (null == contents) {
-            return new Paginator<>(0, limit);
+            return new Page<>();
         }
-        InterpretContext ctx = InterpretContext.current();
-        Object value = ctx.getValueStack().getValue("cp");
-        int page = 1;
+        InterpretContext ctx   = InterpretContext.current();
+        Object           value = ctx.getValueStack().getValue("cp");
+        int              page  = 1;
         if (null != value) {
             page = (int) value;
         }
@@ -636,8 +626,8 @@ public final class Theme {
      * @return
      */
     private static Contents current_article() {
-        InterpretContext ctx = InterpretContext.current();
-        Object value = ctx.getValueStack().getValue("article");
+        InterpretContext ctx   = InterpretContext.current();
+        Object           value = ctx.getValueStack().getValue("article");
         if (null != value) {
             return (Contents) value;
         }

@@ -17,7 +17,7 @@
             </tr>
             </thead>
             <tbody>
-            #for(comment : comments.list)
+            #for(comment : comments.rows)
             <tr cid="${comment.coid}">
                 <td>
                     <a href="${site_url('/article/')}${comment.cid}#comments" target="_blank">${article(comment.content)}</a>

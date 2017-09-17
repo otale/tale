@@ -15,3 +15,4 @@ logs/
 
 # database file #
 tale.db
+/src/main/resources/templates/themes/

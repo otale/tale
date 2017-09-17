@@ -1,8 +1,7 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.page.Page;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
@@ -56,8 +55,8 @@ public class ArticleController extends BaseController {
     public String index(@Param(defaultValue = "1") int page,
                         @Param(defaultValue = "15") int limit, Request request) {
 
-        Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.ARTICLE).page(page, limit, "created desc"));
-        request.attribute("articles", contentsPaginator);
+        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).page(page, limit, "created desc");
+        request.attribute("articles", articles);
         return "admin/article_list";
     }
 

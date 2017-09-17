@@ -1,10 +1,8 @@
 package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
+import com.blade.jdbc.core.ActiveRecord;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * 附件
@@ -12,9 +10,8 @@ import java.io.Serializable;
  * Created by biezhi on 2017/2/23.
  */
 @Data
-@NoArgsConstructor
-@Table(name = "t_attach")
-public class Attach implements Serializable {
+@Table("t_attach")
+public class Attach extends ActiveRecord {
 
     private Integer id;
     private String fname;
@@ -23,7 +20,4 @@ public class Attach implements Serializable {
     private Integer author_id;
     private Integer created;
 
-    public Attach(String fname) {
-        this.fname = fname;
-    }
 }

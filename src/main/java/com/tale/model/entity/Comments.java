@@ -1,13 +1,12 @@
 package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
+import com.blade.jdbc.core.ActiveRecord;
 import com.blade.validator.annotation.Email;
 import com.blade.validator.annotation.Length;
 import com.blade.validator.annotation.NotEmpty;
 import com.blade.validator.annotation.Url;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * 评论
@@ -15,10 +14,8 @@ import java.io.Serializable;
  * @author biezhi
  */
 @Data
-@Table(name = "t_comments", pk = "coid")
-public class Comments implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Table(value = "t_comments", pk = "coid")
+public class Comments extends ActiveRecord {
 
     // comment表主键
     private Integer coid;

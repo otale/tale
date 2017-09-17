@@ -1,8 +1,8 @@
 package com.tale.controller;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.core.OrderBy;
+import com.blade.jdbc.page.Page;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
@@ -16,7 +16,6 @@ import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.Archive;
 import com.tale.model.dto.ErrorCode;
-import com.tale.model.dto.MetaDto;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
@@ -31,7 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 首页、分类、归档、标签页面
@@ -102,8 +103,9 @@ public class IndexController extends BaseController {
     @GetRoute(value = {"page/:page", "page/:page.html"})
     public String index(Request request, @PathParam int page, @Param(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-        Take                take     = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(page, limit, "created desc");
-        Paginator<Contents> articles = contentsService.getArticles(take);
+
+        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).page(page, limit, "created desc");
+
         request.attribute("articles", articles);
         if (page > 1) {
             this.title(request, "第" + page + "页");
@@ -144,7 +146,7 @@ public class IndexController extends BaseController {
             Contents temp = new Contents();
             temp.setCid(cid);
             temp.setHits(chits + hits);
-            contentsService.update(temp);
+            temp.update();
             cache.hset(Types.C_ARTICLE_HITS, cid.toString(), 1);
         } else {
             cache.hset(Types.C_ARTICLE_HITS, cid.toString(), hits);
@@ -165,12 +167,12 @@ public class IndexController extends BaseController {
     public String categories(Request request, @PathParam String keyword,
                              @PathParam int page, @Param(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-        MetaDto metaDto = metasService.getMeta(Types.CATEGORY, keyword);
+        Metas metaDto = metasService.getMeta(Types.CATEGORY, keyword);
         if (null == metaDto) {
             return this.render_404();
         }
 
-        Paginator<Contents> contentsPaginator = contentsService.getArticles(metaDto.getMid(), page, limit);
+        Page<Contents> contentsPaginator = contentsService.getArticles(metaDto.getMid(), page, limit);
 
         request.attribute("articles", contentsPaginator);
         request.attribute("meta", metaDto);
@@ -190,8 +192,11 @@ public class IndexController extends BaseController {
      * @since 1.3.1
      */
     @GetRoute(value = {"tags", "tags.html"})
-    public String tags() {
-
+    public String tags(Request request) {
+        Map<String, List<Contents>> mapping = metasService.getMetaMapping(Types.TAG);
+        Set<String>                 tags    = mapping.keySet();
+        request.attribute("tags", tags);
+        request.attribute("mapping", mapping);
         return this.render("tags");
     }
 
@@ -229,12 +234,12 @@ public class IndexController extends BaseController {
     public String tags(Request request, @PathParam String name, @PathParam int page, @Param(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-        MetaDto metaDto = metasService.getMeta(Types.TAG, name);
+        Metas metaDto = metasService.getMeta(Types.TAG, name);
         if (null == metaDto) {
             return this.render_404();
         }
 
-        Paginator<Contents> contentsPaginator = contentsService.getArticles(metaDto.getMid(), page, limit);
+        Page<Contents> contentsPaginator = contentsService.getArticles(metaDto.getMid(), page, limit);
         request.attribute("articles", contentsPaginator);
         request.attribute("meta", metaDto);
         request.attribute("type", "标签");
@@ -266,10 +271,10 @@ public class IndexController extends BaseController {
     public String search(Request request, @PathParam String keyword, @PathParam int page, @Param(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-        Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH)
-                .like("title", "%" + keyword + "%").page(page, limit, "created desc");
 
-        Paginator<Contents> articles = contentsService.getArticles(take);
+        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
+                .like("title",  "%" + keyword + "%").page(page, limit, "created desc");
+
         request.attribute("articles", articles);
 
         request.attribute("type", "搜索");
@@ -298,10 +303,13 @@ public class IndexController extends BaseController {
      */
     @GetRoute(value = {"feed", "feed.xml", "atom.xml", "sitemap.xml"})
     public void feed(Response response) {
-        Paginator<Contents> contentsServiceArticles = contentsService.getArticles(new Take(Contents.class)
-                .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, TaleConst.MAX_POSTS, "created desc"));
+
+        List<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
+                .and("allow_feed", true)
+                .findAll(OrderBy.desc("created"));
+
         try {
-            String xml = TaleUtils.getRssXml(contentsServiceArticles.getList());
+            String xml = TaleUtils.getRssXml(articles);
             response.contentType("text/xml; charset=utf-8");
             response.body(xml);
         } catch (Exception e) {

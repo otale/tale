@@ -1,6 +1,6 @@
 package com.tale.extension;
 
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.page.Page;
 import com.blade.kit.*;
 import com.tale.controller.BaseController;
 import com.tale.init.TaleConst;
@@ -41,8 +41,8 @@ public final class Commons {
      * @param paginator
      * @return
      */
-    public static boolean is_empty(Paginator paginator) {
-        return null == paginator || BladeKit.isEmpty(paginator.getList());
+    public static boolean is_empty(Page paginator) {
+        return null == paginator || BladeKit.isEmpty(paginator.getRows());
     }
 
     /**

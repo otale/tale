@@ -1,9 +1,6 @@
 package com.tale.service.impl;
 
 import com.blade.ioc.annotation.Bean;
-import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.ActiveRecord;
-import com.blade.jdbc.core.Take;
 import com.blade.kit.StringKit;
 import com.tale.model.entity.Options;
 import com.tale.service.OptionsService;
@@ -20,9 +17,6 @@ import java.util.Map;
 @Bean
 public class OptionsServiceImpl implements OptionsService {
 
-    @Inject
-    private ActiveRecord activeRecord;
-
     @Override
     public void saveOptions(Map<String, List<String>> options) {
         if (null != options && !options.isEmpty()) {
@@ -35,13 +29,17 @@ public class OptionsServiceImpl implements OptionsService {
         if (StringKit.isNotBlank(key) && StringKit.isNotBlank(value)) {
             Options options = new Options();
             options.setName(key);
-            int count = activeRecord.count(options);
+
+            long count = options.count();
             if (count == 0) {
+                options = new Options();
+                options.setName(key);
                 options.setValue(value);
-                activeRecord.insert(options);
+                options.save();
             } else {
+                options = new Options();
                 options.setValue(value);
-                activeRecord.update(options);
+                options.update(key);
             }
         }
     }
@@ -54,12 +52,13 @@ public class OptionsServiceImpl implements OptionsService {
     @Override
     public Map<String, String> getOptions(String key) {
         Map<String, String> options = new HashMap<>();
-        Take take = new Take(Options.class);
-        if(StringKit.isNotBlank(key)){
-            take.like("name", key + "%");
+
+        Options activeRecord = new Options();
+        if (StringKit.isNotBlank(key)) {
+            activeRecord.like("name", key + "%");
         }
-        List<Options> optionsList = activeRecord.list(take);
-        if(null != optionsList){
+        List<Options> optionsList = activeRecord.findAll();
+        if (null != optionsList) {
             optionsList.forEach(option -> options.put(option.getName(), option.getValue()));
         }
         return options;
@@ -67,8 +66,8 @@ public class OptionsServiceImpl implements OptionsService {
 
     @Override
     public void deleteOption(String key) {
-        if(StringKit.isNotBlank(key)){
-            activeRecord.delete(new Take(Options.class).like("name", key + "%"));
+        if (StringKit.isNotBlank(key)) {
+            new Options().like("name", key + "%").delete();
         }
     }
 }

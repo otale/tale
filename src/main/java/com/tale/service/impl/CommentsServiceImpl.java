@@ -2,14 +2,13 @@ package com.tale.service.impl;
 
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.ActiveRecord;
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.core.OrderBy;
+import com.blade.jdbc.page.Page;
 import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
-import com.tale.model.dto.Comment;
 import com.tale.exception.TipException;
+import com.tale.model.dto.Comment;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.service.CommentsService;
@@ -27,9 +26,6 @@ import java.util.Optional;
  */
 @Bean
 public class CommentsServiceImpl implements CommentsService {
-
-    @Inject
-    private ActiveRecord activeRecord;
 
     @Inject
     private ContentsService contentsService;
@@ -57,19 +53,19 @@ public class CommentsServiceImpl implements CommentsService {
         if (null == comments.getCid()) {
             throw new TipException("评论文章不能为空");
         }
-        Contents contents = activeRecord.byId(Contents.class, comments.getCid());
+        Contents contents = new Contents().where("cid", comments.getCid()).find();
         if (null == contents) {
             throw new TipException("不存在的文章");
         }
         try {
             comments.setOwner_id(contents.getAuthor_id());
             comments.setCreated(DateKit.nowUnix());
-            activeRecord.insert(comments);
+            comments.save();
 
             Contents temp = new Contents();
             temp.setCid(contents.getCid());
             temp.setComments_num(contents.getComments_num() + 1);
-            activeRecord.update(temp);
+            temp.update();
         } catch (Exception e) {
             throw e;
         }
@@ -81,7 +77,7 @@ public class CommentsServiceImpl implements CommentsService {
             throw new TipException("主键为空");
         }
         try {
-            activeRecord.delete(Comments.class, coid);
+            new Comments().delete(coid);
             Optional<Contents> contents = contentsService.getContents(cid + "");
             if (!contents.isPresent()) {
                 return;
@@ -92,7 +88,7 @@ public class CommentsServiceImpl implements CommentsService {
                         Contents temp = new Contents();
                         temp.setCid(cid);
                         temp.setComments_num(c.getComments_num() - 1);
-                        contentsService.update(temp);
+                        temp.update();
                     });
         } catch (Exception e) {
             throw e;
@@ -100,29 +96,19 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public Paginator<Comment> getComments(Integer cid, int page, int limit) {
+    public Page<Comment> getComments(Integer cid, int page, int limit) {
         if (null != cid) {
-            Take take = new Take(Comments.class);
-            take.eq("cid", cid).eq("parent", 0);
-            take.page(page, limit, "coid desc");
-            Paginator<Comments> cp               = activeRecord.page(take);
-            Paginator<Comment>  commentPaginator = new Paginator<>(cp.getTotal(), page, limit);
-            if (null != cp.getList()) {
-                List<Comments> parents  = cp.getList();
-                List<Comment>  comments = new ArrayList<>(parents.size());
-                parents.forEach(parent -> {
-                    Comment        comment  = new Comment(parent);
-                    List<Comments> children = new ArrayList<>();
-                    getChildren(children, comment.getCoid());
-                    comment.setChildren(children);
-                    if (BladeKit.isNotEmpty(children)) {
-                        comment.setLevels(1);
-                    }
-                    comments.add(comment);
-                });
-                commentPaginator.setList(comments);
-            }
-            return commentPaginator;
+            Page<Comments> cp = new Comments().where("cid", cid).and("parent", 0).page(page, limit);
+            return cp.map(parent -> {
+                Comment        comment  = new Comment(parent);
+                List<Comments> children = new ArrayList<>();
+                getChildren(children, comment.getCoid());
+                comment.setChildren(children);
+                if (BladeKit.isNotEmpty(children)) {
+                    comment.setLevels(1);
+                }
+                return comment;
+            });
         }
         return null;
     }
@@ -134,7 +120,7 @@ public class CommentsServiceImpl implements CommentsService {
      * @return
      */
     private void getChildren(List<Comments> list, Integer coid) {
-        List<Comments> cms = activeRecord.list(new Take(Comments.class).eq("parent", coid).orderby("coid asc"));
+        List<Comments> cms = new Comments().where("parent", coid).findAll(OrderBy.asc("coid"));
         if (null != cms) {
             list.addAll(cms);
             cms.forEach(c -> getChildren(list, c.getCoid()));
@@ -142,25 +128,11 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public Paginator<Comments> getComments(Take take) {
-        if (null != take) {
-            return activeRecord.page(take);
-        }
-        return null;
-    }
-
-    @Override
     public Comments byId(Integer coid) {
         if (null != coid) {
-            return activeRecord.byId(Comments.class, coid);
+            return new Comments().find(coid);
         }
         return null;
     }
 
-    @Override
-    public void update(Comments comments) {
-        if (null != comments && null != comments.getCoid()) {
-            activeRecord.update(comments);
-        }
-    }
 }

@@ -1,18 +1,17 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.page.Page;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.LogActions;
-import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
+import com.tale.model.dto.LogActions;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Users;
 import com.tale.service.ContentsService;
@@ -42,8 +41,8 @@ public class PageController extends BaseController {
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
-        Paginator<Contents> contentsPaginator = contentsService.getArticles(new Take(Contents.class).eq("type", Types.PAGE).page(1, TaleConst.MAX_POSTS, "created desc"));
-        request.attribute("articles", contentsPaginator);
+        Page<Contents> contentsPage = new Contents().where("type", Types.PAGE).page(1, TaleConst.MAX_POSTS, "created desc");
+        request.attribute("articles", contentsPage);
         return "admin/page_list";
     }
 

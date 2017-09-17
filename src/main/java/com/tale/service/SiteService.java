@@ -1,9 +1,13 @@
 package com.tale.service;
 
-import com.blade.jdbc.model.Paginator;
-import com.tale.model.dto.*;
+import com.blade.jdbc.page.Page;
+import com.tale.model.dto.Archive;
+import com.tale.model.dto.BackResponse;
+import com.tale.model.dto.Comment;
+import com.tale.model.dto.Statistics;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
+import com.tale.model.entity.Metas;
 import com.tale.model.entity.Users;
 
 import java.util.List;
@@ -73,7 +77,7 @@ public interface SiteService {
      * 获取分类/标签列表
      * @return
      */
-    List<MetaDto> getMetas(String seachType, String type, int limit);
+    List<Metas> getMetas(String seachType, String type, int limit);
 
     /**
      * 清楚缓存
@@ -97,5 +101,5 @@ public interface SiteService {
      * @param limit
      * @return
      */
-    Paginator<Comment> getComments(Integer cid, int page, int limit);
+    Page<Comment> getComments(Integer cid, int page, int limit);
 }

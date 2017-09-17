@@ -1,7 +1,6 @@
 package com.tale.service;
 
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.page.Page;
 import com.tale.model.entity.Contents;
 
 import java.util.Optional;
@@ -17,13 +16,6 @@ public interface ContentsService {
     Optional<Contents> getContents(String id);
 
     /**
-     * 根据Take条件查询分页信息
-     * @param take
-     * @return
-     */
-    Paginator<Contents> getArticles(Take take);
-
-    /**
      * 发布文章
      * @param contents
      */
@@ -34,12 +26,6 @@ public interface ContentsService {
      * @param contents
      */
     void updateArticle(Contents contents);
-
-    /**
-     * 自定义update
-     * @param contents
-     */
-    void update(Contents contents);
 
     /**
      * 根据文章id删除
@@ -54,6 +40,6 @@ public interface ContentsService {
      * @param limit
      * @return
      */
-    Paginator<Contents> getArticles(Integer mid, int page, int limit);
+    Page<Contents> getArticles(Integer mid, int page, int limit);
 
 }

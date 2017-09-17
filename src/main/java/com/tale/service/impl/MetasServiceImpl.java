@@ -1,19 +1,19 @@
 package com.tale.service.impl;
 
 import com.blade.ioc.annotation.Bean;
-import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.ActiveRecord;
-import com.blade.jdbc.core.Take;
+import com.blade.jdbc.core.OrderBy;
 import com.blade.kit.StringKit;
-import com.tale.model.dto.MetaDto;
-import com.tale.model.dto.Types;
 import com.tale.exception.TipException;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
 import com.tale.model.entity.Relationships;
 import com.tale.service.MetasService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 元数据Service实现
@@ -23,23 +23,41 @@ import java.util.List;
 @Bean
 public class MetasServiceImpl implements MetasService {
 
-    @Inject
-    private ActiveRecord activeRecord;
-
     @Override
     public List<Metas> getMetas(String types) {
         if (StringKit.isNotBlank(types)) {
-            return activeRecord.list(new Take(Metas.class).eq("type", types).orderby("sort desc, mid desc"));
+            return new Metas().where("type", types).findAll(OrderBy.of("sort desc, mid desc"));
         }
         return null;
     }
 
     @Override
-    public MetaDto getMeta(String type, String name) {
+    public Map<String, List<Contents>> getMetaMapping(String types) {
+        if (StringKit.isNotBlank(types)) {
+            List<Metas> metas = getMetas(types);
+            if (null != metas) {
+                return metas.stream()
+                        .collect(Collectors.toMap(Metas::getName, (m) -> {
+                            Integer             mid           = m.getMid();
+                            List<Relationships> relationships = new Relationships().where("mid", mid).findAll();
+                            List<Integer>       cids          = relationships.stream().map(Relationships::getCid).collect(Collectors.toList());
+
+                            String         inCids   = cids.stream().map(Object::toString).collect(Collectors.joining(","));
+                            List<Contents> contents = new Contents().where("cid", "in", "(" + inCids + ")").findAll(OrderBy.desc("created"));
+                            return contents;
+                        }));
+            }
+        }
+        return new HashMap<>();
+    }
+
+    @Override
+    public Metas getMeta(String type, String name) {
         if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
             String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                     "where a.type = ? and a.name = ? group by a.mid";
-            return activeRecord.one(MetaDto.class, sql, type, name);
+
+            return new Metas().query(sql, type, name);
         }
         return null;
     }
@@ -58,48 +76,47 @@ public class MetasServiceImpl implements MetasService {
     }
 
     private void saveOrUpdate(Integer cid, String name, String type) {
-        Metas metas = activeRecord.one(new Take(Metas.class).eq("name", name).eq("type", type));
-        int mid = 0;
+
+        Metas metas = new Metas().where("name", name).and("type", type).find();
+        int   mid;
         if (null != metas) {
-//            Metas temp = new Metas();
-//            temp.setMid(metas.getMid());
-//            activeRecord.update(temp);
             mid = metas.getMid();
         } else {
             metas = new Metas();
             metas.setSlug(name);
             metas.setName(name);
             metas.setType(type);
-            mid = activeRecord.insert(metas);
+            mid = metas.save();
         }
         if (mid != 0) {
-            int count = activeRecord.count(new Take(Relationships.class).eq("cid", cid).eq("mid", mid));
+            long count = new Relationships().where("cid", cid).and("mid", mid).count();
             if (count == 0) {
                 Relationships relationships = new Relationships();
                 relationships.setCid(cid);
                 relationships.setMid(mid);
-                activeRecord.insert(relationships);
+                relationships.save();
             }
         }
     }
 
     @Override
     public void delete(int mid) {
-        Metas metas = activeRecord.byId(Metas.class, mid);
+        Metas metas = new Metas().find(mid);
         if (null != metas) {
 
             String type = metas.getType();
             String name = metas.getName();
 
-            activeRecord.delete(Metas.class, mid);
+            metas.delete(mid);
 
-            List<Relationships> rlist = activeRecord.list(new Take(Relationships.class).eq("mid", mid));
+            List<Relationships> rlist = new Relationships().where("mid", mid).findAll();
             if (null != rlist) {
                 for (Relationships r : rlist) {
-                    Contents contents = activeRecord.byId(Contents.class, r.getCid());
+
+                    Contents contents = new Contents().find(r.getCid());
                     if (null != contents) {
-                        boolean isUpdate = false;
-                        Contents temp = new Contents();
+                        boolean  isUpdate = false;
+                        Contents temp     = new Contents();
                         temp.setCid(r.getCid());
                         if (type.equals(Types.CATEGORY)) {
                             temp.setCategories(reMeta(name, contents.getCategories()));
@@ -109,20 +126,18 @@ public class MetasServiceImpl implements MetasService {
                             temp.setTags(reMeta(name, contents.getTags()));
                             isUpdate = true;
                         }
-                        if (isUpdate) {
-                            activeRecord.update(temp);
-                        }
+                        if (isUpdate) temp.update();
                     }
                 }
             }
-            activeRecord.delete(new Take(Relationships.class).eq("mid", mid));
+            new Relationships().delete("mid", mid);
         }
     }
 
     @Override
     public void saveMeta(String type, String name, Integer mid) {
         if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
-            Metas metas = activeRecord.one(new Take(Metas.class).eq("type", type).eq("name", name));
+            Metas metas = new Metas().where("type", type).and("name", name).find();
             if (null != metas) {
                 throw new TipException("已经存在该项");
             } else {
@@ -130,33 +145,18 @@ public class MetasServiceImpl implements MetasService {
                     metas = new Metas();
                     metas.setMid(mid);
                     metas.setName(name);
-                    activeRecord.update(metas);
+                    metas.update();
                 } else {
                     metas = new Metas();
                     metas.setType(type);
                     metas.setName(name);
-                    activeRecord.insert(metas);
+                    metas.save();
                 }
             }
         }
     }
-
-    @Override
-    public void saveMeta(Metas metas) {
-        if (null != metas) {
-            activeRecord.insert(metas);
-        }
-    }
-
-    @Override
-    public void update(Metas metas) {
-        if (null != metas && null != metas.getMid()) {
-            activeRecord.update(metas);
-        }
-    }
-
     private String reMeta(String name, String metas) {
-        String[] ms = metas.split(",");
+        String[]     ms   = metas.split(",");
         StringBuffer sbuf = new StringBuffer();
         for (String m : ms) {
             if (!name.equals(m)) {

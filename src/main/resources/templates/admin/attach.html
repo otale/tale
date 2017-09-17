@@ -65,11 +65,11 @@
         </div>
         #else
 
-        #for(attach : attachs.list)
+        #for(attach : attachs.rows)
         <div class="col-md-2 text-center m-t-10">
             <a href="${attach_url}${attach.fkey}" target="_blank">
                 <img class="attach-img"
-                     src="#if(attach.ftype == 'image') //${attach_url}${attach.fkey} #else /static/admin/images/attach.png #end"
+                     src="#if(attach.ftype == 'image') ${attach_url}${attach.fkey} #else /static/admin/images/attach.png #end"
                      title="${attach.fname}"/>
             </a>
             <div class="clearfix m-t-10">
