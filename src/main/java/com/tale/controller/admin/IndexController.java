@@ -25,7 +25,6 @@ import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
-import com.tale.service.LogService;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import jetbrick.util.ShellUtils;
@@ -50,9 +49,6 @@ public class IndexController extends BaseController {
 
     @Inject
     private SiteService siteService;
-
-    @Inject
-    private LogService logService;
 
     /**
      * 仪表盘
@@ -96,7 +92,7 @@ public class IndexController extends BaseController {
             Environment config = Environment.of(optionsService.getOptions());
             TaleConst.OPTIONS = config;
 
-            logService.save(LogActions.SYS_SETTING, JsonKit.toString(querys), request.address(), this.getUid());
+            new Logs(LogActions.SYS_SETTING, JsonKit.toString(querys), request.address(), this.getUid()).save();
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "保存设置失败";
@@ -129,7 +125,7 @@ public class IndexController extends BaseController {
             temp.setScreen_name(screen_name);
             temp.setEmail(email);
             temp.update(users.getUid());
-            logService.save(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid());
+            new Logs(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid()).save();
         }
         return RestResponse.ok();
     }
@@ -153,11 +149,11 @@ public class IndexController extends BaseController {
         }
 
         try {
-            Users temp = new Users();
-            String pwd = EncrypKit.md5(users.getUsername() + password);
+            Users  temp = new Users();
+            String pwd  = EncrypKit.md5(users.getUsername() + password);
             temp.setPassword(pwd);
             temp.update(users.getUid());
-            logService.save(LogActions.UP_PWD, null, request.address(), this.getUid());
+            new Logs(LogActions.UP_PWD, null, request.address(), this.getUid()).save();
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "密码修改失败";
@@ -185,7 +181,7 @@ public class IndexController extends BaseController {
 
         try {
             BackResponse backResponse = siteService.backup(bk_type, bk_path, "yyyyMMddHHmm");
-            logService.save(LogActions.SYS_BACKUP, null, request.address(), this.getUid());
+            new Logs(LogActions.SYS_BACKUP, null, request.address(), this.getUid()).save();
             return RestResponse.ok(backResponse);
         } catch (Exception e) {
             String msg = "备份失败";
@@ -261,7 +257,7 @@ public class IndexController extends BaseController {
             String cmd     = "sh " + webHome + "/bin tale.sh reload " + sleep;
             log.info("execute shell: {}", cmd);
             ShellUtils.shell(cmd);
-            logService.save(LogActions.RELOAD_SYS, "", request.address(), this.getUid());
+            new Logs(LogActions.RELOAD_SYS, "", request.address(), this.getUid()).save();
             TimeUnit.SECONDS.sleep(sleep);
         } catch (Exception e) {
             log.error("重启系统失败", e);

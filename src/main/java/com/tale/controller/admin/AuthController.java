@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.kit.EncrypKit;
 import com.blade.kit.StringKit;
@@ -19,7 +18,6 @@ import com.tale.model.dto.LogActions;
 import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.model.param.LoginParam;
-import com.tale.service.LogService;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,9 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Path("admin")
 public class AuthController extends BaseController {
-
-    @Inject
-    private LogService logService;
 
     @Route(value = "login", method = HttpMethod.GET)
     public String login(Response response) {

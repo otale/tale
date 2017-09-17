@@ -18,8 +18,8 @@ import com.tale.init.TaleConst;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Attach;
+import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
-import com.tale.service.LogService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +43,6 @@ import java.util.Map;
 public class AttachController extends BaseController {
 
     public static final String CLASSPATH = new File(AttachController.class.getResource("/").getPath()).getPath() + File.separatorChar;
-
-    @Inject
-    private LogService logService;
 
     @Inject
     private SiteService siteService;
@@ -153,7 +150,7 @@ public class AttachController extends BaseController {
             siteService.cleanCache(Types.C_STATISTICS);
             String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
             Files.delete(Paths.get(upDir + attach.getFkey()));
-            logService.save(LogActions.DEL_ATTACH, attach.getFkey(), request.address(), this.getUid());
+            new Logs(LogActions.DEL_ATTACH, attach.getFkey(), request.address(), this.getUid()).save();
         } catch (Exception e) {
             String msg = "附件删除失败";
             if (e instanceof TipException) msg = e.getMessage();

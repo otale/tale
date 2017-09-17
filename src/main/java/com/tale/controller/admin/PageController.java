@@ -14,9 +14,9 @@ import com.tale.init.TaleConst;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
+import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.service.ContentsService;
-import com.tale.service.LogService;
 import com.tale.service.SiteService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,9 +33,6 @@ public class PageController extends BaseController {
 
     @Inject
     private ContentsService contentsService;
-
-    @Inject
-    private LogService logService;
 
     @Inject
     private SiteService siteService;
@@ -90,7 +87,7 @@ public class PageController extends BaseController {
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
     public RestResponse modifyArticle(@Valid Contents contents) {
-        if(null == contents || null == contents.getCid()){
+        if (null == contents || null == contents.getCid()) {
             return RestResponse.fail("缺少参数，请重试");
         }
         try {
@@ -114,7 +111,7 @@ public class PageController extends BaseController {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);
-            logService.save(LogActions.DEL_PAGE, cid + "", request.address(), this.getUid());
+            new Logs(LogActions.DEL_PAGE, cid + "", request.address(), this.getUid()).save();
         } catch (Exception e) {
             String msg = "页面删除失败";
             if (e instanceof TipException) {
