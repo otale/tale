@@ -40,6 +40,33 @@ public static void main(String[] args){
 }
 ```', 1, 'post', 'publish', '', '默认分类', 10, 0, 1, 1, 1);
 
+INSERT INTO t_contents (allow_feed,allow_ping,allow_comment,comments_num,hits,
+categories,tags,fmt_type,status,type,author_id,content,modified,created,thumb_img,slug,title,cid) VALUES (
+NULL,1,1,0,0,NULL,NULL,'markdown','publish','page',1,'## 友情链接
+
+- :lock: [王爵的技术博客]()
+- :lock: [cyang.tech]()
+- :lock: [Bakumon''s Blog]()
+
+## 链接须知
+
+> 请确定贵站可以稳定运营
+> 原创博客优先，技术类博客优先，设计、视觉类博客优先
+> 经常过来访问和评论，眼熟的
+
+备注：默认申请友情链接均为内页（当前页面）
+
+## 基本信息
+
+                网站名称：Tale博客
+                网站地址：https://tale.biezhi.me
+
+请在当页通过评论来申请友链，其他地方不予回复
+
+暂时先这样，同时欢迎互换友链，这个页面留言即可。 ^_^
+
+还有，我会不定时对无法访问的网址进行清理，请保证自己的链接长期有效。',1505643888,1505643727,NULL,'links','友情链接',3);
+
 -- 表：t_logs
 DROP TABLE IF EXISTS t_logs;
 CREATE TABLE t_logs (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, "action" VARCHAR (100) NOT NULL, data VARCHAR (2000), author_id INTEGER (10) NOT NULL, ip VARCHAR (20), created INTEGER (10) NOT NULL);
@@ -48,7 +75,6 @@ CREATE TABLE t_logs (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, "acti
 DROP TABLE IF EXISTS t_metas;
 CREATE TABLE t_metas (mid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, name VARCHAR (200) NOT NULL, slug VARCHAR (200), type VARCHAR (32) NOT NULL, description VARCHAR (255), sort INTEGER (4) DEFAULT (0), parent INTEGER (10) DEFAULT (0));
 INSERT INTO t_metas (mid, name, slug, type, description, sort, parent) VALUES (1, '默认分类', NULL, 'category', NULL, 0, 0);
-INSERT INTO t_metas (mid, name, slug, type, description, sort, parent) VALUES (6, '王爵的技术博客', 'http://biezhi.me', 'link', NULL, 0, 0);
 
 -- 表：t_options
 DROP TABLE IF EXISTS t_options;
@@ -66,6 +92,8 @@ INSERT INTO t_options (name, value, description) VALUES ('site_description', '�
 -- 表：t_relationships
 DROP TABLE IF EXISTS t_relationships;
 CREATE TABLE t_relationships (cid INTEGER (10) NOT NULL, mid INTEGER (10) NOT NULL);
+
+INSERT INTO t_relationships(cid, mid) VALUES(2, 1);
 
 -- 表：t_users
 DROP TABLE IF EXISTS t_users;

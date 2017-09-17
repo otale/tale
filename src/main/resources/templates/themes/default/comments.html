@@ -1,7 +1,7 @@
 #if(null != article)
 <div id="${article.cid ?! 0}" class="comment-container">
     <div id="comments" class="clearfix">
-        #if(article.allow_comment)
+        #if(article.allowComment)
         <span class="response">#if(null!=login_user) Hi，<a href="${login_user.home_url}" data-no-instant>${login_user.username}</a>
             如果你想 <a href="/logout" title="注销" data-no-instant>注销</a> ? #end</span>
 
@@ -27,7 +27,7 @@
 
         #if(!is_empty(comments))
         <ol class="comment-list">
-            #for(comment : comments(6).list)
+            #for(comment : comments(6).rows)
             <li id="li-comment-${comment.coid}" class="comment-body comment-parent comment-odd">
                 <div id="comment-${comment.coid}">
                     <div class="comment-view" onclick="">

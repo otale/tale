@@ -16,7 +16,7 @@
             </tr>
             </thead>
             <tbody>
-            #for(post : articles.list)
+            #for(post : articles.rows)
             <tr cid="${post.cid}">
                 <td>
                     <a href="/admin/article/${post.cid}">${post.title}</a>

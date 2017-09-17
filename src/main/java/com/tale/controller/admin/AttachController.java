@@ -1,9 +1,12 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
-import com.blade.mvc.annotation.*;
+import com.blade.jdbc.page.Page;
+import com.blade.kit.DateKit;
+import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.Param;
+import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.multipart.FileItem;
@@ -15,9 +18,8 @@ import com.tale.init.TaleConst;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Attach;
+import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
-import com.tale.service.AttachService;
-import com.tale.service.LogService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +45,6 @@ public class AttachController extends BaseController {
     public static final String CLASSPATH = new File(AttachController.class.getResource("/").getPath()).getPath() + File.separatorChar;
 
     @Inject
-    private AttachService attachService;
-
-    @Inject
-    private LogService logService;
-
-    @Inject
     private SiteService siteService;
 
     /**
@@ -62,8 +58,10 @@ public class AttachController extends BaseController {
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request, @Param(defaultValue = "1") int page,
                         @Param(defaultValue = "12") int limit) {
-        Paginator<Attach> attachPaginator = attachService.getAttachs(new Take(Attach.class).page(page, limit, "id desc"));
-        request.attribute("attachs", attachPaginator);
+
+        Attach       attach     = new Attach();
+        Page<Attach> attachPage = attach.page(page, limit);
+        request.attribute("attachs", attachPage);
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
         request.attribute("max_file_size", TaleConst.MAX_FILE_SIZE / 1024);
         return "admin/attach";
@@ -83,12 +81,12 @@ public class AttachController extends BaseController {
 
         log.info("UPLOAD DIR = {}", TaleUtils.upDir);
 
-        Users users = this.user();
-        Integer uid = users.getUid();
+        Users                 users       = this.user();
+        Integer               uid         = users.getUid();
         Map<String, FileItem> fileItemMap = request.fileItems();
-        Collection<FileItem> fileItems = fileItemMap.values();
-        List<Attach> errorFiles = new ArrayList<>();
-        List<Attach> urls = new ArrayList<>();
+        Collection<FileItem>  fileItems   = fileItemMap.values();
+        List<Attach>          errorFiles  = new ArrayList<>();
+        List<Attach>          urls        = new ArrayList<>();
         try {
             fileItems.forEach((FileItem f) -> {
                 String fname = f.getFileName();
@@ -104,11 +102,21 @@ public class AttachController extends BaseController {
                     } catch (IOException e) {
                         log.error("", e);
                     }
-                    Attach attach = attachService.save(fname, fkey, ftype, uid);
+
+                    Attach attach = new Attach();
+                    attach.setFname(fname);
+                    attach.setAuthor_id(uid);
+                    attach.setFkey(fkey);
+                    attach.setFtype(ftype);
+                    attach.setCreated(DateKit.nowUnix());
+                    attach.save();
+
                     urls.add(attach);
                     siteService.cleanCache(Types.C_STATISTICS);
                 } else {
-                    errorFiles.add(new Attach(fname));
+                    Attach attach = new Attach();
+                    attach.setFname(fname);
+                    errorFiles.add(attach);
                 }
             });
             if (errorFiles.size() > 0) {
@@ -133,13 +141,16 @@ public class AttachController extends BaseController {
     @JSON
     public RestResponse delete(@Param Integer id, Request request) {
         try {
-            Attach attach = attachService.byId(id);
-            if (null == attach) return RestResponse.fail("不存在该附件");
-            attachService.delete(id);
+            Attach attach = new Attach();
+            Attach temp   = attach.find(id);
+            if (null == temp) {
+                return RestResponse.fail("不存在该附件");
+            }
+            attach.delete(id);
             siteService.cleanCache(Types.C_STATISTICS);
             String upDir = CLASSPATH.substring(0, CLASSPATH.length() - 1);
             Files.delete(Paths.get(upDir + attach.getFkey()));
-            logService.save(LogActions.DEL_ATTACH, attach.getFkey(), request.address(), this.getUid());
+            new Logs(LogActions.DEL_ATTACH, attach.getFkey(), request.address(), this.getUid()).save();
         } catch (Exception e) {
             String msg = "附件删除失败";
             if (e instanceof TipException) msg = e.getMessage();

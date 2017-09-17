@@ -2,6 +2,7 @@ package com.tale.controller.admin;
 
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
+import com.blade.jdbc.page.Page;
 import com.blade.kit.EncrypKit;
 import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
@@ -24,10 +25,8 @@ import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
-import com.tale.service.LogService;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
-import com.tale.service.UsersService;
 import jetbrick.util.ShellUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,22 +50,17 @@ public class IndexController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @Inject
-    private UsersService usersService;
-
-    @Inject
-    private LogService logService;
-
     /**
      * 仪表盘
      */
     @Route(value = {"/", "index"}, method = HttpMethod.GET)
     public String index(Request request) {
-        List<Comments> comments = siteService.recentComments(5);
-        List<Contents> contents = siteService.getContens(Types.RECENT_ARTICLE, 5);
-        Statistics statistics = siteService.getStatistics();
+        List<Comments> comments   = siteService.recentComments(5);
+        List<Contents> contents   = siteService.getContens(Types.RECENT_ARTICLE, 5);
+        Statistics     statistics = siteService.getStatistics();
         // 取最新的20条日志
-        List<Logs> logs = logService.getLogs(1, 20);
+        Page<Logs> logsPage = new Logs().page(1, 20);
+        List<Logs> logs     = logsPage.getRows();
 
         request.attribute("comments", comments);
         request.attribute("articles", contents);
@@ -98,7 +92,7 @@ public class IndexController extends BaseController {
             Environment config = Environment.of(optionsService.getOptions());
             TaleConst.OPTIONS = config;
 
-            logService.save(LogActions.SYS_SETTING, JsonKit.toString(querys), request.address(), this.getUid());
+            new Logs(LogActions.SYS_SETTING, JsonKit.toString(querys), request.address(), this.getUid()).save();
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "保存设置失败";
@@ -128,11 +122,10 @@ public class IndexController extends BaseController {
         Users users = this.user();
         if (StringKit.isNotBlank(screen_name) && StringKit.isNotBlank(email)) {
             Users temp = new Users();
-            temp.setUid(users.getUid());
             temp.setScreen_name(screen_name);
             temp.setEmail(email);
-            usersService.update(temp);
-            logService.save(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid());
+            temp.update(users.getUid());
+            new Logs(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid()).save();
         }
         return RestResponse.ok();
     }
@@ -156,14 +149,13 @@ public class IndexController extends BaseController {
         }
 
         try {
-            Users temp = new Users();
-            temp.setUid(users.getUid());
-            String pwd = EncrypKit.md5(users.getUsername() + password);
+            Users  temp = new Users();
+            String pwd  = EncrypKit.md5(users.getUsername() + password);
             temp.setPassword(pwd);
-            usersService.update(temp);
-            logService.save(LogActions.UP_PWD, null, request.address(), this.getUid());
+            temp.update(users.getUid());
+            new Logs(LogActions.UP_PWD, null, request.address(), this.getUid()).save();
             return RestResponse.ok();
-        } catch (Exception e){
+        } catch (Exception e) {
             String msg = "密码修改失败";
             if (e instanceof TipException) {
                 msg = e.getMessage();
@@ -176,6 +168,7 @@ public class IndexController extends BaseController {
 
     /**
      * 系统备份
+     *
      * @return
      */
     @Route(value = "backup", method = HttpMethod.POST)
@@ -188,9 +181,9 @@ public class IndexController extends BaseController {
 
         try {
             BackResponse backResponse = siteService.backup(bk_type, bk_path, "yyyyMMddHHmm");
-            logService.save(LogActions.SYS_BACKUP, null, request.address(), this.getUid());
+            new Logs(LogActions.SYS_BACKUP, null, request.address(), this.getUid()).save();
             return RestResponse.ok(backResponse);
-        } catch (Exception e){
+        } catch (Exception e) {
             String msg = "备份失败";
             if (e instanceof TipException) {
                 msg = e.getMessage();
@@ -203,23 +196,24 @@ public class IndexController extends BaseController {
 
     /**
      * 保存高级选项设置
+     *
      * @return
      */
     @Route(value = "advanced", method = HttpMethod.POST)
     @JSON
     public RestResponse doAdvanced(@Param String cache_key, @Param String block_ips,
                                    @Param String plugin_name, @Param String rewrite_url,
-                                   @Param String allow_install){
+                                   @Param String allow_install) {
         // 清除缓存
-        if(StringKit.isNotBlank(cache_key)){
-            if(cache_key.equals("*")){
+        if (StringKit.isNotBlank(cache_key)) {
+            if (cache_key.equals("*")) {
                 cache.clean();
             } else {
                 cache.del(cache_key);
             }
         }
         // 要过过滤的黑名单列表
-        if(StringKit.isNotBlank(block_ips)){
+        if (StringKit.isNotBlank(block_ips)) {
             optionsService.saveOption(Types.BLOCK_IPS, block_ips);
             TaleConst.BLOCK_IPS.addAll(Arrays.asList(block_ips.split(",")));
         } else {
@@ -227,10 +221,10 @@ public class IndexController extends BaseController {
             TaleConst.BLOCK_IPS.clear();
         }
         // 处理卸载插件
-        if(StringKit.isNotBlank(plugin_name)){
+        if (StringKit.isNotBlank(plugin_name)) {
             String key = "plugin_";
             // 卸载所有插件
-            if(!"*".equals(plugin_name)){
+            if (!"*".equals(plugin_name)) {
                 key = "plugin_" + plugin_name;
             } else {
                 optionsService.saveOption(Types.ATTACH_URL, Commons.site_url());
@@ -238,7 +232,7 @@ public class IndexController extends BaseController {
             optionsService.deleteOption(key);
         }
         // 是否允许重新安装
-        if(StringKit.isNotBlank(allow_install)){
+        if (StringKit.isNotBlank(allow_install)) {
             optionsService.saveOption("allow_install", allow_install);
             TaleConst.OPTIONS.toMap().put("allow_install", allow_install);
         }
@@ -248,23 +242,24 @@ public class IndexController extends BaseController {
 
     /**
      * 重启系统
+     *
      * @param sleep
      * @return
      */
     @Route(value = "reload", method = HttpMethod.GET)
     public void reload(@Param(defaultValue = "0") int sleep, Request request) {
-        if(sleep < 0 || sleep > 999){
+        if (sleep < 0 || sleep > 999) {
             sleep = 10;
         }
         try {
             // sh tale.sh reload 10
             String webHome = new File(AttachController.CLASSPATH).getParent();
-            String cmd = "sh " + webHome + "/bin tale.sh reload " + sleep;
+            String cmd     = "sh " + webHome + "/bin tale.sh reload " + sleep;
             log.info("execute shell: {}", cmd);
             ShellUtils.shell(cmd);
-            logService.save(LogActions.RELOAD_SYS, "", request.address(), this.getUid());
+            new Logs(LogActions.RELOAD_SYS, "", request.address(), this.getUid()).save();
             TimeUnit.SECONDS.sleep(sleep);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("重启系统失败", e);
         }
     }

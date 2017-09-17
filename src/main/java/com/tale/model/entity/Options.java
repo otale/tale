@@ -1,9 +1,8 @@
 package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
+import com.blade.jdbc.core.ActiveRecord;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * 配置选项
@@ -11,10 +10,8 @@ import java.io.Serializable;
  * @author biezhi
  */
 @Data
-@Table(name = "t_options", pk = "name")
-public class Options implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Table(value = "t_options", pk = "name")
+public class Options extends ActiveRecord {
 
     // 配置名称
     private String name;

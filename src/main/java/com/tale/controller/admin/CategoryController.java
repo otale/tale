@@ -1,15 +1,18 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.mvc.annotation.*;
+import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.Param;
+import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
-import com.tale.model.dto.MetaDto;
 import com.tale.model.dto.Types;
+import com.tale.model.entity.Metas;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +36,8 @@ public class CategoryController extends BaseController {
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
-        List<MetaDto> categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
-        List<MetaDto> tags = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
+        List<Metas>   categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
+        List<Metas> tags       = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
         request.attribute("categories", categories);
         request.attribute("tags", tags);
         return "admin/category";

@@ -1,8 +1,7 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.core.Take;
-import com.blade.jdbc.model.Paginator;
+import com.blade.jdbc.page.Page;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
@@ -20,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 评论管理
- *
+ * <p>
  * Created by biezhi on 2017/2/26.
  */
 @Slf4j
@@ -37,13 +36,15 @@ public class CommentController extends BaseController {
     public String index(@Param(defaultValue = "1") int page,
                         @Param(defaultValue = "15") int limit, Request request) {
         Users users = this.user();
-        Paginator<Comments> commentsPaginator = commentsService.getComments(new Take(Comments.class).notEq("author_id", users.getUid()).page(page, limit, "coid desc"));
-        request.attribute("comments", commentsPaginator);
+
+        Page<Comments> commentPage = new Comments().where("author_id", "<>", users.getUid()).page(page, limit);
+        request.attribute("comments", commentPage);
         return "admin/comment_list";
     }
 
     /**
      * 删除一条评论
+     *
      * @param coid
      * @return
      */
@@ -52,7 +53,7 @@ public class CommentController extends BaseController {
     public RestResponse delete(@Param Integer coid) {
         try {
             Comments comments = commentsService.byId(coid);
-            if(null == comments){
+            if (null == comments) {
                 return RestResponse.fail("不存在该评论");
             }
             commentsService.delete(coid, comments.getCid());
@@ -76,7 +77,7 @@ public class CommentController extends BaseController {
             Comments comments = new Comments();
             comments.setCoid(coid);
             comments.setStatus(status);
-            commentsService.update(comments);
+            comments.update();
             siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "操作失败";
@@ -93,15 +94,15 @@ public class CommentController extends BaseController {
     @PostRoute(value = "")
     @JSON
     public RestResponse reply(@Param Integer coid, @Param String content, Request request) {
-        if(null == coid || StringKit.isBlank(content)){
+        if (null == coid || StringKit.isBlank(content)) {
             return RestResponse.fail("请输入完整后评论");
         }
 
-        if(content.length() > 2000){
+        if (content.length() > 2000) {
             return RestResponse.fail("请输入2000个字符以内的回复");
         }
         Comments c = commentsService.byId(coid);
-        if(null == c){
+        if (null == c) {
             return RestResponse.fail("不存在该评论");
         }
         Users users = this.user();
@@ -115,7 +116,7 @@ public class CommentController extends BaseController {
         comments.setIp(request.address());
         comments.setUrl(users.getHome_url());
         comments.setContent(content);
-        if(StringKit.isNotBlank(users.getEmail())){
+        if (StringKit.isNotBlank(users.getEmail())) {
             comments.setMail(users.getEmail());
         } else {
             comments.setMail("support@tale.me");

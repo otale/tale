@@ -1,13 +1,12 @@
 package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
+import com.blade.jdbc.core.ActiveRecord;
 import com.blade.validator.annotation.Email;
 import com.blade.validator.annotation.Length;
 import com.blade.validator.annotation.NotEmpty;
 import com.blade.validator.annotation.Url;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * 评论
@@ -15,10 +14,8 @@ import java.io.Serializable;
  * @author biezhi
  */
 @Data
-@Table(name = "t_comments", pk = "coid")
-public class Comments implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Table(value = "t_comments", pk = "coid")
+public class Comments extends ActiveRecord {
 
     // comment表主键
     private Integer coid;
@@ -31,7 +28,7 @@ public class Comments implements Serializable {
 
     // 评论作者
     @NotEmpty(message = "请输入评论作者")
-    @Length(value = 50, message = "姓名过长")
+    @Length(max = 30, message = "姓名过长")
     private String author;
 
     // 评论所属用户id
@@ -57,7 +54,7 @@ public class Comments implements Serializable {
 
     // 评论内容
     @NotEmpty(message = "请输入评论内容")
-    @Length(value = 200, message = "请输入200个字符以内的评论")
+    @Length(max = 2000, message = "请输入%d个字符以内的评论")
     private String content;
 
     // 评论类型

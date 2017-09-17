@@ -1,7 +1,6 @@
-package com.tale.webhook;
+package com.tale.hooks;
 
 import com.blade.ioc.annotation.Bean;
-import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.kit.UUID;
 import com.blade.mvc.hook.Signature;
@@ -11,19 +10,13 @@ import com.blade.mvc.http.Response;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Users;
-import com.tale.service.UsersService;
 import com.tale.utils.MapCache;
 import com.tale.utils.TaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 @Bean
+@Slf4j
 public class BaseWebHook implements WebHook {
-
-    private static final Logger log = LoggerFactory.getLogger(BaseWebHook.class);
-
-    @Inject
-    private UsersService usersService;
 
     private MapCache cache = MapCache.single();
 
@@ -58,7 +51,7 @@ public class BaseWebHook implements WebHook {
             if (null == user) {
                 Integer uid = TaleUtils.getCookieUid(request);
                 if (null != uid) {
-                    user = usersService.byId(Integer.valueOf(uid));
+                    user = new Users().find(uid);
                     request.session().attribute(TaleConst.LOGIN_SESSION_KEY, user);
                 }
             }

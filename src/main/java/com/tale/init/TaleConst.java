@@ -13,12 +13,12 @@ import java.util.*;
  */
 public class TaleConst {
 
-    public static final String USER_IN_COOKIE = "S_L_ID";
-    public static String AES_SALT = "0123456789abcdef";
-    public static String LOGIN_SESSION_KEY = "login_user";
-    public static Environment OPTIONS = Environment.of(new HashMap<>());
-    public static Boolean INSTALL = false;
-    public static Environment BCONF = null;
+    public static final String      USER_IN_COOKIE    = "S_L_ID";
+    public static       String      AES_SALT          = "0123456789abcdef";
+    public static       String      LOGIN_SESSION_KEY = "login_user";
+    public static       Environment OPTIONS           = Environment.of(new HashMap<>());
+    public static       Boolean     INSTALL           = false;
+    public static       Environment BCONF             = null;
 
     /**
      * 最大页码
@@ -41,11 +41,6 @@ public class TaleConst {
     public static final int MAX_TITLE_COUNT = 200;
 
     /**
-     * 点击次数超过多少更新到数据库
-     */
-    public static final int HIT_EXCEED = 10;
-
-    /**
      * 插件菜单
      */
     public static final List<PluginMenu> plugin_menus = new ArrayList<>();
@@ -59,6 +54,5 @@ public class TaleConst {
      * 要过滤的ip列表
      */
     public static final Set<String> BLOCK_IPS = new HashSet<>(16);
-
 
 }

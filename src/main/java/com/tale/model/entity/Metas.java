@@ -1,9 +1,8 @@
 package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
+import com.blade.jdbc.core.ActiveRecord;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * 元数据
@@ -11,29 +10,24 @@ import java.io.Serializable;
  * @author biezhi
  */
 @Data
-@Table(name = "t_metas", pk = "mid")
-public class Metas implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Table(value = "t_metas", pk = "mid")
+public class Metas extends ActiveRecord {
 
     // 项目主键
     private Integer mid;
-
     // 名称
-    private String name;
-
+    private String  name;
     // 项目缩略名
-    private String slug;
-
+    private String  slug;
     // 项目类型
-    private String type;
-
+    private String  type;
     // 选项描述
-    private String description;
-
+    private String  description;
     // 项目排序
     private Integer sort;
-
+    // 父级
     private Integer parent;
+    // 文章数
+    private Integer count;
 
 }

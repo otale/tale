@@ -1,9 +1,11 @@
 package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
+import com.blade.jdbc.core.ActiveRecord;
+import com.blade.kit.DateKit;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.io.Serializable;
+import lombok.NoArgsConstructor;
 
 /**
  * 日志记录
@@ -11,10 +13,10 @@ import java.io.Serializable;
  * @author biezhi
  */
 @Data
-@Table(name = "t_logs")
-public class Logs implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@NoArgsConstructor
+@AllArgsConstructor
+@Table("t_logs")
+public class Logs extends ActiveRecord {
 
     // 项目主键
     private Integer id;
@@ -33,5 +35,13 @@ public class Logs implements Serializable {
 
     // 日志创建时间
     private Integer created;
+
+    public Logs(String action, String data, String ip, Integer uid) {
+        this.action = action;
+        this.data = data;
+        this.ip = ip;
+        this.author_id = uid;
+        this.created = DateKit.nowUnix();
+    }
 
 }

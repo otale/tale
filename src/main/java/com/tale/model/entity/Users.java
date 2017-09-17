@@ -1,9 +1,8 @@
 package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
+import com.blade.jdbc.core.ActiveRecord;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * 用户
@@ -11,10 +10,8 @@ import java.io.Serializable;
  * @author biezhi
  */
 @Data
-@Table(name = "t_users", pk = "uid")
-public class Users implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Table(value = "t_users", pk = "uid")
+public class Users extends ActiveRecord {
 
     // user表主键
     private Integer uid;

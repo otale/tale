@@ -1,7 +1,5 @@
 package com.tale.utils;
 
-import com.blade.kit.StringKit;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

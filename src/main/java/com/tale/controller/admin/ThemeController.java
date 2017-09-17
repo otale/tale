@@ -8,13 +8,13 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.LogActions;
-import com.tale.model.dto.ThemeDto;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.init.TaleLoader;
-import com.tale.service.LogService;
+import com.tale.model.dto.LogActions;
+import com.tale.model.dto.ThemeDto;
+import com.tale.model.entity.Logs;
 import com.tale.service.OptionsService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,17 +35,14 @@ public class ThemeController extends BaseController {
     @Inject
     private OptionsService optionsService;
 
-    @Inject
-    private LogService logService;
-
     @GetRoute(value = "")
     public String index(Request request) {
         // 读取主题
-        String themesDir = AttachController.CLASSPATH + "templates/themes";
-        File[] themesFile = new File(themesDir).listFiles();
-        List<ThemeDto> themes = new ArrayList<>(themesFile.length);
-        for(File f : themesFile){
-            if(f.isDirectory()){
+        String         themesDir  = AttachController.CLASSPATH + "templates/themes";
+        File[]         themesFile = new File(themesDir).listFiles();
+        List<ThemeDto> themes     = new ArrayList<>(themesFile.length);
+        for (File f : themesFile) {
+            if (f.isDirectory()) {
                 ThemeDto themeDto = new ThemeDto(f.getName());
                 if (Files.exists(Paths.get(f.getPath() + "/setting.html"))) {
                     themeDto.setHasSetting(true);
@@ -53,7 +50,8 @@ public class ThemeController extends BaseController {
                 themes.add(themeDto);
                 try {
                     Blade.me().addStatics("/templates/themes/" + f.getName() + "/screenshot.png");
-                } catch (Exception e){}
+                } catch (Exception e) {
+                }
             }
         }
         request.attribute("current_theme", Commons.site_theme());
@@ -63,6 +61,7 @@ public class ThemeController extends BaseController {
 
     /**
      * 主题设置页面
+     *
      * @param request
      * @return
      */
@@ -75,6 +74,7 @@ public class ThemeController extends BaseController {
 
     /**
      * 保存主题配置项
+     *
      * @param request
      * @return
      */
@@ -84,10 +84,8 @@ public class ThemeController extends BaseController {
         try {
             Map<String, List<String>> querys = request.parameters();
             optionsService.saveOptions(querys);
-
             TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
-
-            logService.save(LogActions.THEME_SETTING, JsonKit.toString(querys), request.address(), this.getUid());
+            new Logs(LogActions.THEME_SETTING, JsonKit.toString(querys), request.address(), this.getUid()).save();
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "主题设置失败";
@@ -102,6 +100,7 @@ public class ThemeController extends BaseController {
 
     /**
      * 激活主题
+     *
      * @param request
      * @param site_theme
      * @return
@@ -119,8 +118,9 @@ public class ThemeController extends BaseController {
             String themePath = "/templates/themes/" + site_theme;
             try {
                 TaleLoader.loadTheme(themePath);
-            } catch (Exception e){}
-            logService.save(LogActions.THEME_SETTING, site_theme, request.address(), this.getUid());
+            } catch (Exception e) {
+            }
+            new Logs(LogActions.THEME_SETTING, site_theme, request.address(), this.getUid()).save();
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "主题启用失败";

@@ -17,7 +17,7 @@ public final class AdminCommons {
      * @return
      */
     public static boolean exist_cat(Metas category, String cats) {
-        String[] arr = cats.split(",");
+        String[] arr = null != cats ? cats.split(",") : null;
         if (null != arr && arr.length > 0) {
             for (String c : arr) {
                 if (c.trim().equals(category.getName())) {

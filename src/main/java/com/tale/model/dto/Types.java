@@ -11,7 +11,6 @@ public interface Types {
     String PUBLISH = "publish";
     String PAGE = "page";
     String DRAFT = "draft";
-    String LINK = "link";
     String IMAGE = "image";
     String FILE = "file";
     String CSRF_TOKEN = "csrf_token";

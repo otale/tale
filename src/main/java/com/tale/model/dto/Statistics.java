@@ -13,18 +13,16 @@ import java.io.Serializable;
 public class Statistics implements Serializable {
 
     // 文章数
-    private int articles;
+    private long articles;
     // 页面数
-    private int pages;
+    private long pages;
     // 评论数
-    private int comments;
+    private long comments;
     // 分类数
-    private int categories;
+    private long categories;
     // 标签数
-    private int tags;
-    // 链接数
-    private int links;
+    private long tags;
     // 附件数
-    private int attachs;
+    private long attachs;
 
 }
