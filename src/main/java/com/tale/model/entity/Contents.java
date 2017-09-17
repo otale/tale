@@ -26,15 +26,15 @@ public class Contents extends ActiveRecord {
     // 内容文字
     private String  content;
     // 内容所属用户id
-    private Integer author_id;
+    private Integer authorId;
     // 点击次数
     private Integer hits;
     // 内容类别
     private String  type;
     // 内容类型，markdown或者html
-    private String  fmt_type;
+    private String  fmtType;
     // 文章缩略图
-    private String  thumb_img;
+    private String  thumbImg;
     // 标签列表
     private String  tags;
     // 分类列表
@@ -42,11 +42,11 @@ public class Contents extends ActiveRecord {
     // 内容状态
     private String  status;
     // 内容所属评论数
-    private Integer comments_num;
+    private Integer commentsNum;
     // 是否允许评论
-    private Boolean allow_comment;
+    private Boolean allowComment;
     // 是否允许ping
-    private Boolean allow_ping;
+    private Boolean allowPing;
     // 允许出现在聚合中
-    private Boolean allow_feed;
+    private Boolean allowFeed;
 }

@@ -322,8 +322,8 @@ public final class Theme {
         if (null == contents) {
             return "";
         }
-        if (StringKit.isNotBlank(contents.getThumb_img())) {
-            return contents.getThumb_img();
+        if (StringKit.isNotBlank(contents.getThumbImg())) {
+            return contents.getThumbImg();
         }
         String content = article(contents.getContent());
         String img     = Commons.show_thumb(content);
@@ -646,7 +646,7 @@ public final class Theme {
         if (null == contents) {
             return noComment;
         }
-        return contents.getComments_num() > 0 ? String.format(value, contents.getComments_num()) : noComment;
+        return contents.getCommentsNum() > 0 ? String.format(value, contents.getCommentsNum()) : noComment;
     }
 
     /**

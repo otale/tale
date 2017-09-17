@@ -40,9 +40,9 @@ $(document).ready(function () {
         }
     });
 
-    var fmt_type = $('#fmt_type').val();
+    var fmtType = $('#fmtType').val();
     // 富文本编辑器
-    if (fmt_type != 'markdown') {
+    if (fmtType != 'markdown') {
         var this_ = $('#switch-btn');
         mditor.value = '';
         $('#md-container').hide();
@@ -53,7 +53,7 @@ $(document).ready(function () {
         var this_ = $('#switch-btn');
         $('#html-container').hide();
         $('#md-container').show();
-        $('#fmt_type').val('markdown');
+        $('#fmtType').val('markdown');
         this_.attr('type', 'markdown');
         this_.text('切换为富文本编辑器');
         htmlEditor.summernote("code", "");
@@ -63,7 +63,7 @@ $(document).ready(function () {
      * 切换编辑器
      * */
     $('#switch-btn').click(function () {
-        var type = $('#fmt_type').val();
+        var type = $('#fmtType').val();
         var this_ = $(this);
         if (type == 'markdown') {
             // 切换为富文本编辑器
@@ -76,7 +76,7 @@ $(document).ready(function () {
             $('#md-container').hide();
             $('#html-container').show();
             this_.text('切换为Markdown编辑器');
-            $('#fmt_type').val('html');
+            $('#fmtType').val('html');
         } else {
             // 切换为markdown编辑器
             if($('#html-container .note-editable').html().length > 0){
@@ -85,7 +85,7 @@ $(document).ready(function () {
             }
             $('#html-container').hide();
             $('#md-container').show();
-            $('#fmt_type').val('markdown');
+            $('#fmtType').val('markdown');
             this_.text('切换为富文本编辑器');
             htmlEditor.summernote("code", "");
         }
@@ -166,7 +166,7 @@ $(document).ready(function () {
                     thumbdropzone.css('background-image', 'url('+ url +')');
                     thumbdropzone.css('background-size', 'cover');
                     $('.dz-image').hide();
-                    $('#thumb_img').val(url);
+                    $('#thumbImg').val(url);
                 }
             });
             this.on('error', function (a, errorMessage, result) {
@@ -183,7 +183,7 @@ $(document).ready(function () {
  * 自动保存为草稿
  * */
 function  autoSave() {
-    var content = $('#fmt_type').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
+    var content = $('#fmtType').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
     var title = $('#articleForm input[name=title]').val();
     if (title != '' && content != '') {
         $('#content-editor').val(content);
@@ -210,7 +210,7 @@ function  autoSave() {
  * @param status
  */
 function subArticle(status) {
-    var content = $('#fmt_type').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
+    var content = $('#fmtType').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
     var title = $('#articleForm input[name=title]').val();
     if (title == '') {
         tale.alertWarn('请输入文章标题');
@@ -290,7 +290,7 @@ function add_thumbimg(obj) {
     if (on == 'true') {
         this_.attr('on', 'false');
         $('#dropzone-container').addClass('hide');
-        $('#thumb_img').val('');
+        $('#thumbImg').val('');
     } else {
         this_.attr('on', 'true');
         $('#dropzone-container').removeClass('hide');

@@ -6,6 +6,7 @@ import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
+import com.blade.validator.annotation.Valid;
 import com.tale.controller.BaseController;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
@@ -98,50 +99,18 @@ public class ArticleController extends BaseController {
     /**
      * 发布文章操作
      *
-     * @param title
-     * @param content
-     * @param tags
-     * @param categories
-     * @param status
-     * @param slug
-     * @param allow_comment
-     * @param allow_ping
-     * @param allow_feed
      * @return
      */
     @PostRoute(value = "publish")
     @JSON
-    public RestResponse publishArticle(@Param String title, @Param String content,
-                                       @Param String tags, @Param String categories,
-                                       @Param String status, @Param String slug,
-                                       @Param String fmt_type, @Param String thumb_img,
-                                       @Param Boolean allow_comment, @Param Boolean allow_ping, @Param Boolean allow_feed) {
+    public RestResponse publishArticle(@Valid Contents contents) {
 
         Users users = this.user();
-
-        Contents contents = new Contents();
-        contents.setTitle(title);
-        contents.setContent(content);
-        contents.setStatus(status);
-        contents.setSlug(slug);
         contents.setType(Types.ARTICLE);
-        contents.setThumb_img(thumb_img);
-        contents.setFmt_type(fmt_type);
-        if (null != allow_comment) {
-            contents.setAllow_comment(allow_comment);
+        contents.setAuthorId(users.getUid());
+        if (StringKit.isBlank(contents.getCategories())) {
+            contents.setCategories("默认分类");
         }
-        if (null != allow_ping) {
-            contents.setAllow_ping(allow_ping);
-        }
-        if (null != allow_feed) {
-            contents.setAllow_feed(allow_feed);
-        }
-        contents.setAuthor_id(users.getUid());
-        contents.setTags(tags);
-        if (StringKit.isBlank(categories)) {
-            categories = "默认分类";
-        }
-        contents.setCategories(categories);
 
         try {
             Integer cid = contentsService.publish(contents);
@@ -161,51 +130,14 @@ public class ArticleController extends BaseController {
     /**
      * 修改文章操作
      *
-     * @param cid
-     * @param title
-     * @param content
-     * @param tags
-     * @param categories
-     * @param status
-     * @param slug
-     * @param allow_comment
-     * @param allow_ping
-     * @param allow_feed
      * @return
      */
     @PostRoute(value = "modify")
     @JSON
-    public RestResponse modifyArticle(@Param Integer cid, @Param String title,
-                                      @Param String content, @Param String fmt_type,
-                                      @Param String tags, @Param String categories,
-                                      @Param String status, @Param String slug,
-                                      @Param String thumb_img,
-                                      @Param Boolean allow_comment, @Param Boolean allow_ping, @Param Boolean allow_feed) {
-
-        Users    users    = this.user();
-        Contents contents = new Contents();
-        contents.setCid(cid);
-        contents.setTitle(title);
-        contents.setContent(content);
-        contents.setStatus(status);
-        contents.setFmt_type(fmt_type);
-        contents.setSlug(slug);
-        contents.setThumb_img(thumb_img);
-        if (null != allow_comment) {
-            contents.setAllow_comment(allow_comment);
-        }
-        if (null != allow_ping) {
-            contents.setAllow_ping(allow_ping);
-        }
-        if (null != allow_feed) {
-            contents.setAllow_feed(allow_feed);
-        }
-        contents.setAuthor_id(users.getUid());
-        contents.setTags(tags);
-        contents.setCategories(categories);
+    public RestResponse modifyArticle(@Valid Contents contents) {
         try {
             contentsService.updateArticle(contents);
-            return RestResponse.ok(cid);
+            return RestResponse.ok(contents.getCid());
         } catch (Exception e) {
             String msg = "文章编辑失败";
             if (e instanceof TipException) {

@@ -59,7 +59,7 @@ public class ContentsService {
         int len = contents.getContent().length();
         if (len > TaleConst.MAX_TEXT_COUNT)
             throw new TipException("文章内容最多可以输入" + TaleConst.MAX_TEXT_COUNT + "个字符");
-        if (null == contents.getAuthor_id())
+        if (null == contents.getAuthorId())
             throw new TipException("请登录后发布文章");
 
         if (StringKit.isNotBlank(contents.getSlug())) {
@@ -108,9 +108,7 @@ public class ContentsService {
         }
         if (contents.getContent().length() > TaleConst.MAX_TEXT_COUNT)
             throw new TipException("文章内容最多可以输入" + TaleConst.MAX_TEXT_COUNT + "个字符");
-        if (null == contents.getAuthor_id()) {
-            throw new TipException("请登录后发布文章");
-        }
+
         contents.setModified(DateKit.nowUnix());
         Integer cid = contents.getCid();
         contents.setContent(EmojiParser.parseToAliases(contents.getContent()));

@@ -77,7 +77,7 @@ public class IndexController extends BaseController {
             return this.render_404();
         }
         Contents contents = contentsOptional.get();
-        if (contents.getAllow_comment()) {
+        if (contents.getAllowComment()) {
             int cp = request.queryInt("cp", 1);
             request.attribute("cp", cp);
         }
@@ -133,7 +133,7 @@ public class IndexController extends BaseController {
         }
         request.attribute("article", contents);
         request.attribute("is_post", true);
-        if (contents.getAllow_comment()) {
+        if (contents.getAllowComment()) {
             int cp = request.queryInt("cp", 1);
             request.attribute("cp", cp);
         }

@@ -6,6 +6,7 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
+import com.blade.validator.annotation.Valid;
 import com.tale.controller.BaseController;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
@@ -65,23 +66,12 @@ public class PageController extends BaseController {
 
     @Route(value = "publish", method = HttpMethod.POST)
     @JSON
-    public RestResponse publishPage(@Param String title, @Param String content,
-                                    @Param String status, @Param String slug,
-                                    @Param String fmt_type,
-                                    @Param Boolean allow_comment) {
+    public RestResponse publishPage(@Valid Contents contents) {
 
-        Users    users    = this.user();
-        Contents contents = new Contents();
-        contents.setTitle(title);
-        contents.setContent(content);
-        contents.setStatus(status);
-        contents.setSlug(slug);
-        contents.setFmt_type(fmt_type);
+        Users users = this.user();
         contents.setType(Types.PAGE);
-        contents.setAllow_comment(allow_comment);
-        contents.setAllow_ping(true);
-        contents.setAuthor_id(users.getUid());
-
+        contents.setAllowPing(true);
+        contents.setAuthorId(users.getUid());
         try {
             contentsService.publish(contents);
             siteService.cleanCache(Types.C_STATISTICS);
@@ -99,23 +89,8 @@ public class PageController extends BaseController {
 
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
-    public RestResponse modifyArticle(@Param Integer cid, @Param String title,
-                                      @Param String content, @Param String fmt_type,
-                                      @Param String status, @Param String slug,
-                                      @Param Boolean allow_comment) {
-
-        Users    users    = this.user();
-        Contents contents = new Contents();
-        contents.setCid(cid);
-        contents.setTitle(title);
-        contents.setContent(content);
-        contents.setStatus(status);
-        contents.setFmt_type(fmt_type);
-        contents.setSlug(slug);
+    public RestResponse modifyArticle(@Valid Contents contents) {
         contents.setType(Types.PAGE);
-        contents.setAllow_comment(allow_comment);
-        contents.setAllow_ping(true);
-        contents.setAuthor_id(users.getUid());
         try {
             contentsService.updateArticle(contents);
         } catch (Exception e) {

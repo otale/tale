@@ -88,11 +88,11 @@
             <input type="hidden" name="categories" id="categories"/>
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
             <input type="hidden" name="status" value="${contents.status ?! 'publish'}" id="status"/>
-            <input type="hidden" name="allow_comment" value="${contents.allow_comment ?! true}" id="allow_comment"/>
-            <input type="hidden" name="allow_ping" value="${contents.allow_ping ?! true}" id="allow_ping"/>
-            <input type="hidden" name="allow_feed" value="${contents.allow_feed ?! true}" id="allow_feed"/>
+            <input type="hidden" name="allowComment" value="${contents.allowComment ?! true}" id="allowComment"/>
+            <input type="hidden" name="allowPing" value="${contents.allowPing ?! true}" id="allowPing"/>
+            <input type="hidden" name="allowFeed" value="${contents.allowFeed ?! true}" id="allowFeed"/>
             <input type="hidden" name="content" id="content-editor"/>
-            <input type="hidden" name="fmt_type" id="fmt_type" value="${contents.fmt_type ?! 'markdown'}"/>
+            <input type="hidden" name="fmtType" id="fmtType" value="${contents.fmtType ?! 'markdown'}"/>
 
             <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
                 <input type="text" class="form-control" placeholder="请输入文章标题（必须）" name="title" required
@@ -129,16 +129,16 @@
             <div class="form-group col-xs-12">
                 <div class="pull-right">
                     <a id="switch-btn" href="javascript:void(0)" class="btn btn-purple btn-sm waves-effect waves-light switch-editor">#if(null != contents &&
-                        contents.fmt_type == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
+                        contents.fmtType == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
                 </div>
             </div>
 
             <div id="md-container" class="form-group col-md-12">
-                <textarea id="md-editor" class="#if(null != contents && contents.fmt_type != 'html') hide #end">${contents.content ?! ''}</textarea>
+                <textarea id="md-editor" class="#if(null != contents && contents.fmtType != 'html') hide #end">${contents.content ?! ''}</textarea>
             </div>
             <div id="html-container" class="form-group col-md-12">
                 <div class="summernote">
-                    #if(null != contents && contents.fmt_type == 'html')
+                    #if(null != contents && contents.fmtType == 'html')
                     ${contents.content ?! ''}
                     #end
                 </div>
@@ -147,31 +147,31 @@
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">开启评论</label>
                 <div class="col-sm-8">
-                    <div class="toggle toggle-success allow-${contents.allow_comment ?! true}"
-                         onclick="allow_comment(this);" on="${contents.allow_comment ?! true}"></div>
+                    <div class="toggle toggle-success allow-${contents.allowComment ?! true}"
+                         onclick="allow_comment(this);" on="${contents.allowComment ?! true}"></div>
                 </div>
             </div>
 
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">允许Ping</label>
                 <div class="col-sm-8">
-                    <div class="toggle toggle-success allow-${contents.allow_ping ?! true}"
-                         onclick="allow_ping(this);" on="${contents.allow_ping ?! true}"></div>
+                    <div class="toggle toggle-success allow-${contents.allowPing ?! true}"
+                         onclick="allow_ping(this);" on="${contents.allowPing ?! true}"></div>
                 </div>
             </div>
 
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">允许订阅</label>
                 <div class="col-sm-8">
-                    <div class="toggle toggle-success allow-${contents.allow_feed ?! true}"
-                         onclick="allow_feed(this);" on="${contents.allow_feed ?! true}"></div>
+                    <div class="toggle toggle-success allow-${contents.allowFeed ?! true}"
+                         onclick="allow_feed(this);" on="${contents.allowFeed ?! true}"></div>
                 </div>
             </div>
 
             <div class="form-group col-md-3">
                 <label class="col-sm-5">添加缩略图</label>
                 <div class="col-sm-7">
-                    <div id="thumb-toggle" class="toggle toggle-success" on="false" thumb_url="${contents.thumb_img ?! ''}" onclick="add_thumbimg(this);"></div>
+                    <div id="thumb-toggle" class="toggle toggle-success" on="false" thumb_url="${contents.thumbImg ?! ''}" onclick="add_thumbimg(this);"></div>
                 </div>
             </div>
 
@@ -181,7 +181,7 @@
                         <p>可以为你的文章添加一张缩略图 ;)</p>
                     </div>
                 </div>
-                <input type="hidden" name="thumb_img" id="thumb_img"/>
+                <input type="hidden" name="thumbImg" id="thumbImg"/>
             </div>
 
             <div class="clearfix"></div>

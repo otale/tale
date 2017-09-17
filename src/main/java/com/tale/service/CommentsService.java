@@ -29,21 +29,6 @@ public class CommentsService {
      * @param comments
      */
     public void saveComment(Comments comments) {
-        if (null == comments) {
-            throw new TipException("评论对象为空");
-        }
-        if (StringKit.isBlank(comments.getAuthor())) {
-            throw new TipException("姓名不能为空");
-        }
-        if (StringKit.isBlank(comments.getMail())) {
-            throw new TipException("邮箱不能为空");
-        }
-        if (!TaleUtils.isEmail(comments.getMail())) {
-            throw new TipException("请输入正确的邮箱格式");
-        }
-        if (StringKit.isBlank(comments.getContent())) {
-            throw new TipException("评论内容不能为空");
-        }
         if (comments.getContent().length() < 5 || comments.getContent().length() > 2000) {
             throw new TipException("评论字数在5-2000个字符");
         }
@@ -55,12 +40,12 @@ public class CommentsService {
             throw new TipException("不存在的文章");
         }
         try {
-            comments.setOwner_id(contents.getAuthor_id());
+            comments.setOwner_id(contents.getAuthorId());
             comments.setCreated(DateKit.nowUnix());
             comments.save();
 
             Contents temp = new Contents();
-            temp.setComments_num(contents.getComments_num() + 1);
+            temp.setCommentsNum(contents.getCommentsNum() + 1);
             temp.update(contents.getCid());
         } catch (Exception e) {
             throw e;
@@ -69,34 +54,24 @@ public class CommentsService {
 
     /**
      * 删除评论，暂时没用
+     *
      * @param coid
      * @param cid
      * @throws Exception
      */
     public void delete(Integer coid, Integer cid) {
-        if (null == coid) {
-            throw new TipException("主键为空");
-        }
-        try {
-            new Comments().delete(coid);
-            Optional<Contents> contents = contentsService.getContents(cid + "");
-            if (!contents.isPresent()) {
-                return;
-            }
-
-            contents.filter(c -> c.getComments_num() > 0)
-                    .ifPresent(c -> {
-                        Contents temp = new Contents();
-                        temp.setComments_num(c.getComments_num() - 1);
-                        temp.update(cid);
-                    });
-        } catch (Exception e) {
-            throw e;
+        new Comments().delete(coid);
+        Contents contents = new Contents().find(cid);
+        if (null != contents && contents.getCommentsNum() > 0) {
+            Contents temp = new Contents();
+            temp.setCommentsNum(contents.getCommentsNum() - 1);
+            temp.update(cid);
         }
     }
 
     /**
      * 获取文章下的评论
+     *
      * @param cid
      * @param page
      * @param limit
@@ -135,6 +110,7 @@ public class CommentsService {
 
     /**
      * 根据主键查询评论
+     *
      * @param coid
      * @return
      */

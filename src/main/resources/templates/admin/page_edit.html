@@ -44,8 +44,8 @@
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
             <input type="hidden" name="status" value="${contents.status ?! 'publish'}" id="status"/>
             <input type="hidden" name="content" id="content-editor"/>
-            <input type="hidden" name="fmt_type" id="fmt_type" value="${contents.fmt_type ?! 'markdown'}"/>
-            <input type="hidden" name="allow_comment" value="${contents.allow_comment ?! true}" id="allow_comment"/>
+            <input type="hidden" name="fmtType" id="fmtType" value="${contents.fmtType ?! 'markdown'}"/>
+            <input type="hidden" name="allowComment" value="${contents.allowComment ?! true}" id="allowComment"/>
 
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="请输入页面标题" name="title" required=""
@@ -60,12 +60,12 @@
             <div class="form-group col-xs-12">
                 <div class="pull-right">
                     <a id="switch-btn" href="javascript:void(0)" class="btn btn-purple btn-sm waves-effect waves-light switch-editor">#if(null != contents &&
-                        contents.fmt_type == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
+                        contents.fmtType == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
                 </div>
             </div>
 
             <div id="md-container" class="form-group col-md-12">
-                <textarea id="md-editor" class="#if(null != contents && contents.fmt_type == 'html') hide #end">${contents.content ?! ''}</textarea>
+                <textarea id="md-editor" class="#if(null != contents && contents.fmtType == 'html') hide #end">${contents.content ?! ''}</textarea>
             </div>
             <div id="html-container" class="form-group col-md-12">
                 <div class="summernote">${contents.content ?! ''}</div>
@@ -74,8 +74,8 @@
             <div class="form-group col-md-3 col-sm-4">
                 <label class="col-sm-4">开启评论</label>
                 <div class="col-sm-8">
-                    <div class="toggle toggle-success allow-${contents.allow_comment ?! true}"
-                         onclick="allow_comment(this);" on="${contents.allow_comment ?! true}"></div>
+                    <div class="toggle toggle-success allow-${contents.allowComment ?! true}"
+                         onclick="allowComment(this);" on="${contents.allowComment ?! true}"></div>
                 </div>
             </div>
 
@@ -139,9 +139,9 @@
             }
         });
 
-        var fmt_type = $('#fmt_type').val();
+        var fmtType = $('#fmtType').val();
         // 富文本编辑器
-        if (fmt_type != 'markdown') {
+        if (fmtType != 'markdown') {
             var this_ = $('#switch-btn');
             mditor.value = '';
             $('#md-container').hide();
@@ -152,7 +152,7 @@
             var this_ = $('#switch-btn');
             $('#html-container').hide();
             $('#md-container').show();
-            $('#fmt_type').val('markdown');
+            $('#fmtType').val('markdown');
             this_.attr('type', 'markdown');
             this_.text('切换为富文本编辑器');
             htmlEditor.summernote("code", "");
@@ -162,7 +162,7 @@
          * 切换编辑器
          * */
         $('#switch-btn').click(function () {
-            var type = $('#fmt_type').val();
+            var type = $('#fmtType').val();
             var this_ = $(this);
             if (type == 'markdown') {
                 // 切换为富文本编辑器
@@ -170,12 +170,12 @@
                 $('#md-container').hide();
                 $('#html-container').show();
                 this_.text('切换为Markdown编辑器');
-                $('#fmt_type').val('html');
+                $('#fmtType').val('html');
             } else {
                 // 切换为markdown编辑器
                 $('#html-container').hide();
                 $('#md-container').show();
-                $('#fmt_type').val('markdown');
+                $('#fmtType').val('markdown');
                 this_.text('切换为富文本编辑器');
                 htmlEditor.summernote("code", "");
             }
@@ -203,7 +203,7 @@
      * 自动保存为草稿
      * */
     function  autoSave() {
-        var content = $('#fmt_type').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
+        var content = $('#fmtType').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
         var title = $('#articleForm input[name=title]').val();
         if (title != '' && content != '') {
             $('#content-editor').val(content);
@@ -233,7 +233,7 @@
      * @param status
      */
     function subArticle(status) {
-        var content = $('#fmt_type').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
+        var content = $('#fmtType').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
         var title = $('#articleForm input[name=title]').val();
         if (title == '') {
             tale.alertWarn('请输入页面标题');
@@ -268,15 +268,15 @@
         });
     }
 
-    function allow_comment(obj) {
+    function allowComment(obj) {
         var this_ = $(obj);
         var on = this_.attr('on');
         if (on == 'true') {
             this_.attr('on', 'false');
-            $('#allow_comment').val('false');
+            $('#allowComment').val('false');
         } else {
             this_.attr('on', 'true');
-            $('#allow_comment').val('true');
+            $('#allowComment').val('true');
         }
     }
 </script>
