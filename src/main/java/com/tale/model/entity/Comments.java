@@ -28,7 +28,7 @@ public class Comments extends ActiveRecord {
 
     // 评论作者
     @NotEmpty(message = "请输入评论作者")
-    @Length(value = 50, message = "姓名过长")
+    @Length(max = 30, message = "姓名过长")
     private String author;
 
     // 评论所属用户id
@@ -54,7 +54,7 @@ public class Comments extends ActiveRecord {
 
     // 评论内容
     @NotEmpty(message = "请输入评论内容")
-    @Length(value = 2000, message = "请输入2000个字符以内的评论")
+    @Length(max = 2000, message = "请输入%d个字符以内的评论")
     private String content;
 
     // 评论类型
