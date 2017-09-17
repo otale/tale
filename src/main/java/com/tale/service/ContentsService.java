@@ -17,6 +17,12 @@ import com.vdurmont.emoji.EmojiParser;
 
 import java.util.Optional;
 
+/**
+ * 文章Service
+ *
+ * @author biezhi
+ * @since 1.3.1
+ */
 @Bean
 public class ContentsService {
 
@@ -26,8 +32,7 @@ public class ContentsService {
     /**
      * 根据id或slug获取文章
      *
-     * @param id
-     * @return
+     * @param id 唯一标识
      */
     public Optional<Contents> getContents(String id) {
         if (StringKit.isNotBlank(id)) {
@@ -42,7 +47,8 @@ public class ContentsService {
 
     /**
      * 发布文章
-     * @param contents
+     *
+     * @param contents 文章对象
      */
     public Integer publish(Contents contents) {
         if (null == contents)
@@ -91,30 +97,16 @@ public class ContentsService {
 
     /**
      * 编辑文章
-     * @param contents
+     *
+     * @param contents 文章对象
      */
     public void updateArticle(Contents contents) {
-        if (null == contents || null == contents.getCid()) {
-            throw new TipException("文章对象不能为空");
-        }
-        if (StringKit.isBlank(contents.getTitle())) {
-            throw new TipException("文章标题不能为空");
-        }
-        if (contents.getTitle().length() > TaleConst.MAX_TITLE_COUNT) {
-            throw new TipException("文章标题最多可以输入" + TaleConst.MAX_TITLE_COUNT + "个字符");
-        }
-        if (StringKit.isBlank(contents.getContent())) {
-            throw new TipException("文章内容不能为空");
-        }
-        if (contents.getContent().length() > TaleConst.MAX_TEXT_COUNT)
-            throw new TipException("文章内容最多可以输入" + TaleConst.MAX_TEXT_COUNT + "个字符");
-
         contents.setModified(DateKit.nowUnix());
-        Integer cid = contents.getCid();
         contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
 
-        String tags = contents.getTags();
-        String categories = contents.getCategories();
+        String  tags       = contents.getTags();
+        String  categories = contents.getCategories();
+        Integer cid        = contents.getCid();
 
         contents.update(cid);
 
@@ -128,7 +120,8 @@ public class ContentsService {
 
     /**
      * 根据文章id删除
-     * @param cid
+     *
+     * @param cid 文章id
      */
     public void delete(int cid) {
         Optional<Contents> contents = this.getContents(cid + "");
@@ -141,9 +134,10 @@ public class ContentsService {
 
     /**
      * 查询分类/标签下的文章归档
-     * @param mid
-     * @param page
-     * @param limit
+     *
+     * @param mid   分类、标签id
+     * @param page  页码
+     * @param limit 每页条数
      * @return
      */
     public Page<Contents> getArticles(Integer mid, int page, int limit) {
@@ -152,7 +146,6 @@ public class ContentsService {
                 "where b.mid = ? and a.status = 'publish' and a.type = 'post'";
 
         return new Contents().page(new PageRow(page, limit), sql, "a.created desc", mid);
-
     }
 
 }

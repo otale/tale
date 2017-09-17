@@ -53,8 +53,8 @@ public class ArticleController extends BaseController {
      * @return
      */
     @GetRoute(value = "")
-    public String index(@Param(defaultValue = "1") int page,
-                        @Param(defaultValue = "15") int limit, Request request) {
+    public String index(@Param(defaultValue = "1") int page, @Param(defaultValue = "15") int limit,
+                        Request request) {
 
         Page<Contents> articles = new Contents().where("type", Types.ARTICLE).page(page, limit, "created desc");
         request.attribute("articles", articles);
@@ -104,7 +104,6 @@ public class ArticleController extends BaseController {
     @PostRoute(value = "publish")
     @JSON
     public RestResponse publishArticle(@Valid Contents contents) {
-
         Users users = this.user();
         contents.setType(Types.ARTICLE);
         contents.setAuthorId(users.getUid());
@@ -136,6 +135,9 @@ public class ArticleController extends BaseController {
     @JSON
     public RestResponse modifyArticle(@Valid Contents contents) {
         try {
+            if(null == contents || null == contents.getCid()){
+                return RestResponse.fail("缺少参数，请重试");
+            }
             contentsService.updateArticle(contents);
             return RestResponse.ok(contents.getCid());
         } catch (Exception e) {

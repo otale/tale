@@ -8,13 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 配置Service
+ *
+ * @author biezhi
+ * @since 1.3.1
+ */
 @Bean
 public class OptionsService {
 
     /**
      * 保存一组配置
      *
-     * @param options
+     * @param options 配置字典表
      */
     public void saveOptions(Map<String, List<String>> options) {
         if (null != options && !options.isEmpty()) {
@@ -25,8 +31,8 @@ public class OptionsService {
     /**
      * 保存配置
      *
-     * @param key
-     * @param value
+     * @param key   配置key
+     * @param value 配置值
      */
     public void saveOption(String key, String value) {
         if (StringKit.isNotBlank(key) && StringKit.isNotBlank(value)) {
@@ -49,8 +55,6 @@ public class OptionsService {
 
     /**
      * 获取系统配置
-     *
-     * @return
      */
     public Map<String, String> getOptions() {
         return getOptions(null);
@@ -59,8 +63,7 @@ public class OptionsService {
     /**
      * 根据key前缀查找配置项
      *
-     * @param key
-     * @return
+     * @param key 配置key
      */
     public Map<String, String> getOptions(String key) {
         Map<String, String> options = new HashMap<>();
@@ -79,7 +82,7 @@ public class OptionsService {
     /**
      * 根据key删除配置项
      *
-     * @param key
+     * @param key 配置key
      */
     public void deleteOption(String key) {
         if (StringKit.isNotBlank(key)) {

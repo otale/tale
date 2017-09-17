@@ -2,7 +2,13 @@ package com.tale.model.entity;
 
 import com.blade.jdbc.annotation.Table;
 import com.blade.jdbc.core.ActiveRecord;
+import com.blade.validator.annotation.Max;
+import com.blade.validator.annotation.NotEmpty;
+import com.tale.init.TaleConst;
 import lombok.Data;
+
+import static com.tale.init.TaleConst.MAX_TEXT_COUNT;
+import static com.tale.init.TaleConst.MAX_TITLE_COUNT;
 
 /**
  * 内容
@@ -16,6 +22,8 @@ public class Contents extends ActiveRecord {
     // post表主键
     private Integer cid;
     // 内容标题
+    @NotEmpty(message = "标题不能为空")
+    @Max(value = MAX_TITLE_COUNT, message = "文章标题最多可以输入" + MAX_TITLE_COUNT + "个字符")
     private String  title;
     // 内容缩略名
     private String  slug;
@@ -24,6 +32,8 @@ public class Contents extends ActiveRecord {
     // 内容更改时的GMT unix时间戳
     private Integer modified;
     // 内容文字
+    @NotEmpty(message = "内容不能为空")
+    @Max(value = MAX_TEXT_COUNT, message = "文章内容最多可以输入" + MAX_TEXT_COUNT + "个字符")
     private String  content;
     // 内容所属用户id
     private Integer authorId;

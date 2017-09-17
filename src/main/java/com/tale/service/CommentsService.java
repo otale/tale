@@ -17,6 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 评论Service
+ *
+ * @author biezhi
+ * @since 1.3.1
+ */
 @Bean
 public class CommentsService {
 

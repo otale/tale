@@ -12,20 +12,26 @@ import com.tale.model.entity.Relationships;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * 分类、标签Service
+ *
+ * @author biezhi
+ * @since 1.3.1
+ */
 @Bean
 public class MetasService {
 
     /**
      * 根据类型查询项目列表
      *
-     * @param types
-     * @return
+     * @param type 类型，tag or category
      */
-    public List<Metas> getMetas(String types) {
-        if (StringKit.isNotBlank(types)) {
-            return new Metas().where("type", types).findAll(OrderBy.of("sort desc, mid desc"));
+    public List<Metas> getMetas(String type) {
+        if (StringKit.isNotBlank(type)) {
+            return new Metas().where("type", type).findAll(OrderBy.of("sort desc, mid desc"));
         }
         return null;
     }
@@ -33,34 +39,31 @@ public class MetasService {
     /**
      * 查询项目映射
      *
-     * @param types
-     * @return
+     * @param type 类型，tag or category
      */
-    public Map<String, List<Contents>> getMetaMapping(String types) {
-        if (StringKit.isNotBlank(types)) {
-            List<Metas> metas = getMetas(types);
+    public Map<String, List<Contents>> getMetaMapping(String type) {
+        if (StringKit.isNotBlank(type)) {
+            List<Metas> metas = getMetas(type);
             if (null != metas) {
-                return metas.stream()
-                        .collect(Collectors.toMap(Metas::getName, (m) -> {
-                            Integer             mid           = m.getMid();
-                            List<Relationships> relationships = new Relationships().where("mid", mid).findAll();
-                            List<Integer>       cids          = relationships.stream().map(Relationships::getCid).collect(Collectors.toList());
-
-                            String         inCids   = cids.stream().map(Object::toString).collect(Collectors.joining(","));
-                            List<Contents> contents = new Contents().where("cid", "in", "(" + inCids + ")").findAll(OrderBy.desc("created"));
-                            return contents;
-                        }));
+                return metas.stream().collect(Collectors.toMap(Metas::getName, this::getMetaContents));
             }
         }
         return new HashMap<>();
     }
 
+    private List<Contents> getMetaContents(Metas m) {
+        Integer             mid           = m.getMid();
+        List<Relationships> relationships = new Relationships().where("mid", mid).findAll();
+        List<Integer>       cidList       = relationships.stream().map(Relationships::getCid).collect(Collectors.toList());
+        List<Contents>      contents      = new Contents().in("cid", cidList).findAll(OrderBy.desc("created"));
+        return contents;
+    }
+
     /**
      * 根据类型和名字查询项
      *
-     * @param type
-     * @param name
-     * @return
+     * @param type 类型，tag or category
+     * @param name 类型名
      */
     public Metas getMeta(String type, String name) {
         if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
@@ -75,9 +78,9 @@ public class MetasService {
     /**
      * 保存多个项目
      *
-     * @param cid
-     * @param names
-     * @param type
+     * @param cid   文章id
+     * @param names 类型名称列表
+     * @param type  类型，tag or category
      */
     public void saveMetas(Integer cid, String names, String type) {
         if (null == cid) {
@@ -92,7 +95,6 @@ public class MetasService {
     }
 
     private void saveOrUpdate(Integer cid, String name, String type) {
-
         Metas metas = new Metas().where("name", name).and("type", type).find();
         int   mid;
         if (null != metas) {
@@ -118,23 +120,25 @@ public class MetasService {
     /**
      * 删除项目
      *
-     * @param mid
+     * @param mid 项目id
      */
     public void delete(int mid) {
         Metas metas = new Metas().find(mid);
-        if (null != metas) {
+        if (null == metas) {
+            return;
+        }
 
-            String type = metas.getType();
-            String name = metas.getName();
+        String type = metas.getType();
+        String name = metas.getName();
+        metas.delete(mid);
 
-            metas.delete(mid);
-
-            List<Relationships> rlist = new Relationships().where("mid", mid).findAll();
-            if (null != rlist) {
-                for (Relationships r : rlist) {
-
-                    Contents contents = new Contents().find(r.getCid());
-                    if (null != contents) {
+        List<Relationships> relationships = new Relationships().where("mid", mid).findAll();
+        if (null != relationships) {
+            relationships.stream()
+                    .map(r -> new Contents().<Contents>find(r.getCid()))
+                    .filter(Objects::nonNull)
+                    .forEach(contents -> {
+                        Integer  cid      = contents.getCid();
                         boolean  isUpdate = false;
                         Contents temp     = new Contents();
                         if (type.equals(Types.CATEGORY)) {
@@ -145,12 +149,10 @@ public class MetasService {
                             temp.setTags(reMeta(name, contents.getTags()));
                             isUpdate = true;
                         }
-                        if (isUpdate) temp.update(r.getCid());
-                    }
-                }
-            }
-            new Relationships().delete("mid", mid);
+                        if (isUpdate) temp.update(cid);
+                    });
         }
+        new Relationships().delete("mid", mid);
     }
 
     /**
@@ -180,16 +182,17 @@ public class MetasService {
             }
         }
     }
+
     private String reMeta(String name, String metas) {
-        String[]     ms   = metas.split(",");
-        StringBuffer sbuf = new StringBuffer();
+        String[]      ms  = metas.split(",");
+        StringBuilder sba = new StringBuilder();
         for (String m : ms) {
             if (!name.equals(m)) {
-                sbuf.append(",").append(m);
+                sba.append(",").append(m);
             }
         }
-        if (sbuf.length() > 0) {
-            return sbuf.substring(1);
+        if (sba.length() > 0) {
+            return sba.substring(1);
         }
         return "";
     }

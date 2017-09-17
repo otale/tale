@@ -41,11 +41,6 @@ public class TaleConst {
     public static final int MAX_TITLE_COUNT = 200;
 
     /**
-     * 点击次数超过多少更新到数据库
-     */
-    public static final int HIT_EXCEED = 10;
-
-    /**
      * 插件菜单
      */
     public static final List<PluginMenu> plugin_menus = new ArrayList<>();
@@ -59,6 +54,5 @@ public class TaleConst {
      * 要过滤的ip列表
      */
     public static final Set<String> BLOCK_IPS = new HashSet<>(16);
-
 
 }

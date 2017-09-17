@@ -90,8 +90,11 @@ public class PageController extends BaseController {
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
     public RestResponse modifyArticle(@Valid Contents contents) {
-        contents.setType(Types.PAGE);
+        if(null == contents || null == contents.getCid()){
+            return RestResponse.fail("缺少参数，请重试");
+        }
         try {
+            contents.setType(Types.PAGE);
             contentsService.updateArticle(contents);
         } catch (Exception e) {
             String msg = "页面编辑失败";

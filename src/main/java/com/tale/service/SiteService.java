@@ -27,15 +27,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 站点服务
+ * 站点Service
  *
- * Created by biezhi on 2017/2/23.
+ * @author biezhi
+ * @since 1.3.1
  */
 @Bean
 public class SiteService {
-
-    @Inject
-    private LogService logService;
 
     @Inject
     private CommentsService commentsService;
@@ -44,7 +42,8 @@ public class SiteService {
 
     /**
      * 初始化站点
-     * @param users
+     *
+     * @param users 用户
      */
     public void initSite(Users users) {
         String pwd = EncrypKit.md5(users.getUsername() + users.getPassword());
@@ -58,7 +57,7 @@ public class SiteService {
             File   lock = new File(cp + "install.lock");
             lock.createNewFile();
             TaleConst.INSTALL = Boolean.TRUE;
-            logService.save(LogActions.INIT_SITE, null, "", uid.intValue());
+            new Logs(LogActions.INIT_SITE, null, "", uid.intValue()).save();
         } catch (Exception e) {
             throw new TipException("初始化站点失败");
         }
@@ -66,8 +65,8 @@ public class SiteService {
 
     /**
      * 最新收到的评论
-     * @param limit
-     * @return
+     *
+     * @param limit 评论数
      */
     public List<Comments> recentComments(int limit) {
         if (limit < 0 || limit > 10) {
@@ -82,7 +81,6 @@ public class SiteService {
      *
      * @param type  最新,随机
      * @param limit 获取条数
-     * @return
      */
     public List<Contents> getContens(String type, int limit) {
 
@@ -113,8 +111,6 @@ public class SiteService {
 
     /**
      * 获取后台统计数据
-     *
-     * @return
      */
     public Statistics getStatistics() {
 
@@ -145,8 +141,6 @@ public class SiteService {
 
     /**
      * 查询文章归档
-     *
-     * @return
      */
     public List<Archive> getArchives() {
         String sql = "select strftime('%Y年%m月', datetime(created, 'unixepoch') ) as date_str, count(*) as count  from t_contents " +
@@ -170,7 +164,8 @@ public class SiteService {
         calender.add(Calendar.MONTH, 1);
         Date endSd = calender.getTime();
         int  end   = DateKit.toUnix(endSd) - 1;
-        List<Contents> contents = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
+        List<Contents> contents = new Contents().where("type", Types.ARTICLE)
+                .and("status", Types.PUBLISH)
                 .and("created", ">", start)
                 .and("created", "<", end)
                 .findAll(OrderBy.desc("created"));
@@ -181,8 +176,8 @@ public class SiteService {
 
     /**
      * 查询一条评论
-     * @param coid
-     * @return
+     *
+     * @param coid 评论主键
      */
     public Comments getComment(Integer coid) {
         if (null != coid) {
@@ -193,18 +188,18 @@ public class SiteService {
 
     /**
      * 系统备份
-     * @param bk_type
-     * @param bk_path
+     *
+     * @param bkType
+     * @param bkPath
      * @param fmt
-     * @return
      */
-    public BackResponse backup(String bk_type, String bk_path, String fmt) throws Exception {
+    public BackResponse backup(String bkType, String bkPath, String fmt) throws Exception {
         BackResponse backResponse = new BackResponse();
-        if ("attach".equals(bk_type)) {
-            if (StringKit.isBlank(bk_path)) {
+        if ("attach".equals(bkType)) {
+            if (StringKit.isBlank(bkPath)) {
                 throw new TipException("请输入备份文件存储路径");
             }
-            if (!Files.isDirectory(Paths.get(bk_path))) {
+            if (!Files.isDirectory(Paths.get(bkPath))) {
                 throw new TipException("请输入一个存在的目录");
             }
             String bkAttachDir = AttachController.CLASSPATH + "upload";
@@ -212,8 +207,8 @@ public class SiteService {
 
             String fname = DateKit.toString(new Date(), fmt) + "_" + StringKit.rand(5) + ".zip";
 
-            String attachPath = bk_path + "/" + "attachs_" + fname;
-            String themesPath = bk_path + "/" + "themes_" + fname;
+            String attachPath = bkPath + "/" + "attachs_" + fname;
+            String themesPath = bkPath + "/" + "themes_" + fname;
 
             ZipUtils.zipFolder(bkAttachDir, attachPath);
             ZipUtils.zipFolder(bkThemesDir, themesPath);
@@ -222,7 +217,7 @@ public class SiteService {
             backResponse.setTheme_path(themesPath);
         }
         // 备份数据库
-        if ("db".equals(bk_type)) {
+        if ("db".equals(bkType)) {
             String filePath = "upload/" + DateKit.toString(new Date(), "yyyyMMddHHmmss") + "_" + StringKit.rand(8) + ".db";
             String cp       = AttachController.CLASSPATH + filePath;
             Files.createDirectory(Paths.get(cp));
@@ -241,6 +236,10 @@ public class SiteService {
 
     /**
      * 获取分类/标签列表
+     *
+     * @param searchType
+     * @param type
+     * @param limit
      * @return
      */
     public List<Metas> getMetas(String searchType, String type, int limit) {
@@ -277,9 +276,8 @@ public class SiteService {
     /**
      * 获取相邻的文章
      *
-     * @param type  上一篇:prev 下一篇:next
-     * @param cid   当前文章id
-     * @return
+     * @param type 上一篇:prev | 下一篇:next
+     * @param cid  当前文章id
      */
     public Contents getNhContent(String type, Integer cid) {
         if (Types.NEXT.equals(type)) {
@@ -293,10 +291,10 @@ public class SiteService {
 
     /**
      * 获取文章的评论
-     * @param cid
-     * @param page
-     * @param limit
-     * @return
+     *
+     * @param cid   文章id
+     * @param page  页码
+     * @param limit 每页条数
      */
     public Page<Comment> getComments(Integer cid, int page, int limit) {
         return commentsService.getComments(cid, page, limit);
@@ -304,7 +302,8 @@ public class SiteService {
 
     /**
      * 清楚缓存
-     * @param key
+     *
+     * @param key 缓存key
      */
     public void cleanCache(String key) {
         if (StringKit.isNotBlank(key)) {

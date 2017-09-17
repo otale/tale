@@ -19,7 +19,6 @@ import com.tale.model.dto.ErrorCode;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
-import com.tale.model.entity.Metas;
 import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
@@ -30,12 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 /**
- * 首页、分类、归档、标签页面
+ * 首页、归档、Feed、评论
  *
  * @author biezhi
  * @since 1.3.1
@@ -141,103 +138,6 @@ public class IndexController extends BaseController {
         temp.setHits(contents.getHits() + 1);
         temp.update(contents.getCid());
         return this.render("post");
-    }
-
-    /**
-     * 分类页
-     *
-     * @return
-     */
-    @GetRoute(value = {"category/:keyword", "category/:keyword.html"})
-    public String categories(Request request, @PathParam String keyword, @Param(defaultValue = "12") int limit) {
-        return this.categories(request, keyword, 1, limit);
-    }
-
-    @GetRoute(value = {"category/:keyword/:page", "category/:keyword/:page.html"})
-    public String categories(Request request, @PathParam String keyword,
-                             @PathParam int page, @Param(defaultValue = "12") int limit) {
-        page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-        Metas metaDto = metasService.getMeta(Types.CATEGORY, keyword);
-        if (null == metaDto) {
-            return this.render_404();
-        }
-
-        Page<Contents> contentsPaginator = contentsService.getArticles(metaDto.getMid(), page, limit);
-
-        request.attribute("articles", contentsPaginator);
-        request.attribute("meta", metaDto);
-        request.attribute("type", "分类");
-        request.attribute("keyword", keyword);
-        request.attribute("is_category", true);
-        request.attribute("page_prefix", "/category/" + keyword);
-
-        return this.render("page-category");
-    }
-
-    /**
-     * 标签列表页面
-     * <p>
-     * 渲染所有的标签和文章映射
-     *
-     * @since 1.3.1
-     */
-    @GetRoute(value = {"tags", "tags.html"})
-    public String tags(Request request) {
-        Map<String, List<Contents>> mapping = metasService.getMetaMapping(Types.TAG);
-        Set<String>                 tags    = mapping.keySet();
-        request.attribute("tags", tags);
-        request.attribute("mapping", mapping);
-        return this.render("tags");
-    }
-
-    /**
-     * 分类列表页
-     *
-     * @since 1.3.1
-     */
-    @GetRoute(value = {"categories", "categories.html"})
-    public String categories() {
-        return this.render("categories");
-    }
-
-    /**
-     * 标签详情页
-     *
-     * @param name 标签名
-     */
-    @GetRoute(value = {"tag/:name", "tag/:name.html"})
-    public String tagPage(Request request, @PathParam String name, @Param(defaultValue = "12") int limit) {
-        return this.tags(request, name, 1, limit);
-    }
-
-
-    /**
-     * 标签下文章分页
-     *
-     * @param request
-     * @param name
-     * @param page
-     * @param limit
-     * @return
-     */
-    @GetRoute(value = {"tag/:name/:page", "tag/:name/:page.html"})
-    public String tags(Request request, @PathParam String name, @PathParam int page, @Param(defaultValue = "12") int limit) {
-
-        page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-        Metas metaDto = metasService.getMeta(Types.TAG, name);
-        if (null == metaDto) {
-            return this.render_404();
-        }
-
-        Page<Contents> contentsPaginator = contentsService.getArticles(metaDto.getMid(), page, limit);
-        request.attribute("articles", contentsPaginator);
-        request.attribute("meta", metaDto);
-        request.attribute("type", "标签");
-        request.attribute("keyword", name);
-        request.attribute("is_tag", true);
-        request.attribute("page_prefix", "/tag/" + name);
-
-        return this.render("page-category");
     }
 
     /**
@@ -372,4 +272,5 @@ public class IndexController extends BaseController {
             return RestResponse.fail(msg);
         }
     }
+
 }
