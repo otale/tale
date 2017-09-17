@@ -126,10 +126,9 @@ public class IndexController extends BaseController {
         Users users = this.user();
         if (StringKit.isNotBlank(screen_name) && StringKit.isNotBlank(email)) {
             Users temp = new Users();
-            temp.setUid(users.getUid());
             temp.setScreen_name(screen_name);
             temp.setEmail(email);
-            temp.update();
+            temp.update(users.getUid());
             logService.save(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid());
         }
         return RestResponse.ok();
@@ -155,10 +154,9 @@ public class IndexController extends BaseController {
 
         try {
             Users temp = new Users();
-            temp.setUid(users.getUid());
             String pwd = EncrypKit.md5(users.getUsername() + password);
             temp.setPassword(pwd);
-            temp.update();
+            temp.update(users.getUid());
             logService.save(LogActions.UP_PWD, null, request.address(), this.getUid());
             return RestResponse.ok();
         } catch (Exception e) {

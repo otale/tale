@@ -27,7 +27,7 @@
 
         #if(!is_empty(comments))
         <ol class="comment-list">
-            #for(comment : comments(6).list)
+            #for(comment : comments(6).rows)
             <li id="li-comment-${comment.coid}" class="comment-body comment-parent comment-odd">
                 <div id="comment-${comment.coid}">
                     <div class="comment-view" onclick="">

@@ -137,7 +137,6 @@ public class MetasService {
                     if (null != contents) {
                         boolean  isUpdate = false;
                         Contents temp     = new Contents();
-                        temp.setCid(r.getCid());
                         if (type.equals(Types.CATEGORY)) {
                             temp.setCategories(reMeta(name, contents.getCategories()));
                             isUpdate = true;
@@ -146,7 +145,7 @@ public class MetasService {
                             temp.setTags(reMeta(name, contents.getTags()));
                             isUpdate = true;
                         }
-                        if (isUpdate) temp.update();
+                        if (isUpdate) temp.update(r.getCid());
                     }
                 }
             }

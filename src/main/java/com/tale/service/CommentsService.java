@@ -60,9 +60,8 @@ public class CommentsService {
             comments.save();
 
             Contents temp = new Contents();
-            temp.setCid(contents.getCid());
             temp.setComments_num(contents.getComments_num() + 1);
-            temp.update();
+            temp.update(contents.getCid());
         } catch (Exception e) {
             throw e;
         }
@@ -88,9 +87,8 @@ public class CommentsService {
             contents.filter(c -> c.getComments_num() > 0)
                     .ifPresent(c -> {
                         Contents temp = new Contents();
-                        temp.setCid(cid);
                         temp.setComments_num(c.getComments_num() - 1);
-                        temp.update();
+                        temp.update(cid);
                     });
         } catch (Exception e) {
             throw e;
@@ -106,7 +104,7 @@ public class CommentsService {
      */
     public Page<Comment> getComments(Integer cid, int page, int limit) {
         if (null != cid) {
-            Page<Comments> cp = new Comments().where("cid", cid).and("parent", 0).page(page, limit);
+            Page<Comments> cp = new Comments().where("cid", cid).and("parent", 0).page(page, limit, "coid desc");
             return cp.map(parent -> {
                 Comment        comment  = new Comment(parent);
                 List<Comments> children = new ArrayList<>();
