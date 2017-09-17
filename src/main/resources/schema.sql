@@ -48,7 +48,6 @@ CREATE TABLE t_logs (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, "acti
 DROP TABLE IF EXISTS t_metas;
 CREATE TABLE t_metas (mid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, name VARCHAR (200) NOT NULL, slug VARCHAR (200), type VARCHAR (32) NOT NULL, description VARCHAR (255), sort INTEGER (4) DEFAULT (0), parent INTEGER (10) DEFAULT (0));
 INSERT INTO t_metas (mid, name, slug, type, description, sort, parent) VALUES (1, '默认分类', NULL, 'category', NULL, 0, 0);
-INSERT INTO t_metas (mid, name, slug, type, description, sort, parent) VALUES (6, '王爵的技术博客', 'http://biezhi.me', 'link', NULL, 0, 0);
 
 -- 表：t_options
 DROP TABLE IF EXISTS t_options;
@@ -66,6 +65,8 @@ INSERT INTO t_options (name, value, description) VALUES ('site_description', '�
 -- 表：t_relationships
 DROP TABLE IF EXISTS t_relationships;
 CREATE TABLE t_relationships (cid INTEGER (10) NOT NULL, mid INTEGER (10) NOT NULL);
+
+INSERT INTO t_relationships(cid, mid) VALUES(2, 1);
 
 -- 表：t_users
 DROP TABLE IF EXISTS t_users;
