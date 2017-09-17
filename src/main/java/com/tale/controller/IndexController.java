@@ -82,7 +82,9 @@ public class IndexController extends BaseController {
             request.attribute("cp", cp);
         }
         request.attribute("article", contents);
-        updateArticleHit(contents.getCid(), contents.getHits());
+        Contents temp = new Contents();
+        temp.setHits(contents.getHits() + 1);
+        temp.update(contents.getCid());
         if (Types.ARTICLE.equals(contents.getType())) {
             return this.render("post");
         }
@@ -135,22 +137,10 @@ public class IndexController extends BaseController {
             int cp = request.queryInt("cp", 1);
             request.attribute("cp", cp);
         }
-        updateArticleHit(contents.getCid(), contents.getHits());
+        Contents temp = new Contents();
+        temp.setHits(contents.getHits() + 1);
+        temp.update(contents.getCid());
         return this.render("post");
-    }
-
-    private void updateArticleHit(Integer cid, Integer chits) {
-        Integer hits = cache.hget(Types.C_ARTICLE_HITS, cid.toString());
-        hits = null == hits ? 1 : hits + 1;
-        if (hits >= TaleConst.HIT_EXCEED) {
-            Contents temp = new Contents();
-            temp.setCid(cid);
-            temp.setHits(chits + hits);
-            temp.update();
-            cache.hset(Types.C_ARTICLE_HITS, cid.toString(), 1);
-        } else {
-            cache.hset(Types.C_ARTICLE_HITS, cid.toString(), hits);
-        }
     }
 
     /**
@@ -273,7 +263,7 @@ public class IndexController extends BaseController {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
 
         Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
-                .like("title",  "%" + keyword + "%").page(page, limit, "created desc");
+                .like("title", "%" + keyword + "%").page(page, limit, "created desc");
 
         request.attribute("articles", articles);
 
