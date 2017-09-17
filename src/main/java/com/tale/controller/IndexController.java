@@ -4,7 +4,6 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.core.Take;
 import com.blade.jdbc.model.Paginator;
 import com.blade.kit.StringKit;
-import com.blade.mvc.Const;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
@@ -32,7 +31,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * 首页、分类、归档、标签页面
+ *
+ * @author biezhi
+ * @since 1.3.1
+ */
 @Slf4j
 @Path
 public class IndexController extends BaseController {
@@ -65,10 +71,11 @@ public class IndexController extends BaseController {
     @CsrfToken(newToken = true)
     @GetRoute(value = {"/:cid", "/:cid.html"})
     public String page(@PathParam String cid, Request request) {
-        Contents contents = contentsService.getContents(cid);
-        if (null == contents) {
+        Optional<Contents> contentsOptional = contentsService.getContents(cid);
+        if (!contentsOptional.isPresent()) {
             return this.render_404();
         }
+        Contents contents = contentsOptional.get();
         if (contents.getAllow_comment()) {
             int cp = request.queryInt("cp", 1);
             request.attribute("cp", cp);
@@ -94,9 +101,8 @@ public class IndexController extends BaseController {
      */
     @GetRoute(value = {"page/:page", "page/:page.html"})
     public String index(Request request, @PathParam int page, @Param(defaultValue = "12") int limit) {
-
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-        Take take = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(page, limit, "created desc");
+        Take                take     = new Take(Contents.class).eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).page(page, limit, "created desc");
         Paginator<Contents> articles = contentsService.getArticles(take);
         request.attribute("articles", articles);
         if (page > 1) {
@@ -113,8 +119,12 @@ public class IndexController extends BaseController {
     @CsrfToken(newToken = true)
     @GetRoute(value = {"article/:cid", "article/:cid.html"})
     public String post(Request request, @PathParam String cid) {
-        Contents contents = contentsService.getContents(cid);
-        if (null == contents || Types.DRAFT.equals(contents.getStatus())) {
+        Optional<Contents> contentsOptional = contentsService.getContents(cid);
+        if (!contentsOptional.isPresent()) {
+            return this.render_404();
+        }
+        Contents contents = contentsOptional.get();
+        if (Types.DRAFT.equals(contents.getStatus())) {
             return this.render_404();
         }
         request.attribute("article", contents);
@@ -173,18 +183,41 @@ public class IndexController extends BaseController {
     }
 
     /**
-     * 标签页
+     * 标签列表页面
+     * <p>
+     * 渲染所有的标签和文章映射
      *
-     * @param name
-     * @return
+     * @since 1.3.1
      */
-    @GetRoute(value = {"tag/:name", "tag/:name.html"})
-    public String tags(Request request, @PathParam String name, @Param(defaultValue = "12") int limit) {
-        return this.tags(request, name, 1, limit);
+    @GetRoute(value = {"tags", "tags.html"})
+    public String tags() {
+
+        return this.render("tags");
     }
 
     /**
-     * 标签分页
+     * 分类列表页
+     *
+     * @since 1.3.1
+     */
+    @GetRoute(value = {"categories", "categories.html"})
+    public String categories() {
+        return this.render("categories");
+    }
+
+    /**
+     * 标签详情页
+     *
+     * @param name 标签名
+     */
+    @GetRoute(value = {"tag/:name", "tag/:name.html"})
+    public String tagPage(Request request, @PathParam String name, @Param(defaultValue = "12") int limit) {
+        return this.tags(request, name, 1, limit);
+    }
+
+
+    /**
+     * 标签下文章分页
      *
      * @param request
      * @param name
@@ -259,24 +292,11 @@ public class IndexController extends BaseController {
     }
 
     /**
-     * 友链页
-     *
-     * @return
-     */
-    @CsrfToken(newToken = true)
-    @GetRoute(value = {"links", "links.html"})
-    public String links(Request request) {
-        List<Metas> links = metasService.getMetas(Types.LINK);
-        request.attribute("links", links);
-        return this.render("links");
-    }
-
-    /**
      * feed页
      *
      * @return
      */
-    @GetRoute(value = {"feed", "feed.xml"})
+    @GetRoute(value = {"feed", "feed.xml", "atom.xml", "sitemap.xml"})
     public void feed(Response response) {
         Paginator<Contents> contentsServiceArticles = contentsService.getArticles(new Take(Contents.class)
                 .eq("type", Types.ARTICLE).eq("status", Types.PUBLISH).eq("allow_feed", true).page(1, TaleConst.MAX_POSTS, "created desc"));
@@ -317,7 +337,7 @@ public class IndexController extends BaseController {
             return RestResponse.fail("非法评论来源");
         }
 
-        String val = request.address() + ":" + comments.getCid();
+        String  val   = request.address() + ":" + comments.getCid();
         Integer count = cache.hget(Types.COMMENTS_FREQUENCY, val);
         if (null != count && count > 0) {
             return RestResponse.fail("您发表评论太快了，请过会再试");
