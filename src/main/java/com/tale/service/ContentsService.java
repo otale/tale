@@ -125,11 +125,10 @@ public class ContentsService {
      */
     public void delete(int cid) {
         Optional<Contents> contents = this.getContents(cid + "");
-        contents.ifPresent(content -> Base.atomic(() -> {
+        contents.ifPresent(content -> {
             new Contents().delete(cid);
             new Relationships().delete("cid", cid);
-            return true;
-        }));
+        });
     }
 
     /**
