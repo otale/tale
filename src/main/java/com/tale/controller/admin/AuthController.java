@@ -1,7 +1,7 @@
 package com.tale.controller.admin;
 
 import com.blade.kit.DateKit;
-import com.blade.kit.EncrypKit;
+import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Path;
@@ -54,7 +54,7 @@ public class AuthController extends BaseController {
             if (count < 1) {
                 return RestResponse.fail("不存在该用户");
             }
-            String pwd = EncrypKit.md5(loginParam.getUsername(), loginParam.getPassword());
+            String pwd = EncryptKit.md5(loginParam.getUsername(), loginParam.getPassword());
 
             Users user = new Users().where("username", loginParam.getUsername()).and("password", pwd).find();
             if (null == user) {

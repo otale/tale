@@ -159,7 +159,7 @@ public final class Commons {
         if (StringKit.isBlank(email)) {
             return avatarUrl;
         }
-        String hash = EncrypKit.md5(email.trim().toLowerCase());
+        String hash = EncryptKit.md5(email.trim().toLowerCase());
         return avatarUrl + "/" + hash;
     }
 

@@ -3,7 +3,7 @@ package com.tale.controller.admin;
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.page.Page;
-import com.blade.kit.EncrypKit;
+import com.blade.kit.EncryptKit;
 import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.JSON;
@@ -141,7 +141,7 @@ public class IndexController extends BaseController {
             return RestResponse.fail("请确认信息输入完整");
         }
 
-        if (!users.getPassword().equals(EncrypKit.md5(users.getUsername() + old_password))) {
+        if (!users.getPassword().equals(EncryptKit.md5(users.getUsername() + old_password))) {
             return RestResponse.fail("旧密码错误");
         }
         if (password.length() < 6 || password.length() > 14) {
@@ -150,7 +150,7 @@ public class IndexController extends BaseController {
 
         try {
             Users  temp = new Users();
-            String pwd  = EncrypKit.md5(users.getUsername() + password);
+            String pwd  = EncryptKit.md5(users.getUsername() + password);
             temp.setPassword(pwd);
             temp.update(users.getUid());
             new Logs(LogActions.UP_PWD, null, request.address(), this.getUid()).save();
