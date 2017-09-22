@@ -7,7 +7,7 @@ import com.blade.jdbc.core.OrderBy;
 import com.blade.jdbc.page.Page;
 import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
-import com.blade.kit.EncrypKit;
+import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
 import com.tale.controller.admin.AttachController;
 import com.tale.exception.TipException;
@@ -46,7 +46,7 @@ public class SiteService {
      * @param users 用户
      */
     public void initSite(Users users) {
-        String pwd = EncrypKit.md5(users.getUsername() + users.getPassword());
+        String pwd = EncryptKit.md5(users.getUsername() + users.getPassword());
         users.setPassword(pwd);
         users.setScreen_name(users.getUsername());
         users.setCreated(DateKit.nowUnix());
