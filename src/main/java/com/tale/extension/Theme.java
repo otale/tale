@@ -680,7 +680,7 @@ public final class Theme {
      * @return
      */
     public static String theme_option(String key) {
-        String theme = Commons.site_option("site_theme", "default");
+        String theme = Commons.site_theme();
         return TaleConst.OPTIONS.get("theme_" + theme + "_options")
                 .filter(StringKit::isNotBlank)
                 .map((String json) -> {

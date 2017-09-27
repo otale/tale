@@ -69,7 +69,7 @@ public class ThemeController extends BaseController {
      */
     @GetRoute(value = "setting")
     public String setting(Request request) {
-        String currentTheme = TaleConst.OPTIONS.get("site_theme", "default");
+        String currentTheme = Commons.site_theme();
         String key          = "theme_" + currentTheme + "_options";
 
         String              option = optionsService.getOption(key);
@@ -94,7 +94,7 @@ public class ThemeController extends BaseController {
             Map<String, List<String>> query = request.parameters();
 
             // theme_milk_options => {  }
-            String currentTheme = TaleConst.OPTIONS.get("site_theme", "default");
+            String currentTheme = Commons.site_theme();
             String key          = "theme_" + currentTheme + "_options";
 
             Map<String, String> options = new HashMap<>();
