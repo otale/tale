@@ -1,4 +1,4 @@
-#include('./header.html',{title: article.title, keywords: article.tags})
+#include('./partial/header.html',{title: article.title, keywords: article.tags})
 <article class="main-content page-page" itemscope itemtype="http://schema.org/Article">
     <div class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -37,5 +37,5 @@
         </div>
     </div>
 </div>
-#include('./comments.html')
-#include('./footer.html')
+#include('./partial/comments.html')
+#include('./partial/footer.html')
