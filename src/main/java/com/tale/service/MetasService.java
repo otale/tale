@@ -9,10 +9,7 @@ import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
 import com.tale.model.entity.Relationships;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,8 +51,11 @@ public class MetasService {
     private List<Contents> getMetaContents(Metas m) {
         Integer             mid           = m.getMid();
         List<Relationships> relationships = new Relationships().where("mid", mid).findAll();
-        List<Integer>       cidList       = relationships.stream().map(Relationships::getCid).collect(Collectors.toList());
-        List<Contents>      contents      = new Contents().in("cid", cidList).findAll(OrderBy.desc("created"));
+        if (null == relationships || relationships.size() == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer>  cidList  = relationships.stream().map(Relationships::getCid).collect(Collectors.toList());
+        List<Contents> contents = new Contents().queryAll("select * from t_contents where cid in (" + cidList.stream().map(Object::toString).collect(Collectors.joining(",")) + ") order by created desc");
         return contents;
     }
 

@@ -69,9 +69,8 @@ public class CategoryController extends BaseController {
             return this.render_404();
         }
 
-        Page<Contents> contentsPaginator = contentsService.getArticles(metaDto.getMid(), page, limit);
-
-        request.attribute("articles", contentsPaginator);
+        Page<Contents> contentsPage = contentsService.getArticles(metaDto.getMid(), page, limit);
+        request.attribute("articles", contentsPage);
         request.attribute("meta", metaDto);
         request.attribute("type", "分类");
         request.attribute("keyword", keyword);

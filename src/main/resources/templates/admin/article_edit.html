@@ -28,6 +28,12 @@
         font-size: 14px;
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     }
+    .mditor .backdrop, .mditor .textarea, .mditor .viewer{
+        font-size: 14px;
+    }
+    .markdown-body{
+        font-size: 14px;
+    }
     .note-toolbar {
         text-align: center;
     }
@@ -84,7 +90,7 @@
 
         <input type="hidden" id="attach_url" value="${attach_url}" />
 
-        <form id="articleForm" role="form" novalidate="novalidate">
+        <form id="articleForm">
             <input type="hidden" name="categories" id="categories"/>
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
             <input type="hidden" name="status" value="${contents.status ?! 'publish'}" id="status"/>
@@ -95,12 +101,12 @@
             <input type="hidden" name="fmtType" id="fmtType" value="${contents.fmtType ?! 'markdown'}"/>
 
             <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
-                <input type="text" class="form-control" placeholder="请输入文章标题（必须）" name="title" required
-                       aria-required="true" value="${contents.title ?! ''}"/>
+                <input class="form-control" placeholder="请输入文章标题（必须）" name="title" required
+                       value="${contents.title ?! ''}"/>
             </div>
 
             <div class="form-group col-md-6" style="padding: 0 0 0 10px;">
-                <input type="text" class="form-control" placeholder="自定义访问路径，如：my-first-article  默认为文章id" name="slug"
+                <input class="form-control" placeholder="自定义访问路径，如：my-first-article  默认为文章id" name="slug"
                        value="${contents.slug ?! ''}"/>
             </div>
 
