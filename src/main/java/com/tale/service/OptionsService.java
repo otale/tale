@@ -79,6 +79,14 @@ public class OptionsService {
         return options;
     }
 
+    public String getOption(String key) {
+        Options options = new Options().where("name", key).find();
+        if (null != options) {
+            return options.getValue();
+        }
+        return null;
+    }
+
     /**
      * 根据key删除配置项
      *

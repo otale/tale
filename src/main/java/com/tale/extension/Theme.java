@@ -1,7 +1,11 @@
 package com.tale.extension;
 
 import com.blade.jdbc.page.Page;
+import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
+import com.blade.kit.json.Ason;
+import com.blade.mvc.WebContext;
+import com.blade.mvc.http.Request;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.Comment;
 import com.tale.model.dto.Types;
@@ -14,10 +18,7 @@ import jetbrick.template.runtime.InterpretContext;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 主题函数
@@ -621,6 +622,29 @@ public final class Theme {
     }
 
     /**
+     * 分页
+     *
+     * @param limit
+     * @return
+     */
+    public static Page<Contents> articles(int limit) {
+        Request request = WebContext.request();
+
+        int page = request.queryInt("page", 1);
+        page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
+
+        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).page(page, limit, "created desc");
+
+        request.attribute("articles", articles);
+        if (page > 1) {
+            WebContext.request().attribute("title", "第" + page + "页");
+        }
+        request.attribute("is_home", true);
+        request.attribute("page_prefix", "/page");
+        return articles;
+    }
+
+    /**
      * 获取当前上下文的文章对象
      *
      * @return
@@ -656,7 +680,17 @@ public final class Theme {
      * @return
      */
     public static String theme_option(String key) {
-        return TaleConst.OPTIONS.get("theme_option_" + key, null);
+        String theme = TaleConst.OPTIONS.get("site_theme", "default");
+        return TaleConst.OPTIONS.get("theme_" + theme + "_options")
+                .filter(StringKit::isNotBlank)
+                .map((String json) -> {
+                    Ason ason = JsonKit.toAson(json);
+                    if(!ason.containsKey(key)){
+                        return "";
+                    }
+                    return ason.getString(key);
+                })
+                .orElse("");
     }
 
     /**

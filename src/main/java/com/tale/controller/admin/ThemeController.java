@@ -4,6 +4,7 @@ import com.blade.Blade;
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.JsonKit;
+import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,8 +69,15 @@ public class ThemeController extends BaseController {
      */
     @GetRoute(value = "setting")
     public String setting(Request request) {
-        Map<String, String> themeOptions = optionsService.getOptions("theme_option_");
-        request.attribute("theme_options", themeOptions);
+        String currentTheme = TaleConst.OPTIONS.get("site_theme", "default");
+        String key          = "theme_" + currentTheme + "_options";
+
+        String              option = optionsService.getOption(key);
+        Map<String, Object> map    = new HashMap<>();
+        if (StringKit.isNotBlank(option)) {
+            map = JsonKit.toAson(option);
+        }
+        request.attribute("theme_options", map);
         return this.render("setting");
     }
 
@@ -82,10 +91,19 @@ public class ThemeController extends BaseController {
     @JSON
     public RestResponse saveSetting(Request request) {
         try {
-            Map<String, List<String>> querys = request.parameters();
-            optionsService.saveOptions(querys);
+            Map<String, List<String>> query = request.parameters();
+
+            // theme_milk_options => {  }
+            String currentTheme = TaleConst.OPTIONS.get("site_theme", "default");
+            String key          = "theme_" + currentTheme + "_options";
+
+            Map<String, String> options = new HashMap<>();
+            query.forEach((k, v) -> options.put(k, v.get(0)));
+
+            optionsService.saveOption(key, JsonKit.toString(options));
+
             TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
-            new Logs(LogActions.THEME_SETTING, JsonKit.toString(querys), request.address(), this.getUid()).save();
+            new Logs(LogActions.THEME_SETTING, JsonKit.toString(query), request.address(), this.getUid()).save();
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "主题设置失败";
