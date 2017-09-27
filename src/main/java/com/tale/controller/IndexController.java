@@ -102,13 +102,13 @@ public class IndexController extends BaseController {
     @GetRoute(value = {"page/:page", "page/:page.html"})
     public String index(Request request, @PathParam int page, @Param(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-
-        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).page(page, limit, "created desc");
-
-        request.attribute("articles", articles);
+//        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).page(page, limit, "created desc");
+//        request.attribute("articles", articles);
         if (page > 1) {
             this.title(request, "第" + page + "页");
         }
+        request.attribute("page_num", page);
+        request.attribute("limit", limit);
         request.attribute("is_home", true);
         request.attribute("page_prefix", "/page");
         return this.render("index");

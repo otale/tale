@@ -629,8 +629,8 @@ public final class Theme {
      */
     public static Page<Contents> articles(int limit) {
         Request request = WebContext.request();
-
-        int page = request.queryInt("page", 1);
+        Integer page    = request.attribute("page_num");
+        page = null == page ? request.queryInt("page", 1) : page;
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
 
         Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).page(page, limit, "created desc");
@@ -680,12 +680,12 @@ public final class Theme {
      * @return
      */
     public static String theme_option(String key) {
-        String theme = TaleConst.OPTIONS.get("site_theme", "default");
+        String theme = Commons.site_option("site_theme", "default");
         return TaleConst.OPTIONS.get("theme_" + theme + "_options")
                 .filter(StringKit::isNotBlank)
                 .map((String json) -> {
                     Ason ason = JsonKit.toAson(json);
-                    if(!ason.containsKey(key)){
+                    if (!ason.containsKey(key)) {
                         return "";
                     }
                     return ason.getString(key);

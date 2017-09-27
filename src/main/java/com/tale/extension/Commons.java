@@ -93,6 +93,15 @@ public final class Commons {
     }
 
     /**
+     * 网站子标题
+     *
+     * @return
+     */
+    public static String site_subtitle() {
+        return site_option("site_subtitle");
+    }
+
+    /**
      * 网站配置项
      *
      * @param key
