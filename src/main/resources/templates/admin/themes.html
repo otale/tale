@@ -12,7 +12,7 @@
             </div>
             <div class="clearfix m-t-10">
                 #if(theme.name == current_theme && theme.hasSetting)
-                <a href="/admin/themes/setting"><span>主题设置</span></a>
+                <a class="btn btn-info" href="/admin/themes/setting"><span>主题设置</span></a>
                 #end
                 #if(theme.name != current_theme)
                 <button onclick="activeTheme('${theme.name}');" type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5">
