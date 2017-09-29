@@ -39,3 +39,119 @@
     <li><span>共${pageInfo.totalPages}页</span></li>
 </ul>
 #end
+
+#macro cdn_url(type)
+    #if(enableCdn)
+        #if(type == "install_head")
+        <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+        #elseif(type == "install_foot")
+        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+        <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery-steps/1.1.0/jquery.steps.min.js"></script>
+        #elseif(type == "html5_respond")
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        #elseif(type == "article_edit_head")
+        <link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.min.css" rel="stylesheet"/>
+        <link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet"/>
+        <link href="//tale-static.b0.upaiyun.com/mditor/css/mditor.min.css" rel="stylesheet"/>
+        <link href="//cdn.bootcss.com/summernote/0.8.2/summernote.css" rel="stylesheet">
+        <link href="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
+        #elseif(type == "article_edit_foot")
+        <script src="//tale-static.b0.upaiyun.com/mditor/js/mditor.min.js"></script>
+        <script src="//cdn.bootcss.com/wysihtml5/0.3.0/wysihtml5.min.js"></script>
+        <script src="//cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
+        <script src="//cdn.bootcss.com/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
+        <script src="//cdn.bootcss.com/multi-select/0.9.12/js/jquery.multi-select.min.js"></script>
+        <script src="//cdn.bootcss.com/select2/3.4.8/select2.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
+        <script src="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.js"></script>
+        <script src="//cdn.bootcss.com/to-markdown/3.1.0/to-markdown.min.js"></script>
+        #elseif(type == "attach_head")
+        <link href="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
+        #elseif(type == "attach_head")
+        <script src="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.js"></script>
+        <script src="//cdn.bootcss.com/clipboard.js/1.6.0/clipboard.min.js"></script>
+        #elseif(type == "profile_foot")
+        <script src="//cdn.bootcss.com/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
+        #elseif(type == "toggles")
+        <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
+        #elseif(type == "login_head")
+        <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+        #elseif(type == "login_foot")
+        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+        <script src="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
+        #elseif(type == "header")
+        <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+        #elseif(type == "footer")
+        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+        <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
+        #end
+    #else
+        #if(type == "install_head")
+        <link href="/static/admin/plugins/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/admin/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+        #elseif(type == "install_foot")
+        <script src="/static/admin/plugins/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/static/admin/plugins/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/static/admin/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
+        <script src="/static/admin/plugins/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+        <script src="/static/admin/plugins/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
+        <script src="/static/admin/plugins/jquery-steps/1.1.0/jquery.steps.min.js"></script>
+        #elseif(type == "html5_respond")
+        <script src="/static/admin/plugins/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="/static/admin/plugins/respond.js/1.3.0/respond.min.js"></script>
+        #elseif(type == "article_edit_head")
+        <link href="/static/admin/plugins/multi-select/0.9.12/css/multi-select.min.css" rel="stylesheet"/>
+        <link href="/static/admin/plugins/select2/3.4.8/select2.min.css" rel="stylesheet"/>
+        <link href="/static/admin/plugins/mditor/css/mditor.min.css" rel="stylesheet"/>
+        <link href="/static/admin/plugins/summernote/0.8.2/summernote.css" rel="stylesheet">
+        <link href="/static/admin/plugins/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
+        #elseif(type == "article_edit_foot")
+        <script src="/static/admin/plugins/mditor/js/mditor.min.js"></script>
+        <script src="/static/admin/plugins/wysihtml5/0.3.0/wysihtml5.min.js"></script>
+        <script src="/static/admin/plugins/summernote/0.8.2/summernote.min.js"></script>
+        <script src="/static/admin/plugins/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
+        <script src="/static/admin/plugins/multi-select/0.9.12/js/jquery.multi-select.min.js"></script>
+        <script src="/static/admin/plugins/select2/3.4.8/select2.min.js"></script>
+        <script src="/static/admin/plugins/jquery-toggles/2.0.4/toggles.min.js"></script>
+        <script src="/static/admin/plugins/dropzone/4.3.0/min/dropzone.min.js"></script>
+        <script src="/static/admin/plugins/to-markdown/3.1.0/to-markdown.min.js"></script>
+        #elseif(type == "attach_head")
+        <link href="/static/admin/plugins/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
+        #elseif(type == "attach_head")
+        <script src="/static/admin/plugins/dropzone/4.3.0/min/dropzone.min.js"></script>
+        <script src="/static/admin/plugins/clipboard.js/1.6.0/clipboard.min.js"></script>
+        #elseif(type == "profile_foot")
+        <script src="/static/admin/plugins/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+        <script src="/static/admin/plugins/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
+        #elseif(type == "toggles")
+        <script src="/static/admin/plugins/jquery-toggles/2.0.4/toggles.min.js"></script>
+        #elseif(type == "login_head")
+        <link href="/static/admin/plugins/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/static/admin/plugins/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/admin/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+        #elseif(type == "login_foot")
+        <script src="/static/admin/plugins/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/static/admin/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
+        #elseif(type == "header")
+        <link href="/static/admin/plugins/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/admin/plugins/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/static/admin/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+        #elseif(type == "footer")
+        <script src="/static/admin/plugins/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/static/admin/plugins/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/static/admin/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
+        #end
+    #end
+#end
