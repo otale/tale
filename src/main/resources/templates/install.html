@@ -6,9 +6,8 @@
     <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
     <title>Tale - 博客安装</title>
     <link href="/static/admin/plugins/jquery.steps/demo/css/jquery.steps.css" rel="stylesheet" type="text/css">
-    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    #call cdn_url('install_head')
     <link href="/static/admin/css/style.min.css" rel="stylesheet" type="text/css">
-    <link href="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
     <style>
         body,html {
             background: url("/static/admin/images/bg/${random(5, '.png')}") no-repeat;
@@ -43,10 +42,8 @@
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    #call cdn_url('html5_respond')
     <![endif]-->
-
 </head>
 <body>
 
@@ -140,14 +137,7 @@
     文件。
     #end
 </div>
-
-<!-- Main  -->
-<script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
-<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="//cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
-<script src="//cdn.bootcss.com/jquery-validate/1.15.1/jquery.validate.min.js"></script>
-<script src="//cdn.bootcss.com/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
-<script src="//cdn.bootcss.com/jquery-steps/1.1.0/jquery.steps.min.js"></script>
+#call cdn_url('install_foot')
 <script src="/static/admin/js/base.js?v=${version}"></script>
 <script src="/static/admin/js/install.js?v=${version}"></script>
 </body>

@@ -1,9 +1,6 @@
 #include('./header.html',{has_sub:'other', active:'page', title:'保存页面'})
 <link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
-
-<link href="//tale-static.b0.upaiyun.com/mditor/css/mditor.min.css" rel="stylesheet"/>
-<link href="//cdn.bootcss.com/summernote/0.8.2/summernote.css" rel="stylesheet">
-
+#call cdn_url('article_edit_head')
 <style rel="stylesheet">
     .mditor .editor{
         font-size: 14px;
@@ -96,12 +93,8 @@
 
 </div>
 #include('./footer.html')
-<script src="//tale-static.b0.upaiyun.com/mditor/js/mditor.min.js"></script>
-<script src="//cdn.bootcss.com/wysihtml5/0.3.0/wysihtml5.min.js"></script>
-<script src="//cdn.bootcss.com/summernote/0.8.2/summernote.min.js"></script>
-<script src="//cdn.bootcss.com/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
 
-<script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
+#call cdn_url('article_edit_foot')
 <script type="text/javascript">
     var mditor, htmlEditor;
     var tale = new $.tale();
