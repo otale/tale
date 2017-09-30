@@ -5,7 +5,7 @@
         <span class="response">#if(null!=login_user) Hi，<a href="${login_user.home_url}" data-no-instant>${login_user.username}</a>
             如果你想 <a href="/logout" title="注销" data-no-instant>注销</a> ? #end</span>
 
-        <form method="post" id="comment-form" class="comment-form" role="form" onsubmit="return TaleComment.subComment();">
+        <form method="post" id="comment-form" class="comment-form" onsubmit="return TaleComment.subComment();">
             <input type="hidden" name="coid" id="coid"/>
             <input type="hidden" name="cid" id="cid" value="${article.cid}"/>
             <input type="hidden" name="csrf_token" value="${csrf_token}"/>

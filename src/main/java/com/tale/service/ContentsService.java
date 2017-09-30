@@ -103,6 +103,8 @@ public class ContentsService {
     public void updateArticle(Contents contents) {
         contents.setModified(DateKit.nowUnix());
         contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
+        contents.setTags(contents.getTags() != null ? contents.getTags() : "");
+        contents.setCategories(contents.getCategories() != null ? contents.getCategories() : "");
 
         String  tags       = contents.getTags();
         String  categories = contents.getCategories();
