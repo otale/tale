@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <meta name="renderer" content="webkit">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-transform"/>
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
-    <meta name="keywords" content="${meta_keywords()}" />
+    <meta name="keywords" content="${meta_keywords()}"/>
     <!--[if lt IE 9]>
     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
     <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
@@ -18,12 +19,17 @@
 </head>
 <body>
 <!--[if lt IE 9]>
-<div class="browsehappy" role="dialog">你正在使用一个过时的浏览器，为了正常的访问, 请<a href="http://browsehappy.com/" target="_blank">升级你的浏览器</a>以查看此页面。</div>
+<div class="browsehappy" role="dialog">你正在使用一个过时的浏览器，为了正常的访问, 请<a href="http://browsehappy.com/"
+                                                                  target="_blank">升级你的浏览器</a>以查看此页面。
+</div>
 <![endif]-->
 <div class="container">
-    <div class="left-col" style="background-image: url(${theme_url('/static/images/')}left-bg${random(4, '.jpg')}); background-size: cover;">
+    <div class="left-col"
+         style="background-image: url(${theme_url('/static/images/')}left-bg${random(4, '.jpg')}); background-size: cover;">
         <header id="header">
-            <div class="profilepic"><a href="/" style="background-image: url(${theme_url('/static/images/avatar.png')});"></a></div>
+            <div class="profilepic"><a href="/"
+                                       style="background-image: url(${theme_url('/static/images/avatar.png')});"></a>
+            </div>
             <h1><a href="/">${site_title()}</a></h1>
             <p class="subtitle">${site_description()}</p>
             <nav id="main-nav">
@@ -34,22 +40,18 @@
                     <li><a href="/links"><i class="iconfont icon-links"></i>友链</a></li>
                 </ul>
             </nav>
+
             <nav id="sub-nav">
                 <div class="social">
-                    #tag social("weibo")
-                    <a class="social weibo" target="blank" href="${social_link('weibo')}"><i class="iconfont icon-weibo"></i></a>
-                    #end
-                    #tag social("github")
-                    <a class="social github" target="blank" href="${social_link('github')}"><i class="iconfont icon-github"></i></a>
-                    #end
-                    #tag social("twitter")
-                    <a class="social twitter" target="blank" href="${social_link('twitter')}"><i class="iconfont icon-twitter"></i></a>
-                    #end
+                    <a class="social weibo" target="blank" href="http://weibo.com/1936027247/profile?topnav=1&wvr=6"><i
+                            class="iconfont icon-weibo"></i></a>
+                    <a class="social github" target="blank" href="https://github.com/iamjohnnyzhuang"><i
+                            class="iconfont icon-github"></i></a>
                     <form id="search" method="post" action="/" role="search">
                         <input type="text" class="input" name="s" required="true" placeholder="...Search">
                     </form>
                     <div id="wechat">
-                        <img src="${theme_url('/static/images/avatar.png')}" />
+                        <img src="${theme_url('/static/images/avatar.png')}"/>
                     </div>
                 </div>
             </nav>
