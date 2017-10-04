@@ -1,0 +1,35 @@
+#include('./partial/header.html', {title: keyword })
+<div class="main-content common-page clearfix">
+    <div class="categorys-item">
+        <div class="common-title">
+            ${type}：${keyword}
+        </div>
+        #if(is_empty(articles))
+        <div>
+            <p>抱歉，还没有相关文章.</p>
+        </div>
+        #else
+        <div class="post-lists">
+            <div class="post-lists-body">
+                #for(article : articles.rows)
+                <div class="post-list-item">
+                    <div class="post-list-item-container ">
+                        <div class="item-label ">
+                            <div class="item-title">
+                                <a href="${permalink()}">${title()}</a>
+                            </div>
+                            <div class="item-meta clearfix">
+                                <div class="item-meta-ico ${show_icon()}"
+                                     style="background: url(/templates/themes/default/static/img/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+                                <div class="item-meta-date">发布于 ${created('yyyy-MM-dd')}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                #end
+            </div>
+        </div>
+        #end
+    </div>
+</div>
+#include('./partial/footer.html')

@@ -1,0 +1,37 @@
+#include('./partial/header.html')
+<div class="mid-col">
+    <div class="mid-col-container">
+        <div id="content" class="inner">
+            <article class="post">
+                <div class="meta">
+                    <div class="date"><time itemprop="datePublished" content="${created("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")}">${created('yyyy-MM-dd')}</time></div>
+                    <div class="comment">
+                        <a href="${permalink()}#comments">${comments_num(' No Comments ', ' %d Comments ')}</a>
+                    </div>
+                </div>
+                <h1 class="title" itemprop="headline">${title()}</h1>
+                <div class="entry-content" itemprop="articleBody">
+                    ${show_content()}
+                    <p class="post-info">
+                        最后更新于&nbsp;<span class="date">${modified('yyyy-MM-dd HH:mm:ss')}</span>&nbsp;并被添加「${show_tags(', ')}」标签，已有 ${views()} 位童鞋阅读过。
+                    </p>
+                    <p class="copyright-info">
+                        本站使用「<a target="_blank" href="http://creativecommons.org/licenses/by/4.0/deed.zh">署名 4.0 国际</a>」创作共享协议，可自由转载、引用，但需署名作者且注明文章出处</a>
+                    </p>
+                </div>
+            </article>
+            <nav class="page-navi">
+                #if(null != article_prev())
+                <span class="prev">« <a href="${permalink(article_prev())}" title="${title(article_prev())}">${title(article_prev())}</a></span>
+                #end
+
+                #if(null != article_next())
+                <span class="next">
+                    <a href="${permalink(article_next())}" title="${title(article_next())}">${title(article_next())}</a> »
+                </span>
+                #end
+            </nav>
+            #include('./partial/comments.html')
+        </div>
+    </div>
+    #include('./partial/footer.html')
