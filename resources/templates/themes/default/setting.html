@@ -1,0 +1,87 @@
+#tag layout_block("bodyContent")
+
+<div class="col-sm-12">
+    <h4 class="page-title">主题设置</h4>
+</div>
+
+<form id="option-from" class="form-horizontal" role="form">
+    <div class="col-md-6">
+        <div class="panel panel-color panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">基本设置</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">主题LOGO</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" name="logo_url"
+                               value="${options.logo_url ?! theme_url('/static/img/logo.png')}"
+                               placeholder="请输入主题LOGO外链"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">主题作者</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" name="author"
+                               value="${options.author ?! 'biezhi'}" placeholder="您的博客昵称">
+                    </div>
+                </div>
+                <div class="clearfix pull-right">
+                    <button type="button" class="btn btn-primary waves-effect waves-light"
+                            onclick="saveThemeOptions('option-from')">
+                        保存设置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-md-6">
+        <div class="panel panel-color panel-inverse">
+            <div class="panel-heading">
+                <h3 class="panel-title">个性化设置</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">微博账号</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" name="social_weibo"
+                               value="${options.social_weibo ?! ''}"
+                               placeholder="微博账号，不输入则不显示">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">知乎账号</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" name="social_zhihu"
+                               value="${options.social_zhihu ?! ''}"
+                               placeholder="知乎账号，不输入则不显示">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Github账号</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" name="social_github"
+                               value="${options.social_github ?! ''}" placeholder="Github账号，不输入则不显示">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Twitter账号</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" name="social_twitter"
+                               value="${options.social_twitter ?! ''}" placeholder="Twitter账号，不输入则不显示">
+                    </div>
+                </div>
+                <div class="clearfix pull-right">
+                    <button type="button" class="btn btn-inverse waves-effect waves-light"
+                            onclick="saveThemeOptions('option-from')">
+                        保存设置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+#end
+#include ("/comm/ts_base_layout.html")
