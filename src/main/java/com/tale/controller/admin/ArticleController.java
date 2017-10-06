@@ -135,8 +135,9 @@ public class ArticleController extends BaseController {
             if (null == contents || null == contents.getCid()) {
                 return RestResponse.fail("缺少参数，请重试");
             }
+            Integer cid = contents.getCid();
             contentsService.updateArticle(contents);
-            return RestResponse.ok(contents.getCid());
+            return RestResponse.ok(cid);
         } catch (Exception e) {
             String msg = "文章编辑失败";
             if (e instanceof TipException) {
