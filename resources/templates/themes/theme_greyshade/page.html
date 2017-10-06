@@ -1,0 +1,13 @@
+#include('./partial/header.html')
+<div class="mid-col">
+    <div class="mid-col-container">
+        <article class="post post-19" itemscope="" itemtype="http://schema.org/Article">
+            <h1 class="title" itemprop="headline">${title()}</h1>
+            <div class="entry-content" itemprop="articleBody">
+                ${show_content()}
+            </div>
+        </article>
+        #include('./partial/comments.html')
+    </div>
+
+#include('./partial/footer.html')

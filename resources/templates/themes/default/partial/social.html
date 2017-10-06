@@ -1,0 +1,21 @@
+<div class="social-list">
+    #if(not_empty(theme_option('social_weibo')))
+    <a class="social weibo" target="blank" href="http://weibo.com/${theme_option('social_weibo')}">微博</a>
+    #end
+
+    #if(not_empty(theme_option('social_zhihu')))
+    <a class="social zhihu" target="blank"
+       href="https://www.zhihu.com/people/${theme_option('social_zhihu')}">知乎</a>
+    #end
+
+    <a class="social rss" target="blank" href="/feed">RSS</a>
+
+    #if(not_empty(theme_option('social_github')))
+    <a class="social github" target="blank"
+       href="https://github.com/${theme_option('social_github')}">Github</a>
+    #end
+
+    #if(not_empty(theme_option('social_twitter')))
+    <a class="social twitter" target="blank" href="https://twitter.com/${theme_option('social_twitter')}">Twitter</a>
+    #end
+</div>

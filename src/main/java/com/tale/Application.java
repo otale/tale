@@ -13,7 +13,7 @@ import com.tale.init.TaleLoader;
 public class Application {
 
     public static void main(String[] args) throws Exception {
-        Blade blade = Blade.me();
+        Blade blade = Blade.me().listen(80);
         TaleLoader.init(blade);
         blade.use(new ValidatorMiddleware(), new CsrfMiddleware()).start(Application.class, args);
     }

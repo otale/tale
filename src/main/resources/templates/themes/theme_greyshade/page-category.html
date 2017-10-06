@@ -1,0 +1,36 @@
+#include('./partial/header.html', {title: keyword + '下的文章' })
+<div class="mid-col">
+    <div class="mid-col-container">
+        <h1 class="title" style="padding-top:30px;"><span style="color: #2479CC;">${keyword}</span> 下的文章</h1>
+        #if(is_empty(articles))
+        <div>
+            <p>抱歉，还没有相关文章.</p>
+        </div>
+        #else
+        #for(article : articles.rows)
+        <article class="post post-list">
+            <div class="meta">
+                <div class="date">
+                    <time>${created('EEE, d MMM yyyy')}</time>
+                </div>
+                <div class="comment">
+                    <a href="${permalink()}#comments">
+                        ${comments_num(' No Comments ', ' %d Comments ')}
+                    </a>
+                </div>
+            </div>
+            <h1 class="title"><a href="${permalink()}">${title()}</a></h1>
+            <div class="entry-content">
+                <p>${intro(200)}</p>
+                <p><a href="${permalink()}" class="more-link">继续阅读 »</a></p>
+            </div>
+        </article>
+        #end
+        <nav class="page-navi">
+            #call pageLink('<i class="icon icon-left"></i> 上一页','prev')
+            #call pageLink('<i class="icon icon-right"></i> 下一页','next')
+        </nav>
+
+        #end
+    </div>
+#include('./partial/footer.html')
