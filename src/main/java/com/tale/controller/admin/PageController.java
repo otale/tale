@@ -91,8 +91,10 @@ public class PageController extends BaseController {
             return RestResponse.fail("缺少参数，请重试");
         }
         try {
+            Integer cid = contents.getCid();
             contents.setType(Types.PAGE);
             contentsService.updateArticle(contents);
+            return RestResponse.ok(cid);
         } catch (Exception e) {
             String msg = "页面编辑失败";
             if (e instanceof TipException) {
@@ -102,7 +104,6 @@ public class PageController extends BaseController {
             }
             return RestResponse.fail(msg);
         }
-        return RestResponse.ok();
     }
 
     @Route(value = "delete")
