@@ -1,0 +1,17 @@
+#include('./partial/header.html')
+<div class="mid-col">
+    <div class="mid-col-container">
+        <div id="content" class="inner">
+            <article class="post post-archives">
+                <h1 class="title">友链</h1>
+                <div class="entry-content">
+                    <ul>
+                        #for(link : links)
+                        <li><a href="${link.slug}" target="_blank">${link.name}</a></li>
+                        #end
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </div>
+#include('./partial/footer.html')

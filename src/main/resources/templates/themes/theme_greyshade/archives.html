@@ -1,0 +1,19 @@
+#include('./partial/header.html', {title: '文章归档'})
+<div class="mid-col">
+    <div class="mid-col-container">
+        <article class="post post-archives">
+            <h1 class="title">文章归档</h1>
+            <div class="entry-content">
+                #for(archive : archives)
+                <h3>${fmtdate(archive.date, 'yyyy - MM')}</h3>
+                <ul>
+                    #for(article : archive.articles)
+                    <li>
+                        <a href="${permalink()}">${title()}</a>&nbsp;&nbsp;&nbsp;&nbsp;( ${fmtdate(article.created, 'EEE, d MMM yyyy')} )</li>
+                    #end
+                </ul>
+                #end
+            </div>
+        </article>
+    </div>
+#include('./partial/footer.html')

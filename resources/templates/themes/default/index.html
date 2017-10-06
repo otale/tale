@@ -1,0 +1,36 @@
+#include('./partial/header.html',{home_page:1})
+<div class="main-content index-page clearfix">
+    <div class="post-lists">
+        <div class="post-lists-body">
+            #for(article : articles(12).rows)
+            <div class="post-list-item">
+                <div class="post-list-item-container">
+                    <div class="item-thumb bg-deepgrey" style="background-image:url(${show_thumb(article)});"></div>
+                    <a href="${permalink()}">
+                        <div class="item-desc">
+                            <p>${intro(75)}...</p>
+                        </div>
+                    </a>
+                    <div class="item-slant reverse-slant bg-deepgrey"></div>
+                    <div class="item-slant"></div>
+                    <div class="item-label">
+                        <div class="item-title"><a href="${permalink()}">${title()}</a>
+                        </div>
+                        <div class="item-meta clearfix">
+                            <div class="item-meta-ico ${show_icon()}"
+                                 style="background: url(/templates/themes/default/static/img/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+                            <div class="item-meta-cat">
+                                ${show_categories()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            #end
+        </div>
+    </div>
+    <div class="lists-navigator clearfix">
+        #call pageNav(articles(12),'←','→','page')
+    </div>
+</div>
+#include('./partial/footer.html')

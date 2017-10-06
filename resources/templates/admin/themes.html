@@ -1,0 +1,58 @@
+#include('./header.html',{active:'themes', title:'主题'})
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="page-title">主题管理</h4>
+    </div>
+    <div class="col-md-12">
+        #for(theme : themes)
+        <div class="col-md-3 text-center m-t-10">
+            <img class="attach-img bx-shadow" src="/templates/themes/${theme.name}/screenshot.png" width="200" height="200" title="${theme.name}"/>
+            <div class="clearfix m-t-10">
+                主题：<span>${theme.name}</span> #if(theme.name == current_theme) <mark>（当前主题）</mark> #end
+            </div>
+            <div class="clearfix m-t-10">
+                #if(theme.name == current_theme && theme.hasSetting)
+                <a class="btn btn-info" href="/admin/themes/setting"><span>主题设置</span></a>
+                #end
+                #if(theme.name != current_theme)
+                <button onclick="activeTheme('${theme.name}');" type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5">
+                    <i class="fa fa-check-circle"></i> <span>启用该主题</span>
+                </button>
+                #end
+            </div>
+        </div>
+        #end
+    </div>
+</div>
+
+#include('./footer.html')
+<script type="text/javascript">
+
+    var tale = new $.tale();
+
+    /**
+     * 启用主题
+     * @param themeName
+     */
+    function activeTheme(themeName) {
+        tale.alertConfirm({
+            title:'确定启用该主题吗?',
+            then: function () {
+                tale.post({
+                    url : '/admin/themes/active',
+                    data: {site_theme: themeName},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOkAndReload('主题启用成功');
+                        } else {
+                            tale.alertError(result.msg || '主题启用失败');
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
