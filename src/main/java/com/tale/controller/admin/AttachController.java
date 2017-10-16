@@ -79,7 +79,7 @@ public class AttachController extends BaseController {
     @JSON
     public RestResponse upload(Request request) {
 
-        log.info("UPLOAD DIR = {}", TaleUtils.upDir);
+        log.info("UPLOAD DIR = {}", TaleUtils.UP_DIR);
 
         Users                 users       = this.user();
         Integer               uid         = users.getUid();
@@ -95,7 +95,7 @@ public class AttachController extends BaseController {
                     String fkey = TaleUtils.getFileKey(fname);
 
                     String ftype    = f.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
-                    String filePath = TaleUtils.upDir + fkey;
+                    String filePath = TaleUtils.UP_DIR + fkey;
 
                     try {
                         Files.write(Paths.get(filePath), f.getData());
@@ -150,8 +150,11 @@ public class AttachController extends BaseController {
             new Logs(LogActions.DEL_ATTACH, attach.getFkey(), request.address(), this.getUid()).save();
         } catch (Exception e) {
             String msg = "附件删除失败";
-            if (e instanceof TipException) msg = e.getMessage();
-            else log.error(msg, e);
+            if (e instanceof TipException) {
+                msg = e.getMessage();
+            } else {
+                log.error(msg, e);
+            }
             return RestResponse.fail(msg);
         }
         return RestResponse.ok();

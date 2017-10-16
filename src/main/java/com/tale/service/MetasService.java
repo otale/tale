@@ -149,7 +149,9 @@ public class MetasService {
                             temp.setTags(reMeta(name, contents.getTags()));
                             isUpdate = true;
                         }
-                        if (isUpdate) temp.update(cid);
+                        if (isUpdate) {
+                            temp.update(cid);
+                        }
                     });
         }
         new Relationships().delete("mid", mid);

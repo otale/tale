@@ -24,10 +24,6 @@ public final class Commons {
 
     private static SiteService siteService;
 
-    private static final List EMPTY = new ArrayList(0);
-
-    private static final Random rand = new Random();
-
     private static final String TEMPLATES = "/templates/";
 
     public static void setSiteService(SiteService ss) {
@@ -244,6 +240,7 @@ public final class Commons {
         return EmojiParser.parseToUnicode(value);
     }
 
+    private static final Pattern SRC_PATTERN = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)");
     /**
      * 获取文章第一张图片
      *
@@ -259,7 +256,7 @@ public final class Commons {
             if (m_image.find()) {
                 img = img + "," + m_image.group();
                 // //匹配src
-                Matcher m = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)").matcher(img);
+                Matcher m = SRC_PATTERN.matcher(img);
                 if (m.find()) {
                     return m.group(1);
                 }

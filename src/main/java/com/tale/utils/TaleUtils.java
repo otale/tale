@@ -28,7 +28,6 @@ import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.Normalizer;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -44,10 +43,10 @@ public class TaleUtils {
     /**
      * 一个月
      */
-    private static final int     one_month  = 30 * 24 * 60 * 60;
-    private static final Random  r          = new Random();
-    private static final Hashids hashIds    = new Hashids(TaleConst.AES_SALT);
-    private static final long[]  hashPrefix = {-1, 2, 0, 1, 7, 0, 9};
+    private static final int     ONE_MONTH   = 30 * 24 * 60 * 60;
+    private static final Random  R           = new Random();
+    private static final Hashids HASH_IDS    = new Hashids(TaleConst.AES_SALT);
+    private static final long[]  HASH_PREFIX = {-1, 2, 0, 1, 7, 0, 9};
 
     /**
      * 匹配邮箱正则
@@ -65,12 +64,12 @@ public class TaleUtils {
      */
     public static void setCookie(Response response, Integer uid) {
         try {
-            hashPrefix[0] = uid;
-            String val = hashIds.encode(hashPrefix);
-            hashPrefix[0] = -1;
+            HASH_PREFIX[0] = uid;
+            String val = HASH_IDS.encode(HASH_PREFIX);
+            HASH_PREFIX[0] = -1;
 //            String  val   = new String(EncrypKit.encryptAES(uid.toString().getBytes(), TaleConst.AES_SALT.getBytes()));
             boolean isSSL = Commons.site_url().startsWith("https");
-            response.cookie("/", TaleConst.USER_IN_COOKIE, val, one_month, isSSL);
+            response.cookie("/", TaleConst.USER_IN_COOKIE, val, ONE_MONTH, isSSL);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,7 +113,7 @@ public class TaleUtils {
             if (c.isPresent()) {
                 try {
                     String value = c.get();
-                    long[] ids   = hashIds.decode(value);
+                    long[] ids   = HASH_IDS.decode(value);
                     if (null != ids && ids.length > 0) {
                         return Long.valueOf(ids[0]).intValue();
                     }
@@ -235,8 +234,6 @@ public class TaleUtils {
         return false;
     }
 
-    private static final Pattern pattern = Pattern.compile("[0x1f]*");
-
     /**
      * 获取RSS输出
      *
@@ -307,66 +304,6 @@ public class TaleUtils {
     }
 
     /**
-     * 过滤XSS注入
-     *
-     * @param value
-     * @return
-     */
-    public static String filterXSS(String value) {
-        String cleanValue = null;
-        if (value != null) {
-            cleanValue = Normalizer.normalize(value, Normalizer.Form.NFD);
-            // Avoid null characters
-            cleanValue = cleanValue.replaceAll("\0", "");
-
-            // Avoid anything between script tags
-            Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            // Avoid anything in a src='...' type of expression
-            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            // Remove any lonesome </script> tag
-            scriptPattern = Pattern.compile("</script>", Pattern.CASE_INSENSITIVE);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            // Remove any lonesome <script ...> tag
-            scriptPattern = Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            // Avoid eval(...) expressions
-            scriptPattern = Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            // Avoid expression(...) expressions
-            scriptPattern = Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            // Avoid javascript:... expressions
-            scriptPattern = Pattern.compile("javascript:", Pattern.CASE_INSENSITIVE);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            // Avoid vbscript:... expressions
-            scriptPattern = Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-
-            // Avoid onload= expressions
-            scriptPattern = Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            cleanValue = scriptPattern.matcher(cleanValue).replaceAll("");
-        }
-        return cleanValue;
-    }
-
-    public static void download(Response response, String filePath) throws Exception {
-        File file = new File(filePath);
-        response.download(file.getName(), file);
-    }
-
-    /**
      * 获取某个范围内的随机数
      *
      * @param max 最大值
@@ -381,8 +318,8 @@ public class TaleUtils {
         }
         //随机交换values.length次
         for (int i = 0; i < values.length; i++) {
-            temp1 = Math.abs(r.nextInt()) % (values.length - 1); //随机产生一个位置
-            temp2 = Math.abs(r.nextInt()) % (values.length - 1); //随机产生另一个位置
+            temp1 = Math.abs(R.nextInt()) % (values.length - 1); //随机产生一个位置
+            temp2 = Math.abs(R.nextInt()) % (values.length - 1); //随机产生另一个位置
             if (temp1 != temp2) {
                 temp3 = values[temp1];
                 values[temp1] = values[temp2];
@@ -406,11 +343,11 @@ public class TaleUtils {
         return '(' + sbuf.substring(1);
     }
 
-    public static final String upDir = AttachController.CLASSPATH.substring(0, AttachController.CLASSPATH.length() - 1);
+    public static final String UP_DIR = AttachController.CLASSPATH.substring(0, AttachController.CLASSPATH.length() - 1);
 
     public static String getFileKey(String name) {
         String prefix = "/upload/" + DateKit.toString(new Date(), "yyyy/MM");
-        String dir    = upDir + prefix;
+        String dir    = UP_DIR + prefix;
         if (!Files.exists(Paths.get(dir))) {
             new File(dir).mkdirs();
         }

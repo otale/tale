@@ -21,8 +21,8 @@ public final class TaleLoader {
 
     private static Blade blade;
 
-    public static void init(Blade blade_) {
-        blade = blade_;
+    public static void init(Blade blade) {
+        TaleLoader.blade = blade;
         loadPlugins();
         loadThemes();
     }

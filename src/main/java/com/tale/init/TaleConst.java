@@ -44,7 +44,7 @@ public class TaleConst {
     /**
      * 插件菜单
      */
-    public static final List<PluginMenu> plugin_menus = new ArrayList<>();
+    public static final List<PluginMenu> PLUGIN_MENUS = new ArrayList<>();
 
     /**
      * 上传文件最大20M

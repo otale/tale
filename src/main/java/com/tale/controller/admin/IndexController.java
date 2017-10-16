@@ -206,7 +206,7 @@ public class IndexController extends BaseController {
                                    @Param String allow_install) {
         // 清除缓存
         if (StringKit.isNotBlank(cache_key)) {
-            if (cache_key.equals("*")) {
+            if ("*".equals(cache_key)) {
                 cache.clean();
             } else {
                 cache.del(cache_key);
