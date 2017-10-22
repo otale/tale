@@ -679,6 +679,20 @@ public final class Theme {
      * @param key
      * @return
      */
+    public static String theme_option(String key, String defaultValue) {
+        String option = theme_option(key);
+        if (StringKit.isBlank(option)) {
+            return defaultValue;
+        }
+        return option;
+    }
+
+    /**
+     * 返回主题设置选项
+     *
+     * @param key
+     * @return
+     */
     public static String theme_option(String key) {
         String theme = Commons.site_theme();
         return TaleConst.OPTIONS.get("theme_" + theme + "_options")
