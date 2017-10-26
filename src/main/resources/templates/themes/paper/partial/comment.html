@@ -1,0 +1,22 @@
+#if(null != article && article.allowComment && theme_option("disqus_shortname") != "")
+<div id="disqus_thread" class="top-gap-big"></div>
+<script>
+    var langMap = {
+        en: 'en',
+        'zh-CN': 'zh'
+    };
+    var disqus_config = function () {
+        this.language = langMap['zh-CN'];
+        this.page.url = '${permalink()}';
+        this.page.identifier = '${permalink()}';
+        this.page.title = '${title()}';
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = '//${theme_option("disqus_shortname")}.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+#end

@@ -1,0 +1,117 @@
+.main {
+  &.article {
+    padding-top: 120px;
+    padding-bottom: 120px;
+    .title {
+      margin: 0;
+      font-weight: bold;
+      color: $black;
+      font-size: 30px;
+      line-height: 42px;
+    }
+    .info {
+      margin-top: 10px;
+      font-size: 14px;
+      .avatar {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        border-radius: 20px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        float: left;
+        margin-top: -4px;
+        border: 1px $greyLighter solid;
+      }
+      .name {
+        margin-right: 5px;
+      }
+      .date {
+        color: $grey;
+        margin-right: 5px;
+      }
+      .tags {
+        @mixin font-main;
+        .tag {
+          margin-right: 5px;
+          color: $grey;
+          text-decoration: none;
+        }
+      }
+    }
+    .recommend {
+      margin-top: 50px;
+      overflow: auto;
+      .nav {
+        width: 100%;
+        .head {
+          font-size: 12px;
+          font-style: italic;
+          margin-bottom: 10px;
+          color: $grey;
+          text-align: center;
+        }
+        .link {
+          color: $black;
+          text-align: center;
+          display: block;
+        }
+        &.prev.more {
+          width: 45%;
+          text-align: left;
+          float: left;
+          .head, .link  {
+            text-align: left;
+          }
+        }
+        &.next.more {
+          width: 45%;
+          text-align: right;
+          float: right;
+          .head, .link {
+            text-align: right;
+          }
+        }
+      }
+    }
+    .author {
+      margin-top: 36px;
+      padding-top: 40px;
+      text-align: center;
+      .avatar {
+        margin: 0 auto;
+        width: 70px;
+        height: 70px;
+        border-radius: 70px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        border: 20px white solid;
+        &:before {
+          border-top: 1px $greyLighter dashed;
+          content: "";
+          width: 100%;
+          position: absolute;
+          left: 0;
+          right: 0;
+          margin-top: 36px;
+          z-index: -1;
+        }
+      }
+      .name {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .intro {
+        @mixin font-main;
+        font-style: italic;
+        margin-top: 8px;
+        font-size: 14px;
+        color: $grey;
+      }
+    }
+    #disqus_thread {
+      margin-top: 50px;
+    }
+  }
+}

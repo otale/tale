@@ -88,11 +88,11 @@ public class WebContext implements BeanProcessor {
 
         JetGlobalContext context = templateEngine.getGlobalContext();
         context.set("version", environment.get("app.version", "v1.0"));
-        context.set("enableCdn", environment.getBoolean("app.enableCdn", true));
+        context.set("enableCdn", environment.getBoolean("app.enableCdn", false));
 
         blade.templateEngine(templateEngine);
 
-        TaleConst.ENABLED_CDN = environment.getBoolean("app.enableCdn", true);
+        TaleConst.ENABLED_CDN = environment.getBoolean("app.enableCdn", false);
         TaleConst.MAX_FILE_SIZE = environment.getInt("app.max-file-size", 20480);
 
         TaleConst.AES_SALT = environment.get("app.salt", "012c456789abcdef");

@@ -1,0 +1,46 @@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1">
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+<meta name="robots" content="index,follow">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${head_title()}">
+<meta name="twitter:description" content="${meta_description()}">
+<meta name="twitter:image:src" content="{{.Site.Url}}{{.Site.Logo}}">
+<!-- Facebook -->
+<meta property="og:url" content="${site_url('/')}">
+<meta property="og:title" content="${head_title()}">
+<meta property="og:description" content="${meta_description()}">
+<meta property="og:site_name" content="${head_title()}">
+<meta property="og:image" content="${theme_url('/static/img/logo.png')}">
+<meta property="og:type" content="website">
+<meta name="robots" content="noodp">
+<!-- Google Plus -->
+<meta itemprop="name" content="${head_title()}">
+<meta itemprop="description" content="${meta_description()}">
+<meta itemprop="image" content="${theme_url('/static/img/logo.png')}">
+<!-- Canonical URL -->
+<link rel="canonical" href="${site_url('/')}">
+
+<link rel="shortcut icon" href="${theme_url('/static/favicon.png')}">
+<link rel="apple-itouch-icon" href="${theme_url('/static/favicon.png')}">
+<link rel="stylesheet" href="${theme_url('/static/css/hight.css')}">
+<script type="text/javascript">
+    var timeSinceLang = {
+        year: '2017',
+        month: '10',
+        day: '22',
+        hour: '14:',
+        minute: '28',
+        second: '00'
+    };
+    var root = "${site_url('/')}";
+</script>
+<meta name="keywords" content="${meta_keywords()}">
+<meta name="description" content="${meta_description()}">
+<meta name="author" content="${theme_option('author')}">
+<title>${head_title()}</title>

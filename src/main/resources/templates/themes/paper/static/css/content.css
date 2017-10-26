@@ -1,0 +1,136 @@
+.main {
+  .content {
+    @mixin font-main;
+    margin-top: 70px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: $black;
+    h1, h2, h3, h4, h5, h6 {
+      @mixin font-main;
+      & + p {
+        margin-top: 10px;
+      }
+    }
+    h1 {
+      font-size: 28px;
+      margin-top: 40px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: 24px;
+      margin-top: 40px;
+      margin-bottom: 10px;
+    }
+    h3 {
+      font-size: 18px;
+      margin-top: 40px;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 30px;
+      margin-top: 30px;
+      text-align: left;
+    }
+    &.preview {
+      p {
+        margin-bottom: 10px;
+        margin-top: 10px;
+      }
+    }
+    a {
+      color: $green;
+      text-decoration: none;
+      border-bottom: 1px dashed $green;
+      &:hover {
+        color: $greenDark;
+        border-bottom: 1px dashed $greenDark;
+      }
+    }
+    code {
+      @mixin font-code;
+      font-size: 14px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin: 0px 3px;
+      background-color: $whiteLight;
+      color: $green;
+    }
+    pre {
+      margin: 0;
+      code {
+        @mixin font-code;
+        color: inherit;
+        font-size: 14px;
+        margin: 0;
+        padding: 10px 15px;
+        border-radius: 6px;
+        border: 2px dashed $white;
+        background-color: $whiteLighter;
+        display: block;
+        overflow: auto;
+      }
+    }
+    blockquote {
+      border-left: 4px $green solid;
+      padding: 0px 10px 0px 20px;
+      margin: 25px 0;
+      margin-left: -23px;
+      font-style: italic;
+    }
+    table {
+      font-size: 14px;
+      width: 100%;
+      border-width: 1px;
+      border-color: $whiteDark;
+      border-collapse: collapse;
+      th {
+        border-width: 1px;
+        padding: 5px;
+        border-style: solid;
+        border-color: $whiteDark;
+        background-color: $white;
+      }
+      td {
+        border-width: 1px;
+        padding: 5px;
+        border-style: solid;
+        border-color: $whiteDark;
+        background-color: $whiteLighter;
+      }
+    }
+    ul {
+      list-style: circle;
+      padding-left: 40px;
+      li {
+        margin: 5px 0;
+      }
+    }
+    ol {
+      padding-left: 40px;
+      li {
+        margin: 5px 0;
+      }
+    }
+    hr {
+      margin: 25px 0;
+      border: 0;
+      border-top: 1px dashed $whiteDark;
+    }
+    img {
+      margin: 30px auto;
+      max-width: 100%;
+      display: block;
+      opacity: 0.6;
+      transition: opacity .3s ease-in;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .image-alt {
+      text-align: center;
+      color: $grey;
+      font-style: italic;
+      margin-top: -10px;
+      margin-bottom: 30px;
+    }
+  }
+}

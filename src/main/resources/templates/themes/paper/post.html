@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        #include('./partial/head.html',{title: article.title, keywords: article.tags})
+    </head>
+    <body>
+        <article class="container">
+            #include('./partial/header.html',{title: article.title, keywords: article.tags})
+            <article class="main article">
+                <h1 class="title">${title()}</h1>
+                <section class="info">
+                    <span class="avatar" style="background-image: url(${theme_url('/static/img/logo.png')});"></span>
+                    <a class="name" href="${site_url('/about')}">${theme_option('author', '王爵nice')}</a>
+                    <span class="date" data-time="${article.created}"><span class="from"></span></span>
+                    <span class="tags">
+                        #for(tag : tag_list())
+                        <a class="tag" href="${site_url('/tag/' + tag)}">${tag}</a>
+                        #end
+                    </span>
+                </section>
+                <article class="content">${show_content()}</article>
+                <section class="author">
+                    <div class="avatar" style="background-image: url(${theme_url('/static/img/logo.png')});"></div>
+                    <a class="name" href="${site_url('/about')}">${theme_option('author', '王爵nice')}</a>
+                    <div class="intro">${theme_option('author_intro')}</div>
+                </section>
+                <section class="recommend">
+                    #set(prev = article_prev())
+                    #set(next = article_next())
+
+                    #if(null != prev)
+                    <section class="nav prev#if(null != next) more#end">
+                        <div class="head">上篇文章</div>
+                        <a class="link" href="${permalink(prev)}">${title(prev)}</a>
+                    </section>
+                    #end
+                    #if(null != next)
+                    <section class="nav next#if(null != prev) more#end">
+                        <div class="head">下篇文章</div>
+                        <a class="link" href="${permalink(next)}">${title(next)}</a>
+                    </section>
+                    #end
+                </section>
+                #include('./partial/comment.html',{title: article.title, keywords: article.tags})
+            </article>
+        </article>
+        #include('./partial/footer.html',{title: article.title, keywords: article.tags})
+        <script src="${theme_url('/static/js/index.js')}"></script>
+    </body>
+</html>
