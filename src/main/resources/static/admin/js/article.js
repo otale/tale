@@ -186,7 +186,6 @@ function  autoSave() {
     var title = $('#articleForm input[name=title]').val();
     if (title != '' && content != '') {
         $('#content-editor').val(content);
-        $("#articleForm #status").val('draft');
         $("#articleForm #categories").val($('#multiple-sel').val());
         var params = $("#articleForm").serialize();
         var url = $('#articleForm #cid').val() != '' ? '/admin/article/modify' : '/admin/article/publish';
