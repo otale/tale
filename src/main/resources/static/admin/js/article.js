@@ -3,6 +3,7 @@ var tale = new $.tale();
 var attach_url = $('#attach_url').val();
 // 每60秒自动保存一次草稿
 var refreshIntervalId = setInterval("autoSave()", 60 * 1000);
+Dropzone.autoDiscover = false;
 
 $(document).ready(function () {
 
@@ -105,7 +106,7 @@ $(document).ready(function () {
         }
     });
 
-    $(".select2").select2({
+    $("#multiple-sel").select2({
         width: '100%'
     });
 
@@ -140,8 +141,6 @@ $(document).ready(function () {
         $('#thumb-toggle').attr('on', 'false');
         $('#dropzone-container').hide();
     }
-
-    Dropzone.autoDiscover = false;
 
     var thumbdropzone = $('.dropzone');
 
