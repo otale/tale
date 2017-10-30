@@ -276,14 +276,6 @@ public class TaleUtils {
         channel.setItems(items);
         WireFeedOutput out = new WireFeedOutput();
         return out.outputString(channel);
-//        try {
-//            return out.outputString(channel);
-//        } catch (org.jdom.IllegalDataException e) {
-//            //e.printStackTrace();
-//
-//        } catch (Exception e) {
-//            throw e;
-//        }
     }
 
     /**
