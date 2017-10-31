@@ -122,7 +122,7 @@ public class IndexController extends BaseController {
         Users users = this.user();
         if (StringKit.isNotBlank(screen_name) && StringKit.isNotBlank(email)) {
             Users temp = new Users();
-            temp.setScreen_name(screen_name);
+            temp.setScreenName(screen_name);
             temp.setEmail(email);
             temp.update(users.getUid());
             new Logs(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid()).save();

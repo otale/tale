@@ -11,6 +11,7 @@ import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
+import com.blade.server.netty.HttpConst;
 import com.tale.controller.admin.AttachController;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
@@ -40,8 +41,8 @@ public class InstallController extends BaseController {
      */
     @Route(value = "/", method = HttpMethod.GET)
     public String index(Request request) {
-        boolean existInstall = Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"));
-        int allow_reinstall = TaleConst.OPTIONS.getInt("allow_install", 0);
+        boolean existInstall    = Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"));
+        int     allow_reinstall = TaleConst.OPTIONS.getInt("allow_install", 0);
 
         if (allow_reinstall == 1) {
             request.attribute("is_install", false);
@@ -83,7 +84,7 @@ public class InstallController extends BaseController {
 
             siteService.initSite(temp);
 
-            if (site_url.endsWith("/")) {
+            if (site_url.endsWith(HttpConst.SLASH)) {
                 site_url = site_url.substring(0, site_url.length() - 1);
             }
             if (!site_url.startsWith("http")) {

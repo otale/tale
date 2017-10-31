@@ -70,12 +70,17 @@
                         <a href="/admin/article" class="waves-effect #if(active=='article') active #end"><i class="fa fa-list" aria-hidden="true"></i><span> 文章管理 </span></a>
                     </li>
 
+                    <li #if(active=='attach') class="active" #end>
+                        <a href="/admin/attach" class="waves-effect #if(active=='attach') active #end"><i class="fa fa-cloud-upload" aria-hidden="true"></i><span> 文件管理 </span></a>
+                    </li>
+
+                    #if(login_user.groupName == 'ADMIN')
                     <li #if(active=='page') class="active" #end>
                         <a href="/admin/page" class="waves-effect #if(active=='page') active #end"><i class="fa fa-file-text" aria-hidden="true"></i><span> 页面管理 </span></a>
                     </li>
 
-                    <li #if(active=='attach') class="active" #end>
-                        <a href="/admin/attach" class="waves-effect #if(active=='attach') active #end"><i class="fa fa-cloud-upload" aria-hidden="true"></i><span> 文件管理 </span></a>
+                    <li #if(active=='users') class="active" #end>
+                        <a href="/admin/users" class="waves-effect #if(active=='users') active #end"><i class="fa fa-cloud-upload" aria-hidden="true"></i><span> 用户管理 </span></a>
                     </li>
 
                     <li class="has_sub">
@@ -106,6 +111,8 @@
                         <a href="/admin/plugins/${item.slug}" class="waves-effect #if(active==item.slug) active #end"><i class="${item.icon ?! 'fa fa-gear'}" aria-hidden="true"></i><span> ${item.name} </span></a>
                     </li>
                     #end
+                    #end
+
                 </ul>
                 <div class="clearfix"></div>
             </div>

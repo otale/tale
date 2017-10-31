@@ -1,0 +1,139 @@
+#include('./header.html',{active:'users', title:'用户管理'})
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="page-title">用户管理</h4>
+    </div>
+    <div class="col-md-12">
+        <div class="pull-right">
+            <button class="btn btn-success waves-effect waves-light m-b-5" onclick="addNewUser()">添加用户</button>
+        </div>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>用户名</th>
+                <th>邮箱</th>
+                <th>创建时间</th>
+                <th>最后登录时间</th>
+                <th>用户权限</th>
+                <th>用户状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            #for(item : users.rows)
+            <tr cid="${item.uid}">
+                <td>${item.username}</td>
+                <td>${item.email}</td>
+                <td>${fmtdate(item.created, 'yyyy-MM-dd HH:mm:ss')}</td>
+                <td>
+                    #if(null != item.logged && item.logged > 0)
+                    ${fmtdate(item.logged, 'yyyy-MM-dd HH:mm:ss')}
+                    #else
+                    尚未登录
+                    #end
+                </td>
+                <td>
+                    #if(item.groupName == 'ADMIN')
+                    管理员
+                    #elseif(item.groupName == 'MEMBER')
+                    会员
+                    #end
+                </td>
+                <td>
+                    #if(item.state == 1)
+                    正常
+                    #elseif(item.state == 0)
+                    禁用
+                    #end
+                </td>
+                <td>
+                    #if(item.groupName != 'ADMIN')
+                    <a href="">禁用</a>
+                    <a href="">删除</a>
+                    <a href="">修改密码</a>
+                    #end
+                </td>
+            </tr>
+            #end
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="add-user-model" class="hidden">
+    <form class="form-horizontal" role="form">
+        <input type="hidden" name="state" value="1" />
+        <input type="hidden" name="groupName" value="MEMBER" />
+
+        <div class="form-group">
+            <label class="col-md-3 control-label">用户名</label>
+            <div class="col-md-9">
+                <input type="text" class="form-control" name="username" placeholder="请输入登录账户"
+                       required aria-required="true"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">用户邮箱</label>
+            <div class="col-md-9">
+                <input type="text" class="form-control" name="email" placeholder="请输入用户邮箱"
+                       required aria-required="true"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">用户密码</label>
+            <div class="col-md-9">
+                <input type="password" class="form-control" name="password" placeholder="请输入6位以上密码"
+                       required aria-required="true"/>
+            </div>
+        </div>
+    </form>
+</div>
+
+#include('./footer.html')
+
+<script type="text/javascript">
+    var tale = new $.tale();
+
+    function addNewUser() {
+        swal({
+            title: '添加新用户',
+            html: $('#add-user-model').html(),
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            showCancelButton: true
+        }).then(function (e) {
+            tale.post({
+                url: '/admin/users/create',
+                data: {cid: cid},
+                success: function (result) {
+                    if (result && result.success) {
+                        tale.alertOkAndReload('页面删除成功');
+                    } else {
+                        tale.alertError(result.msg || '页面删除失败');
+                    }
+                }
+            });
+        }).catch(swal.noop);
+    }
+
+    function delPost(cid) {
+        tale.alertConfirm({
+            title: '确定删除这个页面吗?',
+            then: function () {
+                tale.post({
+                    url: '/admin/page/delete',
+                    data: {cid: cid},
+                    success: function (result) {
+                        if (result && result.success) {
+                            tale.alertOkAndReload('页面删除成功');
+                        } else {
+                            tale.alertError(result.msg || '页面删除失败');
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

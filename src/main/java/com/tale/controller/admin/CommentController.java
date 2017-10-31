@@ -114,7 +114,7 @@ public class CommentController extends BaseController {
         comments.setAuthor_id(users.getUid());
         comments.setCid(c.getCid());
         comments.setIp(request.address());
-        comments.setUrl(users.getHome_url());
+        comments.setUrl(users.getHomeUrl());
         comments.setContent(content);
         if (StringKit.isNotBlank(users.getEmail())) {
             comments.setMail(users.getEmail());

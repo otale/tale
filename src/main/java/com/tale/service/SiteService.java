@@ -10,6 +10,8 @@ import com.blade.kit.DateKit;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
 import com.tale.controller.admin.AttachController;
+import com.tale.enums.GroupName;
+import com.tale.enums.UserState;
 import com.tale.exception.TipException;
 import com.tale.extension.Theme;
 import com.tale.init.SqliteJdbc;
@@ -48,7 +50,10 @@ public class SiteService {
     public void initSite(Users users) {
         String pwd = EncryptKit.md5(users.getUsername() + users.getPassword());
         users.setPassword(pwd);
-        users.setScreen_name(users.getUsername());
+        users.setScreenName(users.getUsername());
+        users.setCreated(DateKit.nowUnix());
+        users.setGroupName(GroupName.ADMIN.name());
+        users.setState(UserState.ENABLED.getState());
         users.setCreated(DateKit.nowUnix());
         Integer uid = users.save();
 
