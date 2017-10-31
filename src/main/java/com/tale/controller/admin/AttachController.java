@@ -142,15 +142,16 @@ public class AttachController extends BaseController {
             if (null == attach) {
                 return RestResponse.fail("不存在该附件");
             }
-            attach.delete(id);
+            String fkey = attach.getFkey();
             siteService.cleanCache(Types.C_STATISTICS);
-            String             filePath = CLASSPATH.substring(0, CLASSPATH.length() - 1) + attach.getFkey();
+            String             filePath = CLASSPATH.substring(0, CLASSPATH.length() - 1) + fkey;
             java.nio.file.Path path     = Paths.get(filePath);
             log.info("Delete attach: [{}]", filePath);
             if (Files.exists(path)) {
                 Files.delete(path);
             }
-            new Logs(LogActions.DEL_ATTACH, attach.getFkey(), request.address(), this.getUid()).save();
+            attach.delete(id);
+            new Logs(LogActions.DEL_ATTACH, fkey, request.address(), this.getUid()).save();
         } catch (Exception e) {
             String msg = "附件删除失败";
             if (e instanceof TipException) {
