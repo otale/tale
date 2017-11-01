@@ -74,8 +74,13 @@ public class ThemeController extends BaseController {
 
         String              option = optionsService.getOption(key);
         Map<String, Object> map    = new HashMap<>();
-        if (StringKit.isNotBlank(option)) {
-            map = JsonKit.toAson(option);
+        try {
+            if (StringKit.isNotBlank(option)) {
+                map = JsonKit.toAson(option);
+            }
+            request.attribute("theme_options", map);
+        } catch (Exception e) {
+            log.error("解析主题设置出现异常", e);
         }
         request.attribute("theme_options", map);
         return this.render("setting");
