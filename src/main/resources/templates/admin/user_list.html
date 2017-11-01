@@ -48,9 +48,9 @@
                 </td>
                 <td>
                     #if(item.groupName != 'ADMIN')
-                    <a href="">禁用</a>
-                    <a href="">删除</a>
-                    <a href="">修改密码</a>
+                    <button class="btn btn-warning" onclick="updateState(${item.uid}, 0)">禁用</button>
+                    <button class="btn btn-danger" onclick="updateState(${item.uid}, -1)">删除</button>
+                    <button class="btn btn-info" onclick="updatePassword(${item.uid})">修改密码</button>
                     #end
                 </td>
             </tr>
@@ -61,9 +61,9 @@
 </div>
 
 <div id="add-user-model" class="hidden">
-    <form class="form-horizontal" role="form">
-        <input type="hidden" name="state" value="1" />
-        <input type="hidden" name="groupName" value="MEMBER" />
+    <form class="form-horizontal" role="form" id="createUserForm">
+        <input type="hidden" name="state" value="1"/>
+        <input type="hidden" name="groupName" value="MEMBER"/>
 
         <div class="form-group">
             <label class="col-md-3 control-label">用户名</label>
@@ -75,8 +75,7 @@
         <div class="form-group">
             <label class="col-md-3 control-label">用户邮箱</label>
             <div class="col-md-9">
-                <input type="text" class="form-control" name="email" placeholder="请输入用户邮箱"
-                       required aria-required="true"/>
+                <input type="text" class="form-control" name="email" placeholder="请输入用户邮箱" />
             </div>
         </div>
         <div class="form-group">
@@ -89,50 +88,144 @@
     </form>
 </div>
 
-#include('./footer.html')
+<div id="update-pass-model" class="hidden">
+    <form class="form-horizontal" role="form">
+        <input type="hidden" name="uid"/>
+        <div class="form-group">
+            <label class="col-md-3 control-label">用户密码</label>
+            <div class="col-md-9">
+                <input type="password" class="form-control" name="password" placeholder="请输入6位以上密码"
+                       required aria-required="true"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">确认密码</label>
+            <div class="col-md-9">
+                <input type="password" class="form-control" name="password" placeholder="请确认密码"
+                       required aria-required="true"/>
+            </div>
+        </div>
+    </form>
+</div>
 
+#include('./footer.html')
+<script src="/static/admin/plugins/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+<script src="/static/admin/plugins/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
 <script type="text/javascript">
     var tale = new $.tale();
-
     function addNewUser() {
         swal({
             title: '添加新用户',
             html: $('#add-user-model').html(),
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            showCancelButton: true
-        }).then(function (e) {
-            tale.post({
-                url: '/admin/users/create',
-                data: {cid: cid},
-                success: function (result) {
-                    if (result && result.success) {
-                        tale.alertOkAndReload('页面删除成功');
-                    } else {
-                        tale.alertError(result.msg || '页面删除失败');
-                    }
-                }
-            });
+            showCancelButton: true,
+            preConfirm: function () {
+                return new Promise(function (resolve, reject) {
+                    $('.swal2-container #createUserForm').validate({
+                        rules: {
+                            username: {
+                                required: true,
+                                minlength: 2
+                            },
+                            password: {
+                                required: true,
+                                minlength: 5
+                            },
+                            confirm_password: {
+                                required: true,
+                                minlength: 5,
+                                equalTo: "#password"
+                            },
+                            email: {
+                                required: true,
+                                email: true
+                            }
+                        },
+                        messages: {
+                            username: {
+                                required: "请输入用户名",
+                                minlength: "用户名必需由两个字母组成"
+                            },
+                            password: {
+                                required: "请输入密码",
+                                minlength: "密码长度不能小于 5 个字母"
+                            },
+                            confirm_password: {
+                                required: "请输入密码",
+                                minlength: "密码长度不能小于 5 个字母",
+                                equalTo: "两次密码输入不一致"
+                            },
+                            email: "请输入一个正确的邮箱"
+                        },
+                        submitHandler: function () {
+                            tale.post({
+                                url: '/admin/users/create',
+                                data: $('.swal2-container form').serialize(),
+                                success: function (result) {
+                                    if (result && result.success) {
+                                        tale.alertOkAndReload('新增成功');
+                                    } else {
+                                        tale.alertError(result.msg || '新增失败');
+                                    }
+                                }
+                            });
+                        }
+                    });
+                })
+            }
         }).catch(swal.noop);
     }
 
-    function delPost(cid) {
+    function updateState(uid, state) {
         tale.alertConfirm({
-            title: '确定删除这个页面吗?',
+            title: '确定操作吗?',
             then: function () {
                 tale.post({
-                    url: '/admin/page/delete',
-                    data: {cid: cid},
+                    url: '/admin/users/update',
+                    data: {uid: uid, state: state},
                     success: function (result) {
                         if (result && result.success) {
-                            tale.alertOkAndReload('页面删除成功');
+                            tale.alertOkAndReload('操作成功');
                         } else {
-                            tale.alertError(result.msg || '页面删除失败');
+                            tale.alertError(result.msg || '操作失败');
                         }
                     }
                 });
             }
         });
+    }
+
+    function updatePassword(username) {
+        swal({
+            title: '修改 ['+ username +'] 的密码',
+            html: $('#update-pass-model').html(),
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            showCancelButton: true,
+            preConfirm: function () {
+                return new Promise(function (resolve, reject) {
+                    $('.swal2-container form').validate({
+
+                        submitHandler: function () {
+                            tale.post({
+                                url: '/admin/users/create',
+                                data: $('.swal2-container form').serialize(),
+                                success: function (result) {
+                                    if (result && result.success) {
+                                        tale.alertOkAndReload('新增成功');
+                                    } else {
+                                        tale.alertError(result.msg || '新增失败');
+                                    }
+                                }
+                            });
+                        }
+                    });
+                })
+            }
+        }).then(function (e) {
+
+        }).catch(swal.noop);
     }
 </script>
 </body>
