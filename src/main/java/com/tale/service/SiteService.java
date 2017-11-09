@@ -261,8 +261,9 @@ public class SiteService {
 
         // 随机获取项目
         if (Types.RANDOM_META.equals(searchType)) {
-            List<Integer> mids = new Metas().queryAll("select mid from t_metas where type = ? order by random() * mid limit ?", type, limit);
-            if (BladeKit.isNotEmpty(mids)) {
+            List<Metas> metas = new Metas().queryAll("select mid from t_metas where type = ? order by random() * mid limit ?", type, limit);
+            if (BladeKit.isNotEmpty(metas)) {
+                List<Integer> mids = metas.stream().map(Metas::getMid).collect(Collectors.toList());
                 String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                         "where a.mid in " + in + "group by a.mid order by count desc, a.mid desc";
