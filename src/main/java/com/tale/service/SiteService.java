@@ -100,7 +100,7 @@ public class SiteService {
 
         // 随机文章
         if (Types.RANDOM_ARTICLE.equals(type)) {
-            List<Integer> cids = new ActiveRecord().queryAll("select cid from t_contents where type = ? and status = ? order by rand() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
+            List<Integer> cids = new ActiveRecord().queryAll("select cid from t_contents where type = ? and status = ? order by random() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
             if (BladeKit.isNotEmpty(cids)) {
                 String inCids = cids.stream().map(Object::toString).collect(Collectors.joining(","));
                 return new Contents().where("cid", "in", "(" + inCids + ")").findAll();
@@ -261,7 +261,7 @@ public class SiteService {
 
         // 随机获取项目
         if (Types.RANDOM_META.equals(searchType)) {
-            List<Integer> mids = new ActiveRecord().queryAll("select mid from t_metas where type = ? order by rand() * mid limit ?", type, limit);
+            List<Integer> mids = new Metas().queryAll("select mid from t_metas where type = ? order by random() * mid limit ?", type, limit);
             if (BladeKit.isNotEmpty(mids)) {
                 String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
