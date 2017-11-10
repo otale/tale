@@ -72,11 +72,11 @@ public final class Theme {
         InterpretContext ctx   = InterpretContext.current();
         Object           value = ctx.getValueStack().getValue("title");
 
-        String p = "首页";
+        String p = "";
         if (null != value) {
-            p = value.toString();
+            p = value.toString() + " - ";
         }
-        return p + " - " + Commons.site_option("site_title", "Tale 博客");
+        return p + Commons.site_option("site_title", "Tale 博客");
     }
 
     /**
