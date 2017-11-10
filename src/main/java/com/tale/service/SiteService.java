@@ -90,20 +90,17 @@ public class SiteService {
 
         // 最新文章
         if (Types.RECENT_ARTICLE.equals(type)) {
-
             Page<Contents> contentsPage = new Contents().where("status", Types.PUBLISH)
                     .and("type", Types.ARTICLE)
                     .page(1, limit, "created desc");
-
             return contentsPage.getRows();
         }
 
         // 随机文章
         if (Types.RANDOM_ARTICLE.equals(type)) {
-            List<Integer> cids = new ActiveRecord().queryAll("select cid from t_contents where type = ? and status = ? order by random() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
+            List<Integer> cids = new ActiveRecord().queryAll(Integer.class, "select cid from t_contents where type = ? and status = ? order by random() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
             if (BladeKit.isNotEmpty(cids)) {
-                String inCids = cids.stream().map(Object::toString).collect(Collectors.joining(","));
-                return new Contents().where("cid", "in", "(" + inCids + ")").findAll();
+                return new Contents().in("cid", cids).findAll();
             }
         }
         return new ArrayList<>();
@@ -261,9 +258,8 @@ public class SiteService {
 
         // 随机获取项目
         if (Types.RANDOM_META.equals(searchType)) {
-            List<Metas> metas = new Metas().queryAll("select mid from t_metas where type = ? order by random() * mid limit ?", type, limit);
-            if (BladeKit.isNotEmpty(metas)) {
-                List<Integer> mids = metas.stream().map(Metas::getMid).collect(Collectors.toList());
+            List<Integer> mids = new ActiveRecord().queryAll(Integer.class, "select mid from t_metas where type = ? order by random() * mid limit ?", type, limit);
+            if (BladeKit.isNotEmpty(mids)) {
                 String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                         "where a.mid in " + in + "group by a.mid order by count desc, a.mid desc";
