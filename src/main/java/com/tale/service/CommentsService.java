@@ -48,6 +48,8 @@ public class CommentsService {
         try {
             comments.setOwner_id(contents.getAuthorId());
             comments.setCreated(DateKit.nowUnix());
+            comments.setParent(comments.getCoid());
+            comments.setCoid(null);
             comments.save();
 
             Contents temp = new Contents();
