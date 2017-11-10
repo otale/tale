@@ -105,7 +105,7 @@ public class WebContext implements BeanProcessor {
             TaleConst.INSTALL = Boolean.TRUE;
         }
 
-        BaseController.THEME = "themes" + File.separatorChar + Commons.site_option("site_theme");
+        BaseController.THEME = "themes/" + Commons.site_option("site_theme");
 
         TaleConst.BCONF = environment;
     }
