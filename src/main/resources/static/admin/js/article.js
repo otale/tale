@@ -249,10 +249,10 @@ function allow_comment(obj) {
     var on = this_.attr('on');
     if (on == 'true') {
         this_.attr('on', 'false');
-        $('#allow_comment').val('false');
+        $('#allowComment').val('false');
     } else {
         this_.attr('on', 'true');
-        $('#allow_comment').val('true');
+        $('#allowComment').val('true');
     }
 }
 
@@ -261,10 +261,10 @@ function allow_ping(obj) {
     var on = this_.attr('on');
     if (on == 'true') {
         this_.attr('on', 'false');
-        $('#allow_ping').val('false');
+        $('#allowPing').val('false');
     } else {
         this_.attr('on', 'true');
-        $('#allow_ping').val('true');
+        $('#allowPing').val('true');
     }
 }
 
@@ -274,10 +274,10 @@ function allow_feed(obj) {
     var on = this_.attr('on');
     if (on == 'true') {
         this_.attr('on', 'false');
-        $('#allow_feed').val('false');
+        $('#allowFeed').val('false');
     } else {
         this_.attr('on', 'true');
-        $('#allow_feed').val('true');
+        $('#allowFeed').val('true');
     }
 }
 
