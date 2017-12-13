@@ -1,0 +1,59 @@
+#include('./header.html',{has_sub:'other', active:'template', title:'编辑模板'})
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="page-title">编辑模板</h4>
+    </div>
+    <div class="col-md-12">
+
+        <select id="tplSelect" onchange="showContent(this)">
+            <option selected value="">请选择模板文件</option>
+            #for(tpl : tpls)
+            <option value="${tpl}">${tpl}</option>
+            #end
+        </select>
+
+        <button class="btn btn-primary waves-effect waves-light m-b-5" onclick="saveTpl()">保存修改</button>
+
+        <div>
+            <textarea id="tpl-preview" rows="20" cols="100%" placeholder="选择模板后进行修改"></textarea>
+        </div>
+    </div>
+</div>
+
+#include('./footer.html')
+<script>
+    var tale = new $.tale();
+
+    function showContent(obj) {
+        var fileName = obj.value;
+        if (fileName && fileName != '') {
+            $.get('/admin/template/content', {fileName: fileName}, function (data) {
+                $('#tpl-preview').val(data);
+            });
+        } else {
+            $('#tpl-preview').val('');
+        }
+    }
+
+    function saveTpl() {
+        var fileName = $('#tplSelect').val();
+        if (fileName && fileName != '') {
+            tale.post({
+                url: '/admin/template/save',
+                data: {
+                    fileName: fileName,
+                    content: $('#tpl-preview').val()
+                },
+                success: function (result) {
+                    if (result && result.success) {
+                        tale.alertOk('模板保存成功');
+                    } else {
+                        tale.alertError(result.msg || '模板保存失败');
+                    }
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

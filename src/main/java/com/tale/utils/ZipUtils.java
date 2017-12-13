@@ -1,7 +1,5 @@
 package com.tale.utils;
 
-import com.blade.kit.StringKit;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -63,7 +61,7 @@ public class ZipUtils {
         File folder = new File(srcFolder);
         if (null != path && folder.isDirectory()) {
             for (String fileName : folder.list()) {
-                if (path.equals("")) {
+                if ("".equals(path)) {
                     addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
                 } else {
                     addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + fileName, zip);

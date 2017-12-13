@@ -1,5 +1,5 @@
 #include('./header.html',{active:'attach', title:'文件管理'})
-<link href="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
+#call cdn_url('attach_head')
 <style>
     #dropzone {
         margin-bottom: 3rem;
@@ -65,7 +65,7 @@
         </div>
         #else
 
-        #for(attach : attachs.list)
+        #for(attach : attachs.rows)
         <div class="col-md-2 text-center m-t-10">
             <a href="${attach_url}${attach.fkey}" target="_blank">
                 <img class="attach-img"
@@ -95,8 +95,7 @@
 
 #include('./footer.html')
 
-<script src="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.js"></script>
-<script src="//cdn.bootcss.com/clipboard.js/1.6.0/clipboard.min.js"></script>
+#call cdn_url('attach_foot')
 
 <script type="text/javascript">
 

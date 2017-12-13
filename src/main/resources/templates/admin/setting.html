@@ -9,15 +9,29 @@
     <div class="col-md-6">
         <div class="panel panel-color panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">全局设置</h3>
+                <h3 class="panel-title">站点设置</h3>
             </div>
             <div class="panel-body">
                 <form class="form-horizontal" role="form" id="global-form">
                     <div class="form-group">
-                        <label class="col-md-3 control-label">站点名称</label>
+                        <label class="col-md-3 control-label">网站地址</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control" name="site_title" placeholder="站点名称"
+                            <input type="text" class="form-control" name="site_url" placeholder="网站地址"
+                                   value="${options.site_url}" required aria-required="true"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">站点标题</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="site_title" placeholder="站点子标题"
                                    value="${options.site_title}" required aria-required="true"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">站点子标题</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="site_subtitle" placeholder="站点子标题"
+                                   value="${options.site_subtitle}" required aria-required="true"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -35,25 +49,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">博客主题</label>
-                        <div class="col-md-9">
-                            <select name="site_theme" class="form-control">
-                                #for(theme : themes)
-                                <option value="${theme}" #if(options.site_theme==theme) selected #end>${theme}</option>
-                                #end
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">允许重新安装</label>
-                        <div class="col-md-9">
-                            <div class="toggle toggle-success allow-${options.allow_install}"
-                                 onclick="allow_reinstall(this);"></div>
-                        </div>
-                    </div>
-                    <input type="hidden" name="allow_install" id="allow_install"/>
                     <div class="clearfix pull-right">
                         <button type="button" class="btn btn-primary waves-effect waves-light" onclick="saveSetting()">
                             保存设置
@@ -64,44 +59,47 @@
         </div>
     </div>
 
+
     <div class="col-md-6">
-        <div class="panel panel-color panel-inverse">
+        <div class="panel panel-color panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">个性化设置</h3>
+                <h3 class="panel-title">高级选项设置</h3>
             </div>
             <div class="panel-body">
-                <form id="indivi-form" class="form-horizontal" role="form">
+                <form class="form-horizontal" role="form" id="advanced-form">
                     <div class="form-group">
-                        <label class="col-md-3 control-label">微博账号</label>
+                        <label class="col-md-3 control-label">清理缓存</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control" name="social_weibo" value="${options.social_weibo}"
-                                   placeholder="微博账号，不输入则不显示">
+                            <input type="text" class="form-control" name="cache_key" placeholder="请输入缓存前缀，输入*删除所有缓存"/>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="col-md-3 control-label">知乎账号</label>
+                        <label class="col-md-3 control-label">黑名单IP列表</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control" name="social_zhihu" value="${options.social_zhihu}"
-                                   placeholder="知乎账号，不输入则不显示">
+                            <textarea rows="3" class="form-control" name="block_ips"
+                                      placeholder="请输入黑名单IP，如：123.123.33.23,123.123.33.24">${options.block_ips ?! ''}</textarea>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Github账号</label>
+                        <label class="col-md-3 control-label">卸载插件</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control" name="social_github"
-                                   value="${options.social_github}" placeholder="Github账号，不输入则不显示">
+                            <input type="text" class="form-control" name="plugin_name" placeholder="请输入插件名，输入*卸载所有插件"/>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Twitter账号</label>
+                        <label class="col-md-3 control-label">允许重新安装</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control" name="social_twitter"
-                                   value="${options.social_twitter}" placeholder="Twitter账号，不输入则不显示">
+                            <div class="toggle toggle-success allow-${options.allow_install}"
+                                 onclick="allow_reinstall(this);"></div>
                         </div>
                     </div>
+                    <input type="hidden" name="allow_install" id="allow_install" value="${options.allow_install ?! 0}"/>
+
                     <div class="clearfix pull-right">
-                        <button type="button" class="btn btn-inverse waves-effect waves-light"
-                                onclick="saveIndiviSetting()">
+                        <button type="button" class="btn btn-primary waves-effect waves-light" onclick="saveAdvanced()">
                             保存设置
                         </button>
                     </div>
@@ -110,19 +108,13 @@
         </div>
     </div>
 
-    <div class="clearfix"></div>
-
-    <div class="col-md-6">
+    <!--<div class="col-md-6">
         <div class="panel panel-color panel-success">
             <div class="panel-heading">
                 <h3 class="panel-title">系统备份（备份文件包含附件和主题）</h3>
             </div>
             <div class="panel-body">
                 <form id="backupForm" class="form-inline" role="form">
-                    <!--<div class="form-group">
-                        <label class="sr-only">备份格式</label>
-                        <input name="url" class="form-control" placeholder="请输入备份文件格式，如yyyy-MM-dd" required="" aria-required="true" type="url">
-                    </div>-->
                     <div class="form-group col-md-6">
                         <input id="backup_dir" style="width: 100%;" class="form-control" placeholder="请输入备份存放的磁盘路径" required="" aria-required="true" type="text">
                     </div>
@@ -132,11 +124,11 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div>-->
 
 </div>
 #include('./footer.html')
-<script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
+#call cdn_url('toggles')
 <script type="text/javascript">
 
     var tale = new $.tale();
@@ -158,49 +150,24 @@
             }
         });
     }
-
     /**
-     * 保存个性化设置
+     * 保存高级选项设置
      */
-    function saveIndiviSetting() {
-        var param = $('#indivi-form').serialize();
+    function saveAdvanced() {
+        var param = $('#advanced-form').serialize();
         tale.post({
-            url : '/admin/setting',
+            url: '/admin/advanced',
             data: param,
             success: function (result) {
-                if(result && result.success){
-                    tale.alertOk('设置保存成功');
+                if (result && result.success) {
+                    tale.alertOk('选项保存成功');
                 } else {
-                    tale.alertError(result.msg || '设置保存失败');
+                    tale.alertError(result.msg || '选项保存失败');
                 }
             }
         });
     }
-    /**
-     * 设置是否允许重新安装
-     */
-    function allow_reinstall(obj) {
 
-        var isInstall = $('#allow_install').val();
-        if(isInstall==0){
-            $('#allow_install').val(1);
-        } else {
-            $('#allow_install').val(0);
-        }
-
-//        var this_ = $(obj);
-//        var on = this_.find('.toggle-on.active').length;
-//        var off = this_.find('.toggle-off.active').length;
-//
-//        alert('on=' + on + ', off=' + off);
-//
-//        if (on == 1) {
-//            $('#allow_install').val(1);
-//        }
-//        if (off == 1) {
-//            $('#allow_install').val(0);
-//        }
-    }
 
     /**
      * 系统备份
@@ -222,13 +189,25 @@
                         $('#backup_dir').val('');
                     }
                     if(result.payload.sql_path){
-                        window.location.href = '/upload/' + result.payload.sql_path;
+                        window.location.href = result.payload.sql_path;
                     }
                 } else {
                     tale.alertError(result.msg || '备份失败');
                 }
             }
         });
+    }
+
+    /**
+     * 设置是否允许重新安装
+     */
+    function allow_reinstall(obj) {
+        var isInstall = $('#allow_install').val();
+        if(isInstall==0){
+            $('#allow_install').val(1);
+        } else {
+            $('#allow_install').val(0);
+        }
     }
 
     $('.allow-1').toggles({
@@ -238,6 +217,7 @@
             off: '关闭'
         }
     });
+
     $('.allow-0').toggles({
         off: true,
         text: {

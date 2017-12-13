@@ -1,32 +1,32 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
-import com.blade.mvc.annotation.QueryParam;
+import com.blade.mvc.annotation.Param;
+import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.dto.MetaDto;
-import com.tale.dto.Types;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
+import com.tale.model.dto.Types;
+import com.tale.model.entity.Metas;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 /**
+ * 分类管理
+ *
  * Created by biezhi on 2017/2/21.
  */
-@Controller("admin/category")
+@Slf4j
+@Path("admin/category")
 public class CategoryController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
 
     @Inject
     private MetasService metasService;
@@ -36,8 +36,8 @@ public class CategoryController extends BaseController {
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
-        List<MetaDto> categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
-        List<MetaDto> tags = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
+        List<Metas>   categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
+        List<Metas> tags       = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
         request.attribute("categories", categories);
         request.attribute("tags", tags);
         return "admin/category";
@@ -45,7 +45,7 @@ public class CategoryController extends BaseController {
 
     @Route(value = "save", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveCategory(@QueryParam String cname, @QueryParam Integer mid) {
+    public RestResponse saveCategory(@Param String cname, @Param Integer mid) {
         try {
             metasService.saveMeta(Types.CATEGORY, cname, mid);
             siteService.cleanCache(Types.C_STATISTICS);
@@ -54,7 +54,7 @@ public class CategoryController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
@@ -63,7 +63,7 @@ public class CategoryController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@QueryParam int mid) {
+    public RestResponse delete(@Param int mid) {
         try {
             metasService.delete(mid);
             siteService.cleanCache(Types.C_STATISTICS);
@@ -72,7 +72,7 @@ public class CategoryController extends BaseController {
             if (e instanceof TipException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }

@@ -1,0 +1,107 @@
+#if(null != article)
+<div id="${article.cid ?! 0}" class="comment-container">
+    <div id="comments" class="clearfix">
+        #if(article.allowComment)
+        <span class="response">#if(null!=login_user) Hi，<a href="${login_user.home_url}" data-no-instant>${login_user.username}</a>
+            如果你想 <a href="/logout" title="注销" data-no-instant>注销</a> ? #end</span>
+
+        <form method="post" id="comment-form" class="comment-form" onsubmit="return TaleComment.subComment();">
+            <input type="hidden" name="coid" id="coid"/>
+            <input type="hidden" name="cid" id="cid" value="${article.cid}"/>
+            <input type="hidden" name="csrf_token" value="${csrf_token}"/>
+            <input name="author" maxlength="12" id="author" class="form-control input-control clearfix"
+                   placeholder="姓名 (*)" value="${login_user.username ?! ''}" required/>
+            <input type="email" name="mail" id="mail" class="form-control input-control clearfix" placeholder="邮箱 (*)"
+                   value="${login_user.email ?! ''}" required/>
+            <input type="url" name="url" id="url" class="form-control input-control clearfix" placeholder="网址 (http://)"
+                   value="${login_user.home_url ?! ''}"/>
+            <textarea name="content" id="textarea" class="form-control" placeholder="基佬，留下你的评论." required minlength="5" maxlength="2000"></textarea>
+            <button class="submit" id="misubmit">提交</button>
+        </form>
+
+        #else
+        <span class="response">评论已关闭.</span>
+        #end
+
+        #set( comments = comments(6) )
+
+        #if(!is_empty(comments))
+        <ol class="comment-list">
+            #for(comment : comments(6).rows)
+            <li id="li-comment-${comment.coid}" class="comment-body comment-parent comment-odd">
+                <div id="comment-${comment.coid}">
+                    <div class="comment-view" onclick="">
+                        <div class="comment-header">
+                            <img class="avatar" src="${gravatar(comment.mail)}?s=80&r=G&d=" title="${comment.author}"
+                                 width="80" height="80">
+                            <span class="comment-author">
+                                <a href="${comment.url}" target="_blank" rel="external nofollow">${comment.author}</a>
+                            </span>
+                        </div>
+                        <div class="comment-content">
+                            <span class="comment-author-at"></span>
+                            <p>${article(comment.content)}</p>
+                        </div>
+                        <div class="comment-meta">
+                            <time class="comment-time">${fmtdate(comment.created)}</time>
+                            <span class="comment-reply">
+                                <a rel="nofollow" onclick="TaleComment.reply('${comment.coid}');">回复</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                #if(comment.levels > 0)
+                <div class="comment-children">
+                    <ol class="comment-list">
+                        #for(child : comment.children)
+                        <li id="li-comment-${child.coid}"
+                            class="comment-body comment-child comment-level-odd comment-odd">
+                            <div id="comment-${child.coid}">
+                                <div class="comment-view">
+                                    <div class="comment-header">
+                                        <img class="avatar" src="${gravatar(child.mail)}?s=80&r=G&d=" title="${child.author}" width="80" height="80">
+                                        <span class="comment-author comment-by-author">
+                                            <a href="${child.url}" target="_blank" rel="external nofollow">${child.author}</a>
+                                        </span>
+                                    </div>
+                                    <div class="comment-content">
+                                        <span class="comment-author-at">
+                                            ${comment_at(child.parent)}
+                                        </span>
+                                        <p>${article(child.content)}</p>
+                                    </div>
+                                    <div class="comment-meta">
+                                        <time class="comment-time">${fmtdate(child.created)}</time>
+                                        <span class="comment-reply">
+                                            <a rel="nofollow" onclick="TaleComment.reply('${child.coid}');">回复</a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        #end
+                    </ol>
+                </div>
+                #end
+            </li>
+            #end
+        </ol>
+        <div class="lists-navigator clearfix">
+            <ol class="page-navigator">
+                #if(comments.hasPrevPage)
+                <li class="prev"><a href="?cp=${comments.prevPage}#comments">←</a></li>
+                #end
+                #for(navIndex : comments.navPageNums)
+                <li #if(comments.pageNum== navIndex) class="current" #end><a href="?cp=${navIndex}#comments">${navIndex}</a></li>
+                #end
+                #if(comments.hasNextPage)
+                <li class="next"><a href="?cp=${comments.nextPage}#comments">→</a></li>
+                #end
+            </ol>
+
+        </div>
+        #end
+    </div>
+</div>
+#end
+#include('/comm/tale_comment.html')

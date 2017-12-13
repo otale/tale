@@ -1,15 +1,17 @@
-#include('./header.html',{home_page:1})
+#include('./partial/header.html',{home_page:1})
 <div class="main-content index-page clearfix">
     <div class="post-lists">
         <div class="post-lists-body">
-            #for(article : articles.list)
+            #for(article : articles(12).rows)
             <div class="post-list-item">
                 <div class="post-list-item-container">
-                    <a href="${permalink()}" class="item-thumb  bg-deepgrey"
-                       style="background-image:url(${show_thumb(article)});">
-                        <dir class="item-desc">${intro(75)}...</dir>
+                    <div class="item-thumb bg-deepgrey" style="background-image:url(${show_thumb(article)});"></div>
+                    <a href="${permalink()}">
+                        <div class="item-desc">
+                            <p>${intro(75)}...</p>
+                        </div>
                     </a>
-                    <div class="item-slant reverse-slant &lt; bg-deepgrey"></div>
+                    <div class="item-slant reverse-slant bg-deepgrey"></div>
                     <div class="item-slant"></div>
                     <div class="item-label">
                         <div class="item-title"><a href="${permalink()}">${title()}</a>
@@ -28,7 +30,7 @@
         </div>
     </div>
     <div class="lists-navigator clearfix">
-        #call pageNav(articles,'←','→','page')
+        #call pageNav(articles(12),'←','→','page')
     </div>
 </div>
-#include('./footer.html')
+#include('./partial/footer.html')

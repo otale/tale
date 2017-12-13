@@ -1,4 +1,4 @@
-#include('./header.html',{has_sub:'other', active:'page', title:'页面管理'})
+#include('./header.html',{active:'page', title:'页面管理'})
 <div class="row">
     <div class="col-sm-12">
         <h4 class="page-title">文章管理</h4>
@@ -18,7 +18,7 @@
             </tr>
             </thead>
             <tbody>
-            #for(post : articles.list)
+            #for(post : articles.rows)
             <tr cid="${post.cid}">
                 <td>${post.title}</td>
                 <td>${post.slug}</td>
