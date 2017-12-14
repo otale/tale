@@ -23,6 +23,7 @@ import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
+import com.tale.utils.SitemapUtils;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
@@ -191,7 +192,7 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @GetRoute(value = {"feed", "feed.xml", "atom.xml", "sitemap.xml"})
+    @GetRoute(value = {"feed", "feed.xml", "atom.xml"})
     public void feed(Response response) {
 
         List<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
@@ -203,7 +204,27 @@ public class IndexController extends BaseController {
             response.contentType("text/xml; charset=utf-8");
             response.body(xml);
         } catch (Exception e) {
-            log.error("生成RSS失败", e);
+            log.error("生成 rss 失败", e);
+        }
+    }
+
+    /**
+     * sitemap 站点地图
+     *
+     * @return
+     */
+    @GetRoute(value = {"sitemap", "sitemap.xml"})
+    public void sitemap(Response response) {
+        List<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
+                .and("allow_feed", true)
+                .findAll(OrderBy.desc("created"));
+
+        try {
+            String xml = TaleUtils.getSitemapXml(articles);
+            response.contentType("text/xml; charset=utf-8");
+            response.body(xml);
+        } catch (Exception e) {
+            log.error("生成 sitemap 失败", e);
         }
     }
 
