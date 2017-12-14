@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Tale工具类
@@ -276,6 +277,43 @@ public class TaleUtils {
         channel.setItems(items);
         WireFeedOutput out = new WireFeedOutput();
         return out.outputString(channel);
+    }
+
+    private static final String SITEMAP_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\" xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
+
+    static class Url {
+        String loc;
+        String lastmod;
+
+        public Url(String loc) {
+            this.loc = loc;
+        }
+    }
+
+    public static String getSitemapXml(List<Contents> articles) {
+        List<Url> urls = articles.stream()
+                .map(TaleUtils::parse)
+                .collect(Collectors.toList());
+        urls.add(new Url(Commons.site_url() + "/archives"));
+
+        String urlBody = urls.stream()
+                .map(url -> {
+                    String s = "<url><loc>" + url.loc + "</loc>";
+                    if (null != url.lastmod) {
+                        s += "<lastmod>" + url.lastmod + "</lastmod>";
+                    }
+                    return s + "</url>";
+                })
+                .collect(Collectors.joining("\n"));
+
+        return SITEMAP_HEAD + urlBody + "</urlset>";
+    }
+
+    private static Url parse(Contents contents) {
+        Url url = new Url(Commons.site_url() + "/article/" + contents.getCid());
+        url.lastmod = DateKit.toString(contents.getModified(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        return url;
     }
 
     /**

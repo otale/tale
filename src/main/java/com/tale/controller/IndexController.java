@@ -102,8 +102,6 @@ public class IndexController extends BaseController {
     @GetRoute(value = {"page/:page", "page/:page.html"})
     public String index(Request request, @PathParam int page, @Param(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
-//        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).page(page, limit, "created desc");
-//        request.attribute("articles", articles);
         if (page > 1) {
             this.title(request, "第" + page + "页");
         }
@@ -191,7 +189,7 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @GetRoute(value = {"feed", "feed.xml", "atom.xml", "sitemap.xml"})
+    @GetRoute(value = {"feed", "feed.xml", "atom.xml"})
     public void feed(Response response) {
 
         List<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
@@ -203,7 +201,27 @@ public class IndexController extends BaseController {
             response.contentType("text/xml; charset=utf-8");
             response.body(xml);
         } catch (Exception e) {
-            log.error("生成RSS失败", e);
+            log.error("生成 rss 失败", e);
+        }
+    }
+
+    /**
+     * sitemap 站点地图
+     *
+     * @return
+     */
+    @GetRoute(value = {"sitemap", "sitemap.xml"})
+    public void sitemap(Response response) {
+        List<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
+                .and("allow_feed", true)
+                .findAll(OrderBy.desc("created"));
+
+        try {
+            String xml = TaleUtils.getSitemapXml(articles);
+            response.contentType("text/xml; charset=utf-8");
+            response.body(xml);
+        } catch (Exception e) {
+            log.error("生成 sitemap 失败", e);
         }
     }
 

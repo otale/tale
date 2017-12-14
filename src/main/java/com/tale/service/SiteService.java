@@ -56,7 +56,7 @@ public class SiteService {
             String cp   = SiteService.class.getClassLoader().getResource("").getPath();
             File   lock = new File(cp + "install.lock");
             lock.createNewFile();
-            TaleConst.INSTALL = Boolean.TRUE;
+            TaleConst.INSTALLED = Boolean.TRUE;
             new Logs(LogActions.INIT_SITE, null, "", uid.intValue()).save();
         } catch (Exception e) {
             throw new TipException("初始化站点失败");
@@ -274,16 +274,17 @@ public class SiteService {
      * 获取相邻的文章
      *
      * @param type 上一篇:prev | 下一篇:next
-     * @param cid  当前文章id
+     * @param created  当前文章创建时间
      */
-    public Contents getNhContent(String type, Integer cid) {
+    public Contents getNhContent(String type, Integer created) {
+        Contents contents = null;
         if (Types.NEXT.equals(type)) {
-            return new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).and("cid", ">", cid).find();
+            contents = new Contents().query("SELECT * FROM t_contents WHERE type = ? AND status = ? AND created > ? ORDER BY created ASC LIMIT 1", Types.ARTICLE, Types.PUBLISH, created);
         }
         if (Types.PREV.equals(type)) {
-            return new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).and("cid", "<", cid).find();
+            contents = new Contents().query("SELECT * FROM t_contents WHERE type = ? AND status = ? AND created < ? ORDER BY created DESC LIMIT 1", Types.ARTICLE, Types.PUBLISH, created);
         }
-        return null;
+        return contents;
     }
 
     /**

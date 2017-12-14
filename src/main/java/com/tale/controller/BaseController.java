@@ -1,5 +1,6 @@
 package com.tale.controller;
 
+import com.blade.mvc.WebContext;
 import com.blade.mvc.http.Request;
 import com.tale.model.entity.Users;
 import com.tale.utils.MapCache;
@@ -13,7 +14,6 @@ public abstract class BaseController {
     public static String THEME = "themes/default";
 
     protected MapCache cache = MapCache.single();
-
 
     public String render(String viewName) {
         return THEME + "/" + viewName;

@@ -344,7 +344,7 @@ public final class Theme {
      */
     public static Contents article_next() {
         Contents cur = current_article();
-        return null != cur ? siteService.getNhContent(Types.NEXT, cur.getCid()) : null;
+        return null != cur ? siteService.getNhContent(Types.NEXT, cur.getCreated()) : null;
     }
 
     /**
@@ -354,7 +354,7 @@ public final class Theme {
      */
     public static Contents article_prev() {
         Contents cur = current_article();
-        return null != cur ? siteService.getNhContent(Types.PREV, cur.getCid()) : null;
+        return null != cur ? siteService.getNhContent(Types.PREV, cur.getCreated()) : null;
     }
 
     /**

@@ -59,7 +59,7 @@ public class IndexController extends BaseController {
         List<Contents> contents   = siteService.getContens(Types.RECENT_ARTICLE, 5);
         Statistics     statistics = siteService.getStatistics();
         // 取最新的20条日志
-        Page<Logs> logsPage = new Logs().page(1, 20);
+        Page<Logs> logsPage = new Logs().page(1, 20, "id desc");
         List<Logs> logs     = logsPage.getRows();
 
         request.attribute("comments", comments);
