@@ -288,7 +288,7 @@ public class TaleUtils {
     }
 
     public static String getSitemapXml(List<Contents> articles) {
-        List<SitemapUtils.Url> urls = articles.stream()
+        List<Url> urls = articles.stream()
                 .map(TaleUtils::parse)
                 .collect(Collectors.toList());
 
@@ -299,8 +299,8 @@ public class TaleUtils {
         return SITEMAP_HEAD + urlBody;
     }
 
-    private static SitemapUtils.Url parse(Contents contents) {
-        SitemapUtils.Url url = new SitemapUtils.Url();
+    private static Url parse(Contents contents) {
+        Url url = new Url();
         url.loc = Commons.site_url() + "/article/" + contents.getCid();
         url.lastmod = DateKit.toString(contents.getModified(), "YYYY-MM-DDThh:mmTZD");
         return url;
