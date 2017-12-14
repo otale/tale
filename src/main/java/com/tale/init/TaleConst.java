@@ -17,7 +17,7 @@ public class TaleConst {
     public static       String      AES_SALT          = "0123456789abcdef";
     public static       String      LOGIN_SESSION_KEY = "login_user";
     public static       Environment OPTIONS           = Environment.of(new HashMap<>());
-    public static       Boolean     INSTALL           = false;
+    public static       Boolean     INSTALLED         = false;
     public static       Boolean     ENABLED_CDN       = true;
     public static       Environment BCONF             = null;
 
@@ -55,5 +55,30 @@ public class TaleConst {
      * 要过滤的ip列表
      */
     public static final Set<String> BLOCK_IPS = new HashSet<>(16);
+
+    /**
+     * 静态资源URI
+     */
+    public static final String STATIC_URI = "/static";
+
+    /**
+     * 安装页面URI
+     */
+    public static final String INSTALL_URI = "/install";
+
+    /**
+     * 后台URI前缀
+     */
+    public static final String ADMIN_URI = "/admin";
+
+    /**
+     * 后台登录地址
+     */
+    public static final String LOGIN_URI = "/admin/login";
+
+    /**
+     * 插件菜单 Attribute Name
+     */
+    public static final String PLUGINS_MENU_NAME = "plugin_menus";
 
 }

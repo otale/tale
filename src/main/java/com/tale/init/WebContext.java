@@ -102,7 +102,7 @@ public class WebContext implements BeanProcessor {
             TaleConst.BLOCK_IPS.addAll(Arrays.asList(ips.split(",")));
         }
         if (Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"))) {
-            TaleConst.INSTALL = Boolean.TRUE;
+            TaleConst.INSTALLED = Boolean.TRUE;
         }
 
         BaseController.THEME = "themes/" + Commons.site_option("site_theme");

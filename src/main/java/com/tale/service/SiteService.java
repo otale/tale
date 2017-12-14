@@ -56,7 +56,7 @@ public class SiteService {
             String cp   = SiteService.class.getClassLoader().getResource("").getPath();
             File   lock = new File(cp + "install.lock");
             lock.createNewFile();
-            TaleConst.INSTALL = Boolean.TRUE;
+            TaleConst.INSTALLED = Boolean.TRUE;
             new Logs(LogActions.INIT_SITE, null, "", uid.intValue()).save();
         } catch (Exception e) {
             throw new TipException("初始化站点失败");
