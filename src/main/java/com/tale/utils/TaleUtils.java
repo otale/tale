@@ -285,24 +285,34 @@ public class TaleUtils {
     static class Url {
         String loc;
         String lastmod;
+
+        public Url(String loc) {
+            this.loc = loc;
+        }
     }
 
     public static String getSitemapXml(List<Contents> articles) {
         List<Url> urls = articles.stream()
                 .map(TaleUtils::parse)
                 .collect(Collectors.toList());
+        urls.add(new Url(Commons.site_url() + "/archives"));
 
         String urlBody = urls.stream()
-                .map(url -> "<url><loc>" + url.loc + "</loc><lastmod>" + url.lastmod + "</lastmod></url>")
+                .map(url -> {
+                    String s = "<url><loc>" + url.loc + "</loc>";
+                    if (null != url.lastmod) {
+                        s += "<lastmod>" + url.lastmod + "</lastmod>";
+                    }
+                    return s + "</url>";
+                })
                 .collect(Collectors.joining("\n"));
 
-        return SITEMAP_HEAD + urlBody;
+        return SITEMAP_HEAD + urlBody + "</urlset>";
     }
 
     private static Url parse(Contents contents) {
-        Url url = new Url();
-        url.loc = Commons.site_url() + "/article/" + contents.getCid();
-        url.lastmod = DateKit.toString(contents.getModified(), "YYYY-MM-DDThh:mmTZD");
+        Url url = new Url(Commons.site_url() + "/article/" + contents.getCid());
+        url.lastmod = DateKit.toString(contents.getModified(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         return url;
     }
 
