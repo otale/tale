@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sqlite.version>3.15.1</sqlite.version>
-        <blade-mvc.version>2.0.5-BETA1</blade-mvc.version>
+        <blade-mvc.version>2.0.5-RELEASE</blade-mvc.version>
         <blade-jdbc.version>0.2.2-RELEASE</blade-jdbc.version>
         <blade-tpl.verion>0.1.2</blade-tpl.verion>
         <blade-validator>0.0.2</blade-validator>
