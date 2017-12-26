@@ -110,11 +110,10 @@ public class TaleUtils {
      */
     public static Integer getCookieUid(Request request) {
         if (null != request) {
-            Optional<String> c = request.cookie(TaleConst.USER_IN_COOKIE);
-            if (c.isPresent()) {
+            String value = request.cookie(TaleConst.USER_IN_COOKIE);
+            if (StringKit.isNotBlank(value)) {
                 try {
-                    String value = c.get();
-                    long[] ids   = HASH_IDS.decode(value);
+                    long[] ids = HASH_IDS.decode(value);
                     if (null != ids && ids.length > 0) {
                         return Long.valueOf(ids[0]).intValue();
                     }

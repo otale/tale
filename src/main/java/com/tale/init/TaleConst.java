@@ -56,6 +56,11 @@ public class TaleConst {
      */
     public static final Set<String> BLOCK_IPS = new HashSet<>(16);
 
+    public static final String SLUG_HOME        = "/";
+    public static final String SLUG_ARCHIVES    = "archives";
+    public static final String SLUG_CATEGRORIES = "categories";
+    public static final String SLUG_TAGS        = "tags";
+
     /**
      * 静态资源URI
      */
@@ -80,5 +85,6 @@ public class TaleConst {
      * 插件菜单 Attribute Name
      */
     public static final String PLUGINS_MENU_NAME = "plugin_menus";
+
 
 }
