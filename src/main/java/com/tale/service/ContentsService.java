@@ -10,6 +10,7 @@ import com.blade.kit.StringKit;
 import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.Types;
+import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Relationships;
 import com.tale.utils.TaleUtils;
@@ -139,6 +140,7 @@ public class ContentsService {
         contents.ifPresent(content -> {
             new Contents().delete(cid);
             new Relationships().delete("cid", cid);
+            new Comments().where("cid", cid).delete();
         });
     }
 
