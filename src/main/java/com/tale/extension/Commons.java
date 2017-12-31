@@ -171,9 +171,6 @@ public final class Commons {
      * @return
      */
     public static String gravatar(String email) {
-        if (!TaleConst.ENABLED_CDN) {
-            return "/static/admin/images/unicorn.png";
-        }
         String avatarUrl = "https://cn.gravatar.com/avatar";
         if (StringKit.isBlank(email)) {
             return avatarUrl;
