@@ -3,6 +3,10 @@
 </footer>
 </div>
 </div>
+#set(List paths = hockAdmin(adminPath))
+#for(String hockPath:paths)
+    #include(hockPath)
+#end
 #call cdn_url('footer')
 <script src="/static/admin/js/jquery.app.js?v=${version}"></script>
 <script src="/static/admin/js/base.js?v=${version}"></script>

@@ -2,6 +2,9 @@ package com.tale.extension;
 
 import com.blade.kit.StringKit;
 import com.tale.model.entity.Metas;
+import com.tale.utils.HockAdminTUtils;
+
+import java.util.List;
 
 /**
  * 后台公共函数
@@ -33,6 +36,14 @@ public final class AdminCommons {
     public static String rand_color() {
         int r = StringKit.rand(0, COLORS.length - 1);
         return COLORS[r];
+    }
+
+    public static List<String> hockAdmin(String path) {
+        if (path == null) {
+            return null;
+        }
+
+        return HockAdminTUtils.getHockPaths(path);
     }
 
 }
