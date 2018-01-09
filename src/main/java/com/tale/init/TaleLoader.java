@@ -27,9 +27,11 @@ public final class TaleLoader {
         loadThemes();
     }
 
+    //加载所有主题
     public static void loadThemes() {
         String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
-        File[] dir      = new File(themeDir).listFiles();
+        //获取文件列表
+        File[] dir = new File(themeDir).listFiles();
         for (File f : dir) {
             if (f.isDirectory() && Files.isDirectory(Paths.get(f.getPath() + "/static"))) {
                 String themePath = "/templates/themes/" + f.getName();
@@ -61,7 +63,7 @@ public final class TaleLoader {
         try {
             if (pluginFile.isFile() && pluginFile.getName().endsWith(".jar")) {
                 URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-                Method         add         = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+                Method add = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
                 add.setAccessible(true);
                 add.invoke(classLoader, pluginFile.toURI().toURL());
 
@@ -71,6 +73,14 @@ public final class TaleLoader {
         } catch (Exception e) {
             throw new RuntimeException("插件 [" + pluginFile.getName() + "] 加载失败");
         }
+    }
+
+    public static void loadDataSource() {
+
+    }
+
+    public static void loadDataSource(File dbFile) {
+
     }
 
 }

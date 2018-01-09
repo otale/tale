@@ -111,14 +111,14 @@ public final class Commons {
      * 网站配置项
      *
      * @param key
-     * @param defalutValue 默认值
+     * @param defaultValue 默认值
      * @return
      */
-    public static String site_option(String key, String defalutValue) {
+    public static String site_option(String key, String defaultValue) {
         if (StringKit.isBlank(key)) {
             return "";
         }
-        return TaleConst.OPTIONS.get(key, defalutValue);
+        return TaleConst.OPTIONS.get(key, defaultValue);
     }
 
     /**

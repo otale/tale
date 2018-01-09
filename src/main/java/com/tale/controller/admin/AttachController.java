@@ -42,7 +42,8 @@ import java.util.Map;
 @Path("admin/attach")
 public class AttachController extends BaseController {
 
-    public static final String CLASSPATH = new File(AttachController.class.getResource("/").getPath()).getPath() + File.separatorChar;
+    public static final String CLASSPATH =
+            new File(AttachController.class.getResource("/").getPath()).getPath() + File.separatorChar;
 
     @Inject
     private SiteService siteService;

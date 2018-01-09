@@ -50,7 +50,9 @@ public class SiteService {
         users.setPassword(pwd);
         users.setScreen_name(users.getUsername());
         users.setCreated(DateKit.nowUnix());
-        Integer uid = users.save();
+        //此处将uid修改为Long类型，因为对应的数据库主键返回为long类型
+        //如果使用Integer类型会报转型失败
+        Long uid = users.save();
 
         try {
             String cp   = SiteService.class.getClassLoader().getResource("").getPath();

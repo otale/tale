@@ -316,7 +316,7 @@ public class TaleUtils {
     }
 
     /**
-     * 替换HTML脚本
+     * 替换HTML脚本，防止XSS注入
      *
      * @param value
      * @return
