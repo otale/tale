@@ -18,6 +18,7 @@
         <commonmark.version>0.9.0</commonmark.version>
         <rome.version>1.0</rome.version>
         <emoji.version>3.2.0</emoji.version>
+        <mysql.verson>5.1.38</mysql.verson>
     </properties>
 
     <dependencies>
@@ -33,6 +34,13 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>${sqlite.version}</version>
+        </dependency>
+
+        <!-- 修改为mysql -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.verson}</version>
         </dependency>
         
         <dependency>
