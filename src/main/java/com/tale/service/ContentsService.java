@@ -96,7 +96,8 @@ public class ContentsService {
         String tags       = contents.getTags();
         String categories = contents.getCategories();
 
-        Integer cid = contents.save();
+        //下策，无法解决save后返回long导致转型异常的BUG，暂时如此解决
+        Integer cid = ((Long) contents.save()).intValue();
 
         metasService.saveMetas(cid, tags, Types.TAG);
         metasService.saveMetas(cid, categories, Types.CATEGORY);
