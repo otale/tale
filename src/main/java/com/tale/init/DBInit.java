@@ -33,7 +33,7 @@ public class DBInit {
             className = environment.get("jdbc.driverClassName", "com.mysql.jdbc.Driver");
             user = environment.get("jdbc.user", "tale");
             password = environment.get("jdbc.password", "123456");
-            url = environment.get("jdbc.url", "jdbc:mysql://127.0.0.1:3306/tale");
+            url = environment.get("jdbc.url", "jdbc:mysql://127.0.0.1:3306/tale?useUnicode=true&characterEncoding=UTF-8");
 
             //加载驱动类
             Class.forName(className);

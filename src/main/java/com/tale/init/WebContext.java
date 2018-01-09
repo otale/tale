@@ -55,7 +55,7 @@ public class WebContext implements BeanProcessor {
             devMode = blade.environment().getBoolean("app.devMode", true);
         }
         DBInit.jdbcTest(blade.environment());
-        SqliteJdbc.importSql(devMode);
+//        SqliteJdbc.importSql(devMode);
 
 //        Sql2o sql2o = new Sql2o(SqliteJdbc.DB_SRC, null, null);
         Sql2o sql2o = new Sql2o(DBInit.url, DBInit.user, DBInit.password);
