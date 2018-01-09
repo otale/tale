@@ -104,7 +104,8 @@ public class MetasService {
             metas.setSlug(name);
             metas.setName(name);
             metas.setType(type);
-            mid = metas.save();
+            //TODO 下策，无法解决save后返回long导致转型异常的BUG，暂时如此解决
+            mid =  ((Long)metas.save()).intValue();
         }
         if (mid != 0) {
             long count = new Relationships().where("cid", cid).and("mid", mid).count();
