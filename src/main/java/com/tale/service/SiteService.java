@@ -52,14 +52,15 @@ public class SiteService {
         users.setCreated(DateKit.nowUnix());
         //此处将uid修改为Long类型，因为对应的数据库主键返回为long类型
         //如果使用Integer类型会报转型失败
-        Long uid = users.save();
+        //TODO 暂时修改
+        Integer uid = ((Long)users.save()).intValue();
 
         try {
             String cp   = SiteService.class.getClassLoader().getResource("").getPath();
             File   lock = new File(cp + "install.lock");
             lock.createNewFile();
             TaleConst.INSTALLED = Boolean.TRUE;
-            new Logs(LogActions.INIT_SITE, null, "", uid.intValue()).save();
+            new Logs(LogActions.INIT_SITE, null, "", uid).save();
         } catch (Exception e) {
             throw new TipException("初始化站点失败");
         }
