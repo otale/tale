@@ -10,7 +10,7 @@ $(document).ready(function () {
 
     //初始化markdown编辑器
     initEditor();
-    mditor = $("#md-editor");
+    // mditor = $("#md-editor");
     // mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
     //tinymce初始化
 
@@ -51,7 +51,8 @@ $(document).ready(function () {
     // 富文本编辑器
     if (fmtType != 'markdown') {
         var this_ = $('#switch-btn');
-        mditor.value = '';
+        // mditor.value = '';
+        mdEditor.html("");
         $('#md-container').hide();
         $('#html-container').show();
         this_.text('切换为Markdown编辑器');
@@ -196,11 +197,15 @@ function init() {
 function initEditor() {
     tinymce.init({
         selector:'div#md-editor',
+        //工具条
         toolbar: "image",
         height: 350,
+        //皮肤
         skin: "lightgray-gradient",
+        //插件加载
         plugins: ["image imagetools",
             'textpattern'],
+        //匹配
         textpattern_patterns: [
             {start: '*', end: '*', format: 'italic'},
             {start: '**', end: '**', format: 'bold'},
@@ -218,8 +223,6 @@ function initEditor() {
         inline: false,
         init_instance_callback: function (editor) {
             init();
-            test = editor;
-            console.log("id=" + editor.id);
         }
     });//替换id为md-editor的textarea
 }
@@ -228,7 +231,8 @@ function initEditor() {
  * 自动保存为草稿
  * */
 function  autoSave() {
-    var content = $('#fmtType').val() == 'markdown' ? mditor.val() : htmlEditor.summernote('code');
+    // var content = $('#fmtType').val() == 'markdown' ? mditor.val() : htmlEditor.summernote('code');
+    var content = $('#fmtType').val() == 'markdown' ? mdEditor.html() : htmlEditor.summernote('code');
     var title = $('#articleForm input[name=title]').val();
     if (title != '' && content != '') {
         $('#content-editor').val(content);
@@ -254,7 +258,8 @@ function  autoSave() {
  * @param status
  */
 function subArticle(status) {
-    var content = $('#fmtType').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
+    // var content = $('#fmtType').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
+    var content = $('#fmtType').val() == 'markdown' ? mdEditor.html() : htmlEditor.summernote('code');
     var title = $('#articleForm input[name=title]').val();
     if (title == '') {
         tale.alertWarn('请输入文章标题');
