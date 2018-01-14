@@ -133,7 +133,8 @@
             </div>
 
             <div id="md-container" class="form-group col-md-12">
-                <textarea id="md-editor" class="#if(null != contents && contents.fmtType != 'html') hide #end">${contents.content ?! ''}</textarea>
+                <div id="md-editor"></div>
+                <!--<textarea id="md_editor" class="#if(null != contents && contents.fmtType != 'html') hide #end">${contents.content ?! ''}</textarea>-->
             </div>
             <div id="html-container" class="form-group col-md-12">
                 <div class="summernote">
@@ -201,6 +202,9 @@
 
 <script src="/static/admin/plugins/tagsinput/jquery.tagsinput.min.js"></script>
 <script src="/static/admin/plugins/jquery-multi-select/jquery.quicksearch.js"></script>
+<!-- 新markdown编辑器插件 -->
+<script src="/static/admin/plugins/tinymce/tinymce.min.js"></script>
+<script src="/static/admin/plugins/tinymce/plugins/compat3x/plugin.js"></script>
 #call cdn_url('article_edit_foot')
 <script src="/static/admin/js/article.js?v=${version}" type="text/javascript"></script>
 </body>

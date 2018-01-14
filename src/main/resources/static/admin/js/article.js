@@ -1,13 +1,19 @@
-var mditor, htmlEditor;
+var mditor, htmlEditor, mdEditor;
 var tale = new $.tale();
 var attach_url = $('#attach_url').val();
 // 每60秒自动保存一次草稿
 var refreshIntervalId = setInterval("autoSave()", 60 * 1000);
 Dropzone.autoDiscover = false;
+var test;
 
 $(document).ready(function () {
 
-    mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
+    //初始化markdown编辑器
+    initEditor();
+    mditor = $("#md-editor");
+    // mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
+    //tinymce初始化
+
     // 富文本编辑器
     htmlEditor = $('.summernote').summernote({
         lang: 'zh-CN',
@@ -67,13 +73,16 @@ $(document).ready(function () {
         var type = $('#fmtType').val();
         var this_ = $(this);
         if (type == 'markdown') {
+            //获取临时文本
+
+            var tempText = mdEditor.html();
             // 切换为富文本编辑器
-            if($('#md-container .markdown-body').html().length > 0){
-                $('#html-container .note-editable').empty().html($('#md-container .markdown-body').html());
+            if(null !== tempText && undefined !== tempText && tempText.length > 0){
+                $('#html-container .note-editable').empty().html(tempText);
                 $('#html-container .note-placeholder').hide();
 
             }
-            mditor.value = '';
+            mdEditor.html("");
             $('#md-container').hide();
             $('#html-container').show();
             this_.text('切换为Markdown编辑器');
@@ -81,8 +90,7 @@ $(document).ready(function () {
         } else {
             // 切换为markdown编辑器
             if($('#html-container .note-editable').html().length > 0){
-                mditor.value = '';
-                mditor.value = toMarkdown($('#html-container .note-editable').html());
+                mdEditor.html($('#html-container .note-editable').html());
             }
             $('#html-container').hide();
             $('#md-container').show();
@@ -178,11 +186,49 @@ $(document).ready(function () {
 
 });
 
+//初始化
+function init() {
+    //获取iframe中的元素
+    mdEditor = $("#md-editor_ifr").contents().find("#tinymce");
+}
+
+//初始化编辑器
+function initEditor() {
+    tinymce.init({
+        selector:'div#md-editor',
+        toolbar: "image",
+        height: 350,
+        skin: "lightgray-gradient",
+        plugins: ["image imagetools",
+            'textpattern'],
+        textpattern_patterns: [
+            {start: '*', end: '*', format: 'italic'},
+            {start: '**', end: '**', format: 'bold'},
+            {start: '#', format: 'h1'},
+            {start: '##', format: 'h2'},
+            {start: '###', format: 'h3'},
+            {start: '####', format: 'h4'},
+            {start: '#####', format: 'h5'},
+            {start: '######', format: 'h6'},
+            {start: '1. ', cmd: 'InsertOrderedList'},
+            {start: '* ', cmd: 'InsertUnorderedList'},
+            {start: '- ', cmd: 'InsertUnorderedList'}
+        ],
+        //内联模式
+        inline: false,
+        init_instance_callback: function (editor) {
+            init();
+            test = editor;
+            console.log("id=" + editor.id);
+        }
+    });//替换id为md-editor的textarea
+}
+
 /*
  * 自动保存为草稿
  * */
 function  autoSave() {
-    var content = $('#fmtType').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
+    var content = $('#fmtType').val() == 'markdown' ? mditor.val() : htmlEditor.summernote('code');
     var title = $('#articleForm input[name=title]').val();
     if (title != '' && content != '') {
         $('#content-editor').val(content);
