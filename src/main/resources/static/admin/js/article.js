@@ -209,8 +209,7 @@ function init() {
     //获取iframe中的元素
     mdEditor = $("#md-editor_ifr").contents().find("#tinymce");
     var content = $("#editor").html();
-    if (content)
-        mdEditor.html(content);
+    mdEditor.html(content);
 }
 
 //初始化编辑器
