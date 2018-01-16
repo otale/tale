@@ -2,6 +2,7 @@
 <link href="/static/admin/plugins/tagsinput/jquery.tagsinput.css" rel="stylesheet">
 <link href="/static/admin/plugins/select2/dist/css/select2-bootstrap.css" rel="stylesheet">
 <link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
+<link href="/templates/themes/default/static/css/prism.css" rel="stylesheet">
 #call cdn_url('article_edit_head')
 <style rel="stylesheet">
     #tags_tagsinput {
@@ -131,7 +132,11 @@
                         contents.fmtType == 'html') 切换为Markdown编辑器 #else 切换为富文本编辑器 #end</a>
                 </div>
             </div>
-
+            <div id="editor" hidden>
+                #if(null != contents)
+                ${contents.content ?! ''}
+                #end
+            </div>
             <div id="md-container" class="form-group col-md-12">
                 <div id="md-editor"></div>
                 <!--<textarea id="md_editor" class="#if(null != contents && contents.fmtType != 'html') hide #end">${contents.content ?! ''}</textarea>-->
@@ -206,6 +211,7 @@
 <script src="/static/admin/plugins/tinymce/tinymce.min.js"></script>
 <script src="/static/admin/plugins/tinymce/plugins/compat3x/plugin.js"></script>
 #call cdn_url('article_edit_foot')
+<script src="/templates/themes/default/static/js/prism.js"></script>
 <script src="/static/admin/js/article.js?v=${version}" type="text/javascript"></script>
 </body>
 </html>

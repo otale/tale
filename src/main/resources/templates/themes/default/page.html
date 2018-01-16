@@ -1,4 +1,5 @@
 #include('./partial/header.html', {title: article.title })
+<link href="/templates/themes/default/static/css/prism.css" rel="stylesheet">
 <article class="main-content page-page">
     <div class="post-header">
         <h1 class="post-title" itemprop="name headline">${title()}</h1>
@@ -10,3 +11,4 @@
 </article>
 #include('./partial/comments.html')
 #include('./partial/footer.html')
+<script src="/templates/themes/default/static/js/prism.js"></script>

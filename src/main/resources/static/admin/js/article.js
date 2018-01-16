@@ -2,9 +2,11 @@ var mditor, htmlEditor, mdEditor;
 var tale = new $.tale();
 var attach_url = $('#attach_url').val();
 // 每60秒自动保存一次草稿
-var refreshIntervalId = setInterval("autoSave()", 60 * 1000);
+// var refreshIntervalId = setInterval("autoSave()", 60 * 1000);
+var content;
+var tinyMCE;
+
 Dropzone.autoDiscover = false;
-var test;
 
 $(document).ready(function () {
 
@@ -51,8 +53,9 @@ $(document).ready(function () {
     // 富文本编辑器
     if (fmtType != 'markdown') {
         var this_ = $('#switch-btn');
+        //TODO 初始值清空失败，待处理
         // mditor.value = '';
-        mdEditor.html("");
+        // mdEditor.html("");
         $('#md-container').hide();
         $('#html-container').show();
         this_.text('切换为Markdown编辑器');
@@ -191,19 +194,23 @@ $(document).ready(function () {
 function init() {
     //获取iframe中的元素
     mdEditor = $("#md-editor_ifr").contents().find("#tinymce");
+    var content = $("#editor").html();
+    if (content)
+        mdEditor.html(content);
 }
 
 //初始化编辑器
 function initEditor() {
-    tinymce.init({
-        selector:'div#md-editor',
+    tinyMCE = tinymce.init({
+        selector:'div#md-editor',//替换id为md-editor的div
         //工具条
-        toolbar: "image",
+        toolbar: "image codesample",
         height: 350,
         //皮肤
         skin: "lightgray-gradient",
         //插件加载
         plugins: ["image imagetools",
+            "codesample code",//代码
             'textpattern'],
         //匹配
         textpattern_patterns: [
@@ -217,14 +224,38 @@ function initEditor() {
             {start: '######', format: 'h6'},
             {start: '1. ', cmd: 'InsertOrderedList'},
             {start: '* ', cmd: 'InsertUnorderedList'},
-            {start: '- ', cmd: 'InsertUnorderedList'}
+            {start: '- ', cmd: 'InsertUnorderedList'},
+            // {start: '```', cmd: ''}
         ],
         //内联模式
         inline: false,
+        codesample_dialog_width: '400',
+        codesample_dialog_height: '400',
+        codesample_languages: [
+            {text: 'HTML/XML', value: 'markup'},
+            {text: 'JavaScript', value: 'javascript'},
+            {text: 'HTML', value: 'html'},
+            {text: 'Python', value: 'python'},
+            {text: 'SQL', value: 'sql'},
+            {text: 'HTTP', value: 'http'},
+            {text: 'vim', value: 'vim'},
+            {text: 'Git', value: 'git'},
+            {text: 'JSON', value: 'json'},
+            {text: 'CSS', value: 'css'},
+            {text: 'YAML', value: 'yaml'},
+            {text: 'PHP', value: 'php'},
+            {text: 'Ruby', value: 'ruby'},
+            {text: 'Python', value: 'python'},
+            {text: 'Java', value: 'java'},
+            {text: 'C', value: 'c'},
+            {text: 'C#', value: 'csharp'},
+            {text: 'C++', value: 'cpp'}
+        ],
         init_instance_callback: function (editor) {
             init();
         }
-    });//替换id为md-editor的textarea
+    });
+
 }
 
 /*
@@ -269,7 +300,7 @@ function subArticle(status) {
         tale.alertWarn('请输入文章内容');
         return;
     }
-    clearInterval(refreshIntervalId);
+    // clearInterval(refreshIntervalId);
     $('#content-editor').val(content);
     $("#articleForm #status").val(status);
     $("#articleForm #categories").val($('#multiple-sel').val());
