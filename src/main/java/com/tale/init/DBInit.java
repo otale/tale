@@ -18,17 +18,17 @@ import java.sql.DriverManager;
 @NoArgsConstructor
 public class DBInit {
 
-    public static String className;
-    public static String user;
-    public static String password;
-    public static String url;
+    public static String className; //数据库驱动类名
+    public static String user;      //数据库用户名
+    public static String password;  //密码
+    public static String url;       //数据库连接url（此项需要包含utf-8设置，否则容易乱码）
 
     /**
      * jdbc连接测试
      *
      * @param environment 服务设置
      */
-    public static void jdbcTest(Environment environment) {
+    public static void jdbcConnTest(Environment environment) {
         try {
             className = environment.get("jdbc.driverClassName", "com.mysql.jdbc.Driver");
             user = environment.get("jdbc.user", "tale");

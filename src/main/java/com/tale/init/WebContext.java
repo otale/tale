@@ -54,10 +54,11 @@ public class WebContext implements BeanProcessor {
         if (blade.environment().hasKey("app.devMode")) {
             devMode = blade.environment().getBoolean("app.devMode", true);
         }
-        DBInit.jdbcTest(blade.environment());
+        DBInit.jdbcConnTest(blade.environment());
+        //TODO 初始化数据实现
 //        SqliteJdbc.importSql(devMode);
-
 //        Sql2o sql2o = new Sql2o(SqliteJdbc.DB_SRC, null, null);
+        //更换了sql2o的创建参数，具体见下
         Sql2o sql2o = new Sql2o(DBInit.url, DBInit.user, DBInit.password);
         Base.open(sql2o);
         Commons.setSiteService(ioc.getBean(SiteService.class));
