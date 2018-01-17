@@ -9,20 +9,8 @@ var tinyMCE;
 var fmtType = $('#fmtType');
 //切换富文本编辑器按钮
 var switchBtn = $('#switch-btn');
-//编辑器容器
-var mdContainer = $('#md-container'), htmlContainer = $('#html-container');
-//添加缩略图开关
-var thumbToggle = $('#thumb-toggle');
 //缩略图添加区域
 var dropZone = $('#dropzone'), dropZoneContainer = $('#dropzone-container');
-//分类
-var multipleSel = $('#multiple-sel');
-//允许订阅
-var allowFeed = $('#allowFeed');
-//缩略图input
-var thumbImg = $('#thumbImg');
-//文章标题
-var articleTitle = $('#articleForm input[name=title]');
 Dropzone.autoDiscover = false;
 
 $(document).ready(function () {
@@ -66,6 +54,8 @@ $(document).ready(function () {
         }
     });
 
+    //编辑器容器
+    var mdContainer = $('#md-container'), htmlContainer = $('#html-container');
     //根据文章
     // 富文本编辑器
     if (fmtType.val() !== 'markdown') {
@@ -132,7 +122,7 @@ $(document).ready(function () {
         }
     });
 
-    multipleSel.select2({
+    $('#multiple-sel').select2({
         width: '100%'
     });
 
@@ -144,6 +134,8 @@ $(document).ready(function () {
         }
     });
 
+    //添加缩略图开关
+    var thumbToggle = $('#thumb-toggle');
     if(thumbToggle.attr('thumb_url') !== ''){
         thumbToggle.toggles({
             on: true,
@@ -191,7 +183,7 @@ $(document).ready(function () {
                     thumbdropzone.css('background-image', 'url('+ url +')');
                     thumbdropzone.css('background-size', 'cover');
                     $('.dz-image').hide();
-                    thumbImg.val(url);
+                    $('#thumbImg').val(url);
                 }
             });
             this.on('error', function (a, errorMessage, result) {
@@ -209,7 +201,7 @@ function init() {
     //获取iframe中的元素
     mdEditor = $("#md-editor_ifr").contents().find("#tinymce");
     var content = $("#editor").html();
-    mdEditor.html(content);
+        mdEditor.html(content);
 }
 
 //初始化编辑器
@@ -277,12 +269,12 @@ function initEditor() {
 function  autoSave() {
     // var content = $('#fmtType').val() == 'markdown' ? mditor.val() : htmlEditor.summernote('code');
     var content = fmtType.val() === 'markdown' ? mdEditor.html() : htmlEditor.summernote('code');
-    var title = articleTitle.val();
+    //文章提交表单
+    var articleForm = $('#articleForm');
+    var title = articleForm.find("input[name=title]").val();
     if (title !== '' && content !== '') {
         $('#content-editor').val(content);
-        //类别
-        var articleForm = $('#articleForm');
-        articleForm.find("#categories").val(multipleSel.val());
+        articleForm.find("#categories").val($('#multiple-sel').val());
         var params = articleForm.serialize();
         var url = articleForm.find('#cid').val() !== '' ? '/admin/article/modify' : '/admin/article/publish';
         tale.post({
@@ -306,7 +298,9 @@ function  autoSave() {
 function subArticle(status) {
     // var content = $('#fmtType').val() == 'markdown' ? mditor.value : htmlEditor.summernote('code');
     var content = fmtType.val() === 'markdown' ? mdEditor.html() : htmlEditor.summernote('code');
-    var title = articleTitle.val();
+    //文章提交表单
+    var articleForm = $('#articleForm');
+    var title = articleForm.find("input[name=title]").val();
     if (title === '') {
         tale.alertWarn('请输入文章标题');
         return;
@@ -317,9 +311,8 @@ function subArticle(status) {
     }
     // clearInterval(refreshIntervalId);
     $('#content-editor').val(content);
-    var articleForm = $("#articleForm");
     articleForm.find("#status").val(status);
-    articleForm.find("#categories").val(multipleSel.val());
+    articleForm.find("#categories").val($('#multiple-sel').val());
     var params = articleForm.serialize();
     var url = articleForm.find('#cid').val() !== '' ? '/admin/article/modify' : '/admin/article/publish';
     tale.post({
@@ -372,10 +365,10 @@ function allow_feed(obj) {
     var on = this_.attr('on');
     if (on == 'true') {
         this_.attr('on', 'false');
-        allowFeed.val('false');
+        $('#allowFeed').val('false');
     } else {
         this_.attr('on', 'true');
-        allowFeed.val('true');
+        $('#allowFeed').val('true');
     }
 }
 
@@ -386,7 +379,7 @@ function add_thumbimg(obj) {
     if (on == 'true') {
         this_.attr('on', 'false');
         dropZoneContainer.addClass('hide');
-        thumbImg.val('');
+        $('#thumbImg').val('');
     } else {
         this_.attr('on', 'true');
         dropZoneContainer.removeClass('hide');
