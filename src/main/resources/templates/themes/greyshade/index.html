@@ -1,0 +1,28 @@
+#include('./partial/header.html')
+<div class="mid-col">
+    <div class="mid-col-container">
+        #for(article : articles(12).rows)
+        <article class="post post-list">
+            <div class="meta">
+                <div class="date">
+                    <time>${created('EEE, d MMM yyyy')}</time>
+                </div>
+                <div class="comment">
+                    <a href="${permalink()}#comments">
+                        ${comments_num(' No Comments ', ' %d Comments ')}
+                    </a>
+                </div>
+            </div>
+            <h1 class="title"><a href="${permalink()}">${title()}</a></h1>
+            <div class="entry-content">
+                <p>${intro(200)}</p>
+                <p><a href="${permalink()}" class="more-link">继续阅读 »</a></p>
+            </div>
+        </article>
+        #end
+        <nav class="page-navi">
+            #include('./partial/pagination.html', {articles: articles(12), pos: 'prev', text: '<i class="icon icon-left"></i> 上一页'})
+            #include('./partial/pagination.html', {articles: articles(12), pos: 'next', text: '<i class="icon icon-right"></i> 下一页'})
+        </nav>
+    </div>
+#include('./partial/footer.html')

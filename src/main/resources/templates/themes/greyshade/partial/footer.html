@@ -1,0 +1,50 @@
+<footer id="footer" class="inner">
+    &copy; 2017 <a href="${site_url()}">${title()}</a> 由 <a href="https://github.com/otale/tale" target="_blank">Tale</a> 强力驱动 Theme is <a href="https://github.com/otale/theme_greyshade" target="_blank">greyshade</a>
+</footer>
+</div>
+</div>
+
+<script src="${theme_url('/static/js/prism.js')}" data-no-instant></script>
+<script src="//cdn.bootcss.com/instantclick/3.0.1/instantclick.min.js"></script>
+<script data-no-instant>
+   InstantClick.on('change', function(isInitialLoad) {
+        if (isInitialLoad === false) {
+            if (typeof Prism !== 'undefined') Prism.highlightAll(true,null);
+            if (typeof ga !== 'undefined') ga('send', 'pageview', location.pathname + location.search);
+        }
+    });
+    InstantClick.init();
+
+
+   var br = {
+       addEL: function(e, type, fun) {
+           if (e.addEventListener) {
+               e.addEventListener(type, fun, false);
+           } else if (e.attachEvent) {
+               e.attachEvent('on' + type, fun);
+           } else {
+               e['on' + type] = fun;
+           }
+       },
+       show: function(e, cl) {
+           var btn = document.getElementById(e),
+               bd = document.body || document.getElementsByTagName('body')[0];
+           if(btn){
+               br.addEL(btn, 'click', function() {
+                   if (bd.className !== cl) {
+                       bd.className = cl;
+                   } else {
+                       bd.className = null;
+                   }
+               })
+           }
+
+       }
+   }
+   br.show('search-toggle', 'search-show');
+   br.show('wechat-toggle', 'wechat-show');
+
+
+</script>
+</body>
+</html>

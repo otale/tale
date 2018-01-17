@@ -1,0 +1,72 @@
+<div id="comments" class="cf">
+    #if(article.allowComment)
+    <span class="comment-num">
+        ${comments_num('暂无评论', ' 已有 %d 条评论 ')}
+        #set( comments = comments(50) )
+        #if(!is_empty(comments))
+        <ol class="comment-list">
+        #for(comment : comments.rows)
+        <li data-no-instant="" id="li-comment-${comment.coid}" class="comment-body comment-parent comment-odd">
+            <div id="comment-${comment.coid}">
+                <img class="avatar" src="${gravatar(comment.mail)}?s=80&r=G&d=" alt="${comment.author}" width="80" height="80">
+                <div class="comment-main">
+                    <p class="comment-at"></p>
+                    ${article(comment.content)}
+                    <div class="comment-meta">
+                    <span class="comment-author"><a href="${comment.url}" target="_blank" rel="external nofollow">${comment.author}</a></span>
+                    <time class="comment-time">${fmtdate(comment.created)}</time>
+                    <span class="comment-reply"><a href="javascript:void(0);" rel="nofollow" onclick="TaleComment.reply('${comment.coid}');">回复</a></span>
+                </div>
+                </div>
+            </div>
+            #if(comment.levels > 0)
+            <div class="comment-children">
+                <ol class="comment-list">
+                    #for(child : comment.children)
+                    <li data-no-instant="" id="li-comment-${child.coid}" class="comment-body comment-child comment-level-odd comment-odd comment-by-author">
+                        <div id="comment-${child.coid}">
+                            <img class="avatar" src="${gravatar(child.mail)}?s=80&r=G&d=" alt="${child.author}" width="80" height="80">
+                            <div class="comment-main">
+                                <p class="comment-at">${comment_at(child.parent)}</p>
+                                ${article(child.content)}
+                                <div class="comment-meta">
+                                    <span class="comment-author"><a href="${child.url}" target="_blank" rel="external nofollow">${child.author}</a></span>
+                                    <time class="comment-time">${fmtdate(comment.created)}</time>
+                                    <span class="comment-reply"><a href="javascript:void(0)" rel="nofollow" onclick="TaleComment.reply('${comment.coid}');">回复</a></span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    #end
+                </ol>
+            </div>
+            #end
+        </li>
+        #end
+        </ol>
+        #end
+    </span>
+    <div id="respond-post-${article.cid}" class="respond comment-container">
+        <div class="cancel-comment-reply">
+            <span class="response">发表新评论</span>
+        </div>
+
+        <form id="comment-form" role="form" onsubmit="return TaleComment.subComment();">
+            <div id="author_info">
+                <input type="text" name="author" maxlength="12" id="author" class="form-control" placeholder="称呼 *" required value="">
+                <input type="email" name="mail" id="mail" class="form-control" placeholder="电子邮箱 *" required value="">
+                <input type="url" name="url" id="url" class="form-control" placeholder="网址(http://)" value="">
+            </div>
+            <textarea name="content" id="textarea" class="form-control" onkeydown="if(event.ctrlKey&amp;&amp;event.keyCode==13){document.getElementById('misubmit').click();return false};" placeholder="在这里输入你的评论..." required=""></textarea>
+            <button type="submit" class="submit" id="misubmit">提交评论</button>
+            <input type="hidden" name="coid" id="coid"/>
+            <input type="hidden" name="cid" id="cid" value="${article.cid}"/>
+            <input type="hidden" name="csrf_token" value="${csrf_token}"/>
+        </form>
+    </div>
+    #else
+    评论已关闭
+    #end
+</div>
+<script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+#include('/comm/tale_comment.html')

@@ -10,3 +10,6 @@ sed -i '' "s/app.devMode=false/app.devMode=true/g" src/main/resources/app.proper
 
 ## 发包
 scp -rp target/dist root@aliyun:/home/ganx/wars
+
+## 本地开发环境不需要多次安装
+echo > src/main/resource/install.lock
