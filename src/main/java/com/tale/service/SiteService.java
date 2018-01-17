@@ -143,7 +143,11 @@ public class SiteService {
      * 查询文章归档
      */
     public List<Archive> getArchives() {
-        String sql = "select strftime('%Y年%m月', datetime(created, 'unixepoch') ) as date_str, count(*) as count  from t_contents " +
+        //TODO 不兼容多个数据库
+        //Sqlite版本
+        /*String sql = "select strftime('%Y年%m月', datetime(created, 'unixepoch') ) as date_str, count(*) as count  from t_contents " +
+                "where type = 'post' and status = 'publish' group by date_str order by date_str desc";*/
+        String sql = "select date_format( sysdate(), '%Y年%m月') as date_str, count(*) as count  from t_contents " +
                 "where type = 'post' and status = 'publish' group by date_str order by date_str desc";
         List<Archive> archives = new Archive().queryAll(sql);
         if (null != archives) {
