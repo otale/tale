@@ -15,8 +15,10 @@ Dropzone.autoDiscover = false;
 
 $(document).ready(function () {
 
+    init();
     //初始化markdown编辑器
     initEditor();
+
     // mditor = $("#md-editor");
     // mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
     //tinymce初始化
@@ -61,7 +63,13 @@ $(document).ready(function () {
     if (fmtType.val() !== 'markdown') {
         //TODO 初始值清空失败，待处理
         // mditor.value = '';
-        mdEditor.html("");
+        if (mdEditor !== null && mdEditor !== undefined)
+            mdEditor.html("");
+        var tempText = $("#editor").html();
+        if (null !== tempText && undefined !== tempText && tempText.length > 0) {
+            htmlContainer.find(".note-editable").empty().html(tempText);
+            htmlContainer.find(".note-placeholder").hide();
+        }
         mdContainer.hide();
         htmlContainer.show();
         switchBtn.text('切换为Markdown编辑器');
@@ -200,8 +208,8 @@ $(document).ready(function () {
 function init() {
     //获取iframe中的元素
     mdEditor = $("#md-editor_ifr").contents().find("#tinymce");
-    var content = $("#editor").html();
-    mdEditor.html(content);
+    if (fmtType.val() === 'markdown')
+        mdEditor.html($("#editor").html());
 }
 
 //初始化编辑器
