@@ -156,8 +156,8 @@ public class SiteService {
     }
 
     private Archive parseArchive(Archive archive) {
-        String date_str = archive.getDate_str();
-        Date   sd       = DateKit.toDate(date_str + "01", "yyyy年MM月dd");
+        String dateStr = archive.getDateStr();
+        Date   sd       = DateKit.toDate(dateStr + "01", "yyyy年MM月dd");
         archive.setDate(sd);
         int      start    = DateKit.toUnix(sd);
         Calendar calender = Calendar.getInstance();

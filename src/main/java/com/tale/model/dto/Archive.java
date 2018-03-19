@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class Archive extends Model {
 
-    private String         date_str;
+    private String         dateStr;
     private Date           date;
     private String         count;
     private List<Contents> articles;

@@ -71,6 +71,7 @@ public class IndexController extends BaseController {
     @CsrfToken(newToken = true)
     @GetRoute(value = {"/:cid", "/:cid.html"})
     public String page(@PathParam String cid, Request request) {
+        System.out.println(request.pathParams());
         Optional<Contents> contentsOptional = contentsService.getContents(cid);
         if (!contentsOptional.isPresent()) {
             return this.render_404();
