@@ -121,11 +121,11 @@ public class IndexController extends BaseController {
      */
     @Route(value = "profile", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveProfile(@Param String screen_name, @Param String email, Request request) {
+    public RestResponse saveProfile(@Param String screenName, @Param String email, Request request) {
         Users users = this.user();
-        if (StringKit.isNotBlank(screen_name) && StringKit.isNotBlank(email)) {
+        if (StringKit.isNotBlank(screenName) && StringKit.isNotBlank(email)) {
             Users temp = new Users();
-            temp.setScreenName(screen_name);
+            temp.setScreenName(screenName);
             temp.setEmail(email);
             temp.updateById(users.getUid());
             new Logs(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid()).save();

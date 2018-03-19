@@ -55,8 +55,8 @@ public class WebContext implements BeanProcessor {
         if (blade.environment().hasKey("app.devMode")) {
             devMode = blade.environment().getBoolean("app.devMode", true);
         }
-        Sql2o sql2o = SqliteJdbc.importSql(devMode);
-        Anima.open(sql2o);
+        SqliteJdbc.importSql(devMode);
+        Anima.open(SqliteJdbc.DB_SRC);
         Commons.setSiteService(ioc.getBean(SiteService.class));
     }
 
