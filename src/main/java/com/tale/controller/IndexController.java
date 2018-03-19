@@ -1,8 +1,6 @@
 package com.tale.controller;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.core.OrderBy;
-import com.blade.jdbc.page.Page;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
@@ -25,11 +23,15 @@ import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
+import io.github.biezhi.anima.enums.OrderBy;
+import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 首页、归档、Feed、评论
@@ -81,7 +83,7 @@ public class IndexController extends BaseController {
         request.attribute("article", contents);
         Contents temp = new Contents();
         temp.setHits(contents.getHits() + 1);
-        temp.update(contents.getCid());
+        temp.updateById(contents.getCid());
         if (Types.ARTICLE.equals(contents.getType())) {
             return this.render("post");
         }
@@ -134,7 +136,7 @@ public class IndexController extends BaseController {
         }
         Contents temp = new Contents();
         temp.setHits(contents.getHits() + 1);
-        temp.update(contents.getCid());
+        temp.updateById(contents.getCid());
         return this.render("post");
     }
 
@@ -160,11 +162,14 @@ public class IndexController extends BaseController {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
 
-        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
-                .like("title", "%" + keyword + "%").page(page, limit, "created desc");
+        Page<Contents> articles = select().from(Contents.class)
+                .where(Contents::getType, Types.ARTICLE)
+                .and(Contents::getStatus, Types.PUBLISH)
+                .like(Contents::getTitle, "%" + keyword + "%")
+                .order(Contents::getCreated, OrderBy.DESC)
+                .page(page, limit);
 
         request.attribute("articles", articles);
-
         request.attribute("type", "搜索");
         request.attribute("keyword", keyword);
         request.attribute("page_prefix", "/search/" + keyword);
@@ -192,9 +197,12 @@ public class IndexController extends BaseController {
     @GetRoute(value = {"feed", "feed.xml", "atom.xml"})
     public void feed(Response response) {
 
-        List<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
-                .and("allow_feed", true)
-                .findAll(OrderBy.desc("created"));
+        List<Contents> articles = select().from(Contents.class)
+                .where(Contents::getType, Types.ARTICLE)
+                .and(Contents::getStatus, Types.PUBLISH)
+                .and(Contents::getAllowFeed, true)
+                .order(Contents::getCreated, OrderBy.DESC)
+                .all();
 
         try {
             String xml = TaleUtils.getRssXml(articles);
@@ -212,10 +220,12 @@ public class IndexController extends BaseController {
      */
     @GetRoute(value = {"sitemap", "sitemap.xml"})
     public void sitemap(Response response) {
-        List<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH)
-                .and("allow_feed", true)
-                .findAll(OrderBy.desc("created"));
-
+        List<Contents> articles = select().from(Contents.class)
+                .where(Contents::getType, Types.ARTICLE)
+                .and(Contents::getStatus, Types.PUBLISH)
+                .and(Contents::getAllowFeed, true)
+                .order(Contents::getCreated, OrderBy.DESC)
+                .all();
         try {
             String xml = TaleUtils.getSitemapXml(articles);
             response.contentType("text/xml; charset=utf-8");

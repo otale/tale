@@ -1,7 +1,7 @@
 package com.tale.model.dto;
 
-import com.blade.jdbc.core.ActiveRecord;
 import com.tale.model.entity.Contents;
+import io.github.biezhi.anima.Model;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by biezhi on 2017/2/23.
  */
 @Data
-public class Archive extends ActiveRecord {
+public class Archive extends Model {
 
     private String         date_str;
     private Date           date;

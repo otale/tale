@@ -1,7 +1,7 @@
 package com.tale.model.entity;
 
-import com.blade.jdbc.annotation.Table;
-import com.blade.jdbc.core.ActiveRecord;
+import io.github.biezhi.anima.Model;
+import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
 
 /**
@@ -10,13 +10,17 @@ import lombok.Data;
  * @author biezhi
  */
 @Data
-@Table(value = "t_relationships", pk = "mid")
-public class Relationships extends ActiveRecord {
+@Table(name = "t_relationships", pk = "mid")
+public class Relationships extends Model {
 
-    // 内容主键
+    /**
+     * 文章主键
+     */
     private Integer cid;
 
-    // 项目主键
+    /**
+     * 项目主键
+     */
     private Integer mid;
 
 }

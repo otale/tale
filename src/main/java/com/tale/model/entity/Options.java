@@ -1,7 +1,7 @@
 package com.tale.model.entity;
 
-import com.blade.jdbc.annotation.Table;
-import com.blade.jdbc.core.ActiveRecord;
+import io.github.biezhi.anima.Model;
+import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
 
 /**
@@ -10,16 +10,22 @@ import lombok.Data;
  * @author biezhi
  */
 @Data
-@Table(value = "t_options", pk = "name")
-public class Options extends ActiveRecord {
+@Table(name = "t_options", pk = "name")
+public class Options extends Model {
 
-    // 配置名称
+    /**
+     * 配置键
+     */
     private String name;
 
-    // 配置值
+    /**
+     * 配置值
+     */
     private String value;
 
-    // 配置描述
+    /**
+     * 配置描述
+     */
     private String description;
 
 }

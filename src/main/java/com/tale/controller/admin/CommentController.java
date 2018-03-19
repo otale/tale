@@ -1,7 +1,6 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.page.Page;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
@@ -15,7 +14,10 @@ import com.tale.service.CommentsService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
+import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 评论管理
@@ -35,9 +37,8 @@ public class CommentController extends BaseController {
     @GetRoute(value = "")
     public String index(@Param(defaultValue = "1") int page,
                         @Param(defaultValue = "15") int limit, Request request) {
-        Users users = this.user();
-
-        Page<Comments> commentPage = new Comments().where("author_id", "<>", users.getUid()).page(page, limit);
+        Users          users       = this.user();
+        Page<Comments> commentPage = select().from(Comments.class).where(Comments::getAuthorId).not(users.getUid()).page(page, limit);
         request.attribute("comments", commentPage);
         return "admin/comment_list";
     }
@@ -111,10 +112,10 @@ public class CommentController extends BaseController {
 
         Comments comments = new Comments();
         comments.setAuthor(users.getUsername());
-        comments.setAuthor_id(users.getUid());
+        comments.setAuthorId(users.getUid());
         comments.setCid(c.getCid());
         comments.setIp(request.address());
-        comments.setUrl(users.getHome_url());
+        comments.setUrl(users.getHomeUrl());
         comments.setContent(content);
         if (StringKit.isNotBlank(users.getEmail())) {
             comments.setMail(users.getEmail());

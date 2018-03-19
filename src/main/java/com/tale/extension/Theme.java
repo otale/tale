@@ -1,6 +1,5 @@
 package com.tale.extension;
 
-import com.blade.jdbc.page.Page;
 import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
 import com.blade.kit.json.Ason;
@@ -14,11 +13,15 @@ import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
+import io.github.biezhi.anima.enums.OrderBy;
+import io.github.biezhi.anima.page.Page;
 import jetbrick.template.runtime.InterpretContext;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 主题函数
@@ -633,7 +636,11 @@ public final class Theme {
         page = null == page ? request.queryInt("page", 1) : page;
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
 
-        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).page(page, limit, "created desc");
+        Page<Contents> articles = select().from(Contents.class)
+                .where(Contents::getType, Types.ARTICLE)
+                .and("status", Types.PUBLISH)
+                .order(Contents::getCreated, OrderBy.DESC)
+                .page(page, limit);
 
         request.attribute("articles", articles);
         if (page > 1) {

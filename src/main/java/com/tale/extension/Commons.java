@@ -1,12 +1,12 @@
 package com.tale.extension;
 
-import com.blade.jdbc.page.Page;
 import com.blade.kit.*;
 import com.tale.controller.BaseController;
 import com.tale.init.TaleConst;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
+import io.github.biezhi.anima.page.Page;
 
 import java.util.ArrayList;
 import java.util.Date;

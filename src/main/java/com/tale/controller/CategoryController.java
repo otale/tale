@@ -1,7 +1,6 @@
 package com.tale.controller;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.page.Page;
 import com.blade.mvc.annotation.GetRoute;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
@@ -13,6 +12,7 @@ import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
+import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

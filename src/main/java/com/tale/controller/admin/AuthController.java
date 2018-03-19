@@ -21,6 +21,8 @@ import com.tale.model.param.LoginParam;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import static io.github.biezhi.anima.Anima.select;
+
 /**
  * 登录，退出
  * Created by biezhi on 2017/2/21.
@@ -56,7 +58,10 @@ public class AuthController extends BaseController {
             }
             String pwd = EncryptKit.md5(loginParam.getUsername(), loginParam.getPassword());
 
-            Users user = new Users().where("username", loginParam.getUsername()).and("password", pwd).find();
+            Users user = select().from(Users.class)
+                    .where(Users::getUsername, loginParam.getUsername())
+                    .and(Users::getPassword, pwd).one();
+
             if (null == user) {
                 return RestResponse.fail("用户名或密码错误");
             }
@@ -67,7 +72,7 @@ public class AuthController extends BaseController {
 
             Users temp = new Users();
             temp.setLogged(DateKit.nowUnix());
-            temp.update(user.getUid());
+            temp.updateById(user.getUid());
             log.info("登录成功：{}", loginParam.getUsername());
             cache.set("login_error_count", 0);
 

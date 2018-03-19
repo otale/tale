@@ -10,14 +10,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sqlite.version>3.15.1</sqlite.version>
-        <blade-mvc.version>2.0.6-BETA</blade-mvc.version>
-        <blade-jdbc.version>0.2.2-RELEASE</blade-jdbc.version>
+        <sqlite.version>3.21.0.1</sqlite.version>
+        <blade-mvc.version>2.0.6-R1</blade-mvc.version>
+        <anima.version>0.0.6</anima.version>
         <blade-tpl.verion>0.1.2</blade-tpl.verion>
         <blade-validator>0.0.2</blade-validator>
-        <commonmark.version>0.10.0</commonmark.version>
+        <commonmark.version>0.11.0</commonmark.version>
         <rome.version>1.0</rome.version>
-        <emoji.version>3.2.0</emoji.version>
+        <emoji.version>4.0.0</emoji.version>
     </properties>
 
     <dependencies>
@@ -34,11 +34,11 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>${sqlite.version}</version>
         </dependency>
-        
+
         <dependency>
-            <groupId>com.bladejava</groupId>
-            <artifactId>blade-jdbc</artifactId>
-            <version>${blade-jdbc.version}</version>
+            <groupId>io.github.biezhi</groupId>
+            <artifactId>anima</artifactId>
+            <version>${anima.version}</version>
         </dependency>
 
         <!-- 模板引擎 -->
@@ -66,6 +66,7 @@
             <artifactId>rome</artifactId>
             <version>${rome.version}</version>
         </dependency>
+
         <!--过滤 emoji 字符-->
         <dependency>
             <groupId>com.vdurmont</groupId>

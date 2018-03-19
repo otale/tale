@@ -6,7 +6,6 @@ import com.blade.event.BeanProcessor;
 import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.Base;
 import com.blade.kit.StringKit;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
 import com.tale.controller.BaseController;
@@ -18,6 +17,7 @@ import com.tale.extension.Theme;
 import com.tale.model.dto.Types;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
+import io.github.biezhi.anima.Anima;
 import jetbrick.template.JetGlobalContext;
 import jetbrick.template.resolver.GlobalResolver;
 import org.sql2o.Sql2o;
@@ -57,7 +57,7 @@ public class WebContext implements BeanProcessor {
         SqliteJdbc.importSql(devMode);
 
         Sql2o sql2o = new Sql2o(SqliteJdbc.DB_SRC, null, null);
-        Base.open(sql2o);
+        Anima.open(sql2o);
         Commons.setSiteService(ioc.getBean(SiteService.class));
     }
 
