@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Tale初始化进程
@@ -54,9 +55,7 @@ public class WebContext implements BeanProcessor {
         if (blade.environment().hasKey("app.devMode")) {
             devMode = blade.environment().getBoolean("app.devMode", true);
         }
-        SqliteJdbc.importSql(devMode);
-
-        Sql2o sql2o = new Sql2o(SqliteJdbc.DB_SRC, null, null);
+        Sql2o sql2o = SqliteJdbc.importSql(devMode);
         Anima.open(sql2o);
         Commons.setSiteService(ioc.getBean(SiteService.class));
     }
@@ -70,7 +69,7 @@ public class WebContext implements BeanProcessor {
         // 扫描主题下面的所有自定义宏
         String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
         File[] dir      = new File(themeDir).listFiles();
-        for (File f : dir) {
+        for (File f : Objects.requireNonNull(dir)) {
             if (f.isDirectory() && Files.exists(Paths.get(f.getPath() + File.separatorChar + "macros.html"))) {
                 String macroName = File.separatorChar + "themes" + File.separatorChar + f.getName() + File.separatorChar + "macros.html";
                 macros.add(macroName);
