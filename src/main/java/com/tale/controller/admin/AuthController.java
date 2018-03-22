@@ -42,7 +42,7 @@ public class AuthController extends BaseController {
 
     @Route(value = "login", method = HttpMethod.POST)
     @JSON
-    public RestResponse doLogin(LoginParam loginParam, Request request,
+    public RestResponse<?> doLogin(LoginParam loginParam, Request request,
                                 Session session, Response response) {
 
         Integer error_count = cache.get("login_error_count");

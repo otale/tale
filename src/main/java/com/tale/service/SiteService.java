@@ -8,7 +8,6 @@ import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
 import com.tale.controller.admin.AttachController;
 import com.tale.exception.TipException;
-import com.tale.extension.Theme;
 import com.tale.init.SqliteJdbc;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.*;
@@ -152,7 +151,7 @@ public class SiteService {
                     .map(this::parseArchive)
                     .collect(Collectors.toList());
         }
-        return Collections.EMPTY_LIST;
+        return new ArrayList<>(0);
     }
 
     private Archive parseArchive(Archive archive) {
@@ -249,7 +248,7 @@ public class SiteService {
     public List<Metas> getMetas(String searchType, String type, int limit) {
 
         if (StringKit.isBlank(searchType) || StringKit.isBlank(type)) {
-            return Theme.EMPTY;
+            return new ArrayList<>(0);
         }
 
         if (limit < 1 || limit > TaleConst.MAX_POSTS) {
@@ -275,7 +274,7 @@ public class SiteService {
                 return select().bySQL(Metas.class, sql).all();
             }
         }
-        return Theme.EMPTY;
+        return new ArrayList<>(0);
     }
 
     /**

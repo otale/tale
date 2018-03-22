@@ -51,7 +51,7 @@ public class CommentController extends BaseController {
      */
     @PostRoute(value = "delete")
     @JSON
-    public RestResponse delete(@Param Integer coid) {
+    public RestResponse<?> delete(@Param Integer coid) {
         try {
             Comments comments = commentsService.byId(coid);
             if (null == comments) {
@@ -73,7 +73,7 @@ public class CommentController extends BaseController {
 
     @PostRoute(value = "status")
     @JSON
-    public RestResponse delete(@Param Integer coid, @Param String status) {
+    public RestResponse<?> delete(@Param Integer coid, @Param String status) {
         try {
             Comments comments = new Comments();
             comments.setCoid(coid);
@@ -94,7 +94,7 @@ public class CommentController extends BaseController {
 
     @PostRoute(value = "")
     @JSON
-    public RestResponse reply(@Param Integer coid, @Param String content, Request request) {
+    public RestResponse<?> reply(@Param Integer coid, @Param String content, Request request) {
         if (null == coid || StringKit.isBlank(content)) {
             return RestResponse.fail("请输入完整后评论");
         }

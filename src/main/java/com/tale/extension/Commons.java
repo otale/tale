@@ -8,10 +8,7 @@ import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 import io.github.biezhi.anima.page.Page;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,12 +19,9 @@ import java.util.regex.Pattern;
  */
 public final class Commons {
 
-    private static SiteService siteService;
-
     private static final String TEMPLATES = "/templates/";
 
     public static void setSiteService(SiteService ss) {
-        siteService = ss;
         Theme.setSiteService(ss);
     }
 
@@ -37,7 +31,7 @@ public final class Commons {
      * @param paginator
      * @return
      */
-    public static boolean is_empty(Page paginator) {
+    public static boolean is_empty(Page<?> paginator) {
         return null == paginator || BladeKit.isEmpty(paginator.getRows());
     }
 

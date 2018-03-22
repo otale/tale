@@ -253,7 +253,7 @@ public class IndexController extends BaseController {
     @CsrfToken(valid = true)
     @PostRoute(value = "comment")
     @JSON
-    public RestResponse comment(Request request, Response response,
+    public RestResponse<?> comment(Request request, Response response,
                                 @HeaderParam String Referer, @Valid Comments comments) {
 
         if (StringKit.isBlank(Referer)) {

@@ -94,7 +94,7 @@ public class ThemeController extends BaseController {
      */
     @PostRoute(value = "setting")
     @JSON
-    public RestResponse saveSetting(Request request) {
+    public RestResponse<?> saveSetting(Request request) {
         try {
             Map<String, List<String>> query = request.parameters();
 
@@ -130,7 +130,7 @@ public class ThemeController extends BaseController {
      */
     @PostRoute(value = "active")
     @JSON
-    public RestResponse activeTheme(Request request, @Param String site_theme) {
+    public RestResponse<?> activeTheme(Request request, @Param String site_theme) {
         try {
             optionsService.saveOption("site_theme", site_theme);
             optionsService.deleteOption("theme_option_");

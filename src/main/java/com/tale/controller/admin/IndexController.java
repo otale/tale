@@ -87,7 +87,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "setting", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveSetting(@Param String site_theme, Request request) {
+    public RestResponse<?> saveSetting(@Param String site_theme, Request request) {
         try {
             Map<String, List<String>> querys = request.parameters();
             optionsService.saveOptions(querys);
@@ -121,7 +121,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "profile", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveProfile(@Param String screenName, @Param String email, Request request) {
+    public RestResponse<?> saveProfile(@Param String screenName, @Param String email, Request request) {
         Users users = this.user();
         if (StringKit.isNotBlank(screenName) && StringKit.isNotBlank(email)) {
             Users temp = new Users();
@@ -138,7 +138,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "password", method = HttpMethod.POST)
     @JSON
-    public RestResponse upPwd(@Param String old_password, @Param String password, Request request) {
+    public RestResponse<?> upPwd(@Param String old_password, @Param String password, Request request) {
         Users users = this.user();
         if (StringKit.isBlank(old_password) || StringKit.isBlank(password)) {
             return RestResponse.fail("请确认信息输入完整");
@@ -176,7 +176,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "backup", method = HttpMethod.POST)
     @JSON
-    public RestResponse backup(@Param String bk_type, @Param String bk_path,
+    public RestResponse<?> backup(@Param String bk_type, @Param String bk_path,
                                Request request) {
         if (StringKit.isBlank(bk_type)) {
             return RestResponse.fail("请确认信息输入完整");
@@ -204,7 +204,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "advanced", method = HttpMethod.POST)
     @JSON
-    public RestResponse doAdvanced(@Param String cache_key, @Param String block_ips,
+    public RestResponse<?> doAdvanced(@Param String cache_key, @Param String block_ips,
                                    @Param String plugin_name, @Param String rewrite_url,
                                    @Param String allow_install) {
         // 清除缓存

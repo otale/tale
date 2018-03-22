@@ -13,7 +13,6 @@ import com.tale.model.entity.Metas;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import io.github.biezhi.anima.page.Page;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import java.util.Set;
  * @author biezhi
  * @date 2017/9/17
  */
-@Slf4j
 @Path
 public class CategoryController extends BaseController {
 

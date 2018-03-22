@@ -104,7 +104,7 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "publish")
     @JSON
-    public RestResponse publishArticle(@Valid Contents contents) {
+    public RestResponse<?> publishArticle(@Valid Contents contents) {
         Users users = this.user();
         contents.setType(Types.ARTICLE);
         contents.setAuthorId(users.getUid());
@@ -134,7 +134,7 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "modify")
     @JSON
-    public RestResponse modifyArticle(@Valid Contents contents) {
+    public RestResponse<?> modifyArticle(@Valid Contents contents) {
         try {
             if (null == contents || null == contents.getCid()) {
                 return RestResponse.fail("缺少参数，请重试");
@@ -162,7 +162,7 @@ public class ArticleController extends BaseController {
      */
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@Param int cid, Request request) {
+    public RestResponse<?> delete(@Param int cid, Request request) {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);

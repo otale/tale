@@ -53,7 +53,7 @@ public class InstallController extends BaseController {
 
     @Route(value = "/", method = HttpMethod.POST)
     @JSON
-    public RestResponse doInstall(@Param String site_title, @Param String site_url,
+    public RestResponse<?> doInstall(@Param String site_title, @Param String site_url,
                                   @Param String admin_user, @Param String admin_email,
                                   @Param String admin_pwd) {
         if (Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"))

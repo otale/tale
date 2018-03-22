@@ -79,7 +79,7 @@ public class AttachController extends BaseController {
      */
     @Route(value = "upload", method = HttpMethod.POST)
     @JSON
-    public RestResponse upload(Request request) {
+    public RestResponse<?> upload(Request request) {
 
         log.info("UPLOAD DIR = {}", TaleUtils.UP_DIR);
 
@@ -138,7 +138,7 @@ public class AttachController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@Param Integer id, Request request) {
+    public RestResponse<?> delete(@Param Integer id, Request request) {
         try {
             Attach attach = select().from(Attach.class).byId(id);
             if (null == attach) {

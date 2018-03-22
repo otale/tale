@@ -66,7 +66,7 @@ public class PageController extends BaseController {
 
     @Route(value = "publish", method = HttpMethod.POST)
     @JSON
-    public RestResponse publishPage(@Valid Contents contents) {
+    public RestResponse<?> publishPage(@Valid Contents contents) {
 
         Users users = this.user();
         contents.setType(Types.PAGE);
@@ -89,7 +89,7 @@ public class PageController extends BaseController {
 
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
-    public RestResponse modifyArticle(@Valid Contents contents) {
+    public RestResponse<?> modifyArticle(@Valid Contents contents) {
         if (null == contents || null == contents.getCid()) {
             return RestResponse.fail("缺少参数，请重试");
         }
@@ -111,7 +111,7 @@ public class PageController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@Param int cid, Request request) {
+    public RestResponse<?> delete(@Param int cid, Request request) {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);
