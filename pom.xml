@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sqlite.version>3.21.0.1</sqlite.version>
-        <blade-mvc.version>2.0.7-beta1</blade-mvc.version>
+        <blade-mvc.version>2.0.7-beta2</blade-mvc.version>
         <anima.version>0.0.7</anima.version>
         <blade-tpl.verion>0.1.2</blade-tpl.verion>
         <blade-validator>0.0.2</blade-validator>
@@ -116,6 +116,9 @@
     <profiles>
         <profile>
             <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
             <build>
                 <resources>
                     <resource>
@@ -130,6 +133,13 @@
         </profile>
         <profile>
             <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <activation>
+                <!-- Set to activate this configuration by default -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <resources>
                     <resource>
