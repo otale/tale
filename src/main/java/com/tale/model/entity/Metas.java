@@ -1,6 +1,7 @@
 package com.tale.model.entity;
 
 import io.github.biezhi.anima.Model;
+import io.github.biezhi.anima.annotation.Ignore;
 import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
 
@@ -51,6 +52,7 @@ public class Metas extends Model {
     /**
      * 项目下文章数
      */
+    @Ignore
     private Integer count;
 
 }

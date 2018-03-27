@@ -20,7 +20,6 @@ import com.tale.service.SiteService;
 import io.github.biezhi.anima.Anima;
 import jetbrick.template.JetGlobalContext;
 import jetbrick.template.resolver.GlobalResolver;
-import org.sql2o.Sql2o;
 
 import java.io.File;
 import java.nio.file.Files;
