@@ -114,6 +114,7 @@ public class ContentsService {
      * @param contents 文章对象
      */
     public void updateArticle(Contents contents) {
+        contents.setCreated(contents.getCreated());
         contents.setModified(DateKit.nowUnix());
         contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
         contents.setTags(contents.getTags() != null ? contents.getTags() : "");

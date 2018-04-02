@@ -45,6 +45,7 @@
 
         <form id="articleForm" role="form" novalidate="novalidate">
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
+            <input type="hidden" name="created" value="${contents.created ?! 0}" id="created"/>
             <input type="hidden" name="status" value="${contents.status ?! 'draft'}" id="status"/>
             <input type="hidden" name="content" id="content-editor"/>
             <input type="hidden" name="fmtType" id="fmtType" value="${contents.fmtType ?! 'markdown'}"/>

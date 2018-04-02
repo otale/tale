@@ -86,6 +86,7 @@
         <form id="articleForm">
             <input type="hidden" name="categories" id="categories"/>
             <input type="hidden" name="cid" value="${contents.cid ?! ''}" id="cid"/>
+            <input type="hidden" name="created" value="${contents.created ?! 0}" id="created"/>
             <input type="hidden" name="status" value="${contents.status ?! 'draft'}" id="status"/>
             <input type="hidden" name="allowComment" value="${contents.allowComment ?! true}" id="allowComment"/>
             <input type="hidden" name="allowPing" value="${contents.allowPing ?! true}" id="allowPing"/>
