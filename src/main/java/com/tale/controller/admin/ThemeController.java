@@ -76,7 +76,7 @@ public class ThemeController extends BaseController {
         Map<String, Object> map    = new HashMap<>();
         try {
             if (StringKit.isNotBlank(option)) {
-                map = JsonKit.toAson(option);
+                map = (Map<String, Object>) JsonKit.toAson(option);
             }
             request.attribute("theme_options", map);
         } catch (Exception e) {
