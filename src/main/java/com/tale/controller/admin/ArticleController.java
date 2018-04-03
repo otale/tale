@@ -54,7 +54,7 @@ public class ArticleController extends BaseController {
      * @return
      */
     @GetRoute(value = "")
-    public String index(@Param(defaultValue = "1") int page, @Param(defaultValue = "15") int limit,
+    public String index(@Param(defaultValue = "1") Integer page, @Param(defaultValue = "15") Integer limit,
                         Request request) {
 
         Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).order(Contents::getCreated, OrderBy.DESC).page(page, TaleConst.MAX_POSTS);

@@ -57,10 +57,10 @@ public class AttachController extends BaseController {
      * @param page
      * @param limit
      * @return
-     */
+     */	
     @Route(value = "", method = HttpMethod.GET)
-    public String index(Request request, @Param(defaultValue = "1") int page,
-                        @Param(defaultValue = "12") int limit) {
+    public String index(Request request, @Param(defaultValue = "1") Integer page,
+                        @Param(defaultValue = "12") Integer limit) {
 
         Page<Attach> attachPage = select().from(Attach.class).page(page, limit);
         request.attribute("attachs", attachPage);
