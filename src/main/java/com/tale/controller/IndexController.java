@@ -103,7 +103,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @GetRoute(value = {"page/:page", "page/:page.html"})
-    public String index(Request request, @PathParam int page, @Param(defaultValue = "12") int limit) {
+    public String index(Request request, @PathParam Integer page, @Param(defaultValue = "12") Integer limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         if (page > 1) {
             this.title(request, "第" + page + "页");
