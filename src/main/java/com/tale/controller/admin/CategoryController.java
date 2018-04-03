@@ -45,7 +45,7 @@ public class CategoryController extends BaseController {
 
     @Route(value = "save", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveCategory(@Param String cname, @Param Integer mid) {
+    public RestResponse<?> saveCategory(@Param String cname, @Param Integer mid) {
         try {
             metasService.saveMeta(Types.CATEGORY, cname, mid);
             siteService.cleanCache(Types.C_STATISTICS);
@@ -63,7 +63,7 @@ public class CategoryController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@Param int mid) {
+    public RestResponse<?> delete(@Param int mid) {
         try {
             metasService.delete(mid);
             siteService.cleanCache(Types.C_STATISTICS);

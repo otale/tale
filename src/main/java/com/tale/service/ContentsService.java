@@ -2,9 +2,6 @@ package com.tale.service;
 
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.Base;
-import com.blade.jdbc.page.Page;
-import com.blade.jdbc.page.PageRow;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.tale.exception.TipException;
@@ -15,8 +12,14 @@ import com.tale.model.entity.Contents;
 import com.tale.model.entity.Relationships;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
+import io.github.biezhi.anima.Anima;
+import io.github.biezhi.anima.page.Page;
+import io.github.biezhi.anima.page.PageRow;
 
 import java.util.Optional;
+
+import static io.github.biezhi.anima.Anima.deleteById;
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 文章Service
@@ -38,9 +41,9 @@ public class ContentsService {
     public Optional<Contents> getContents(String id) {
         if (StringKit.isNotBlank(id)) {
             if (StringKit.isNumber(id)) {
-                return Optional.ofNullable(new Contents().find(id));
+                return Optional.ofNullable(select().from(Contents.class).byId(id));
             } else {
-                return Optional.ofNullable(new Contents().where("slug", id).find());
+                return Optional.ofNullable(select().from(Contents.class).where(Contents::getSlug, id).one());
             }
         }
         return Optional.empty();
@@ -97,7 +100,7 @@ public class ContentsService {
         String tags       = contents.getTags();
         String categories = contents.getCategories();
 
-        Integer cid = contents.save();
+        Integer cid = contents.save().asInt();
 
         metasService.saveMetas(cid, tags, Types.TAG);
         metasService.saveMetas(cid, categories, Types.CATEGORY);
@@ -120,10 +123,10 @@ public class ContentsService {
         String  categories = contents.getCategories();
         Integer cid        = contents.getCid();
 
-        contents.update(cid);
+        contents.updateById(cid);
 
         if (null != contents.getType() && !contents.getType().equals(Types.PAGE)) {
-            new Relationships().delete("cid", cid);
+            Anima.delete().from(Relationships.class).where(Relationships::getCid, cid).execute();
         }
 
         metasService.saveMetas(cid, tags, Types.TAG);
@@ -138,9 +141,9 @@ public class ContentsService {
     public void delete(int cid) {
         Optional<Contents> contents = this.getContents(cid + "");
         contents.ifPresent(content -> {
-            new Contents().delete(cid);
-            new Relationships().delete("cid", cid);
-            new Comments().where("cid", cid).delete();
+            deleteById(Contents.class, cid);
+            Anima.delete().from(Relationships.class).where(Relationships::getCid, cid).execute();
+            Anima.delete().from(Comments.class).where(Comments::getCid, cid).execute();
         });
     }
 
@@ -153,11 +156,10 @@ public class ContentsService {
      * @return
      */
     public Page<Contents> getArticles(Integer mid, int page, int limit) {
-
         String sql = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +
-                "where b.mid = ? and a.status = 'publish' and a.type = 'post'";
+                "where b.mid = ? and a.status = 'publish' and a.type = 'post' order by a.created desc";
 
-        return new Contents().page(new PageRow(page, limit), sql, "a.created desc", mid);
+        return select().pageBySQL(Contents.class, new PageRow(page, limit), sql, mid);
     }
 
 }

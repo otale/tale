@@ -10,6 +10,8 @@ import com.tale.model.entity.Users;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import static io.github.biezhi.anima.Anima.select;
+
 @Bean
 @Slf4j
 public class BaseWebHook implements WebHook {
@@ -28,8 +30,7 @@ public class BaseWebHook implements WebHook {
             return false;
         }
 
-        log.info("UserAgent: {}", request.userAgent());
-        log.info("用户访问地址: {}, 来路地址: {}", uri, ip);
+        log.info("IP: {}, UserAgent: {}", ip, request.userAgent());
 
         if (uri.startsWith(TaleConst.STATIC_URI)) {
             return true;
@@ -52,7 +53,7 @@ public class BaseWebHook implements WebHook {
         if (null == user) {
             Integer uid = TaleUtils.getCookieUid(request);
             if (null != uid) {
-                user = new Users().find(uid);
+                user = select().from(Users.class).byId(uid);
                 request.session().attribute(TaleConst.LOGIN_SESSION_KEY, user);
             }
         }

@@ -2,7 +2,9 @@ package com.tale.exception;
 
 public class TipException extends RuntimeException {
 
-    public TipException() {
+    private static final long serialVersionUID = 1L;
+
+	public TipException() {
     }
 
     public TipException(String message) {

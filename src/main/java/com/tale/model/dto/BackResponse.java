@@ -10,7 +10,8 @@ import java.io.Serializable;
 @Data
 public class BackResponse implements Serializable {
 
-    private String attach_path;
+    private static final long serialVersionUID = 5992812699862539321L;
+	private String attach_path;
     private String theme_path;
     private String sql_path;
 

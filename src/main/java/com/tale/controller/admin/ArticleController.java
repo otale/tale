@@ -1,7 +1,6 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.page.Page;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
@@ -10,6 +9,7 @@ import com.blade.validator.annotation.Valid;
 import com.tale.controller.BaseController;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
+import com.tale.init.TaleConst;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
@@ -19,10 +19,14 @@ import com.tale.model.entity.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
+import io.github.biezhi.anima.enums.OrderBy;
+import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 文章管理控制器
@@ -53,7 +57,7 @@ public class ArticleController extends BaseController {
     public String index(@Param(defaultValue = "1") int page, @Param(defaultValue = "15") int limit,
                         Request request) {
 
-        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).page(page, limit, "created desc");
+        Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).order(Contents::getCreated, OrderBy.DESC).page(page, TaleConst.MAX_POSTS);
         request.attribute("articles", articles);
         return "admin/article_list";
     }
@@ -100,7 +104,7 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "publish")
     @JSON
-    public RestResponse publishArticle(@Valid Contents contents) {
+    public RestResponse<?> publishArticle(@Valid Contents contents) {
         Users users = this.user();
         contents.setType(Types.ARTICLE);
         contents.setAuthorId(users.getUid());
@@ -130,7 +134,7 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "modify")
     @JSON
-    public RestResponse modifyArticle(@Valid Contents contents) {
+    public RestResponse<?> modifyArticle(@Valid Contents contents) {
         try {
             if (null == contents || null == contents.getCid()) {
                 return RestResponse.fail("缺少参数，请重试");
@@ -158,7 +162,7 @@ public class ArticleController extends BaseController {
      */
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@Param int cid, Request request) {
+    public RestResponse<?> delete(@Param int cid, Request request) {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);

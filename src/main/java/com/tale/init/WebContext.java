@@ -6,7 +6,6 @@ import com.blade.event.BeanProcessor;
 import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.Base;
 import com.blade.kit.StringKit;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
 import com.tale.controller.BaseController;
@@ -18,9 +17,9 @@ import com.tale.extension.Theme;
 import com.tale.model.dto.Types;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
+import io.github.biezhi.anima.Anima;
 import jetbrick.template.JetGlobalContext;
 import jetbrick.template.resolver.GlobalResolver;
-import org.sql2o.Sql2o;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -28,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Tale初始化进程
@@ -55,9 +55,7 @@ public class WebContext implements BeanProcessor {
             devMode = blade.environment().getBoolean("app.devMode", true);
         }
         SqliteJdbc.importSql(devMode);
-
-        Sql2o sql2o = new Sql2o(SqliteJdbc.DB_SRC, null, null);
-        Base.open(sql2o);
+        Anima.open(SqliteJdbc.DB_SRC);
         Commons.setSiteService(ioc.getBean(SiteService.class));
     }
 
@@ -70,7 +68,7 @@ public class WebContext implements BeanProcessor {
         // 扫描主题下面的所有自定义宏
         String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
         File[] dir      = new File(themeDir).listFiles();
-        for (File f : dir) {
+        for (File f : Objects.requireNonNull(dir)) {
             if (f.isDirectory() && Files.exists(Paths.get(f.getPath() + File.separatorChar + "macros.html"))) {
                 String macroName = File.separatorChar + "themes" + File.separatorChar + f.getName() + File.separatorChar + "macros.html";
                 macros.add(macroName);

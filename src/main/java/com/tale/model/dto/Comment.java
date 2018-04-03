@@ -20,13 +20,13 @@ public class Comment extends Comments {
         setAuthor(comments.getAuthor());
         setMail(comments.getMail());
         setCoid(comments.getCoid());
-        setAuthor_id(comments.getAuthor_id());
+        setAuthorId(comments.getAuthorId());
         setUrl(comments.getUrl());
         setCreated(comments.getCreated());
         setAgent(comments.getAgent());
         setIp(comments.getIp());
         setContent(comments.getContent());
-        setOwner_id(comments.getOwner_id());
+        setOwnerId(comments.getOwnerId());
         setCid(comments.getCid());
     }
 

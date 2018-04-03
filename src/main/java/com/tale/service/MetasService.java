@@ -1,16 +1,19 @@
 package com.tale.service;
 
 import com.blade.ioc.annotation.Bean;
-import com.blade.jdbc.core.OrderBy;
 import com.blade.kit.StringKit;
 import com.tale.exception.TipException;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
 import com.tale.model.entity.Relationships;
+import io.github.biezhi.anima.Anima;
+import io.github.biezhi.anima.enums.OrderBy;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 分类、标签Service
@@ -28,7 +31,10 @@ public class MetasService {
      */
     public List<Metas> getMetas(String type) {
         if (StringKit.isNotBlank(type)) {
-            return new Metas().where("type", type).findAll(OrderBy.of("sort desc, mid desc"));
+            return select().from(Metas.class).where(Metas::getType, type)
+                    .order(Metas::getSort, OrderBy.DESC)
+                    .order(Metas::getMid, OrderBy.DESC)
+                    .all();
         }
         return null;
     }
@@ -49,13 +55,14 @@ public class MetasService {
     }
 
     private List<Contents> getMetaContents(Metas m) {
-        Integer             mid           = m.getMid();
-        List<Relationships> relationships = new Relationships().where("mid", mid).findAll();
+        Integer mid = m.getMid();
+
+        List<Relationships> relationships = select().from(Relationships.class).where(Relationships::getMid, mid).all();
         if (null == relationships || relationships.size() == 0) {
             return new ArrayList<>();
         }
         List<Integer>  cidList  = relationships.stream().map(Relationships::getCid).collect(Collectors.toList());
-        List<Contents> contents = new Contents().queryAll("select * from t_contents where cid in (" + cidList.stream().map(Object::toString).collect(Collectors.joining(",")) + ") order by created desc");
+        List<Contents> contents = select().from(Contents.class).in(Contents::getCid, cidList).order(Contents::getCreated, OrderBy.DESC).all();
         return contents;
     }
 
@@ -69,8 +76,7 @@ public class MetasService {
         if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
             String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                     "where a.type = ? and a.name = ? group by a.mid";
-
-            return new Metas().query(sql, type, name);
+            return select().bySQL(Metas.class, sql, type, name).one();
         }
         return null;
     }
@@ -95,7 +101,7 @@ public class MetasService {
     }
 
     private void saveOrUpdate(Integer cid, String name, String type) {
-        Metas metas = new Metas().where("name", name).and("type", type).find();
+        Metas metas = select().from(Metas.class).where(Metas::getName, name).and(Metas::getType, type).one();
         int   mid;
         if (null != metas) {
             mid = metas.getMid();
@@ -104,7 +110,7 @@ public class MetasService {
             metas.setSlug(name);
             metas.setName(name);
             metas.setType(type);
-            mid = metas.save();
+            mid = metas.save().asInt();
         }
         if (mid != 0) {
             long count = new Relationships().where("cid", cid).and("mid", mid).count();
@@ -123,19 +129,19 @@ public class MetasService {
      * @param mid 项目id
      */
     public void delete(int mid) {
-        Metas metas = new Metas().find(mid);
+        Metas metas = select().from(Metas.class).byId(mid);
         if (null == metas) {
             return;
         }
 
         String type = metas.getType();
         String name = metas.getName();
-        metas.delete(mid);
+        Anima.deleteById(Metas.class, mid);
 
-        List<Relationships> relationships = new Relationships().where("mid", mid).findAll();
+        List<Relationships> relationships = select().from(Relationships.class).where(Relationships::getMid, mid).all();
         if (null != relationships) {
             relationships.stream()
-                    .map(r -> new Contents().<Contents>find(r.getCid()))
+                    .map(r -> select().from(Contents.class).byId(r.getCid()))
                     .filter(Objects::nonNull)
                     .forEach(contents -> {
                         Integer  cid      = contents.getCid();
@@ -150,11 +156,11 @@ public class MetasService {
                             isUpdate = true;
                         }
                         if (isUpdate) {
-                            temp.update(cid);
+                            temp.updateById(cid);
                         }
                     });
         }
-        new Relationships().delete("mid", mid);
+        Anima.delete().from(Relationships.class).where(Relationships::getMid, mid).execute();
     }
 
     /**
@@ -166,7 +172,7 @@ public class MetasService {
      */
     public void saveMeta(String type, String name, Integer mid) {
         if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
-            Metas metas = new Metas().where("type", type).and("name", name).find();
+            Metas metas = select().from(Metas.class).where(Metas::getType, type).and(Metas::getName, name).one();
             if (null != metas) {
                 throw new TipException("已经存在该项");
             } else {

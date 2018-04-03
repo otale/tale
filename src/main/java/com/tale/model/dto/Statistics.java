@@ -12,7 +12,8 @@ import java.io.Serializable;
 @Data
 public class Statistics implements Serializable {
 
-    // 文章数
+    private static final long serialVersionUID = 2329863829741481287L;
+	// 文章数
     private long articles;
     // 页面数
     private long pages;

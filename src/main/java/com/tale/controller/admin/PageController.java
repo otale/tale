@@ -1,7 +1,6 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.page.Page;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
@@ -18,9 +17,13 @@ import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.SiteService;
+import io.github.biezhi.anima.enums.OrderBy;
+import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 页面管理
@@ -39,7 +42,7 @@ public class PageController extends BaseController {
 
     @Route(value = "", method = HttpMethod.GET)
     public String index(Request request) {
-        Page<Contents> contentsPage = new Contents().where("type", Types.PAGE).page(1, TaleConst.MAX_POSTS, "created desc");
+        Page<Contents> contentsPage = select().from(Contents.class).where(Contents::getType, Types.PAGE).order(Contents::getCreated, OrderBy.DESC).page(1, TaleConst.MAX_POSTS);
         request.attribute("articles", contentsPage);
         return "admin/page_list";
     }
@@ -63,7 +66,7 @@ public class PageController extends BaseController {
 
     @Route(value = "publish", method = HttpMethod.POST)
     @JSON
-    public RestResponse publishPage(@Valid Contents contents) {
+    public RestResponse<?> publishPage(@Valid Contents contents) {
 
         Users users = this.user();
         contents.setType(Types.PAGE);
@@ -86,7 +89,7 @@ public class PageController extends BaseController {
 
     @Route(value = "modify", method = HttpMethod.POST)
     @JSON
-    public RestResponse modifyArticle(@Valid Contents contents) {
+    public RestResponse<?> modifyArticle(@Valid Contents contents) {
         if (null == contents || null == contents.getCid()) {
             return RestResponse.fail("缺少参数，请重试");
         }
@@ -108,7 +111,7 @@ public class PageController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@Param int cid, Request request) {
+    public RestResponse<?> delete(@Param int cid, Request request) {
         try {
             contentsService.delete(cid);
             siteService.cleanCache(Types.C_STATISTICS);
