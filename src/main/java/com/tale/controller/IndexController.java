@@ -57,11 +57,11 @@ public class IndexController extends BaseController {
 
     /**
      * 首页
-     *
+     * 
      * @return
      */
     @GetRoute
-    public String index(Request request, @Param(defaultValue = "12") int limit) {
+    public String index(Request request, @Param(defaultValue = "12") Integer limit) {
         return this.index(request, 1, limit);
     }
 
