@@ -48,13 +48,14 @@ public class ArticleController extends BaseController {
     /**
      * 文章管理首页
      *
+     **
      * @param page
      * @param limit
      * @param request
      * @return
      */
     @GetRoute(value = "")
-    public String index(@Param(defaultValue = "1") int page, @Param(defaultValue = "15") int limit,
+    public String index(@Param(defaultValue = "1") Integer page, @Param(defaultValue = "15") Integer limit,
                         Request request) {
 
         Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).order(Contents::getCreated, OrderBy.DESC).page(page, TaleConst.MAX_POSTS);
