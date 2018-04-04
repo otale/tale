@@ -20,7 +20,7 @@ public class TaleConst {
     public static       Boolean     INSTALLED         = false;
     public static       Boolean     ENABLED_CDN       = true;
     public static       Environment BCONF             = null;
-
+    
     /**
      * 最大页码
      */
