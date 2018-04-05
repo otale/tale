@@ -109,6 +109,10 @@ public class ArticleController extends BaseController {
         Users users = this.user();
         contents.setType(Types.ARTICLE);
         contents.setAuthorId(users.getUid());
+        //将点击数设初始化为0
+        contents.setHits(0);
+        //将评论数设初始化为0
+        contents.setCommentsNum(0);
         if (StringKit.isBlank(contents.getCategories())) {
             contents.setCategories("默认分类");
         }
