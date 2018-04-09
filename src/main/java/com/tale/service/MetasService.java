@@ -178,8 +178,8 @@ public class MetasService {
             } else {
                 if (null != mid) {
                     metas = new Metas();
-                    metas.setMid(mid);
                     metas.setName(name);
+                    metas.where(Metas::getMid, mid);
                     metas.update();
                 } else {
                     metas = new Metas();
