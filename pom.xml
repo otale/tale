@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sqlite.version>3.21.0.1</sqlite.version>
         <blade-mvc.version>2.0.7-R3</blade-mvc.version>
-        <anima.version>0.1.1</anima.version>
+        <anima.version>0.1.2</anima.version>
         <blade-tpl.verion>0.1.2</blade-tpl.verion>
         <blade-validator>0.0.2</blade-validator>
         <commonmark.version>0.11.0</commonmark.version>
