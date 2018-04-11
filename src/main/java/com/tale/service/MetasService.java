@@ -178,9 +178,8 @@ public class MetasService {
             } else {
                 if (null != mid) {
                     metas = new Metas();
-                    metas.setMid(mid);
                     metas.setName(name);
-                    metas.update();
+                    metas.updateById(mid);
                 } else {
                     metas = new Metas();
                     metas.setType(type);
