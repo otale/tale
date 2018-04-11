@@ -1,6 +1,7 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
+import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
@@ -135,10 +136,14 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "modify")
     @JSON
-    public RestResponse<?> modifyArticle(@Valid Contents contents) {
+    public RestResponse<?> modifyArticle(@Valid Contents contents, @Param String createTime) {
         try {
             if (null == contents || null == contents.getCid()) {
                 return RestResponse.fail("缺少参数，请重试");
+            }
+            if(StringKit.isNotBlank(createTime)){
+                int unixTime = DateKit.toUnix(createTime, "yyyy-MM-dd HH:mm");
+                contents.setCreated(unixTime);
             }
             Integer cid = contents.getCid();
             contentsService.updateArticle(contents);
