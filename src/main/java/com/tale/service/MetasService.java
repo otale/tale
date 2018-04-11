@@ -179,8 +179,7 @@ public class MetasService {
                 if (null != mid) {
                     metas = new Metas();
                     metas.setName(name);
-                    metas.where(Metas::getMid, mid);
-                    metas.update();
+                    metas.updateById(mid);
                 } else {
                     metas = new Metas();
                     metas.setType(type);
