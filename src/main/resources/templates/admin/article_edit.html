@@ -191,8 +191,12 @@
             <div class="form-group col-md-6">
                 <div class="text-left">
                     <label class="col-sm-2 control-label" style="line-height: 30px;">发布时间</label>
-                    <div class="col-sm-9">
-                    <input name="createTime" style="width: 150px;" size="16" type="text" value="${fmtdate(contents.created, 'yyyy-MM-dd HH:mm')}" readonly class="form-control form_datetime">
+                    <div class="col-sm-9 input-append date form_datetime">
+                        #if(null == now)
+                        <input name="createTime" style="width: 150px;" size="16" type="text" value="${fmtdate(contents.created, 'yyyy-MM-dd HH:mm') }" readonly class="form-control" id="form_datetime">
+                        #else
+                        <input name="createTime" style="width: 150px;" size="16" type="text" value="${now}" readonly class="form-control" id="form_datetime">
+                        #end
                     </div>
                 </div>
             </div>
