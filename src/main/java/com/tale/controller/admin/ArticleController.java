@@ -51,8 +51,6 @@ public class ArticleController extends BaseController {
 
     /**
      * 文章管理首页
-     * <p>
-     * *
      *
      * @param page
      * @param limit
