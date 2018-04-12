@@ -5,14 +5,12 @@ import com.blade.mvc.WebContext;
 import com.blade.mvc.handler.DefaultExceptionHandler;
 import com.blade.mvc.ui.RestResponse;
 import com.blade.validator.exception.ValidateException;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 全局异常处理
  * <p>
  * Created by biezhi on 10/07/2017.
  */
-@Slf4j
 @Bean
 public class GolbalExceptionHandler extends DefaultExceptionHandler {
 

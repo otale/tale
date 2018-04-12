@@ -19,8 +19,10 @@ import com.tale.model.entity.Contents;
 import com.tale.model.entity.Users;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.AttributeProvider;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 import javax.imageio.ImageIO;
@@ -32,6 +34,9 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static com.tale.init.TaleConst.*;
 
 /**
  * Tale工具类
@@ -109,11 +114,10 @@ public class TaleUtils {
      */
     public static Integer getCookieUid(Request request) {
         if (null != request) {
-            Optional<String> c = request.cookie(TaleConst.USER_IN_COOKIE);
-            if (c.isPresent()) {
+            String value = request.cookie(TaleConst.USER_IN_COOKIE);
+            if (StringKit.isNotBlank(value)) {
                 try {
-                    String value = c.get();
-                    long[] ids   = HASH_IDS.decode(value);
+                    long[] ids = HASH_IDS.decode(value);
                     if (null != ids && ids.length > 0) {
                         return Long.valueOf(ids[0]).intValue();
                     }
@@ -156,20 +160,31 @@ public class TaleUtils {
         List<Extension> extensions = Arrays.asList(TablesExtension.create());
         Parser          parser     = Parser.builder().extensions(extensions).build();
         Node            document   = parser.parse(markdown);
-        HtmlRenderer    renderer   = HtmlRenderer.builder().extensions(extensions).build();
-        String          content    = renderer.render(document);
+        HtmlRenderer renderer = HtmlRenderer.builder()
+                .attributeProviderFactory(context -> new LinkAttributeProvider())
+                .extensions(extensions).build();
+
+        String content = renderer.render(document);
         content = Commons.emoji(content);
 
         // 支持网易云音乐输出
-        if (TaleConst.BCONF.getBoolean("app.support_163_music", true) && content.contains("[mp3:")) {
-            content = content.replaceAll("\\[mp3:(\\d+)\\]", "<iframe frameborder=\"no\" border=\"0\" marginwidth=\"0\" marginheight=\"0\" width=350 height=106 src=\"//music.163.com/outchain/player?type=2&id=$1&auto=0&height=88\"></iframe>");
+        if (TaleConst.BCONF.getBoolean(ENV_SUPPORT_163_MUSIC, true) && content.contains(MP3_PREFIX)) {
+            content = content.replaceAll(MUSIC_REG_PATTERN, MUSIC_IFRAME);
         }
         // 支持gist代码输出
-        if (TaleConst.BCONF.getBoolean("app.support_gist", true) && content.contains("https://gist.github.com/")) {
-            content = content.replaceAll("&lt;script src=\"https://gist.github.com/(\\w+)/(\\w+)\\.js\">&lt;/script>", "<script src=\"https://gist.github.com/$1/$2\\.js\"></script>");
+        if (TaleConst.BCONF.getBoolean(ENV_SUPPORT_GIST, true) && content.contains(GIST_PREFIX_URL)) {
+            content = content.replaceAll(GIST_REG_PATTERN, GIST_REPLATE_PATTERN);
         }
-
         return content;
+    }
+
+    static class LinkAttributeProvider implements AttributeProvider {
+        @Override
+        public void setAttributes(Node node, String tagName, Map<String, String> attributes) {
+            if (node instanceof Link) {
+                attributes.put("target", "_blank");
+            }
+        }
     }
 
     /**
@@ -276,6 +291,43 @@ public class TaleUtils {
         channel.setItems(items);
         WireFeedOutput out = new WireFeedOutput();
         return out.outputString(channel);
+    }
+
+    private static final String SITEMAP_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\" xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
+
+    static class Url {
+        String loc;
+        String lastmod;
+
+        public Url(String loc) {
+            this.loc = loc;
+        }
+    }
+
+    public static String getSitemapXml(List<Contents> articles) {
+        List<Url> urls = articles.stream()
+                .map(TaleUtils::parse)
+                .collect(Collectors.toList());
+        urls.add(new Url(Commons.site_url() + "/archives"));
+
+        String urlBody = urls.stream()
+                .map(url -> {
+                    String s = "<url><loc>" + url.loc + "</loc>";
+                    if (null != url.lastmod) {
+                        s += "<lastmod>" + url.lastmod + "</lastmod>";
+                    }
+                    return s + "</url>";
+                })
+                .collect(Collectors.joining("\n"));
+
+        return SITEMAP_HEAD + urlBody + "</urlset>";
+    }
+
+    private static Url parse(Contents contents) {
+        Url url = new Url(Commons.site_url() + "/article/" + contents.getCid());
+        url.lastmod = DateKit.toString(contents.getModified(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        return url;
     }
 
     /**

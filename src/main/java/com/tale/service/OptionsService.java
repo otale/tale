@@ -3,10 +3,14 @@ package com.tale.service;
 import com.blade.ioc.annotation.Bean;
 import com.blade.kit.StringKit;
 import com.tale.model.entity.Options;
+import io.github.biezhi.anima.core.AnimaQuery;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static io.github.biezhi.anima.Anima.delete;
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 配置Service
@@ -39,7 +43,8 @@ public class OptionsService {
             Options options = new Options();
             options.setName(key);
 
-            long count = options.count();
+            long count = select().from(Options.class).where(Options::getName, key).count();
+
             if (count == 0) {
                 options = new Options();
                 options.setName(key);
@@ -48,7 +53,7 @@ public class OptionsService {
             } else {
                 options = new Options();
                 options.setValue(value);
-                options.update(key);
+                options.updateById(key);
             }
         }
     }
@@ -68,11 +73,11 @@ public class OptionsService {
     public Map<String, String> getOptions(String key) {
         Map<String, String> options = new HashMap<>();
 
-        Options activeRecord = new Options();
+        AnimaQuery<Options> animaQuery = select().from(Options.class);
         if (StringKit.isNotBlank(key)) {
-            activeRecord.like("name", key + "%");
+            animaQuery.and(Options::getName).like(key + "%");
         }
-        List<Options> optionsList = activeRecord.findAll();
+        List<Options> optionsList = animaQuery.all();
         if (null != optionsList) {
             optionsList.forEach(option -> options.put(option.getName(), option.getValue()));
         }
@@ -80,7 +85,7 @@ public class OptionsService {
     }
 
     public String getOption(String key) {
-        Options options = new Options().where("name", key).find();
+        Options options = select().from(Options.class).byId(key);
         if (null != options) {
             return options.getValue();
         }
@@ -94,7 +99,7 @@ public class OptionsService {
      */
     public void deleteOption(String key) {
         if (StringKit.isNotBlank(key)) {
-            new Options().like("name", key + "%").delete();
+            delete().from(Options.class).where(Options::getName).like(key + "%").execute();
         }
     }
 }

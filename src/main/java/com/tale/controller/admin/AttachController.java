@@ -1,7 +1,6 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.page.Page;
 import com.blade.kit.DateKit;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Param;
@@ -22,6 +21,8 @@ import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
+import io.github.biezhi.anima.Anima;
+import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 附件管理
@@ -56,11 +59,10 @@ public class AttachController extends BaseController {
      * @return
      */
     @Route(value = "", method = HttpMethod.GET)
-    public String index(Request request, @Param(defaultValue = "1") int page,
-                        @Param(defaultValue = "12") int limit) {
+    public String index(Request request, @Param(defaultValue = "1") Integer page,
+                        @Param(defaultValue = "12") Integer limit) {
 
-        Attach       attach     = new Attach();
-        Page<Attach> attachPage = attach.page(page, limit);
+        Page<Attach> attachPage = select().from(Attach.class).page(page, limit);
         request.attribute("attachs", attachPage);
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
         request.attribute("max_file_size", TaleConst.MAX_FILE_SIZE / 1024);
@@ -77,7 +79,7 @@ public class AttachController extends BaseController {
      */
     @Route(value = "upload", method = HttpMethod.POST)
     @JSON
-    public RestResponse upload(Request request) {
+    public RestResponse<?> upload(Request request) {
 
         log.info("UPLOAD DIR = {}", TaleUtils.UP_DIR);
 
@@ -105,7 +107,7 @@ public class AttachController extends BaseController {
 
                     Attach attach = new Attach();
                     attach.setFname(fname);
-                    attach.setAuthor_id(uid);
+                    attach.setAuthorId(uid);
                     attach.setFkey(fkey);
                     attach.setFtype(ftype);
                     attach.setCreated(DateKit.nowUnix());
@@ -136,9 +138,9 @@ public class AttachController extends BaseController {
 
     @Route(value = "delete")
     @JSON
-    public RestResponse delete(@Param Integer id, Request request) {
+    public RestResponse<?> delete(@Param Integer id, Request request) {
         try {
-            Attach attach = new Attach().find(id);
+            Attach attach = select().from(Attach.class).byId(id);
             if (null == attach) {
                 return RestResponse.fail("不存在该附件");
             }
@@ -150,7 +152,7 @@ public class AttachController extends BaseController {
             if (Files.exists(path)) {
                 Files.delete(path);
             }
-            attach.delete(id);
+            Anima.deleteById(Attach.class, id);
             new Logs(LogActions.DEL_ATTACH, fkey, request.address(), this.getUid()).save();
         } catch (Exception e) {
             String msg = "附件删除失败";

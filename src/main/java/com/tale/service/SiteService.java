@@ -2,16 +2,12 @@ package com.tale.service;
 
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.core.ActiveRecord;
-import com.blade.jdbc.core.OrderBy;
-import com.blade.jdbc.page.Page;
 import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
 import com.tale.controller.admin.AttachController;
 import com.tale.exception.TipException;
-import com.tale.extension.Theme;
 import com.tale.init.SqliteJdbc;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.*;
@@ -20,11 +16,16 @@ import com.tale.utils.MapCache;
 import com.tale.utils.TaleUtils;
 import com.tale.utils.ZipUtils;
 
+import io.github.biezhi.anima.enums.OrderBy;
+import io.github.biezhi.anima.page.Page;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 站点Service
@@ -48,15 +49,15 @@ public class SiteService {
     public void initSite(Users users) {
         String pwd = EncryptKit.md5(users.getUsername() + users.getPassword());
         users.setPassword(pwd);
-        users.setScreen_name(users.getUsername());
+        users.setScreenName(users.getUsername());
         users.setCreated(DateKit.nowUnix());
-        Integer uid = users.save();
+        Integer uid = users.save().asInt();
 
         try {
             String cp   = SiteService.class.getClassLoader().getResource("").getPath();
             File   lock = new File(cp + "install.lock");
             lock.createNewFile();
-            TaleConst.INSTALL = Boolean.TRUE;
+            TaleConst.INSTALLED = Boolean.TRUE;
             new Logs(LogActions.INIT_SITE, null, "", uid.intValue()).save();
         } catch (Exception e) {
             throw new TipException("初始化站点失败");
@@ -72,7 +73,7 @@ public class SiteService {
         if (limit < 0 || limit > 10) {
             limit = 10;
         }
-        Page<Comments> commentsPage = new Comments().page(1, limit, "created desc");
+        Page<Comments> commentsPage = select().from(Comments.class).order(Comments::getCreated, OrderBy.DESC).page(1, limit);
         return commentsPage.getRows();
     }
 
@@ -90,17 +91,19 @@ public class SiteService {
 
         // 最新文章
         if (Types.RECENT_ARTICLE.equals(type)) {
-            Page<Contents> contentsPage = new Contents().where("status", Types.PUBLISH)
-                    .and("type", Types.ARTICLE)
-                    .page(1, limit, "created desc");
+            Page<Contents> contentsPage = select().from(Contents.class).where(Contents::getStatus, Types.PUBLISH)
+                    .and(Contents::getStatus, Types.ARTICLE)
+                    .order(Contents::getCreated, OrderBy.DESC)
+                    .page(1, limit);
+
             return contentsPage.getRows();
         }
 
         // 随机文章
         if (Types.RANDOM_ARTICLE.equals(type)) {
-            List<Integer> cids = new ActiveRecord().queryAll(Integer.class, "select cid from t_contents where type = ? and status = ? order by random() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit);
+            List<Integer> cids = select().bySQL(Integer.class, "select cid from t_contents where type = ? and status = ? order by random() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit).all();
             if (BladeKit.isNotEmpty(cids)) {
-                return new Contents().in("cid", cids).findAll();
+                return select().from(Contents.class).in(Contents::getCid, cids).all();
             }
         }
         return new ArrayList<>();
@@ -118,12 +121,12 @@ public class SiteService {
 
         statistics = new Statistics();
 
-        long articles   = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).count();
-        long pages      = new Contents().where("type", Types.PAGE).and("status", Types.PUBLISH).count();
-        long comments   = new Comments().count();
-        long attachs    = new Attach().count();
-        long tags       = new Metas().where("type", Types.TAG).count();
-        long categories = new Metas().where("type", Types.CATEGORY).count();
+        long articles   = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).and(Contents::getStatus, Types.PUBLISH).count();
+        long pages      = select().from(Contents.class).where(Contents::getType, Types.PAGE).and(Contents::getStatus, Types.PUBLISH).count();
+        long comments   = select().from(Comments.class).count();
+        long attachs    = select().from(Attach.class).count();
+        long tags       = select().from(Metas.class).where(Metas::getType, Types.TAG).count();
+        long categories = select().from(Metas.class).where(Metas::getType, Types.CATEGORY).count();
 
         statistics.setArticles(articles);
         statistics.setPages(pages);
@@ -142,18 +145,19 @@ public class SiteService {
     public List<Archive> getArchives() {
         String sql = "select strftime('%Y年%m月', datetime(created, 'unixepoch') ) as date_str, count(*) as count  from t_contents " +
                 "where type = 'post' and status = 'publish' group by date_str order by date_str desc";
-        List<Archive> archives = new Archive().queryAll(sql);
+
+        List<Archive> archives = select().bySQL(Archive.class, sql).all();
         if (null != archives) {
             return archives.stream()
                     .map(this::parseArchive)
                     .collect(Collectors.toList());
         }
-        return Collections.EMPTY_LIST;
+        return new ArrayList<>(0);
     }
 
     private Archive parseArchive(Archive archive) {
-        String date_str = archive.getDate_str();
-        Date   sd       = DateKit.toDate(date_str + "01", "yyyy年MM月dd");
+        String dateStr = archive.getDateStr();
+        Date   sd       = DateKit.toDate(dateStr + "01", "yyyy年MM月dd");
         archive.setDate(sd);
         int      start    = DateKit.toUnix(sd);
         Calendar calender = Calendar.getInstance();
@@ -161,11 +165,14 @@ public class SiteService {
         calender.add(Calendar.MONTH, 1);
         Date endSd = calender.getTime();
         int  end   = DateKit.toUnix(endSd) - 1;
-        List<Contents> contents = new Contents().where("type", Types.ARTICLE)
-                .and("status", Types.PUBLISH)
-                .and("created", ">", start)
-                .and("created", "<", end)
-                .findAll(OrderBy.desc("created"));
+
+        List<Contents> contents = select().from(Contents.class)
+                .where(Contents::getType, Types.ARTICLE)
+                .and(Contents::getStatus, Types.PUBLISH)
+                .and(Contents::getCreated).gt(start)
+                .and(Contents::getCreated).lt(end)
+                .order(Contents::getCreated, OrderBy.DESC)
+                .all();
 
         archive.setArticles(contents);
         return archive;
@@ -178,7 +185,7 @@ public class SiteService {
      */
     public Comments getComment(Integer coid) {
         if (null != coid) {
-            return new Comments().find(coid);
+            return select().from(Comments.class).byId(coid);
         }
         return null;
     }
@@ -242,7 +249,7 @@ public class SiteService {
     public List<Metas> getMetas(String searchType, String type, int limit) {
 
         if (StringKit.isBlank(searchType) || StringKit.isBlank(type)) {
-            return Theme.EMPTY;
+            return new ArrayList<>(0);
         }
 
         if (limit < 1 || limit > TaleConst.MAX_POSTS) {
@@ -253,36 +260,37 @@ public class SiteService {
         if (Types.RECENT_META.equals(searchType)) {
             String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                     "where a.type = ? group by a.mid order by count desc, a.mid desc limit ?";
-            return new Metas().queryAll(sql, type, limit);
+
+            return select().bySQL(Metas.class, sql, type, limit).all();
         }
 
         // 随机获取项目
         if (Types.RANDOM_META.equals(searchType)) {
-            List<Integer> mids = new ActiveRecord().queryAll(Integer.class, "select mid from t_metas where type = ? order by random() * mid limit ?", type, limit);
+            List<Integer> mids = select().bySQL(Integer.class, "select mid from t_metas where type = ? order by random() * mid limit ?", type, limit).all();
             if (BladeKit.isNotEmpty(mids)) {
                 String in = TaleUtils.listToInSql(mids);
                 String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
                         "where a.mid in " + in + "group by a.mid order by count desc, a.mid desc";
 
-                return new Metas().queryAll(sql);
+                return select().bySQL(Metas.class, sql).all();
             }
         }
-        return Theme.EMPTY;
+        return new ArrayList<>(0);
     }
 
     /**
      * 获取相邻的文章
      *
-     * @param type 上一篇:prev | 下一篇:next
-     * @param created  当前文章创建时间
+     * @param type    上一篇:prev | 下一篇:next
+     * @param created 当前文章创建时间
      */
     public Contents getNhContent(String type, Integer created) {
         Contents contents = null;
         if (Types.NEXT.equals(type)) {
-            contents = new Contents().query("SELECT * FROM t_contents WHERE type = ? AND status = ? AND created > ? ORDER BY created ASC LIMIT 1", Types.ARTICLE, Types.PUBLISH, created);
+            contents = select().bySQL(Contents.class, "SELECT * FROM t_contents WHERE type = ? AND status = ? AND created > ? ORDER BY created ASC LIMIT 1", Types.ARTICLE, Types.PUBLISH, created).one();
         }
         if (Types.PREV.equals(type)) {
-            contents = new Contents().query("SELECT * FROM t_contents WHERE type = ? AND status = ? AND created < ? ORDER BY created DESC LIMIT 1", Types.ARTICLE, Types.PUBLISH, created);
+            contents = select().bySQL(Contents.class, "SELECT * FROM t_contents WHERE type = ? AND status = ? AND created < ? ORDER BY created DESC LIMIT 1", Types.ARTICLE, Types.PUBLISH, created).one();
         }
         return contents;
     }

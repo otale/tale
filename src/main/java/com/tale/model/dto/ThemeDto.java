@@ -10,7 +10,9 @@ import java.io.Serializable;
 @Data
 public class ThemeDto implements Serializable {
 
-    /**
+    private static final long serialVersionUID = 7122701941161403708L;
+
+	/**
      * 主题名称
      */
     private String name;

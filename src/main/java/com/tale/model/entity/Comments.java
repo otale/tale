@@ -1,11 +1,11 @@
 package com.tale.model.entity;
 
-import com.blade.jdbc.annotation.Table;
-import com.blade.jdbc.core.ActiveRecord;
 import com.blade.validator.annotation.Email;
 import com.blade.validator.annotation.Length;
 import com.blade.validator.annotation.NotEmpty;
 import com.blade.validator.annotation.Url;
+import io.github.biezhi.anima.Model;
+import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
 
 /**
@@ -14,8 +14,8 @@ import lombok.Data;
  * @author biezhi
  */
 @Data
-@Table(value = "t_comments", pk = "coid")
-public class Comments extends ActiveRecord {
+@Table(name = "t_comments", pk = "coid")
+public class Comments extends Model {
 
     // comment表主键
     private Integer coid;
@@ -32,10 +32,10 @@ public class Comments extends ActiveRecord {
     private String author;
 
     // 评论所属用户id
-    private Integer author_id;
+    private Integer authorId;
 
     // 评论所属内容作者id
-    private Integer owner_id;
+    private Integer ownerId;
 
     // 评论者邮件
     @NotEmpty(message = "请输入电子邮箱")

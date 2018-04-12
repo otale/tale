@@ -7,6 +7,8 @@ Dropzone.autoDiscover = false;
 
 $(document).ready(function () {
 
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+
     mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
     // 富文本编辑器
     htmlEditor = $('.summernote').summernote({

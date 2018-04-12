@@ -1,7 +1,6 @@
 package com.tale.controller;
 
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.page.Page;
 import com.blade.mvc.annotation.GetRoute;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
@@ -13,7 +12,7 @@ import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
-import lombok.extern.slf4j.Slf4j;
+import io.github.biezhi.anima.page.Page;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import java.util.Set;
  * @author biezhi
  * @date 2017/9/17
  */
-@Slf4j
 @Path
 public class CategoryController extends BaseController {
 

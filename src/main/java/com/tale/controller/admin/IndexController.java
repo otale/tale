@@ -2,7 +2,6 @@ package com.tale.controller.admin;
 
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.page.Page;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
@@ -27,6 +26,8 @@ import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
+import io.github.biezhi.anima.enums.OrderBy;
+import io.github.biezhi.anima.page.Page;
 import jetbrick.util.ShellUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +36,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 后台控制器
@@ -59,7 +62,7 @@ public class IndexController extends BaseController {
         List<Contents> contents   = siteService.getContens(Types.RECENT_ARTICLE, 5);
         Statistics     statistics = siteService.getStatistics();
         // 取最新的20条日志
-        Page<Logs> logsPage = new Logs().page(1, 20, "id desc");
+        Page<Logs> logsPage = select().from(Logs.class).order(Logs::getId, OrderBy.DESC).page(1, 20);
         List<Logs> logs     = logsPage.getRows();
 
         request.attribute("comments", comments);
@@ -84,7 +87,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "setting", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveSetting(@Param String site_theme, Request request) {
+    public RestResponse<?> saveSetting(@Param String site_theme, Request request) {
         try {
             Map<String, List<String>> querys = request.parameters();
             optionsService.saveOptions(querys);
@@ -118,13 +121,13 @@ public class IndexController extends BaseController {
      */
     @Route(value = "profile", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveProfile(@Param String screen_name, @Param String email, Request request) {
+    public RestResponse<?> saveProfile(@Param String screenName, @Param String email, Request request) {
         Users users = this.user();
-        if (StringKit.isNotBlank(screen_name) && StringKit.isNotBlank(email)) {
+        if (StringKit.isNotBlank(screenName) && StringKit.isNotBlank(email)) {
             Users temp = new Users();
-            temp.setScreen_name(screen_name);
+            temp.setScreenName(screenName);
             temp.setEmail(email);
-            temp.update(users.getUid());
+            temp.updateById(users.getUid());
             new Logs(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid()).save();
         }
         return RestResponse.ok();
@@ -135,7 +138,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "password", method = HttpMethod.POST)
     @JSON
-    public RestResponse upPwd(@Param String old_password, @Param String password, Request request) {
+    public RestResponse<?> upPwd(@Param String old_password, @Param String password, Request request) {
         Users users = this.user();
         if (StringKit.isBlank(old_password) || StringKit.isBlank(password)) {
             return RestResponse.fail("请确认信息输入完整");
@@ -152,7 +155,7 @@ public class IndexController extends BaseController {
             Users  temp = new Users();
             String pwd  = EncryptKit.md5(users.getUsername() + password);
             temp.setPassword(pwd);
-            temp.update(users.getUid());
+            temp.updateById(users.getUid());
             new Logs(LogActions.UP_PWD, null, request.address(), this.getUid()).save();
             return RestResponse.ok();
         } catch (Exception e) {
@@ -173,7 +176,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "backup", method = HttpMethod.POST)
     @JSON
-    public RestResponse backup(@Param String bk_type, @Param String bk_path,
+    public RestResponse<?> backup(@Param String bk_type, @Param String bk_path,
                                Request request) {
         if (StringKit.isBlank(bk_type)) {
             return RestResponse.fail("请确认信息输入完整");
@@ -201,7 +204,7 @@ public class IndexController extends BaseController {
      */
     @Route(value = "advanced", method = HttpMethod.POST)
     @JSON
-    public RestResponse doAdvanced(@Param String cache_key, @Param String block_ips,
+    public RestResponse<?> doAdvanced(@Param String cache_key, @Param String block_ips,
                                    @Param String plugin_name, @Param String rewrite_url,
                                    @Param String allow_install) {
         // 清除缓存

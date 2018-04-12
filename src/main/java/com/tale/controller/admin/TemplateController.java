@@ -81,7 +81,7 @@ public class TemplateController extends BaseController {
 
     @Route(value = "save", method = HttpMethod.POST)
     @JSON
-    public RestResponse saveTpl(@Param String fileName, @Param String content) {
+    public RestResponse<?> saveTpl(@Param String fileName, @Param String content) {
         if (StringKit.isBlank(fileName)) {
             return RestResponse.fail("缺少参数，请重试");
         }

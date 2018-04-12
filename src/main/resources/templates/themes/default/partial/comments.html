@@ -2,7 +2,7 @@
 <div id="${article.cid ?! 0}" class="comment-container">
     <div id="comments" class="clearfix">
         #if(article.allowComment)
-        <span class="response">#if(null!=login_user) Hi，<a href="${login_user.home_url}" data-no-instant>${login_user.username}</a>
+        <span class="response">#if(null!=login_user) Hi，<a href="${login_user.homeUrl}" data-no-instant>${login_user.username}</a>
             如果你想 <a href="/logout" title="注销" data-no-instant>注销</a> ? #end</span>
 
         <form method="post" id="comment-form" class="comment-form" onsubmit="return TaleComment.subComment();">
@@ -14,7 +14,7 @@
             <input type="email" name="mail" id="mail" class="form-control input-control clearfix" placeholder="邮箱 (*)"
                    value="${login_user.email ?! ''}" required/>
             <input type="url" name="url" id="url" class="form-control input-control clearfix" placeholder="网址 (http://)"
-                   value="${login_user.home_url ?! ''}"/>
+                   value="${login_user.homeUrl ?! ''}"/>
             <textarea name="content" id="textarea" class="form-control" placeholder="基佬，留下你的评论." required minlength="5" maxlength="2000"></textarea>
             <button class="submit" id="misubmit">提交</button>
         </form>
