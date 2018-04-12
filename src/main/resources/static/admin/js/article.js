@@ -7,7 +7,13 @@ Dropzone.autoDiscover = false;
 
 $(document).ready(function () {
 
-    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+    $("#form_datetime").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        autoclose: true,
+        todayBtn: true,
+        weekStart: 1,
+        language: 'zh-CN'
+    });
 
     mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
     // 富文本编辑器

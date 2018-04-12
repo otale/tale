@@ -24,6 +24,9 @@ import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +51,9 @@ public class ArticleController extends BaseController {
 
     /**
      * 文章管理首页
+     * <p>
+     * *
      *
-     **
      * @param page
      * @param limit
      * @param request
@@ -75,6 +79,7 @@ public class ArticleController extends BaseController {
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         request.attribute("categories", categories);
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
+        request.attribute("now", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now()));
         return "admin/article_edit";
     }
 
@@ -145,7 +150,7 @@ public class ArticleController extends BaseController {
             if (null == contents || null == contents.getCid()) {
                 return RestResponse.fail("缺少参数，请重试");
             }
-            if(StringKit.isNotBlank(createTime)){
+            if (StringKit.isNotBlank(createTime)) {
                 int unixTime = DateKit.toUnix(createTime, "yyyy-MM-dd HH:mm");
                 contents.setCreated(unixTime);
             }
