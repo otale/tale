@@ -38,7 +38,7 @@ public class CommentController extends BaseController {
     public String index(@Param(defaultValue = "1") int page,
                         @Param(defaultValue = "15") int limit, Request request) {
         Users          users       = this.user();
-        Page<Comments> commentPage = select().from(Comments.class).where(Comments::getAuthorId).not(users.getUid()).page(page, limit);
+        Page<Comments> commentPage = select().from(Comments.class).where(Comments::getAuthorId).notEq(users.getUid()).page(page, limit);
         request.attribute("comments", commentPage);
         return "admin/comment_list";
     }

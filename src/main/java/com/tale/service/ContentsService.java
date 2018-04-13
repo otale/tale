@@ -160,7 +160,7 @@ public class ContentsService {
         String sql = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +
                 "where b.mid = "+mid+" and a.status = 'publish' and a.type = 'post' order by a.created desc";
         
-        return select().from(Contents.class).page(sql, page, limit);
+        return select().bySQL(Contents.class, sql).page(page, limit);
     }
 
 }
