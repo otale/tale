@@ -158,9 +158,9 @@ public class ContentsService {
      */
     public Page<Contents> getArticles(Integer mid, int page, int limit) {
         String sql = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +
-                "where b.mid = " + mid + " and a.status = 'publish' and a.type = 'post' order by a.created desc";
+                "where b.mid = ? and a.status = 'publish' and a.type = 'post' order by a.created desc";
 
-        return select().bySQL(Contents.class, sql).page(page, limit);
+        return select().bySQL(Contents.class, sql, mid).page(page, limit);
     }
 
 }
