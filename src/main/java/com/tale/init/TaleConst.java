@@ -20,7 +20,7 @@ public class TaleConst {
     public static       Boolean     INSTALLED         = false;
     public static       Boolean     ENABLED_CDN       = true;
     public static       Environment BCONF             = null;
-    
+
     /**
      * 最大页码
      */
@@ -94,4 +94,11 @@ public class TaleConst {
     public static final String GIST_PREFIX_URL       = "https://gist.github.com/";
     public static final String GIST_REG_PATTERN      = "&lt;script src=\"https://gist.github.com/(\\w+)/(\\w+)\\.js\">&lt;/script>";
     public static final String GIST_REPLATE_PATTERN  = "<script src=\"https://gist.github.com/$1/$2\\.js\"></script>";
+
+
+    public static final String SQL_QUERY_METAS = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
+            "where a.type = ? and a.name = ? group by a.mid";
+    public static final String SQL_QUERY_ARTICLES = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +
+            "where b.mid = ? and a.status = 'publish' and a.type = 'post' order by a.created desc";
+
 }

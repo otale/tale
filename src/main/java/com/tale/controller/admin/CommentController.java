@@ -7,6 +7,7 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
+import com.tale.model.dto.Comment;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Users;
@@ -53,7 +54,7 @@ public class CommentController extends BaseController {
     @JSON
     public RestResponse<?> delete(@Param Integer coid) {
         try {
-            Comments comments = commentsService.byId(coid);
+            Comments comments = select().from(Comment.class).byId(coid);
             if (null == comments) {
                 return RestResponse.fail("不存在该评论");
             }
@@ -102,7 +103,7 @@ public class CommentController extends BaseController {
         if (content.length() > 2000) {
             return RestResponse.fail("请输入2000个字符以内的回复");
         }
-        Comments c = commentsService.byId(coid);
+        Comments c = select().from(Comment.class).byId(coid);
         if (null == c) {
             return RestResponse.fail("不存在该评论");
         }

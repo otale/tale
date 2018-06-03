@@ -90,7 +90,7 @@ public class IndexController extends BaseController {
     public RestResponse<?> saveSetting(@Param String site_theme, Request request) {
         try {
             Map<String, List<String>> querys = request.parameters();
-            optionsService.saveOptions(querys);
+            querys.forEach((k, v) -> optionsService.saveOption(k, v.get(0)));
 
             Environment config = Environment.of(optionsService.getOptions());
             TaleConst.OPTIONS = config;

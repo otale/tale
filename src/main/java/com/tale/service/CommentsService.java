@@ -108,16 +108,4 @@ public class CommentsService {
         }
     }
 
-    /**
-     * 根据主键查询评论
-     *
-     * @param coid
-     * @return
-     */
-    public Comments byId(Integer coid) {
-        if (null != coid) {
-            return select().from(Comment.class).byId(coid);
-        }
-        return null;
-    }
 }

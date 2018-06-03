@@ -5,7 +5,6 @@ import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
-import com.tale.init.TaleConst;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
@@ -17,6 +16,7 @@ import io.github.biezhi.anima.page.Page;
 
 import java.util.Optional;
 
+import static com.tale.init.TaleConst.SQL_QUERY_ARTICLES;
 import static io.github.biezhi.anima.Anima.deleteById;
 import static io.github.biezhi.anima.Anima.select;
 
@@ -54,41 +54,23 @@ public class ContentsService {
      * @param contents 文章对象
      */
     public Integer publish(Contents contents) {
-        if (null == contents) {
-            throw new ValidatorException("文章对象为空");
-        }
-        if (StringKit.isBlank(contents.getTitle())) {
-            throw new ValidatorException("文章标题不能为空");
-        }
-        if (contents.getTitle().length() > TaleConst.MAX_TITLE_COUNT) {
-            throw new ValidatorException("文章标题最多可以输入" + TaleConst.MAX_TITLE_COUNT + "个字符");
-        }
-
-        if (StringKit.isBlank(contents.getContent())) {
-            throw new ValidatorException("文章内容不能为空");
-        }
-        // 最多可以输入5w个字
-        int len = contents.getContent().length();
-        if (len > TaleConst.MAX_TEXT_COUNT) {
-            throw new ValidatorException("文章内容最多可以输入" + TaleConst.MAX_TEXT_COUNT + "个字符");
-        }
         if (null == contents.getAuthorId()) {
             throw new ValidatorException("请登录后发布文章");
         }
 
-        if (StringKit.isNotBlank(contents.getSlug())) {
-            if (contents.getSlug().length() < 5) {
+        Optional.ofNullable(contents.getSlug()).ifPresent(slug -> {
+            if (slug.length() < 5) {
                 throw new ValidatorException("路径太短了");
             }
-            if (!TaleUtils.isPath(contents.getSlug())) {
+            if (!TaleUtils.isPath(slug)) {
                 throw new ValidatorException("您输入的路径不合法");
             }
 
-            long count = new Contents().where("type", contents.getType()).and("slug", contents.getSlug()).count();
+            long count = new Contents().where("type", contents.getType()).and("slug", slug).count();
             if (count > 0) {
                 throw new ValidatorException("该路径已经存在，请重新输入");
             }
-        }
+        });
 
         contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
 
@@ -156,10 +138,7 @@ public class ContentsService {
      * @return
      */
     public Page<Contents> getArticles(Integer mid, int page, int limit) {
-        String sql = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +
-                "where b.mid = ? and a.status = 'publish' and a.type = 'post' order by a.created desc";
-
-        return select().bySQL(Contents.class, sql, mid).page(page, limit);
+        return select().bySQL(Contents.class, SQL_QUERY_ARTICLES, mid).page(page, limit);
     }
 
 }

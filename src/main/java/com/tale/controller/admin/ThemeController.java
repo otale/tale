@@ -16,6 +16,7 @@ import com.tale.init.TaleLoader;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.ThemeDto;
 import com.tale.model.entity.Logs;
+import com.tale.model.entity.Options;
 import com.tale.service.OptionsService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static io.github.biezhi.anima.Anima.delete;
 
 /**
  * 主题控制器
@@ -133,7 +136,7 @@ public class ThemeController extends BaseController {
     public RestResponse<?> activeTheme(Request request, @Param String site_theme) {
         try {
             optionsService.saveOption("site_theme", site_theme);
-            optionsService.deleteOption("theme_option_");
+            delete().from(Options.class).where(Options::getName).like("theme_option_%").execute();
 
             TaleConst.OPTIONS.set("site_theme", site_theme);
             BaseController.THEME = "themes/" + site_theme;
