@@ -1,10 +1,10 @@
 package com.tale.service;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
-import com.tale.exception.TipException;
 import com.tale.model.dto.Comment;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
@@ -36,15 +36,9 @@ public class CommentsService {
      * @param comments
      */
     public void saveComment(Comments comments) {
-        if (comments.getContent().length() < 5 || comments.getContent().length() > 2000) {
-            throw new TipException("评论字数在5-2000个字符");
-        }
-        if (null == comments.getCid()) {
-            throw new TipException("评论文章不能为空");
-        }
         Contents contents = select().from(Contents.class).byId(comments.getCid());
         if (null == contents) {
-            throw new TipException("不存在的文章");
+            throw new ValidatorException("不存在的文章");
         }
         try {
             comments.setOwnerId(contents.getAuthorId());

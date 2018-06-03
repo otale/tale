@@ -1,6 +1,7 @@
 package com.tale.controller.admin;
 
 import com.blade.Environment;
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.JsonKit;
@@ -13,7 +14,6 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.BackResponse;
@@ -99,7 +99,7 @@ public class IndexController extends BaseController {
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "保存设置失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);
@@ -160,7 +160,7 @@ public class IndexController extends BaseController {
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "密码修改失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);
@@ -188,7 +188,7 @@ public class IndexController extends BaseController {
             return RestResponse.ok(backResponse);
         } catch (Exception e) {
             String msg = "备份失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);

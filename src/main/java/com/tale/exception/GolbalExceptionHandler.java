@@ -1,10 +1,10 @@
 package com.tale.exception;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Bean;
 import com.blade.mvc.WebContext;
 import com.blade.mvc.handler.DefaultExceptionHandler;
 import com.blade.mvc.ui.RestResponse;
-import com.blade.validator.exception.ValidateException;
 
 /**
  * 全局异常处理
@@ -16,9 +16,10 @@ public class GolbalExceptionHandler extends DefaultExceptionHandler {
 
     @Override
     public void handle(Exception e) {
-        if (e instanceof ValidateException) {
-            ValidateException validateException = (ValidateException) e;
-            String            msg               = validateException.getErrMsg();
+        if (e instanceof ValidatorException) {
+            ValidatorException validatorException = (ValidatorException) e;
+
+            String msg = validatorException.getMessage();
             WebContext.response().json(RestResponse.fail(msg));
         } else {
             super.handle(e);

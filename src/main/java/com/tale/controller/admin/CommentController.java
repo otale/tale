@@ -1,12 +1,12 @@
 package com.tale.controller.admin;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.exception.TipException;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Users;
@@ -61,7 +61,7 @@ public class CommentController extends BaseController {
             siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "评论删除失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);
@@ -82,7 +82,7 @@ public class CommentController extends BaseController {
             siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "操作失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);
@@ -129,7 +129,7 @@ public class CommentController extends BaseController {
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "回复失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);

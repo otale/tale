@@ -1,6 +1,5 @@
 package com.tale.model.param;
 
-import com.blade.validator.annotation.NotEmpty;
 import lombok.Data;
 
 /**
@@ -12,10 +11,8 @@ import lombok.Data;
 @Data
 public class LoginParam {
 
-    @NotEmpty(message = "用户名不能为空")
     private String username;
-    @NotEmpty(message = "密码不能为空")
     private String password;
-    private String remeberMe;
+    private String rememberMe;
 
 }

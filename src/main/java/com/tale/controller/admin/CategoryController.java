@@ -1,5 +1,6 @@
 package com.tale.controller.admin;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Param;
@@ -9,7 +10,6 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Metas;
@@ -51,7 +51,7 @@ public class CategoryController extends BaseController {
             siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "分类保存失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);
@@ -69,7 +69,7 @@ public class CategoryController extends BaseController {
             siteService.cleanCache(Types.C_STATISTICS);
         } catch (Exception e) {
             String msg = "删除失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);

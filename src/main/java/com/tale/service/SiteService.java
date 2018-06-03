@@ -1,5 +1,6 @@
 package com.tale.service;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.BladeKit;
@@ -7,7 +8,6 @@ import com.blade.kit.DateKit;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
 import com.tale.controller.admin.AttachController;
-import com.tale.exception.TipException;
 import com.tale.init.SqliteJdbc;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.*;
@@ -60,7 +60,7 @@ public class SiteService {
             TaleConst.INSTALLED = Boolean.TRUE;
             new Logs(LogActions.INIT_SITE, null, "", uid.intValue()).save();
         } catch (Exception e) {
-            throw new TipException("初始化站点失败");
+            throw new ValidatorException("初始化站点失败");
         }
     }
 
@@ -201,10 +201,10 @@ public class SiteService {
         BackResponse backResponse = new BackResponse();
         if ("attach".equals(bkType)) {
             if (StringKit.isBlank(bkPath)) {
-                throw new TipException("请输入备份文件存储路径");
+                throw new ValidatorException("请输入备份文件存储路径");
             }
             if (!Files.isDirectory(Paths.get(bkPath))) {
-                throw new TipException("请输入一个存在的目录");
+                throw new ValidatorException("请输入一个存在的目录");
             }
             String bkAttachDir = AttachController.CLASSPATH + "upload";
             String bkThemesDir = AttachController.CLASSPATH + "templates/themes";

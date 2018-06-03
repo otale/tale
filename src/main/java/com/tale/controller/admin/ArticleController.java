@@ -1,14 +1,13 @@
 package com.tale.controller.admin;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
-import com.blade.validator.annotation.Valid;
 import com.tale.controller.BaseController;
-import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.LogActions;
@@ -20,11 +19,11 @@ import com.tale.model.entity.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
+import com.tale.validators.CommentValidator;
 import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -109,7 +108,10 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "publish")
     @JSON
-    public RestResponse<?> publishArticle(@Valid Contents contents) {
+    public RestResponse<?> publishArticle(Contents contents) {
+
+        CommentValidator.valid(contents);
+
         Users users = this.user();
         contents.setType(Types.ARTICLE);
         contents.setAuthorId(users.getUid());
@@ -127,7 +129,7 @@ public class ArticleController extends BaseController {
             return RestResponse.ok(cid);
         } catch (Exception e) {
             String msg = "文章发布失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);
@@ -143,11 +145,13 @@ public class ArticleController extends BaseController {
      */
     @PostRoute(value = "modify")
     @JSON
-    public RestResponse<?> modifyArticle(@Valid Contents contents, @Param String createTime) {
+    public RestResponse<?> modifyArticle(Contents contents, @Param String createTime) {
         try {
             if (null == contents || null == contents.getCid()) {
                 return RestResponse.fail("缺少参数，请重试");
             }
+            CommentValidator.valid(contents);
+
             if (StringKit.isNotBlank(createTime)) {
                 int unixTime = DateKit.toUnix(createTime, "yyyy-MM-dd HH:mm");
                 contents.setCreated(unixTime);
@@ -157,7 +161,7 @@ public class ArticleController extends BaseController {
             return RestResponse.ok(cid);
         } catch (Exception e) {
             String msg = "文章编辑失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);
@@ -182,7 +186,7 @@ public class ArticleController extends BaseController {
             new Logs(LogActions.DEL_ARTICLE, cid + "", request.address(), this.getUid()).save();
         } catch (Exception e) {
             String msg = "文章删除失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);

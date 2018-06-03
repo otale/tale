@@ -2,6 +2,7 @@ package com.tale.controller;
 
 
 import com.blade.Environment;
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.JSON;
@@ -12,7 +13,6 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.admin.AttachController;
-import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
@@ -95,7 +95,7 @@ public class InstallController extends BaseController {
             TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
         } catch (Exception e) {
             String msg = "安装失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);

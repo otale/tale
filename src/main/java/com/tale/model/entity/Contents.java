@@ -1,13 +1,8 @@
 package com.tale.model.entity;
 
-import com.blade.validator.annotation.Length;
-import com.blade.validator.annotation.NotEmpty;
 import io.github.biezhi.anima.Model;
 import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
-
-import static com.tale.init.TaleConst.MAX_TEXT_COUNT;
-import static com.tale.init.TaleConst.MAX_TITLE_COUNT;
 
 /**
  * 文章
@@ -26,8 +21,6 @@ public class Contents extends Model {
     /**
      * 文章标题
      */
-    @NotEmpty(message = "标题不能为空")
-    @Length(max = MAX_TITLE_COUNT, message = "文章标题最多可以输入%d个字符")
     private String title;
 
     /**
@@ -48,8 +41,6 @@ public class Contents extends Model {
     /**
      * 文章内容
      */
-    @NotEmpty(message = "内容不能为空")
-    @Length(max = MAX_TEXT_COUNT, message = "文章内容最多可以输入%d个字符")
     private String content;
 
     /**

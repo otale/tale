@@ -1,5 +1,6 @@
 package com.tale.controller.admin;
 
+import com.blade.exception.ValidatorException;
 import com.blade.kit.DateKit;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
@@ -12,7 +13,6 @@ import com.blade.mvc.http.Response;
 import com.blade.mvc.http.Session;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.exception.TipException;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.LogActions;
 import com.tale.model.entity.Logs;
@@ -66,7 +66,7 @@ public class AuthController extends BaseController {
                 return RestResponse.fail("用户名或密码错误");
             }
             session.attribute(TaleConst.LOGIN_SESSION_KEY, user);
-            if (StringKit.isNotBlank(loginParam.getRemeberMe())) {
+            if (StringKit.isNotBlank(loginParam.getRememberMe())) {
                 TaleUtils.setCookie(response, user.getUid());
             }
 
@@ -81,7 +81,7 @@ public class AuthController extends BaseController {
             error_count += 1;
             cache.set("login_error_count", error_count, 10 * 60);
             String msg = "登录失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);

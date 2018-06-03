@@ -1,8 +1,8 @@
 package com.tale.service;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Bean;
 import com.blade.kit.StringKit;
-import com.tale.exception.TipException;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
@@ -90,7 +90,7 @@ public class MetasService {
      */
     public void saveMetas(Integer cid, String names, String type) {
         if (null == cid) {
-            throw new TipException("项目关联id不能为空");
+            throw new ValidatorException("项目关联id不能为空");
         }
         if (StringKit.isNotBlank(names) && StringKit.isNotBlank(type)) {
             String[] nameArr = names.split(",");
@@ -174,7 +174,7 @@ public class MetasService {
         if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
             Metas metas = select().from(Metas.class).where(Metas::getType, type).and(Metas::getName, name).one();
             if (null != metas) {
-                throw new TipException("已经存在该项");
+                throw new ValidatorException("已经存在该项");
             } else {
                 if (null != mid) {
                     metas = new Metas();

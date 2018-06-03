@@ -1,5 +1,6 @@
 package com.tale.controller.admin;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.mvc.annotation.JSON;
@@ -11,7 +12,6 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.multipart.FileItem;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.LogActions;
@@ -127,7 +127,7 @@ public class AttachController extends BaseController {
             return RestResponse.ok(urls);
         } catch (Exception e) {
             String msg = "文件上传失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);
@@ -156,7 +156,7 @@ public class AttachController extends BaseController {
             new Logs(LogActions.DEL_ATTACH, fkey, request.address(), this.getUid()).save();
         } catch (Exception e) {
             String msg = "附件删除失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);

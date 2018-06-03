@@ -1,5 +1,6 @@
 package com.tale.controller;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
@@ -7,9 +8,6 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.http.Session;
 import com.blade.mvc.ui.RestResponse;
-import com.blade.security.web.csrf.CsrfToken;
-import com.blade.validator.annotation.Valid;
-import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.init.TaleConst;
 import com.tale.model.dto.Archive;
@@ -22,6 +20,7 @@ import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
+import com.tale.validators.CommentValidator;
 import com.vdurmont.emoji.EmojiParser;
 import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
@@ -57,7 +56,7 @@ public class IndexController extends BaseController {
 
     /**
      * 首页
-     * 
+     *
      * @return
      */
     @GetRoute
@@ -68,7 +67,7 @@ public class IndexController extends BaseController {
     /**
      * 自定义页面
      */
-    @CsrfToken(newToken = true)
+//    @CsrfToken(newToken = true)
     @GetRoute(value = {"/:cid", "/:cid.html"})
     public String page(@PathParam String cid, Request request) {
         Optional<Contents> contentsOptional = contentsService.getContents(cid);
@@ -117,7 +116,7 @@ public class IndexController extends BaseController {
     /**
      * 文章页
      */
-    @CsrfToken(newToken = true)
+//    @CsrfToken(newToken = true)
     @GetRoute(value = {"article/:cid", "article/:cid.html"})
     public String post(Request request, @PathParam String cid) {
         Optional<Contents> contentsOptional = contentsService.getContents(cid);
@@ -249,11 +248,11 @@ public class IndexController extends BaseController {
     /**
      * 评论操作
      */
-    @CsrfToken(valid = true)
+//    @CsrfToken(valid = true)
     @PostRoute(value = "comment")
     @JSON
     public RestResponse<?> comment(Request request, Response response,
-                                @HeaderParam String Referer, @Valid Comments comments) {
+                                   @HeaderParam String Referer, Comments comments) {
 
         if (StringKit.isBlank(Referer)) {
             return RestResponse.fail(ErrorCode.BAD_REQUEST);
@@ -262,6 +261,8 @@ public class IndexController extends BaseController {
         if (!Referer.startsWith(Commons.site_url())) {
             return RestResponse.fail("非法评论来源");
         }
+
+        CommentValidator.valid(comments);
 
         String  val   = request.address() + ":" + comments.getCid();
         Integer count = cache.hget(Types.COMMENTS_FREQUENCY, val);
@@ -292,7 +293,7 @@ public class IndexController extends BaseController {
             return RestResponse.ok();
         } catch (Exception e) {
             String msg = "评论发布失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
                 log.error(msg, e);

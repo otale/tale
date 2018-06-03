@@ -1,10 +1,11 @@
 package com.tale.service;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
-import com.tale.exception.TipException;
+
 import com.tale.init.TaleConst;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
@@ -56,38 +57,38 @@ public class ContentsService {
      */
     public Integer publish(Contents contents) {
         if (null == contents) {
-            throw new TipException("文章对象为空");
+            throw new ValidatorException("文章对象为空");
         }
         if (StringKit.isBlank(contents.getTitle())) {
-            throw new TipException("文章标题不能为空");
+            throw new ValidatorException("文章标题不能为空");
         }
         if (contents.getTitle().length() > TaleConst.MAX_TITLE_COUNT) {
-            throw new TipException("文章标题最多可以输入" + TaleConst.MAX_TITLE_COUNT + "个字符");
+            throw new ValidatorException("文章标题最多可以输入" + TaleConst.MAX_TITLE_COUNT + "个字符");
         }
 
         if (StringKit.isBlank(contents.getContent())) {
-            throw new TipException("文章内容不能为空");
+            throw new ValidatorException("文章内容不能为空");
         }
         // 最多可以输入5w个字
         int len = contents.getContent().length();
         if (len > TaleConst.MAX_TEXT_COUNT) {
-            throw new TipException("文章内容最多可以输入" + TaleConst.MAX_TEXT_COUNT + "个字符");
+            throw new ValidatorException("文章内容最多可以输入" + TaleConst.MAX_TEXT_COUNT + "个字符");
         }
         if (null == contents.getAuthorId()) {
-            throw new TipException("请登录后发布文章");
+            throw new ValidatorException("请登录后发布文章");
         }
 
         if (StringKit.isNotBlank(contents.getSlug())) {
             if (contents.getSlug().length() < 5) {
-                throw new TipException("路径太短了");
+                throw new ValidatorException("路径太短了");
             }
             if (!TaleUtils.isPath(contents.getSlug())) {
-                throw new TipException("您输入的路径不合法");
+                throw new ValidatorException("您输入的路径不合法");
             }
 
             long count = new Contents().where("type", contents.getType()).and("slug", contents.getSlug()).count();
             if (count > 0) {
-                throw new TipException("该路径已经存在，请重新输入");
+                throw new ValidatorException("该路径已经存在，请重新输入");
             }
         }
 
