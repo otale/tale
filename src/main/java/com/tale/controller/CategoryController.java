@@ -6,7 +6,7 @@ import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PathParam;
 import com.blade.mvc.http.Request;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;

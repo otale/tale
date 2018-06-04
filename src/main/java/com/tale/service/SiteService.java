@@ -8,13 +8,12 @@ import com.blade.kit.DateKit;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
 import com.tale.controller.admin.AttachController;
-import com.tale.init.SqliteJdbc;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.SqliteJdbc;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.*;
 import com.tale.model.entity.*;
 import com.tale.utils.MapCache;
 import com.tale.utils.TaleUtils;
-import com.tale.utils.ZipUtils;
 
 import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
@@ -213,9 +212,6 @@ public class SiteService {
 
             String attachPath = bkPath + "/" + "attachs_" + fname;
             String themesPath = bkPath + "/" + "themes_" + fname;
-
-            ZipUtils.zipFolder(bkAttachDir, attachPath);
-            ZipUtils.zipFolder(bkThemesDir, themesPath);
 
             backResponse.setAttach_path(attachPath);
             backResponse.setTheme_path(themesPath);

@@ -5,7 +5,7 @@ import com.blade.kit.StringKit;
 import com.blade.kit.json.Ason;
 import com.blade.mvc.WebContext;
 import com.blade.mvc.http.Request;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.Comment;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;

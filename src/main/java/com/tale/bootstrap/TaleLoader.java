@@ -1,4 +1,4 @@
-package com.tale.init;
+package com.tale.bootstrap;
 
 import com.blade.Blade;
 import com.tale.controller.admin.AttachController;

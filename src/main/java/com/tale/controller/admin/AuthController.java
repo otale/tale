@@ -13,7 +13,7 @@ import com.blade.mvc.http.Response;
 import com.blade.mvc.http.Session;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.LogActions;
 import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;

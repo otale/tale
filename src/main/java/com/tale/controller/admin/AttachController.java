@@ -13,7 +13,7 @@ import com.blade.mvc.multipart.FileItem;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Attach;

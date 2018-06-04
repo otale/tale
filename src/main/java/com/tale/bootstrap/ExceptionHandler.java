@@ -1,4 +1,4 @@
-package com.tale.exception;
+package com.tale.bootstrap;
 
 import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Bean;
@@ -12,7 +12,7 @@ import com.blade.mvc.ui.RestResponse;
  * Created by biezhi on 10/07/2017.
  */
 @Bean
-public class GolbalExceptionHandler extends DefaultExceptionHandler {
+public class ExceptionHandler extends DefaultExceptionHandler {
 
     @Override
     public void handle(Exception e) {

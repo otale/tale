@@ -1,4 +1,4 @@
-package com.tale.init;
+package com.tale.bootstrap;
 
 import com.blade.mvc.Const;
 import lombok.NoArgsConstructor;

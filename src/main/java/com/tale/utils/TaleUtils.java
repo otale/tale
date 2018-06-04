@@ -14,7 +14,7 @@ import com.sun.syndication.io.WireFeedOutput;
 import com.tale.controller.admin.AttachController;
 import com.tale.extension.Commons;
 import com.tale.extension.Theme;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Users;
 import org.commonmark.Extension;
@@ -36,7 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.tale.init.TaleConst.*;
+import static com.tale.bootstrap.TaleConst.*;
 
 /**
  * Tale工具类

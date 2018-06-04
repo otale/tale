@@ -13,7 +13,7 @@ import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.admin.AttachController;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;

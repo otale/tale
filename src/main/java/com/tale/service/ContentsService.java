@@ -16,7 +16,7 @@ import io.github.biezhi.anima.page.Page;
 
 import java.util.Optional;
 
-import static com.tale.init.TaleConst.SQL_QUERY_ARTICLES;
+import static com.tale.bootstrap.TaleConst.SQL_QUERY_ARTICLES;
 import static io.github.biezhi.anima.Anima.deleteById;
 import static io.github.biezhi.anima.Anima.select;
 

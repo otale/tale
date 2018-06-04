@@ -5,7 +5,7 @@ import com.blade.mvc.hook.Signature;
 import com.blade.mvc.hook.WebHook;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.entity.Users;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;

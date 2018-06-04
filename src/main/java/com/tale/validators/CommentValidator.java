@@ -6,8 +6,8 @@ import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.param.LoginParam;
 
-import static com.tale.init.TaleConst.MAX_TEXT_COUNT;
-import static com.tale.init.TaleConst.MAX_TITLE_COUNT;
+import static com.tale.bootstrap.TaleConst.MAX_TEXT_COUNT;
+import static com.tale.bootstrap.TaleConst.MAX_TITLE_COUNT;
 
 /**
  * @author biezhi

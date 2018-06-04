@@ -1,4 +1,4 @@
-package com.tale.init;
+package com.tale.bootstrap;
 
 import com.blade.Blade;
 import com.blade.Environment;
@@ -27,7 +27,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Tale初始化进程
@@ -35,7 +34,7 @@ import java.util.Objects;
  * @author biezhi
  */
 @Bean
-public class WebContext implements BeanProcessor {
+public class Bootstrap implements BeanProcessor {
 
     @Inject
     private OptionsService optionsService;

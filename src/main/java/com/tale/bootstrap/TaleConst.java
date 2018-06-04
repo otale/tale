@@ -1,4 +1,4 @@
-package com.tale.init;
+package com.tale.bootstrap;
 
 
 import com.blade.Environment;
@@ -98,6 +98,7 @@ public class TaleConst {
 
     public static final String SQL_QUERY_METAS = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
             "where a.type = ? and a.name = ? group by a.mid";
+
     public static final String SQL_QUERY_ARTICLES = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +
             "where b.mid = ? and a.status = 'publish' and a.type = 'post' order by a.created desc";
 

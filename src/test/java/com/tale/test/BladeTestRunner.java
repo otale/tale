@@ -4,7 +4,6 @@ import com.blade.Blade;
 import com.blade.ioc.annotation.Inject;
 import com.blade.security.web.csrf.CsrfMiddleware;
 import com.blade.test.BladeApplication;
-import com.tale.init.TaleLoader;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;

@@ -13,7 +13,7 @@ import io.github.biezhi.anima.enums.OrderBy;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.tale.init.TaleConst.SQL_QUERY_METAS;
+import static com.tale.bootstrap.TaleConst.SQL_QUERY_METAS;
 import static io.github.biezhi.anima.Anima.select;
 
 /**
