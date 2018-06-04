@@ -111,6 +111,9 @@ $.tale.prototype.post = function (options) {
     $.ajax({
         type: 'POST',
         url: options.url,
+        headers : {
+            'X-CSRF-TOKEN': document.getElementsByTagName('meta')['csrf_token']
+        },
         data: options.data || {},
         async: options.async || false,
         dataType: 'json',
