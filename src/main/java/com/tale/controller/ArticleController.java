@@ -16,7 +16,7 @@ import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
-import com.tale.validators.CommentValidator;
+import com.tale.validators.CommonValidator;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 
@@ -108,7 +108,7 @@ public class ArticleController extends BaseController {
             return RestResponse.fail("非法评论来源");
         }
 
-        CommentValidator.valid(comments);
+        CommonValidator.valid(comments);
 
         String  val   = request.address() + ":" + comments.getCid();
         Integer count = cache.hget(Types.COMMENTS_FREQUENCY, val);

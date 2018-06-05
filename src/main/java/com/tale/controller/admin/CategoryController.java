@@ -2,30 +2,23 @@ package com.tale.controller.admin;
 
 import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
-import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.Route;
-import com.blade.mvc.http.HttpMethod;
-import com.blade.mvc.http.Request;
+import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
-import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.Types;
-import com.tale.model.entity.Metas;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
 /**
  * 分类管理
- *
+ * <p>
  * Created by biezhi on 2017/2/21.
  */
 @Slf4j
-@Path("admin/category")
+@Path(value = "admin/category", restful = true)
 public class CategoryController extends BaseController {
 
     @Inject
@@ -34,17 +27,7 @@ public class CategoryController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @Route(value = "", method = HttpMethod.GET)
-    public String index(Request request) {
-        List<Metas>   categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
-        List<Metas> tags       = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
-        request.attribute("categories", categories);
-        request.attribute("tags", tags);
-        return "admin/category";
-    }
-
-    @Route(value = "save", method = HttpMethod.POST)
-    @JSON
+    @PostRoute("save")
     public RestResponse<?> saveCategory(@Param String cname, @Param Integer mid) {
         try {
             metasService.saveMeta(Types.CATEGORY, cname, mid);
@@ -61,8 +44,7 @@ public class CategoryController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(value = "delete")
-    @JSON
+    @PostRoute("delete")
     public RestResponse<?> delete(@Param int mid) {
         try {
             metasService.delete(mid);

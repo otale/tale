@@ -3,17 +3,14 @@ package com.tale.controller.admin;
 import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
-import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.Route;
-import com.blade.mvc.http.HttpMethod;
+import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.multipart.FileItem;
 import com.blade.mvc.ui.RestResponse;
-import com.tale.controller.BaseController;
-import com.tale.extension.Commons;
 import com.tale.bootstrap.TaleConst;
+import com.tale.controller.BaseController;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Attach;
@@ -22,7 +19,6 @@ import com.tale.model.entity.Users;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import io.github.biezhi.anima.Anima;
-import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -42,32 +38,13 @@ import static io.github.biezhi.anima.Anima.select;
  * Created by biezhi on 2017/2/21.
  */
 @Slf4j
-@Path("admin/attach")
+@Path(value = "admin/attach", restful = true)
 public class AttachController extends BaseController {
 
     public static final String CLASSPATH = new File(AttachController.class.getResource("/").getPath()).getPath() + File.separatorChar;
 
     @Inject
     private SiteService siteService;
-
-    /**
-     * 附件页面
-     *
-     * @param request
-     * @param page
-     * @param limit
-     * @return
-     */
-    @Route(value = "", method = HttpMethod.GET)
-    public String index(Request request, @Param(defaultValue = "1") Integer page,
-                        @Param(defaultValue = "12") Integer limit) {
-
-        Page<Attach> attachPage = select().from(Attach.class).page(page, limit);
-        request.attribute("attachs", attachPage);
-        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-        request.attribute("max_file_size", TaleConst.MAX_FILE_SIZE / 1024);
-        return "admin/attach";
-    }
 
     /**
      * 上传文件接口
@@ -77,30 +54,29 @@ public class AttachController extends BaseController {
      * @param request
      * @return
      */
-    @Route(value = "upload", method = HttpMethod.POST)
-    @JSON
+    @PostRoute("upload")
     public RestResponse<?> upload(Request request) {
 
         log.info("UPLOAD DIR = {}", TaleUtils.UP_DIR);
 
-        Users                 users       = this.user();
-        Integer               uid         = users.getUid();
-        Map<String, FileItem> fileItemMap = request.fileItems();
-        Collection<FileItem>  fileItems   = fileItemMap.values();
-        List<Attach>          errorFiles  = new ArrayList<>();
-        List<Attach>          urls        = new ArrayList<>();
-        try {
-            fileItems.forEach((FileItem f) -> {
-                String fname = f.getFileName();
+        Users        users      = this.user();
+        Integer      uid        = users.getUid();
+        List<Attach> errorFiles = new ArrayList<>();
+        List<Attach> urls       = new ArrayList<>();
 
-                if ((f.getLength() / 1024) <= TaleConst.MAX_FILE_SIZE) {
+        try {
+
+            request.fileItem("file").ifPresent(fileItem -> {
+                String fname = fileItem.getFileName();
+
+                if ((fileItem.getLength() / 1024) <= TaleConst.MAX_FILE_SIZE) {
                     String fkey = TaleUtils.getFileKey(fname);
 
-                    String ftype    = f.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
+                    String ftype    = fileItem.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
                     String filePath = TaleUtils.UP_DIR + fkey;
 
                     try {
-                        Files.write(Paths.get(filePath), f.getData());
+                        Files.write(Paths.get(filePath), fileItem.getData());
                     } catch (IOException e) {
                         log.error("", e);
                     }
@@ -121,6 +97,7 @@ public class AttachController extends BaseController {
                     errorFiles.add(attach);
                 }
             });
+
             if (errorFiles.size() > 0) {
                 return RestResponse.fail().payload(errorFiles);
             }
@@ -136,8 +113,7 @@ public class AttachController extends BaseController {
         }
     }
 
-    @Route(value = "delete")
-    @JSON
+    @PostRoute("delete")
     public RestResponse<?> delete(@Param Integer id, Request request) {
         try {
             Attach attach = select().from(Attach.class).byId(id);

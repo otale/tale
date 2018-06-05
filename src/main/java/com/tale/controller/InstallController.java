@@ -5,15 +5,11 @@ import com.blade.Environment;
 import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
-import com.blade.mvc.annotation.JSON;
-import com.blade.mvc.annotation.Param;
-import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.Route;
-import com.blade.mvc.http.HttpMethod;
+import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
-import com.tale.controller.admin.AttachController;
 import com.tale.bootstrap.TaleConst;
+import com.tale.controller.admin.AttachController;
 import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
@@ -38,7 +34,7 @@ public class InstallController extends BaseController {
      *
      * @return
      */
-    @Route(value = "/", method = HttpMethod.GET)
+    @GetRoute
     public String index(Request request) {
         boolean existInstall = Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"));
         int allow_reinstall = TaleConst.OPTIONS.getInt("allow_install", 0);
@@ -51,7 +47,7 @@ public class InstallController extends BaseController {
         return "install";
     }
 
-    @Route(value = "/", method = HttpMethod.POST)
+    @PostRoute
     @JSON
     public RestResponse<?> doInstall(@Param String site_title, @Param String site_url,
                                   @Param String admin_user, @Param String admin_email,

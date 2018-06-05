@@ -1,29 +1,24 @@
 package com.tale.controller.admin;
 
-import com.blade.Blade;
 import com.blade.Environment;
 import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.JsonKit;
-import com.blade.kit.StringKit;
-import com.blade.mvc.annotation.*;
+import com.blade.mvc.annotation.Param;
+import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
-import com.tale.controller.BaseController;
-import com.tale.extension.Commons;
 import com.tale.bootstrap.TaleConst;
 import com.tale.bootstrap.TaleLoader;
+import com.tale.controller.BaseController;
+import com.tale.extension.Commons;
 import com.tale.model.dto.LogActions;
-import com.tale.model.dto.ThemeDto;
 import com.tale.model.entity.Logs;
 import com.tale.model.entity.Options;
 import com.tale.service.OptionsService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,69 +29,16 @@ import static io.github.biezhi.anima.Anima.delete;
  * 主题控制器
  */
 @Slf4j
-@Path("admin/themes")
+@Path(value = "admin/themes", restful = true)
 public class ThemeController extends BaseController {
 
     @Inject
     private OptionsService optionsService;
 
-    @GetRoute(value = "")
-    public String index(Request request) {
-        // 读取主题
-        String         themesDir  = AttachController.CLASSPATH + "templates/themes";
-        File[]         themesFile = new File(themesDir).listFiles();
-        List<ThemeDto> themes     = new ArrayList<>(themesFile.length);
-        for (File f : themesFile) {
-            if (f.isDirectory()) {
-                ThemeDto themeDto = new ThemeDto(f.getName());
-                if (Files.exists(Paths.get(f.getPath() + "/setting.html"))) {
-                    themeDto.setHasSetting(true);
-                }
-                themes.add(themeDto);
-                try {
-                    Blade.me().addStatics("/templates/themes/" + f.getName() + "/screenshot.png");
-                } catch (Exception e) {
-                }
-            }
-        }
-        request.attribute("current_theme", Commons.site_theme());
-        request.attribute("themes", themes);
-        return "admin/themes";
-    }
-
-    /**
-     * 主题设置页面
-     *
-     * @param request
-     * @return
-     */
-    @GetRoute(value = "setting")
-    public String setting(Request request) {
-        String currentTheme = Commons.site_theme();
-        String key          = "theme_" + currentTheme + "_options";
-
-        String              option = optionsService.getOption(key);
-        Map<String, Object> map    = new HashMap<>();
-        try {
-            if (StringKit.isNotBlank(option)) {
-                map = (Map<String, Object>) JsonKit.toAson(option);
-            }
-            request.attribute("theme_options", map);
-        } catch (Exception e) {
-            log.error("解析主题设置出现异常", e);
-        }
-        request.attribute("theme_options", map);
-        return this.render("setting");
-    }
-
     /**
      * 保存主题配置项
-     *
-     * @param request
-     * @return
      */
-    @PostRoute(value = "setting")
-    @JSON
+    @PostRoute("setting")
     public RestResponse<?> saveSetting(Request request) {
         try {
             Map<String, List<String>> query = request.parameters();
@@ -126,13 +68,8 @@ public class ThemeController extends BaseController {
 
     /**
      * 激活主题
-     *
-     * @param request
-     * @param site_theme
-     * @return
      */
-    @PostRoute(value = "active")
-    @JSON
+    @PostRoute("active")
     public RestResponse<?> activeTheme(Request request, @Param String site_theme) {
         try {
             optionsService.saveOption("site_theme", site_theme);

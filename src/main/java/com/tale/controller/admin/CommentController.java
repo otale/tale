@@ -3,7 +3,9 @@ package com.tale.controller.admin;
 import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
-import com.blade.mvc.annotation.*;
+import com.blade.mvc.annotation.Param;
+import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
@@ -15,7 +17,6 @@ import com.tale.service.CommentsService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
-import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import static io.github.biezhi.anima.Anima.select;
@@ -26,7 +27,7 @@ import static io.github.biezhi.anima.Anima.select;
  * Created by biezhi on 2017/2/26.
  */
 @Slf4j
-@Path("admin/comments")
+@Path(value = "admin/comments", restful = true)
 public class CommentController extends BaseController {
 
     @Inject
@@ -35,23 +36,10 @@ public class CommentController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @GetRoute(value = "")
-    public String index(@Param(defaultValue = "1") int page,
-                        @Param(defaultValue = "15") int limit, Request request) {
-        Users          users       = this.user();
-        Page<Comments> commentPage = select().from(Comments.class).where(Comments::getAuthorId).notEq(users.getUid()).page(page, limit);
-        request.attribute("comments", commentPage);
-        return "admin/comment_list";
-    }
-
     /**
      * 删除一条评论
-     *
-     * @param coid
-     * @return
      */
-    @PostRoute(value = "delete")
-    @JSON
+    @PostRoute("delete")
     public RestResponse<?> delete(@Param Integer coid) {
         try {
             Comments comments = select().from(Comment.class).byId(coid);
@@ -72,8 +60,7 @@ public class CommentController extends BaseController {
         return RestResponse.ok();
     }
 
-    @PostRoute(value = "status")
-    @JSON
+    @PostRoute("status")
     public RestResponse<?> delete(@Param Integer coid, @Param String status) {
         try {
             Comments comments = new Comments();
@@ -93,8 +80,7 @@ public class CommentController extends BaseController {
         return RestResponse.ok();
     }
 
-    @PostRoute(value = "")
-    @JSON
+    @PostRoute
     public RestResponse<?> reply(@Param Integer coid, @Param String content, Request request) {
         if (null == coid || StringKit.isBlank(content)) {
             return RestResponse.fail("请输入完整后评论");
