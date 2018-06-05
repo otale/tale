@@ -76,5 +76,5 @@
         //init
         $.FormWizard = new FormWizard, $.FormWizard.Constructor = FormWizard
 }(window.jQuery), $.FormWizard.init();
-var site_url = document.location.protocol + '//' + document.location.host;
-document.getElementById('site_url').value = site_url;
+var siteUrl = document.location.protocol + '//' + document.location.host;
+document.getElementById('siteUrl').value = siteUrl;

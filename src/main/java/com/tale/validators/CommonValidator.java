@@ -6,6 +6,7 @@ import com.blade.validator.Validators;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.param.LoginParam;
+import com.tale.params.InstallParam;
 
 import static com.tale.bootstrap.TaleConst.MAX_TEXT_COUNT;
 import static com.tale.bootstrap.TaleConst.MAX_TITLE_COUNT;
@@ -46,6 +47,18 @@ public class CommonValidator {
     public static void valid(LoginParam param) {
         Validators.notEmpty().test(param.getUsername()).throwIfInvalid("用户名");
         Validators.notEmpty().test(param.getPassword()).throwIfInvalid("密码");
+    }
+
+    public static void valid(InstallParam param) {
+        Validators.notEmpty().test(param.getSiteTitle()).throwIfInvalid("网站标题");
+        Validators.notEmpty().test(param.getSiteUrl()).throwIfInvalid("网站URL");
+        Validators.notEmpty().test(param.getAdminUser()).throwIfInvalid("管理员账户");
+        Validators.notEmpty().test(param.getAdminPwd()).throwIfInvalid("管理员密码");
+        Validators.lessThan(6).test(param.getAdminPwd()).throwIfInvalid("请输入6-14位密码");
+        Validators.moreThan(14).test(param.getAdminPwd()).throwIfInvalid("请输入6-14位密码");
+        if(StringKit.isNotEmpty(param.getAdminEmail())){
+            Validators.isEmail().test(param.getAdminEmail()).throwIfInvalid("电子邮箱");
+        }
     }
 
 }
