@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
@@ -56,20 +55,9 @@ public class ArticleController extends BaseController {
         if (StringKit.isBlank(contents.getCategories())) {
             contents.setCategories("默认分类");
         }
-
-        try {
-            Integer cid = contentsService.publish(contents);
-            siteService.cleanCache(Types.C_STATISTICS);
-            return RestResponse.ok(cid);
-        } catch (Exception e) {
-            String msg = "文章发布失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        Integer cid = contentsService.publish(contents);
+        siteService.cleanCache(Types.C_STATISTICS);
+        return RestResponse.ok(cid);
     }
 
     /**
@@ -77,28 +65,18 @@ public class ArticleController extends BaseController {
      */
     @PostRoute("modify")
     public RestResponse<?> modify(Contents contents, @Param String createTime) {
-        try {
-            if (null == contents || null == contents.getCid()) {
-                return RestResponse.fail("缺少参数，请重试");
-            }
-            CommonValidator.valid(contents);
-
-            if (StringKit.isNotBlank(createTime)) {
-                int unixTime = DateKit.toUnix(createTime, "yyyy-MM-dd HH:mm");
-                contents.setCreated(unixTime);
-            }
-            Integer cid = contents.getCid();
-            contentsService.updateArticle(contents);
-            return RestResponse.ok(cid);
-        } catch (Exception e) {
-            String msg = "文章编辑失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
+        if (null == contents || null == contents.getCid()) {
+            return RestResponse.fail("缺少参数，请重试");
         }
+        CommonValidator.valid(contents);
+
+        if (StringKit.isNotBlank(createTime)) {
+            int unixTime = DateKit.toUnix(createTime, "yyyy-MM-dd HH:mm");
+            contents.setCreated(unixTime);
+        }
+        Integer cid = contents.getCid();
+        contentsService.updateArticle(contents);
+        return RestResponse.ok(cid);
     }
 
     /**
@@ -106,19 +84,9 @@ public class ArticleController extends BaseController {
      */
     @PostRoute("delete")
     public RestResponse<?> delete(@Param int cid, Request request) {
-        try {
-            contentsService.delete(cid);
-            siteService.cleanCache(Types.C_STATISTICS);
-            new Logs(LogActions.DEL_ARTICLE, cid + "", request.address(), this.getUid()).save();
-        } catch (Exception e) {
-            String msg = "文章删除失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        contentsService.delete(cid);
+        siteService.cleanCache(Types.C_STATISTICS);
+        new Logs(LogActions.DEL_ARTICLE, cid + "", request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 

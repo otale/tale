@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
@@ -29,35 +28,15 @@ public class CategoryController extends BaseController {
 
     @PostRoute("save")
     public RestResponse<?> saveCategory(@Param String cname, @Param Integer mid) {
-        try {
-            metasService.saveMeta(Types.CATEGORY, cname, mid);
-            siteService.cleanCache(Types.C_STATISTICS);
-        } catch (Exception e) {
-            String msg = "分类保存失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        metasService.saveMeta(Types.CATEGORY, cname, mid);
+        siteService.cleanCache(Types.C_STATISTICS);
         return RestResponse.ok();
     }
 
     @PostRoute("delete")
     public RestResponse<?> delete(@Param int mid) {
-        try {
-            metasService.delete(mid);
-            siteService.cleanCache(Types.C_STATISTICS);
-        } catch (Exception e) {
-            String msg = "删除失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        metasService.delete(mid);
+        siteService.cleanCache(Types.C_STATISTICS);
         return RestResponse.ok();
     }
 

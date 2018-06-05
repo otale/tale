@@ -1,12 +1,14 @@
 package com.tale.controller.admin;
 
 import com.blade.Environment;
-import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
-import com.blade.mvc.annotation.*;
+import com.blade.mvc.annotation.GetRoute;
+import com.blade.mvc.annotation.Param;
+import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.bootstrap.TaleConst;
@@ -14,16 +16,11 @@ import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
 import com.tale.model.dto.BackResponse;
 import com.tale.model.dto.LogActions;
-import com.tale.model.dto.Statistics;
 import com.tale.model.dto.Types;
-import com.tale.model.entity.Comments;
-import com.tale.model.entity.Contents;
 import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
-import io.github.biezhi.anima.enums.OrderBy;
-import io.github.biezhi.anima.page.Page;
 import jetbrick.util.ShellUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,8 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 后台控制器
@@ -54,24 +49,14 @@ public class SystemController extends BaseController {
      */
     @PostRoute("setting")
     public RestResponse<?> saveSetting(@Param String site_theme, Request request) {
-        try {
-            Map<String, List<String>> querys = request.parameters();
-            querys.forEach((k, v) -> optionsService.saveOption(k, v.get(0)));
+        Map<String, List<String>> querys = request.parameters();
+        querys.forEach((k, v) -> optionsService.saveOption(k, v.get(0)));
 
-            Environment config = Environment.of(optionsService.getOptions());
-            TaleConst.OPTIONS = config;
+        Environment config = Environment.of(optionsService.getOptions());
+        TaleConst.OPTIONS = config;
 
-            new Logs(LogActions.SYS_SETTING, JsonKit.toString(querys), request.address(), this.getUid()).save();
-            return RestResponse.ok();
-        } catch (Exception e) {
-            String msg = "保存设置失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        new Logs(LogActions.SYS_SETTING, JsonKit.toString(querys), request.address(), this.getUid()).save();
+        return RestResponse.ok();
     }
 
     /**
@@ -107,22 +92,12 @@ public class SystemController extends BaseController {
             return RestResponse.fail("请输入6-14位密码");
         }
 
-        try {
-            Users  temp = new Users();
-            String pwd  = EncryptKit.md5(users.getUsername() + password);
-            temp.setPassword(pwd);
-            temp.updateById(users.getUid());
-            new Logs(LogActions.UP_PWD, null, request.address(), this.getUid()).save();
-            return RestResponse.ok();
-        } catch (Exception e) {
-            String msg = "密码修改失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        Users  temp = new Users();
+        String pwd  = EncryptKit.md5(users.getUsername() + password);
+        temp.setPassword(pwd);
+        temp.updateById(users.getUid());
+        new Logs(LogActions.UP_PWD, null, request.address(), this.getUid()).save();
+        return RestResponse.ok();
     }
 
     /**
@@ -130,24 +105,14 @@ public class SystemController extends BaseController {
      */
     @PostRoute("backup")
     public RestResponse<?> backup(@Param String bk_type, @Param String bk_path,
-                                  Request request) {
+                                  Request request) throws Exception {
         if (StringKit.isBlank(bk_type)) {
             return RestResponse.fail("请确认信息输入完整");
         }
 
-        try {
-            BackResponse backResponse = siteService.backup(bk_type, bk_path, "yyyyMMddHHmm");
-            new Logs(LogActions.SYS_BACKUP, null, request.address(), this.getUid()).save();
-            return RestResponse.ok(backResponse);
-        } catch (Exception e) {
-            String msg = "备份失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        BackResponse backResponse = siteService.backup(bk_type, bk_path, "yyyyMMddHHmm");
+        new Logs(LogActions.SYS_BACKUP, null, request.address(), this.getUid()).save();
+        return RestResponse.ok(backResponse);
     }
 
     /**
@@ -197,20 +162,16 @@ public class SystemController extends BaseController {
      * 重启系统
      */
     @GetRoute("reload")
-    public void reload(@Param(defaultValue = "0") int sleep, Request request) {
+    public void reload(@Param(defaultValue = "0") int sleep, Request request) throws InterruptedException {
         if (sleep < 0 || sleep > 999) {
             sleep = 10;
         }
-        try {
-            // sh tale.sh reload 10
-            String webHome = new File(AttachController.CLASSPATH).getParent();
-            String cmd     = "sh " + webHome + "/bin tale.sh reload " + sleep;
-            log.info("execute shell: {}", cmd);
-            ShellUtils.shell(cmd);
-            new Logs(LogActions.RELOAD_SYS, "", request.address(), this.getUid()).save();
-            TimeUnit.SECONDS.sleep(sleep);
-        } catch (Exception e) {
-            log.error("重启系统失败", e);
-        }
+        // sh tale.sh reload 10
+        String webHome = new File(AttachController.CLASSPATH).getParent();
+        String cmd     = "sh " + webHome + "/bin tale.sh reload " + sleep;
+        log.info("execute shell: {}", cmd);
+        ShellUtils.shell(cmd);
+        new Logs(LogActions.RELOAD_SYS, "", request.address(), this.getUid()).save();
+        TimeUnit.SECONDS.sleep(sleep);
     }
 }

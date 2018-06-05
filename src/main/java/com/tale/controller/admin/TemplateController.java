@@ -12,6 +12,7 @@ import com.tale.extension.Commons;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -25,26 +26,21 @@ import java.nio.file.Paths;
 public class TemplateController extends BaseController {
 
     @Route(value = "save", method = HttpMethod.POST)
-    public RestResponse<?> saveTpl(@Param String fileName, @Param String content) {
+    public RestResponse<?> saveTpl(@Param String fileName, @Param String content) throws IOException {
         if (StringKit.isBlank(fileName)) {
             return RestResponse.fail("缺少参数，请重试");
         }
         String themePath = Const.CLASSPATH + File.separatorChar + "templates" + File.separatorChar + "themes" + File.separatorChar + Commons.site_theme();
         String filePath  = themePath + File.separatorChar + fileName;
-        try {
-            if (Files.exists(Paths.get(filePath))) {
-                byte[] rf_wiki_byte = content.getBytes("UTF-8");
-                Files.write(Paths.get(filePath), rf_wiki_byte);
-            } else {
-                Files.createFile(Paths.get(filePath));
-                byte[] rf_wiki_byte = content.getBytes("UTF-8");
-                Files.write(Paths.get(filePath), rf_wiki_byte);
-            }
-            return RestResponse.ok();
-        } catch (Exception e) {
-            log.error("写入文件失败", e);
-            return RestResponse.fail("写入文件失败: " + e.getMessage());
+        if (Files.exists(Paths.get(filePath))) {
+            byte[] rf_wiki_byte = content.getBytes("UTF-8");
+            Files.write(Paths.get(filePath), rf_wiki_byte);
+        } else {
+            Files.createFile(Paths.get(filePath));
+            byte[] rf_wiki_byte = content.getBytes("UTF-8");
+            Files.write(Paths.get(filePath), rf_wiki_byte);
         }
+        return RestResponse.ok();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.DateKit;
 import com.blade.mvc.annotation.Param;
@@ -26,9 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import static io.github.biezhi.anima.Anima.select;
 
@@ -64,81 +61,62 @@ public class AttachController extends BaseController {
         List<Attach> errorFiles = new ArrayList<>();
         List<Attach> urls       = new ArrayList<>();
 
-        try {
-
-            request.fileItem("file").ifPresent(fileItem -> {
-                String fname = fileItem.getFileName();
-
-                if ((fileItem.getLength() / 1024) <= TaleConst.MAX_FILE_SIZE) {
-                    String fkey = TaleUtils.getFileKey(fname);
-
-                    String ftype    = fileItem.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
-                    String filePath = TaleUtils.UP_DIR + fkey;
-
-                    try {
-                        Files.write(Paths.get(filePath), fileItem.getData());
-                    } catch (IOException e) {
-                        log.error("", e);
-                    }
-
-                    Attach attach = new Attach();
-                    attach.setFname(fname);
-                    attach.setAuthorId(uid);
-                    attach.setFkey(fkey);
-                    attach.setFtype(ftype);
-                    attach.setCreated(DateKit.nowUnix());
-                    attach.save();
-
-                    urls.add(attach);
-                    siteService.cleanCache(Types.C_STATISTICS);
-                } else {
-                    Attach attach = new Attach();
-                    attach.setFname(fname);
-                    errorFiles.add(attach);
-                }
-            });
-
-            if (errorFiles.size() > 0) {
-                return RestResponse.fail().payload(errorFiles);
-            }
-            return RestResponse.ok(urls);
-        } catch (Exception e) {
-            String msg = "文件上传失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
+        FileItem fileItem = request.fileItem("file").orElse(null);
+        if (null == fileItem) {
+            return RestResponse.fail("请选择文件上传");
         }
+
+        String fname = fileItem.getFileName();
+        if ((fileItem.getLength() / 1024) <= TaleConst.MAX_FILE_SIZE) {
+            String fkey = TaleUtils.getFileKey(fname);
+
+            String ftype    = fileItem.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
+            String filePath = TaleUtils.UP_DIR + fkey;
+
+            try {
+                Files.write(Paths.get(filePath), fileItem.getData());
+            } catch (IOException e) {
+                log.error("", e);
+            }
+
+            Attach attach = new Attach();
+            attach.setFname(fname);
+            attach.setAuthorId(uid);
+            attach.setFkey(fkey);
+            attach.setFtype(ftype);
+            attach.setCreated(DateKit.nowUnix());
+            attach.save();
+
+            urls.add(attach);
+            siteService.cleanCache(Types.C_STATISTICS);
+        } else {
+            Attach attach = new Attach();
+            attach.setFname(fname);
+            errorFiles.add(attach);
+        }
+
+        if (errorFiles.size() > 0) {
+            return RestResponse.fail().payload(errorFiles);
+        }
+        return RestResponse.ok(urls);
     }
 
     @PostRoute("delete")
-    public RestResponse<?> delete(@Param Integer id, Request request) {
-        try {
-            Attach attach = select().from(Attach.class).byId(id);
-            if (null == attach) {
-                return RestResponse.fail("不存在该附件");
-            }
-            String fkey = attach.getFkey();
-            siteService.cleanCache(Types.C_STATISTICS);
-            String             filePath = CLASSPATH.substring(0, CLASSPATH.length() - 1) + fkey;
-            java.nio.file.Path path     = Paths.get(filePath);
-            log.info("Delete attach: [{}]", filePath);
-            if (Files.exists(path)) {
-                Files.delete(path);
-            }
-            Anima.deleteById(Attach.class, id);
-            new Logs(LogActions.DEL_ATTACH, fkey, request.address(), this.getUid()).save();
-        } catch (Exception e) {
-            String msg = "附件删除失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
+    public RestResponse<?> delete(@Param Integer id, Request request) throws IOException {
+        Attach attach = select().from(Attach.class).byId(id);
+        if (null == attach) {
+            return RestResponse.fail("不存在该附件");
         }
+        String key = attach.getFkey();
+        siteService.cleanCache(Types.C_STATISTICS);
+        String             filePath = CLASSPATH.substring(0, CLASSPATH.length() - 1) + key;
+        java.nio.file.Path path     = Paths.get(filePath);
+        log.info("Delete attach: [{}]", filePath);
+        if (Files.exists(path)) {
+            Files.delete(path);
+        }
+        Anima.deleteById(Attach.class, id);
+        new Logs(LogActions.DEL_ATTACH, key, request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 

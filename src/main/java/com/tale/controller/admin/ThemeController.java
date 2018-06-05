@@ -1,7 +1,6 @@
 package com.tale.controller.admin;
 
 import com.blade.Environment;
-import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.JsonKit;
 import com.blade.mvc.annotation.Param;
@@ -40,30 +39,20 @@ public class ThemeController extends BaseController {
      */
     @PostRoute("setting")
     public RestResponse<?> saveSetting(Request request) {
-        try {
-            Map<String, List<String>> query = request.parameters();
+        Map<String, List<String>> query = request.parameters();
 
-            // theme_milk_options => {  }
-            String currentTheme = Commons.site_theme();
-            String key          = "theme_" + currentTheme + "_options";
+        // theme_milk_options => {  }
+        String currentTheme = Commons.site_theme();
+        String key          = "theme_" + currentTheme + "_options";
 
-            Map<String, String> options = new HashMap<>();
-            query.forEach((k, v) -> options.put(k, v.get(0)));
+        Map<String, String> options = new HashMap<>();
+        query.forEach((k, v) -> options.put(k, v.get(0)));
 
-            optionsService.saveOption(key, JsonKit.toString(options));
+        optionsService.saveOption(key, JsonKit.toString(options));
 
-            TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
-            new Logs(LogActions.THEME_SETTING, JsonKit.toString(query), request.address(), this.getUid()).save();
-            return RestResponse.ok();
-        } catch (Exception e) {
-            String msg = "主题设置失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
+        new Logs(LogActions.THEME_SETTING, JsonKit.toString(query), request.address(), this.getUid()).save();
+        return RestResponse.ok();
     }
 
     /**
@@ -71,29 +60,19 @@ public class ThemeController extends BaseController {
      */
     @PostRoute("active")
     public RestResponse<?> activeTheme(Request request, @Param String site_theme) {
+        optionsService.saveOption("site_theme", site_theme);
+        delete().from(Options.class).where(Options::getName).like("theme_option_%").execute();
+
+        TaleConst.OPTIONS.set("site_theme", site_theme);
+        BaseController.THEME = "themes/" + site_theme;
+
+        String themePath = "/templates/themes/" + site_theme;
         try {
-            optionsService.saveOption("site_theme", site_theme);
-            delete().from(Options.class).where(Options::getName).like("theme_option_%").execute();
-
-            TaleConst.OPTIONS.set("site_theme", site_theme);
-            BaseController.THEME = "themes/" + site_theme;
-
-            String themePath = "/templates/themes/" + site_theme;
-            try {
-                TaleLoader.loadTheme(themePath);
-            } catch (Exception e) {
-            }
-            new Logs(LogActions.THEME_SETTING, site_theme, request.address(), this.getUid()).save();
-            return RestResponse.ok();
+            TaleLoader.loadTheme(themePath);
         } catch (Exception e) {
-            String msg = "主题启用失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
         }
+        new Logs(LogActions.THEME_SETTING, site_theme, request.address(), this.getUid()).save();
+        return RestResponse.ok();
     }
 
 }

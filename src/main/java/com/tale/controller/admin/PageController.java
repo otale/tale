@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
@@ -43,18 +42,8 @@ public class PageController extends BaseController {
         contents.setType(Types.PAGE);
         contents.setAllowPing(true);
         contents.setAuthorId(users.getUid());
-        try {
-            contentsService.publish(contents);
-            siteService.cleanCache(Types.C_STATISTICS);
-        } catch (Exception e) {
-            String msg = "页面发布失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        contentsService.publish(contents);
+        siteService.cleanCache(Types.C_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -62,40 +51,20 @@ public class PageController extends BaseController {
     public RestResponse<?> modifyArticle(Contents contents) {
         CommonValidator.valid(contents);
 
-        if (null == contents || null == contents.getCid()) {
+        if (null == contents.getCid()) {
             return RestResponse.fail("缺少参数，请重试");
         }
-        try {
-            Integer cid = contents.getCid();
-            contents.setType(Types.PAGE);
-            contentsService.updateArticle(contents);
-            return RestResponse.ok(cid);
-        } catch (Exception e) {
-            String msg = "页面编辑失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        Integer cid = contents.getCid();
+        contents.setType(Types.PAGE);
+        contentsService.updateArticle(contents);
+        return RestResponse.ok(cid);
     }
 
     @Route(value = "delete")
     public RestResponse<?> delete(@Param int cid, Request request) {
-        try {
-            contentsService.delete(cid);
-            siteService.cleanCache(Types.C_STATISTICS);
-            new Logs(LogActions.DEL_PAGE, cid + "", request.address(), this.getUid()).save();
-        } catch (Exception e) {
-            String msg = "页面删除失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        contentsService.delete(cid);
+        siteService.cleanCache(Types.C_STATISTICS);
+        new Logs(LogActions.DEL_PAGE, cid + "", request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 

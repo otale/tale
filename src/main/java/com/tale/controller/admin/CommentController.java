@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.Param;
@@ -41,42 +40,22 @@ public class CommentController extends BaseController {
      */
     @PostRoute("delete")
     public RestResponse<?> delete(@Param Integer coid) {
-        try {
-            Comments comments = select().from(Comment.class).byId(coid);
-            if (null == comments) {
-                return RestResponse.fail("不存在该评论");
-            }
-            commentsService.delete(coid, comments.getCid());
-            siteService.cleanCache(Types.C_STATISTICS);
-        } catch (Exception e) {
-            String msg = "评论删除失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
+        Comments comments = select().from(Comment.class).byId(coid);
+        if (null == comments) {
+            return RestResponse.fail("不存在该评论");
         }
+        commentsService.delete(coid, comments.getCid());
+        siteService.cleanCache(Types.C_STATISTICS);
         return RestResponse.ok();
     }
 
     @PostRoute("status")
     public RestResponse<?> delete(@Param Integer coid, @Param String status) {
-        try {
-            Comments comments = new Comments();
-            comments.setCoid(coid);
-            comments.setStatus(status);
-            comments.update();
-            siteService.cleanCache(Types.C_STATISTICS);
-        } catch (Exception e) {
-            String msg = "操作失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        Comments comments = new Comments();
+        comments.setCoid(coid);
+        comments.setStatus(status);
+        comments.update();
+        siteService.cleanCache(Types.C_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -110,19 +89,9 @@ public class CommentController extends BaseController {
             comments.setMail("support@tale.me");
         }
         comments.setParent(coid);
-        try {
-            commentsService.saveComment(comments);
-            siteService.cleanCache(Types.C_STATISTICS);
-            return RestResponse.ok();
-        } catch (Exception e) {
-            String msg = "回复失败";
-            if (e instanceof ValidatorException) {
-                msg = e.getMessage();
-            } else {
-                log.error(msg, e);
-            }
-            return RestResponse.fail(msg);
-        }
+        commentsService.saveComment(comments);
+        siteService.cleanCache(Types.C_STATISTICS);
+        return RestResponse.ok();
     }
 
 }
