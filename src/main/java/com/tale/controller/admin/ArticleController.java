@@ -60,7 +60,7 @@ public class ArticleController extends BaseController {
     public String index(@Param(defaultValue = "1") Integer page, @Param(defaultValue = "15") Integer limit,
                         Request request) {
 
-        Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).order(Contents::getCreated, OrderBy.DESC).page(page, TaleConst.MAX_POSTS);
+        Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).order(Contents::getCreated, OrderBy.DESC).page(page, limit);
         request.attribute("articles", articles);
         return "admin/article_list";
     }
