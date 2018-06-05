@@ -112,7 +112,7 @@ $.tale.prototype.post = function (options) {
         type: 'POST',
         url: options.url,
         headers : {
-            'X-CSRF-TOKEN': document.getElementsByTagName('meta')['csrf_token']
+            'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content
         },
         data: options.data || {},
         async: options.async || false,
