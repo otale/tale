@@ -8,6 +8,7 @@ import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
 import com.tale.bootstrap.TaleLoader;
 import com.tale.controller.BaseController;
@@ -34,9 +35,7 @@ public class ThemeController extends BaseController {
     @Inject
     private OptionsService optionsService;
 
-    /**
-     * 保存主题配置项
-     */
+    @SysLog("保存主题设置")
     @PostRoute("setting")
     public RestResponse<?> saveSetting(Request request) {
         Map<String, List<String>> query = request.parameters();
@@ -55,9 +54,7 @@ public class ThemeController extends BaseController {
         return RestResponse.ok();
     }
 
-    /**
-     * 激活主题
-     */
+    @SysLog("激活主题")
     @PostRoute("active")
     public RestResponse<?> activeTheme(Request request, @Param String site_theme) {
         optionsService.saveOption("site_theme", site_theme);

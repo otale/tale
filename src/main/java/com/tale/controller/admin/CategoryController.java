@@ -5,6 +5,7 @@ import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.Types;
 import com.tale.service.MetasService;
@@ -26,6 +27,7 @@ public class CategoryController extends BaseController {
     @Inject
     private SiteService siteService;
 
+    @SysLog("保存分类")
     @PostRoute("save")
     public RestResponse<?> saveCategory(@Param String cname, @Param Integer mid) {
         metasService.saveMeta(Types.CATEGORY, cname, mid);
@@ -33,6 +35,7 @@ public class CategoryController extends BaseController {
         return RestResponse.ok();
     }
 
+    @SysLog("删除分类")
     @PostRoute("delete")
     public RestResponse<?> delete(@Param int mid) {
         metasService.delete(mid);

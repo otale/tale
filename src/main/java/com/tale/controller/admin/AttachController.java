@@ -8,6 +8,7 @@ import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.multipart.FileItem;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.LogActions;
@@ -45,12 +46,8 @@ public class AttachController extends BaseController {
 
     /**
      * 上传文件接口
-     * <p>
-     * 返回格式
-     *
-     * @param request
-     * @return
      */
+    @SysLog("上传附件")
     @PostRoute("upload")
     public RestResponse<?> upload(Request request) {
 
@@ -101,6 +98,7 @@ public class AttachController extends BaseController {
         return RestResponse.ok(urls);
     }
 
+    @SysLog("删除附件")
     @PostRoute("delete")
     public RestResponse<?> delete(@Param Integer id, Request request) throws IOException {
         Attach attach = select().from(Attach.class).byId(id);

@@ -3,10 +3,12 @@ package com.tale.controller.admin;
 import com.blade.ioc.annotation.Inject;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
@@ -33,7 +35,8 @@ public class PageController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    @Route(value = "publish", method = HttpMethod.POST)
+    @SysLog("发布页面")
+    @PostRoute("publish")
     public RestResponse<?> publishPage(Contents contents) {
 
         CommonValidator.valid(contents);
@@ -47,7 +50,8 @@ public class PageController extends BaseController {
         return RestResponse.ok();
     }
 
-    @Route(value = "modify", method = HttpMethod.POST)
+    @SysLog("修改页面")
+    @PostRoute("modify")
     public RestResponse<?> modifyArticle(Contents contents) {
         CommonValidator.valid(contents);
 
@@ -60,7 +64,8 @@ public class PageController extends BaseController {
         return RestResponse.ok(cid);
     }
 
-    @Route(value = "delete")
+    @SysLog("删除页面")
+    @PostRoute("delete")
     public RestResponse<?> delete(@Param int cid, Request request) {
         contentsService.delete(cid);
         siteService.cleanCache(Types.C_STATISTICS);

@@ -7,6 +7,7 @@ import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.Comment;
 import com.tale.model.dto.Types;
@@ -35,9 +36,7 @@ public class CommentController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    /**
-     * 删除一条评论
-     */
+    @SysLog("删除评论")
     @PostRoute("delete")
     public RestResponse<?> delete(@Param Integer coid) {
         Comments comments = select().from(Comment.class).byId(coid);
@@ -49,6 +48,7 @@ public class CommentController extends BaseController {
         return RestResponse.ok();
     }
 
+    @SysLog("修改评论状态")
     @PostRoute("status")
     public RestResponse<?> delete(@Param Integer coid, @Param String status) {
         Comments comments = new Comments();
@@ -59,6 +59,7 @@ public class CommentController extends BaseController {
         return RestResponse.ok();
     }
 
+    @SysLog("回复评论")
     @PostRoute
     public RestResponse<?> reply(@Param Integer coid, @Param String content, Request request) {
         if (null == coid || StringKit.isBlank(content)) {

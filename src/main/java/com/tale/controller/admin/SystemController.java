@@ -11,6 +11,7 @@ import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
@@ -44,9 +45,7 @@ public class SystemController extends BaseController {
     @Inject
     private SiteService siteService;
 
-    /**
-     * 保存系统设置
-     */
+    @SysLog("保存系统设置")
     @PostRoute("setting")
     public RestResponse<?> saveSetting(@Param String site_theme, Request request) {
         Map<String, List<String>> querys = request.parameters();
@@ -59,9 +58,7 @@ public class SystemController extends BaseController {
         return RestResponse.ok();
     }
 
-    /**
-     * 保存个人信息
-     */
+    @SysLog("保存个人信息")
     @PostRoute("profile")
     public RestResponse saveProfile(@Param String screenName, @Param String email, Request request) {
         Users users = this.user();
@@ -75,9 +72,7 @@ public class SystemController extends BaseController {
         return RestResponse.ok();
     }
 
-    /**
-     * 修改密码
-     */
+    @SysLog("修改登录密码")
     @PostRoute("password")
     public RestResponse upPwd(@Param String old_password, @Param String password, Request request) {
         Users users = this.user();
@@ -100,9 +95,7 @@ public class SystemController extends BaseController {
         return RestResponse.ok();
     }
 
-    /**
-     * 系统备份
-     */
+    @SysLog("系统备份")
     @PostRoute("backup")
     public RestResponse<?> backup(@Param String bk_type, @Param String bk_path,
                                   Request request) throws Exception {
@@ -115,9 +108,7 @@ public class SystemController extends BaseController {
         return RestResponse.ok(backResponse);
     }
 
-    /**
-     * 保存高级选项设置
-     */
+    @SysLog("保存高级选项设置")
     @PostRoute("advanced")
     public RestResponse<?> doAdvanced(@Param String cache_key, @Param String block_ips,
                                       @Param String plugin_name, @Param String rewrite_url,
@@ -158,9 +149,7 @@ public class SystemController extends BaseController {
         return RestResponse.ok();
     }
 
-    /**
-     * 重启系统
-     */
+    @SysLog("重启系统")
     @GetRoute("reload")
     public void reload(@Param(defaultValue = "0") int sleep, Request request) throws InterruptedException {
         if (sleep < 0 || sleep > 999) {

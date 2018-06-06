@@ -4,9 +4,11 @@ import com.blade.kit.StringKit;
 import com.blade.mvc.Const;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,8 @@ import java.nio.file.Paths;
 @Path(value = "admin/template", restful = true)
 public class TemplateController extends BaseController {
 
-    @Route(value = "save", method = HttpMethod.POST)
+    @SysLog("保存模板")
+    @PostRoute("save")
     public RestResponse<?> saveTpl(@Param String fileName, @Param String content) throws IOException {
         if (StringKit.isBlank(fileName)) {
             return RestResponse.fail("缺少参数，请重试");

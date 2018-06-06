@@ -8,6 +8,7 @@ import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
@@ -40,6 +41,7 @@ public class ArticleController extends BaseController {
     /**
      * 发布文章操作
      */
+    @SysLog("发布文章")
     @PostRoute("publish")
     public RestResponse<?> publish(Contents contents) {
 
@@ -63,6 +65,7 @@ public class ArticleController extends BaseController {
     /**
      * 修改文章操作
      */
+    @SysLog("修改文章")
     @PostRoute("modify")
     public RestResponse<?> modify(Contents contents, @Param String createTime) {
         if (null == contents || null == contents.getCid()) {
@@ -82,6 +85,7 @@ public class ArticleController extends BaseController {
     /**
      * 删除文章操作
      */
+    @SysLog("删除文章")
     @PostRoute("delete")
     public RestResponse<?> delete(@Param int cid, Request request) {
         contentsService.delete(cid);
