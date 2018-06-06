@@ -11,10 +11,8 @@ import com.blade.mvc.ui.RestResponse;
 import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Attach;
-import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
@@ -100,7 +98,7 @@ public class AttachController extends BaseController {
 
     @SysLog("删除附件")
     @PostRoute("delete")
-    public RestResponse<?> delete(@Param Integer id, Request request) throws IOException {
+    public RestResponse<?> delete(@Param Integer id) throws IOException {
         Attach attach = select().from(Attach.class).byId(id);
         if (null == attach) {
             return RestResponse.fail("不存在该附件");
@@ -114,7 +112,6 @@ public class AttachController extends BaseController {
             Files.delete(path);
         }
         Anima.deleteById(Attach.class, id);
-        new Logs(LogActions.DEL_ATTACH, key, request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 

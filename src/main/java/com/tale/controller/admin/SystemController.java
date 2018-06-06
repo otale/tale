@@ -3,7 +3,6 @@ package com.tale.controller.admin;
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.EncryptKit;
-import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.GetRoute;
 import com.blade.mvc.annotation.Param;
@@ -16,9 +15,7 @@ import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
 import com.tale.model.dto.BackResponse;
-import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
-import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
@@ -54,7 +51,6 @@ public class SystemController extends BaseController {
         Environment config = Environment.of(optionsService.getOptions());
         TaleConst.OPTIONS = config;
 
-        new Logs(LogActions.SYS_SETTING, JsonKit.toString(querys), request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 
@@ -67,7 +63,6 @@ public class SystemController extends BaseController {
             temp.setScreenName(screenName);
             temp.setEmail(email);
             temp.updateById(users.getUid());
-            new Logs(LogActions.UP_INFO, JsonKit.toString(temp), request.address(), this.getUid()).save();
         }
         return RestResponse.ok();
     }
@@ -91,7 +86,6 @@ public class SystemController extends BaseController {
         String pwd  = EncryptKit.md5(users.getUsername() + password);
         temp.setPassword(pwd);
         temp.updateById(users.getUid());
-        new Logs(LogActions.UP_PWD, null, request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 
@@ -104,7 +98,6 @@ public class SystemController extends BaseController {
         }
 
         BackResponse backResponse = siteService.backup(bk_type, bk_path, "yyyyMMddHHmm");
-        new Logs(LogActions.SYS_BACKUP, null, request.address(), this.getUid()).save();
         return RestResponse.ok(backResponse);
     }
 
@@ -151,7 +144,7 @@ public class SystemController extends BaseController {
 
     @SysLog("重启系统")
     @GetRoute("reload")
-    public void reload(@Param(defaultValue = "0") int sleep, Request request) throws InterruptedException {
+    public void reload(@Param(defaultValue = "0") int sleep) throws InterruptedException {
         if (sleep < 0 || sleep > 999) {
             sleep = 10;
         }
@@ -160,7 +153,6 @@ public class SystemController extends BaseController {
         String cmd     = "sh " + webHome + "/bin tale.sh reload " + sleep;
         log.info("execute shell: {}", cmd);
         ShellUtils.shell(cmd);
-        new Logs(LogActions.RELOAD_SYS, "", request.address(), this.getUid()).save();
         TimeUnit.SECONDS.sleep(sleep);
     }
 }

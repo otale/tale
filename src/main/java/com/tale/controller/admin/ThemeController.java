@@ -13,8 +13,6 @@ import com.tale.bootstrap.TaleConst;
 import com.tale.bootstrap.TaleLoader;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
-import com.tale.model.dto.LogActions;
-import com.tale.model.entity.Logs;
 import com.tale.model.entity.Options;
 import com.tale.service.OptionsService;
 import lombok.extern.slf4j.Slf4j;
@@ -50,13 +48,12 @@ public class ThemeController extends BaseController {
         optionsService.saveOption(key, JsonKit.toString(options));
 
         TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
-        new Logs(LogActions.THEME_SETTING, JsonKit.toString(query), request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 
     @SysLog("激活主题")
     @PostRoute("active")
-    public RestResponse<?> activeTheme(Request request, @Param String site_theme) {
+    public RestResponse<?> activeTheme(@Param String site_theme) {
         optionsService.saveOption("site_theme", site_theme);
         delete().from(Options.class).where(Options::getName).like("theme_option_%").execute();
 
@@ -68,7 +65,6 @@ public class ThemeController extends BaseController {
             TaleLoader.loadTheme(themePath);
         } catch (Exception e) {
         }
-        new Logs(LogActions.THEME_SETTING, site_theme, request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 

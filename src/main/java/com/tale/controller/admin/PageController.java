@@ -4,16 +4,11 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PostRoute;
-import com.blade.mvc.annotation.Route;
-import com.blade.mvc.http.HttpMethod;
-import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.annotation.SysLog;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.LogActions;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
-import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.SiteService;
@@ -66,10 +61,9 @@ public class PageController extends BaseController {
 
     @SysLog("删除页面")
     @PostRoute("delete")
-    public RestResponse<?> delete(@Param int cid, Request request) {
+    public RestResponse<?> delete(@Param int cid) {
         contentsService.delete(cid);
         siteService.cleanCache(Types.C_STATISTICS);
-        new Logs(LogActions.DEL_PAGE, cid + "", request.address(), this.getUid()).save();
         return RestResponse.ok();
     }
 

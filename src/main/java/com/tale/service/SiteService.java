@@ -57,7 +57,7 @@ public class SiteService {
             File   lock = new File(cp + "install.lock");
             lock.createNewFile();
             TaleConst.INSTALLED = Boolean.TRUE;
-            new Logs(LogActions.INIT_SITE, null, "", uid.intValue()).save();
+            new Logs("初始化站点", null, "", uid).save();
         } catch (Exception e) {
             throw new ValidatorException("初始化站点失败");
         }
