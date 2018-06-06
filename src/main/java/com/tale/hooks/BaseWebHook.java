@@ -1,6 +1,7 @@
 package com.tale.hooks;
 
 import com.blade.ioc.annotation.Bean;
+import com.blade.kit.DateKit;
 import com.blade.mvc.hook.Signature;
 import com.blade.mvc.hook.WebHook;
 import com.blade.mvc.http.Request;
@@ -59,6 +60,7 @@ public class BaseWebHook implements WebHook {
                 logs.setAuthorId(TaleUtils.getLoginUser().getUid());
                 logs.setIp(signature.request().address());
                 logs.setData(signature.request().bodyToString());
+                logs.setCreated(DateKit.nowUnix());
                 logs.save();
             }
         }
