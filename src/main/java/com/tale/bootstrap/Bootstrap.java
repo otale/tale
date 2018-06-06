@@ -8,6 +8,7 @@ import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
+import com.blade.validator.Validators;
 import com.tale.controller.BaseController;
 import com.tale.controller.admin.AttachController;
 import com.tale.extension.AdminCommons;
@@ -45,6 +46,8 @@ public class Bootstrap implements BeanProcessor {
     @Override
     public void preHandle(Blade blade) {
         Ioc ioc = blade.ioc();
+
+        Validators.useChinese();
 
         boolean devMode = true;
         if (blade.environment().hasKey("app.dev")) {

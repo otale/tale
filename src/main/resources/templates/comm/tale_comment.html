@@ -13,8 +13,12 @@
                     data: $('#comment-form').serialize(),
                     async: false,
                     dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': document.getElementsByTagName('meta')['csrf_token']
+                    error: function (jqXHR, status, error) {
+                        if(status === 'error' && jqXHR.status === 400){
+                            alert('非法的请求');
+                        } else {
+                            console.log('Request Error:', error)
+                        }
                     },
                     success: function (result) {
                         $('#comment-form input[name=coid]').val('');

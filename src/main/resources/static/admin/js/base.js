@@ -121,8 +121,12 @@ $.tale.prototype.post = function (options) {
             self.hideLoading();
             options.success && options.success(result);
         },
-        error: function (e) {
-            console.log('post异常', e);
+        error: function (jqXHR, status, error) {
+            if(status === 'error' && jqXHR.status === 400){
+                alert('csrf token 无效');
+            } else {
+                console.log('Request Error:', error)
+            }
         }
     });
 };
@@ -131,7 +135,7 @@ $.tale.prototype.post = function (options) {
  * 显示动画
  */
 $.tale.prototype.showLoading = function () {
-    if ($('#tale-loading').length == 0) {
+    if ($('#tale-loading').length === 0) {
         $('body').append('<div id="tale-loading"></div>');
     }
     $('#tale-loading').show();
