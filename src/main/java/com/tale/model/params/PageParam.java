@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class PageParam {
 
-    private Integer page;
-    private Integer limit;
+    private Integer page = 1;
+    private Integer limit = 12;
 
 }

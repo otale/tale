@@ -9,6 +9,7 @@ import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.Archive;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
+import com.tale.model.params.PageParam;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import io.github.biezhi.anima.enums.OrderBy;
@@ -38,8 +39,8 @@ public class IndexController extends BaseController {
      * @return
      */
     @GetRoute
-    public String index(Request request, @Param(defaultValue = "12") int limit) {
-        return this.index(request, 1, limit);
+    public String index(Request request, PageParam pageParam) {
+        return this.index(request, 1, pageParam.getLimit());
     }
 
     /**
