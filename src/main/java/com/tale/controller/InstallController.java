@@ -12,7 +12,7 @@ import com.blade.mvc.ui.RestResponse;
 import com.tale.bootstrap.TaleConst;
 import com.tale.controller.admin.AttachController;
 import com.tale.model.entity.Users;
-import com.tale.params.InstallParam;
+import com.tale.model.params.InstallParam;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;

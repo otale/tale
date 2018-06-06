@@ -1,12 +1,11 @@
 package com.tale.validators;
 
 import com.blade.kit.StringKit;
-import com.blade.validator.SimpleValidation;
 import com.blade.validator.Validators;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
-import com.tale.model.param.LoginParam;
-import com.tale.params.InstallParam;
+import com.tale.model.params.LoginParam;
+import com.tale.model.params.InstallParam;
 
 import static com.tale.bootstrap.TaleConst.MAX_TEXT_COUNT;
 import static com.tale.bootstrap.TaleConst.MAX_TITLE_COUNT;

@@ -14,7 +14,7 @@ import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.model.entity.Users;
-import com.tale.model.param.LoginParam;
+import com.tale.model.params.LoginParam;
 import com.tale.utils.TaleUtils;
 import com.tale.validators.CommonValidator;
 import lombok.extern.slf4j.Slf4j;

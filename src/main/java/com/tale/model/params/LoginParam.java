@@ -1,4 +1,4 @@
-package com.tale.model.param;
+package com.tale.model.params;
 
 import lombok.Data;
 
