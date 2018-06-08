@@ -101,6 +101,19 @@ $.tale.prototype.alertBox = function (options) {
     }).catch(swal.noop);
 };
 
+$.tale.prototype.get = function(options){
+    axios.get(options.url).then(function (response) {
+        options.success(response.data)
+    }).catch(function (error) {
+        options.error(error)
+    });
+};
+
+window.axios.defaults.headers.common = {
+    'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content,
+    'X-Requested-With': 'XMLHttpRequest'
+};
+
 /**
  * 全局post函数
  *
@@ -108,26 +121,11 @@ $.tale.prototype.alertBox = function (options) {
  */
 $.tale.prototype.post = function (options) {
     var self = this;
-    $.ajax({
-        type: 'POST',
-        url: options.url,
-        headers : {
-            'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content
-        },
-        data: options.data || {},
-        async: options.async || false,
-        dataType: 'json',
-        success: function (result) {
-            self.hideLoading();
-            options.success && options.success(result);
-        },
-        error: function (jqXHR, status, error) {
-            if(status === 'error' && jqXHR.status === 400){
-                alert('csrf token 无效');
-            } else {
-                console.log('Request Error:', error)
-            }
-        }
+    axios.post(options.url, options.data || {}).then(function (response) {
+        self.hideLoading();
+        options.success && options.success(response.data);
+    }).catch(function (error) {
+        options.error(error)
     });
 };
 
@@ -147,4 +145,5 @@ $.tale.prototype.showLoading = function () {
 $.tale.prototype.hideLoading = function () {
     $('#tale-loading') && $('#tale-loading').hide();
 };
+
 

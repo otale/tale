@@ -56,6 +56,11 @@ public class PagesController extends BaseController {
     @Inject
     private SiteService siteService;
 
+    @GetRoute("/:page")
+    public String commonPage(@PathParam String page) {
+        return "admin/" + page + ".html";
+    }
+
     @GetRoute("login")
     public String login(Response response) {
         if (null != this.user()) {
@@ -65,22 +70,22 @@ public class PagesController extends BaseController {
         return "admin/login";
     }
 
-    /**
-     * 文章管理首页
-     *
-     * @param page
-     * @param limit
-     * @param request
-     * @return
-     */
-    @GetRoute("article")
-    public String articleHome(@Param(defaultValue = "1") Integer page, @Param(defaultValue = "15") Integer limit,
-                              Request request) {
-
-        Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).order(Contents::getCreated, OrderBy.DESC).page(page, limit);
-        request.attribute("articles", articles);
-        return "admin/article_list";
-    }
+//    /**
+//     * 文章管理首页
+//     *
+//     * @param page
+//     * @param limit
+//     * @param request
+//     * @return
+//     */
+//    @GetRoute("article")
+//    public String articleHome(@Param(defaultValue = "1") Integer page, @Param(defaultValue = "15") Integer limit,
+//                              Request request) {
+//
+//        Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).order(Contents::getCreated, OrderBy.DESC).page(page, limit);
+//        request.attribute("articles", articles);
+//        return "admin/article_list";
+//    }
 
     /**
      * 文章发布页面
