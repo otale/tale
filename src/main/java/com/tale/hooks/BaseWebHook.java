@@ -8,10 +8,15 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
+import com.tale.extension.Commons;
+import com.tale.model.dto.Types;
 import com.tale.model.entity.Logs;
 import com.tale.model.entity.Users;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static io.github.biezhi.anima.Anima.select;
 
@@ -64,6 +69,9 @@ public class BaseWebHook implements WebHook {
                 logs.save();
             }
         }
+
+        signature.request().attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
+        signature.request().attribute("now", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now()));
         return true;
     }
 

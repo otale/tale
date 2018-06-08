@@ -23,7 +23,7 @@
                         {{ item.title }}
                     </td>
                     <td>{{ item.slug }}</td>
-                    <td>{{ item.created }}</td>
+                    <td>{{ item.created | formatUnix }}</td>
                     <td>
                         <span v-show="item.status == 'publish'">已发布</span>
                         <span v-show="item.status == 'draft'">草稿</span>

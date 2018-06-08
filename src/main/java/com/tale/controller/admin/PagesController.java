@@ -21,7 +21,6 @@ import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
-import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,8 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,6 +58,11 @@ public class PagesController extends BaseController {
         return "admin/" + page + ".html";
     }
 
+    @GetRoute("/:module/:page")
+    public String commonPage(@PathParam String module, @PathParam String page) {
+        return "admin/" + module + "/" + page + ".html";
+    }
+
     @GetRoute("login")
     public String login(Response response) {
         if (null != this.user()) {
@@ -69,60 +71,6 @@ public class PagesController extends BaseController {
         }
         return "admin/login";
     }
-
-//    /**
-//     * 文章管理首页
-//     *
-//     * @param page
-//     * @param limit
-//     * @param request
-//     * @return
-//     */
-//    @GetRoute("article")
-//    public String articleHome(@Param(defaultValue = "1") Integer page, @Param(defaultValue = "15") Integer limit,
-//                              Request request) {
-//
-//        Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).order(Contents::getCreated, OrderBy.DESC).page(page, limit);
-//        request.attribute("articles", articles);
-//        return "admin/article_list";
-//    }
-
-    /**
-     * 文章发布页面
-     *
-     * @param request
-     * @return
-     */
-    @GetRoute("article/publish")
-    public String publishArticle(Request request) {
-        List<Metas> categories = metasService.getMetas(Types.CATEGORY);
-        request.attribute("categories", categories);
-        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-        request.attribute("now", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now()));
-        return "admin/article_edit";
-    }
-
-    /**
-     * 文章编辑页面
-     *
-     * @param cid
-     * @param request
-     * @return
-     */
-    @GetRoute("article/:cid")
-    public String editArticle(@PathParam String cid, Request request) {
-        Optional<Contents> contents = contentsService.getContents(cid);
-        if (!contents.isPresent()) {
-            return render_404();
-        }
-        request.attribute("contents", contents.get());
-        List<Metas> categories = metasService.getMetas(Types.CATEGORY);
-        request.attribute("categories", categories);
-        request.attribute("active", "article");
-        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-        return "admin/article_edit";
-    }
-
 
     /**
      * 附件页面
@@ -159,14 +107,6 @@ public class PagesController extends BaseController {
         Page<Comments> commentPage = select().from(Comments.class).where(Comments::getAuthorId).notEq(users.getUid()).page(page, limit);
         request.attribute("comments", commentPage);
         return "admin/comment_list";
-    }
-
-
-    @GetRoute("page")
-    public String pageHome(Request request) {
-        Page<Contents> contentsPage = select().from(Contents.class).where(Contents::getType, Types.PAGE).order(Contents::getCreated, OrderBy.DESC).page(1, TaleConst.MAX_POSTS);
-        request.attribute("articles", contentsPage);
-        return "admin/page_list";
     }
 
     @GetRoute("page/new")

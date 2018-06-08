@@ -20,7 +20,7 @@
                     <td>
                         <a :href="'/admin/article/' + item.cid">{{ item.title }}</a>
                     </td>
-                    <td>{{ item.created }}</td>
+                    <td>{{ item.created | formatUnix }}</td>
                     <td>{{ item.hits }}</td>
                     <td>{{ item.categories }}</td>
                     <td>

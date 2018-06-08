@@ -58,20 +58,6 @@ public class ContentsService {
             throw new ValidatorException("请登录后发布文章");
         }
 
-        Optional.ofNullable(contents.getSlug()).ifPresent(slug -> {
-            if (slug.length() < 5) {
-                throw new ValidatorException("路径太短了");
-            }
-            if (!TaleUtils.isPath(slug)) {
-                throw new ValidatorException("您输入的路径不合法");
-            }
-
-            long count = new Contents().where("type", contents.getType()).and("slug", slug).count();
-            if (count > 0) {
-                throw new ValidatorException("该路径已经存在，请重新输入");
-            }
-        });
-
         contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
 
         int time = DateKit.nowUnix();

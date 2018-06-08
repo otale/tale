@@ -1,11 +1,13 @@
 package com.tale.validators;
 
+import com.blade.exception.ValidatorException;
 import com.blade.kit.StringKit;
 import com.blade.validator.Validators;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.params.LoginParam;
 import com.tale.model.params.InstallParam;
+import com.tale.utils.TaleUtils;
 
 import static com.tale.bootstrap.TaleConst.MAX_TEXT_COUNT;
 import static com.tale.bootstrap.TaleConst.MAX_TITLE_COUNT;
@@ -43,6 +45,22 @@ public class CommonValidator {
 
         Validators.notEmpty().test(param.getContent()).throwIfInvalid("文章内容");
         Validators.lessThan(MAX_TEXT_COUNT).test(param.getContent()).throwIfInvalid("文章内容");
+
+        if (StringKit.isNotEmpty(param.getSlug())) {
+            if (param.getSlug().length() < 5) {
+                throw new ValidatorException("路径太短了");
+            }
+            if (!TaleUtils.isPath(param.getSlug())) {
+                throw new ValidatorException("您输入的路径不合法");
+            }
+
+            long count = new Contents().where("type", param.getType()).and("slug", param.getSlug()).count();
+            if (count > 0) {
+                throw new ValidatorException("该路径已经存在，请重新输入");
+            }
+        } else {
+            param.setSlug(null);
+        }
     }
 
     public static void valid(LoginParam param) {
