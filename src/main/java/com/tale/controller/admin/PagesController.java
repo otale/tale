@@ -63,6 +63,11 @@ public class PagesController extends BaseController {
         return "admin/" + module + "/" + page + ".html";
     }
 
+    @GetRoute("/article/edit/:cid")
+    public String editArticle() {
+        return "admin/article/edit.html";
+    }
+
     @GetRoute("login")
     public String login(Response response) {
         if (null != this.user()) {
@@ -115,16 +120,16 @@ public class PagesController extends BaseController {
         return "admin/page_edit";
     }
 
-    @GetRoute("page/:cid")
-    public String editPage(@PathParam String cid, Request request) {
-        Optional<Contents> contents = contentsService.getContents(cid);
-        if (!contents.isPresent()) {
-            return render_404();
-        }
-        request.attribute("contents", contents.get());
-        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-        return "admin/page_edit";
-    }
+//    @GetRoute("page/:cid")
+//    public String editPage(@PathParam String cid, Request request) {
+//        Optional<Contents> contents = contentsService.getContents(cid);
+//        if (!contents.isPresent()) {
+//            return render_404();
+//        }
+//        request.attribute("contents", contents.get());
+//        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
+//        return "admin/page_edit";
+//    }
 
     @GetRoute("template")
     public String index(Request request) {

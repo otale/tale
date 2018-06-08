@@ -25,6 +25,13 @@ var vm = new Vue({
         },
         categories: []
     },
+    watch: {
+        article: {
+            createTime: function (val, oldVal) {
+                alert('val: ' + val);
+            }
+        }
+    },
     mounted: function () {
         var $vm = this;
         $vm.load();
@@ -34,7 +41,7 @@ var vm = new Vue({
         load: function () {
             var $vm = this;
             tale.get({
-                url: '/admin/categories.json',
+                url: '/admin/api/categories',
                 success: function (data) {
                     $vm.categories = data.payload
                 },
@@ -55,7 +62,7 @@ var vm = new Vue({
                 var params = tale.copy($vm.article);
                 params.selected = null;
 
-                var url = $vm.article.cid !== '' ? '/admin/article/update.json' : '/admin/article/new.json';
+                var url = $vm.article.cid !== '' ? '/admin/api/article/update' : '/admin/api/article/new';
                 tale.post({
                     url: url,
                     data: params,
@@ -124,7 +131,7 @@ var vm = new Vue({
             var params = tale.copy($vm.article);
             params.selected = null;
 
-            var url = $vm.article.cid !== '' ? '/admin/article/update.json' : '/admin/article/new.json';
+            var url = $vm.article.cid !== '' ? '/admin/api/article/update' : '/admin/api/article/new';
             tale.post({
                 url: url,
                 data: params,

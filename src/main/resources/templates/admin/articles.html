@@ -16,30 +16,33 @@
             </tr>
             </thead>
             <tbody>
-                <tr v-for="item in articlePage.rows">
-                    <td>
-                        <a :href="'/admin/article/' + item.cid">{{ item.title }}</a>
-                    </td>
-                    <td>{{ item.created | formatUnix }}</td>
-                    <td>{{ item.hits }}</td>
-                    <td>{{ item.categories }}</td>
-                    <td>
-                        <span v-show="item.status == 'publish'" class="label label-success">已发布</span>
-                        <span v-show="item.status == 'draft'" class="label label-default">草稿</span>
-                    </td>
-                    <td>
-                        <a :href="'/admin/article/' + item.cid" class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
-                            <i class="fa fa-edit"></i> <span>编辑</span>
-                        </a>
-                        <a @click="deleteArticle(item.cid)" href="javascript:void(0)" class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
-                            <i class="fa fa-trash-o"></i> <span>删除</span>
-                        </a>
-                        <a v-show="item.status == 'publish'" class="btn btn-warning btn-sm waves-effect waves-light m-b-5" href="/"
-                           target="_blank">
-                            <i class="fa fa-rocket"></i> <span>预览</span>
-                        </a>
-                    </td>
-                </tr>
+            <tr v-for="item in articlePage.rows">
+                <td>
+                    <a :href="'/admin/article/edit/' + item.cid">{{ item.title }}</a>
+                </td>
+                <td>{{ item.created | formatUnix }}</td>
+                <td>{{ item.hits }}</td>
+                <td>{{ item.categories }}</td>
+                <td>
+                    <span v-show="item.status == 'publish'" class="label label-success">已发布</span>
+                    <span v-show="item.status == 'draft'" class="label label-default">草稿</span>
+                </td>
+                <td>
+                    <a :href="'/admin/article/edit/' + item.cid"
+                       class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
+                        <i class="fa fa-edit"></i> <span>编辑</span>
+                    </a>
+                    <a @click="deleteArticle(item.cid)" href="javascript:void(0)"
+                       class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
+                        <i class="fa fa-trash-o"></i> <span>删除</span>
+                    </a>
+                    <a v-show="item.status == 'publish'" class="btn btn-warning btn-sm waves-effect waves-light m-b-5"
+                       href="/"
+                       target="_blank">
+                        <i class="fa fa-rocket"></i> <span>预览</span>
+                    </a>
+                </td>
+            </tr>
             </tbody>
         </table>
 
@@ -56,14 +59,11 @@
         mounted: function () {
             this.load();
         },
-        filters: {
-
-        },
         methods: {
             load: function () {
                 var $vm = this;
                 tale.get({
-                    url: '/admin/articles.json',
+                    url: '/admin/api/articles',
                     success: function (data) {
                         $vm.articlePage = data.payload
                     },
@@ -76,13 +76,12 @@
             deleteArticle: function (cid) {
                 var $vm = this;
                 tale.alertConfirm({
-                    title:'确定删除该文章吗?',
+                    title: '确定删除该文章吗?',
                     then: function () {
                         tale.post({
-                            url : '/admin/article/delete',
-                            data: {cid: cid},
+                            url: '/admin/api/article/delete/' + cid,
                             success: function (result) {
-                                if(result && result.success){
+                                if (result && result.success) {
                                     tale.alertOk('文章删除成功');
                                     $vm.load();
                                 } else {

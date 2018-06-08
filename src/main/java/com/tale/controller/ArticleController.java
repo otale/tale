@@ -45,11 +45,10 @@ public class ArticleController extends BaseController {
      */
     @GetRoute(value = {"/:cid", "/:cid.html"})
     public String page(@PathParam String cid, Request request) {
-        Optional<Contents> contentsOptional = contentsService.getContents(cid);
-        if (!contentsOptional.isPresent()) {
+        Contents contents = contentsService.getContents(cid);
+        if (null == contents) {
             return this.render_404();
         }
-        Contents contents = contentsOptional.get();
         if (contents.getAllowComment()) {
             int cp = request.queryInt("cp", 1);
             request.attribute("cp", cp);
@@ -72,11 +71,10 @@ public class ArticleController extends BaseController {
      */
     @GetRoute(value = {"article/:cid", "article/:cid.html"})
     public String post(Request request, @PathParam String cid) {
-        Optional<Contents> contentsOptional = contentsService.getContents(cid);
-        if (!contentsOptional.isPresent()) {
+        Contents contents = contentsService.getContents(cid);
+        if (null == contents) {
             return this.render_404();
         }
-        Contents contents = contentsOptional.get();
         if (Types.DRAFT.equals(contents.getStatus())) {
             return this.render_404();
         }

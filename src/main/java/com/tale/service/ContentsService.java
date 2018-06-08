@@ -9,9 +9,12 @@ import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Relationships;
+import com.tale.model.params.ArticleParam;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 import io.github.biezhi.anima.Anima;
+import io.github.biezhi.anima.core.AnimaQuery;
+import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
 
 import java.util.Optional;
@@ -37,15 +40,19 @@ public class ContentsService {
      *
      * @param id 唯一标识
      */
-    public Optional<Contents> getContents(String id) {
+    public Contents getContents(String id) {
+        Contents contents = null;
         if (StringKit.isNotBlank(id)) {
             if (StringKit.isNumber(id)) {
-                return Optional.ofNullable(select().from(Contents.class).byId(id));
+                contents = select().from(Contents.class).byId(id);
             } else {
-                return Optional.ofNullable(select().from(Contents.class).where(Contents::getSlug, id).one());
+                contents = select().from(Contents.class).where(Contents::getSlug, id).one();
+            }
+            if (null != contents) {
+                return this.mapContent(contents);
             }
         }
-        return Optional.empty();
+        return contents;
     }
 
     /**
@@ -107,12 +114,12 @@ public class ContentsService {
      * @param cid 文章id
      */
     public void delete(int cid) {
-        Optional<Contents> contents = this.getContents(cid + "");
-        contents.ifPresent(content -> {
+        Contents contents = this.getContents(cid + "");
+        if (null != contents) {
             deleteById(Contents.class, cid);
             Anima.delete().from(Relationships.class).where(Relationships::getCid, cid).execute();
             Anima.delete().from(Comments.class).where(Comments::getCid, cid).execute();
-        });
+        }
     }
 
     /**
@@ -127,4 +134,16 @@ public class ContentsService {
         return select().bySQL(Contents.class, SQL_QUERY_ARTICLES, mid).page(page, limit);
     }
 
+    public Page<Contents> findArticles(ArticleParam articleParam) {
+        AnimaQuery<Contents> query = select().from(Contents.class);
+        query.where(Contents::getType, articleParam.getType());
+        query.order(articleParam.getOrderBy());
+        Page<Contents> articles = query.page(articleParam.getPage(), articleParam.getLimit());
+        return articles.map(this::mapContent);
+    }
+
+    private Contents mapContent(Contents contents) {
+        contents.setContent(contents.getContent().replaceAll("\\\\\"", "\\\""));
+        return contents;
+    }
 }

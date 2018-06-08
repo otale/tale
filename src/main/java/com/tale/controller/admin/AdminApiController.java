@@ -14,19 +14,16 @@ import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.validators.CommonValidator;
-import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
 
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.biezhi.anima.Anima.select;
-
 /**
  * @author biezhi
  * @date 2018/6/9
  */
-@Path(value = "admin", suffix = ".json", restful = true)
+@Path(value = "admin/api", restful = true)
 public class AdminApiController extends BaseController {
 
     @Inject
@@ -40,8 +37,8 @@ public class AdminApiController extends BaseController {
 
     @GetRoute("articles/:cid")
     public RestResponse article(@PathParam String cid) {
-        Optional<Contents> contents = contentsService.getContents(cid);
-        return RestResponse.ok(contents.orElse(null));
+        Contents contents = contentsService.getContents(cid);
+        return RestResponse.ok(contents);
     }
 
     @PostRoute("article/new")
@@ -83,15 +80,17 @@ public class AdminApiController extends BaseController {
 
     @GetRoute("articles")
     public RestResponse articleList(ArticleParam articleParam) {
-        Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE)
-                .order(Contents::getCreated, OrderBy.DESC).page(articleParam.getPage(), articleParam.getLimit());
+        articleParam.setType(Types.ARTICLE);
+        articleParam.setOrderBy("created desc");
+        Page<Contents> articles = contentsService.findArticles(articleParam);
         return RestResponse.ok(articles);
     }
 
     @GetRoute("pages")
     public RestResponse pageList(ArticleParam articleParam) {
-        Page<Contents> articles = select().from(Contents.class).where(Contents::getType, Types.PAGE)
-                .order(Contents::getCreated, OrderBy.DESC).page(articleParam.getPage(), articleParam.getLimit());
+        articleParam.setType(Types.PAGE);
+        articleParam.setOrderBy("created desc");
+        Page<Contents> articles = contentsService.findArticles(articleParam);
         return RestResponse.ok(articles);
     }
 
