@@ -108,4 +108,9 @@ public class TaleConst {
 
     public static final String COMMENT_APPROVED = "approved";
     public static final String COMMENT_NO_AUDIT = "no_audit";
+
+    public static final String OPTION_CDN_URL             = "cdn_url";
+    public static final String OPTION_SITE_THEME          = "site_theme";
+    public static final String OPTION_ALLOW_INSTALL       = "allow_install";
+    public static final String OPTION_ALLOW_COMMENT_AUDIT = "allow_comment_audit";
 }

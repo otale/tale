@@ -130,6 +130,37 @@ $.tale.prototype.post = function (options) {
 };
 
 /**
+ * 通过 FORM 表单方式提交
+ * @param options
+ */
+$.tale.prototype.postWithForm = function (options) {
+    var self = this;
+    axios({
+        url: options.url,
+        method: 'post',
+        data: options.data || {},
+        transformRequest: [function (data) {
+            // Do whatever you want to transform the data
+            var ret = [];
+            for (it in data) {
+                ret.push(encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&');
+            }
+            return ret.join('');
+        }],
+        headers: {
+            'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    }).then(function (response) {
+        self.hideLoading();
+        options.success && options.success(response.data);
+    }).catch(function (error) {
+        options.error && options.error(error)
+    });
+};
+
+/**
  * 显示动画
  */
 $.tale.prototype.showLoading = function () {

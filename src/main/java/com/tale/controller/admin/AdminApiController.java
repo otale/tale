@@ -1,22 +1,19 @@
 package com.tale.controller.admin;
 
+import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
+import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
+import com.tale.extension.Commons;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.*;
-import com.tale.model.params.ArticleParam;
-import com.tale.model.params.CommentParam;
-import com.tale.model.params.MetaParam;
-import com.tale.model.params.PageParam;
-import com.tale.service.CommentsService;
-import com.tale.service.ContentsService;
-import com.tale.service.MetasService;
-import com.tale.service.SiteService;
+import com.tale.model.params.*;
+import com.tale.service.*;
 import com.tale.validators.CommonValidator;
 import io.github.biezhi.anima.Anima;
 import io.github.biezhi.anima.enums.OrderBy;
@@ -26,9 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-import static com.tale.bootstrap.TaleConst.CLASSPATH;
+import static com.tale.bootstrap.TaleConst.*;
 import static io.github.biezhi.anima.Anima.select;
 
 /**
@@ -47,6 +46,9 @@ public class AdminApiController extends BaseController {
 
     @Inject
     private CommentsService commentsService;
+
+    @Inject
+    private OptionsService optionsService;
 
     @Inject
     private SiteService siteService;
@@ -209,6 +211,72 @@ public class AdminApiController extends BaseController {
     public RestResponse tagList() {
         List<Metas> tags = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
         return RestResponse.ok(tags);
+    }
+
+    @GetRoute("options")
+    public RestResponse options() {
+        Map<String, String> options = optionsService.getOptions();
+        return RestResponse.ok(options);
+    }
+
+    @SysLog("保存系统配置")
+    @PostRoute("options/save")
+    public RestResponse<?> saveOptions(Request request) {
+        Map<String, List<String>> querys = request.parameters();
+        querys.forEach((k, v) -> optionsService.saveOption(k, v.get(0)));
+        Environment config = Environment.of(optionsService.getOptions());
+        TaleConst.OPTIONS = config;
+        return RestResponse.ok();
+    }
+
+    @SysLog("保存高级选项设置")
+    @PostRoute("advanced/save")
+    public RestResponse<?> saveAdvance(AdvanceParam advanceParam) {
+        // 清除缓存
+        if (StringKit.isNotBlank(advanceParam.getCacheKey())) {
+            if ("*".equals(advanceParam.getCacheKey())) {
+                cache.clean();
+            } else {
+                cache.del(advanceParam.getCacheKey());
+            }
+        }
+        // 要过过滤的黑名单列表
+        if (StringKit.isNotBlank(advanceParam.getBlockIps())) {
+            optionsService.saveOption(Types.BLOCK_IPS, advanceParam.getBlockIps());
+            TaleConst.BLOCK_IPS.addAll(Arrays.asList(advanceParam.getBlockIps().split(",")));
+        } else {
+            optionsService.saveOption(Types.BLOCK_IPS, "");
+            TaleConst.BLOCK_IPS.clear();
+        }
+        // 处理卸载插件
+        if (StringKit.isNotBlank(advanceParam.getPluginName())) {
+            String key = "plugin_";
+            // 卸载所有插件
+            if (!"*".equals(advanceParam.getPluginName())) {
+                key = "plugin_" + advanceParam.getPluginName();
+            } else {
+                optionsService.saveOption(Types.ATTACH_URL, Commons.site_url());
+            }
+            optionsService.deleteOption(key);
+        }
+
+        if (StringKit.isNotBlank(advanceParam.getCdnURL())) {
+            optionsService.saveOption(OPTION_CDN_URL, advanceParam.getCdnURL());
+            TaleConst.OPTIONS.set(OPTION_CDN_URL, advanceParam.getCdnURL());
+        }
+
+        // 是否允许重新安装
+        if (StringKit.isNotBlank(advanceParam.getAllowInstall())) {
+            optionsService.saveOption(OPTION_ALLOW_INSTALL, advanceParam.getAllowInstall());
+            TaleConst.OPTIONS.set(OPTION_ALLOW_INSTALL, advanceParam.getAllowInstall());
+        }
+
+        // 评论是否需要审核
+        if (StringKit.isNotBlank(advanceParam.getAllowCommentAudit())) {
+            optionsService.saveOption(OPTION_ALLOW_COMMENT_AUDIT, advanceParam.getAllowCommentAudit());
+            TaleConst.OPTIONS.set(OPTION_ALLOW_COMMENT_AUDIT, advanceParam.getAllowCommentAudit());
+        }
+        return RestResponse.ok();
     }
 
 }

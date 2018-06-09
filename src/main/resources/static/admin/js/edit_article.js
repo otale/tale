@@ -98,6 +98,30 @@ var vm = new Vue({
                         htmlEditor.summernote("code", data.payload.content);
                     }
                     $vm.article.createdTime = moment.unix($vm.article.created).format('YYYY-MM-DD HH:mm')
+
+                    $('#allowComment').toggles({
+                        on: $vm.article.allowComment,
+                        text: {
+                            on: '开启',
+                            off: '关闭'
+                        }
+                    });
+
+                    $('#allowPing').toggles({
+                        on: $vm.article.allowPing,
+                        text: {
+                            on: '开启',
+                            off: '关闭'
+                        }
+                    });
+
+                    $('#allowFeed').toggles({
+                        on: $vm.article.allowFeed,
+                        text: {
+                            on: '开启',
+                            off: '关闭'
+                        }
+                    });
                 },
                 error: function (error) {
                     console.log(error);
@@ -232,16 +256,6 @@ $(document).ready(function () {
         defaultText: '请输入文章标签'
     });
 
-    $('.toggle').toggles({
-        on: true,
-        text: {
-            on: '开启',
-            off: '关闭'
-        }
-    });
-
-    $('#allowComment').toggleClass('disabled', false);
-
     $('#allowComment').on('toggle', function (e, active) {
         vm.article.allowComment = active;
     });
@@ -268,7 +282,7 @@ $(document).ready(function () {
         width: '100%'
     });
 
-    if ($('#thumb-toggle').attr('thumb_url') != '') {
+    if ($('#thumb-toggle').attr('thumb_url') !== '') {
         $('#thumb-toggle').toggles({
             on: true,
             text: {

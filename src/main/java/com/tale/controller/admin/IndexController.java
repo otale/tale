@@ -39,8 +39,6 @@ import static io.github.biezhi.anima.Anima.select;
 @Path("admin")
 public class IndexController extends BaseController {
 
-    @Inject
-    private OptionsService optionsService;
 
     @Inject
     private SiteService siteService;
@@ -62,16 +60,6 @@ public class IndexController extends BaseController {
         request.attribute("statistics", statistics);
         request.attribute("logs", logs);
         return "admin/index";
-    }
-
-    /**
-     * 系统设置
-     */
-    @GetRoute("setting")
-    public String setting(Request request) {
-        Map<String, String> options = optionsService.getOptions();
-        request.attribute("options", options);
-        return "admin/setting";
     }
 
     /**

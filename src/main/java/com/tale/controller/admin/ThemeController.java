@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tale.bootstrap.TaleConst.OPTION_SITE_THEME;
 import static io.github.biezhi.anima.Anima.delete;
 
 /**
@@ -57,7 +58,7 @@ public class ThemeController extends BaseController {
         optionsService.saveOption("site_theme", site_theme);
         delete().from(Options.class).where(Options::getName).like("theme_option_%").execute();
 
-        TaleConst.OPTIONS.set("site_theme", site_theme);
+        TaleConst.OPTIONS.set(OPTION_SITE_THEME, site_theme);
         BaseController.THEME = "themes/" + site_theme;
 
         String themePath = "/templates/themes/" + site_theme;

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static com.tale.bootstrap.TaleConst.CLASSPATH;
+import static com.tale.bootstrap.TaleConst.OPTION_ALLOW_INSTALL;
 
 @Slf4j
 @Path("install")
@@ -39,8 +40,8 @@ public class InstallController extends BaseController {
     @GetRoute
     public String index(Request request) {
         boolean existInstall   = Files.exists(Paths.get(CLASSPATH + "install.lock"));
-        int     allowReinstall = TaleConst.OPTIONS.getInt("allow_install", 0);
-        request.attribute("is_install", allowReinstall != 1 && existInstall);
+        boolean allowReinstall = TaleConst.OPTIONS.getBoolean(OPTION_ALLOW_INSTALL, false);
+        request.attribute("is_install", !allowReinstall && existInstall);
         return "install";
     }
 
