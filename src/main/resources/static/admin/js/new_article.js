@@ -20,17 +20,10 @@ var vm = new Vue({
             allowPing: true,
             allowFeed: true,
             created: moment().unix(),
-            createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+            createdTime: moment().format('YYYY-MM-DD HH:mm'),
             selected: ['默认分类']
         },
         categories: []
-    },
-    watch: {
-        article: {
-            createTime: function (val, oldVal) {
-                alert('val: ' + val);
-            }
-        }
     },
     mounted: function () {
         var $vm = this;
@@ -51,16 +44,16 @@ var vm = new Vue({
                 }
             });
         },
-        autoSave: function () {
+        autoSave: function (callback) {
             var $vm = this;
             var content = $vm.article.fmtType === 'markdown' ? mditor.value : htmlEditor.summernote('code');
             if ($vm.article.title !== '' && content !== '') {
-                $('#content-editor').val(content);
 
                 $vm.article.content = content;
                 $vm.article.categories = $vm.article.selected.join(',');
                 var params = tale.copy($vm.article);
                 params.selected = null;
+                params.created = moment($('#form_datetime').val(), "YYYY-MM-DD HH:mm").unix();
 
                 var url = $vm.article.cid !== '' ? '/admin/api/article/update' : '/admin/api/article/new';
                 tale.post({
@@ -69,11 +62,13 @@ var vm = new Vue({
                     success: function (result) {
                         if (result && result.success) {
                             $vm.article.cid = result.payload;
+                            callback && callback();
                         } else {
                             tale.alertError(result.msg || '保存文章失败');
                         }
                     },
-                    error: function () {
+                    error: function (error) {
+                        console.log(error);
                         clearInterval(refreshIntervalId);
                     }
                 });
@@ -123,32 +118,17 @@ var vm = new Vue({
                 return;
             }
             clearInterval(refreshIntervalId);
-
-            $vm.article.content  = content;
             $vm.article.status  = status;
-            $vm.article.categories  = $vm.article.selected.join(',');
 
-            var params = tale.copy($vm.article);
-            params.selected = null;
-
-            var url = $vm.article.cid !== '' ? '/admin/api/article/update' : '/admin/api/article/new';
-            tale.post({
-                url: url,
-                data: params,
-                success: function (result) {
-                    if (result && result.success) {
-                        tale.alertOk({
-                            text: '文章保存成功',
-                            then: function () {
-                                setTimeout(function () {
-                                    window.location.href = '/admin/articles';
-                                }, 500);
-                            }
-                        });
-                    } else {
-                        tale.alertError(result.msg || '保存文章失败');
+            $vm.autoSave(function () {
+                tale.alertOk({
+                    text: '文章发布成功',
+                    then: function () {
+                        setTimeout(function () {
+                            window.location.href = '/admin/articles';
+                        }, 500);
                     }
-                }
+                });
             });
         }
     }

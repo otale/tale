@@ -72,13 +72,7 @@
 </style>
 <div class="row">
     <div class="col-sm-12">
-        <h4 class="page-title">
-            #if(null != contents)
-            编辑文章
-            #else
-            发布文章
-            #end
-        </h4>
+        <h4 class="page-title">编辑文章</h4>
     </div>
     <div id="app" class="col-md-12">
 
@@ -86,14 +80,11 @@
 
         <form id="articleForm">
             <input type="hidden" v-model="article.cid"/>
-            <input type="hidden" v-model="article.created"/>
             <input type="hidden" v-model="article.status"/>
             <input type="hidden" v-model="article.allowComment" />
             <input type="hidden" v-model="article.allowPing" />
             <input type="hidden" v-model="article.allowFeed" />
             <input type="hidden" v-model="article.fmtType"/>
-
-            <input type="hidden" name="content" id="content-editor"/>
 
             <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
                 <input class="form-control" placeholder="请输入文章标题（必须）" v-model="article.title" required/>
@@ -175,7 +166,7 @@
                 <div class="text-left">
                     <label class="col-sm-2 control-label" style="line-height: 30px;">发布时间</label>
                     <div class="col-sm-9 input-append date form_datetime">
-                        <input v-model="article.createTime" style="width: 150px;" size="16" type="text" readonly class="form-control" id="form_datetime">
+                        <input v-model="article.createdTime" style="width: 150px;" size="16" type="text" readonly class="form-control" id="form_datetime">
                     </div>
                 </div>
             </div>
@@ -184,7 +175,7 @@
             <div class="text-right">
                 <a class="btn btn-default waves-effect waves-light" href="/admin/articles">返回列表</a>
                 <button type="button" class="btn btn-primary waves-effect waves-light" @click="publish('publish')">
-                    保存文章
+                    发布文章
                 </button>
                 <button type="button" class="btn btn-warning waves-effect waves-light" @click="publish('draft')">
                     存为草稿
