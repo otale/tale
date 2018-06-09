@@ -36,9 +36,7 @@
                        class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
                         <i class="fa fa-trash-o"></i> <span>删除</span>
                     </a>
-                    <a v-show="item.status == 'publish'" class="btn btn-warning btn-sm waves-effect waves-light m-b-5"
-                       href="/"
-                       target="_blank">
+                    <a v-show="item.status == 'publish'" class="btn btn-warning btn-sm waves-effect waves-light m-b-5" :href="item.url" target="_blank">
                         <i class="fa fa-rocket"></i> <span>预览</span>
                     </a>
                 </td>
@@ -69,7 +67,7 @@
                     },
                     error: function (error) {
                         console.log(error);
-                        alert(result.msg || '数据加载失败');
+                        alert(error || '数据加载失败');
                     }
                 });
             },

@@ -1,6 +1,7 @@
 package com.tale.model.entity;
 
 import io.github.biezhi.anima.Model;
+import io.github.biezhi.anima.annotation.Ignore;
 import io.github.biezhi.anima.annotation.Table;
 import lombok.Data;
 
@@ -103,4 +104,6 @@ public class Contents extends Model {
      */
     private Boolean allowFeed;
 
+    @Ignore
+    private String url;
 }

@@ -30,7 +30,7 @@
 
         #if(!is_empty(comments))
         <ol class="comment-list">
-            #for(comment : comments(6).rows)
+            #for(comment : comments.rows)
             <li id="li-comment-${comment.coid}" class="comment-body comment-parent comment-odd">
                 <div id="comment-${comment.coid}">
                     <div class="comment-view" onclick="">
@@ -95,7 +95,7 @@
                 <li class="prev"><a href="?cp=${comments.prevPage}#comments">←</a></li>
                 #end
                 #for(navIndex : comments.navPageNums)
-                <li #if(comments.pageNum== navIndex) class="current" #end><a href="?cp=${navIndex}#comments">${navIndex}</a></li>
+                <li #if(comments.pageNum == navIndex) class="current" #end><a href="?cp=${navIndex}#comments">${navIndex}</a></li>
                 #end
                 #if(comments.hasNextPage)
                 <li class="next"><a href="?cp=${comments.nextPage}#comments">→</a></li>

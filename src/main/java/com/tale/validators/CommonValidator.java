@@ -5,12 +5,13 @@ import com.blade.kit.StringKit;
 import com.blade.validator.Validators;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
-import com.tale.model.params.LoginParam;
 import com.tale.model.params.InstallParam;
+import com.tale.model.params.LoginParam;
 import com.tale.utils.TaleUtils;
 
 import static com.tale.bootstrap.TaleConst.MAX_TEXT_COUNT;
 import static com.tale.bootstrap.TaleConst.MAX_TITLE_COUNT;
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 验证器
@@ -39,6 +40,14 @@ public class CommonValidator {
 
     }
 
+    public static void validAdmin(Comments param) {
+        Validators.notNull().test(param.getCoid()).throwIfInvalid("评论ID");
+
+        Validators.notEmpty().test(param.getContent()).throwIfInvalid("内容");
+        Validators.moreThan(5).test(param.getContent()).throwIfInvalid("内容");
+        Validators.lessThan(2000).test(param.getContent()).throwIfInvalid("内容");
+    }
+
     public static void valid(Contents param) {
         Validators.notEmpty().test(param.getTitle()).throwIfInvalid("文章标题");
         Validators.lessThan(MAX_TITLE_COUNT).test(param.getTitle()).throwIfInvalid("文章标题");
@@ -54,8 +63,8 @@ public class CommonValidator {
                 throw new ValidatorException("您输入的路径不合法");
             }
 
-            long count = new Contents().where("type", param.getType()).and("slug", param.getSlug()).count();
-            if (count > 0) {
+            Contents temp = select().from(Contents.class).where(Contents::getType, param.getType()).and(Contents::getSlug, param.getSlug()).one();
+            if (null != temp && !temp.getCid().equals(param.getCid())) {
                 throw new ValidatorException("该路径已经存在，请重新输入");
             }
         } else {

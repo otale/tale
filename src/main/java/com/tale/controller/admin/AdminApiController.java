@@ -6,10 +6,13 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.Types;
+import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
 import com.tale.model.entity.Users;
 import com.tale.model.params.ArticleParam;
+import com.tale.model.params.CommentParam;
+import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
@@ -17,7 +20,6 @@ import com.tale.validators.CommonValidator;
 import io.github.biezhi.anima.page.Page;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author biezhi
@@ -31,6 +33,9 @@ public class AdminApiController extends BaseController {
 
     @Inject
     private ContentsService contentsService;
+
+    @Inject
+    private CommentsService commentsService;
 
     @Inject
     private SiteService siteService;
@@ -98,6 +103,15 @@ public class AdminApiController extends BaseController {
     public RestResponse categories() {
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         return RestResponse.ok(categories);
+    }
+
+    @GetRoute("comments")
+    public RestResponse commentList(CommentParam commentParam) {
+        Users          users       = this.user();
+        commentParam.setExcludeUID(users.getUid());
+
+        Page<Comments> commentsPage = commentsService.findComments(commentParam);
+        return RestResponse.ok(commentsPage);
     }
 
 }

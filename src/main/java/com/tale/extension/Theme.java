@@ -619,7 +619,8 @@ public final class Theme {
         if (null != value) {
             page = (int) value;
         }
-        return siteService.getComments(contents.getCid(), page, limit);
+        Page<Comment> comments = siteService.getComments(contents.getCid(), page, limit);
+        return comments;
     }
 
     /**

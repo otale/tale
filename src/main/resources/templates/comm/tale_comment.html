@@ -23,6 +23,7 @@
                     success: function (result) {
                         $('#comment-form input[name=coid]').val('');
                         if (result && result.success) {
+                            alert('评论成功');
                             window.location.reload();
                         } else {
                             if (result.msg) {

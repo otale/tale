@@ -15,13 +15,10 @@ import com.tale.model.entity.Contents;
 import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.SiteService;
-import com.tale.utils.TaleUtils;
 import com.tale.validators.CommonValidator;
-import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
-import java.util.Optional;
 
 /**
  * @author biezhi
@@ -113,14 +110,8 @@ public class ArticleController extends BaseController {
         if (null != count && count > 0) {
             return RestResponse.fail("您发表评论太快了，请过会再试");
         }
-
-        comments.setAuthor(TaleUtils.cleanXSS(comments.getAuthor()));
-        comments.setContent(TaleUtils.cleanXSS(comments.getContent()));
-
-        comments.setAuthor(EmojiParser.parseToAliases(comments.getAuthor()));
-        comments.setContent(EmojiParser.parseToAliases(comments.getContent()));
         comments.setIp(request.address());
-        comments.setParent(comments.getCoid());
+        comments.setAgent(request.userAgent());
 
         try {
             commentsService.saveComment(comments);

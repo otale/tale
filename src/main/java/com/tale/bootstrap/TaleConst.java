@@ -102,4 +102,6 @@ public class TaleConst {
     public static final String SQL_QUERY_ARTICLES = "select a.* from t_contents a left join t_relationships b on a.cid = b.cid " +
             "where b.mid = ? and a.status = 'publish' and a.type = 'post' order by a.created desc";
 
+    public static final String COMMENT_APPROVED = "approved";
+    public static final String COMMENT_NO_AUDIT = "no_audit";
 }

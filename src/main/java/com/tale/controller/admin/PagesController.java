@@ -105,15 +105,6 @@ public class PagesController extends BaseController {
         return "admin/category";
     }
 
-    @GetRoute("comments")
-    public String commentsHome(@Param(defaultValue = "1") int page,
-                               @Param(defaultValue = "15") int limit, Request request) {
-        Users          users       = this.user();
-        Page<Comments> commentPage = select().from(Comments.class).where(Comments::getAuthorId).notEq(users.getUid()).page(page, limit);
-        request.attribute("comments", commentPage);
-        return "admin/comment_list";
-    }
-
     @GetRoute("page/new")
     public String newPage(Request request) {
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));

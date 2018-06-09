@@ -8,6 +8,9 @@ import com.blade.kit.DateKit;
 import com.tale.model.dto.Comment;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
+import com.tale.model.params.CommentParam;
+import com.tale.utils.TaleUtils;
+import com.vdurmont.emoji.EmojiParser;
 import io.github.biezhi.anima.Anima;
 import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
@@ -15,6 +18,8 @@ import io.github.biezhi.anima.page.Page;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tale.bootstrap.TaleConst.COMMENT_APPROVED;
+import static com.tale.bootstrap.TaleConst.COMMENT_NO_AUDIT;
 import static io.github.biezhi.anima.Anima.select;
 import static io.github.biezhi.anima.Anima.update;
 
@@ -36,15 +41,23 @@ public class CommentsService {
      * @param comments
      */
     public void saveComment(Comments comments) {
+        comments.setAuthor(TaleUtils.cleanXSS(comments.getAuthor()));
+        comments.setContent(TaleUtils.cleanXSS(comments.getContent()));
+
+        comments.setAuthor(EmojiParser.parseToAliases(comments.getAuthor()));
+        comments.setContent(EmojiParser.parseToAliases(comments.getContent()));
+
         Contents contents = select().from(Contents.class).byId(comments.getCid());
         if (null == contents) {
             throw new ValidatorException("不存在的文章");
         }
         try {
             comments.setOwnerId(contents.getAuthorId());
+            comments.setAuthorId(null == comments.getAuthorId() ? 0 : comments.getAuthorId());
             comments.setCreated(DateKit.nowUnix());
-            comments.setParent(comments.getCoid());
+            comments.setParent(null == comments.getCoid() ? 0 : comments.getCoid());
             comments.setCoid(null);
+            comments.setStatus(COMMENT_NO_AUDIT);
             comments.save();
 
             new Contents().set(Contents::getCommentsNum, contents.getCommentsNum() + 1).updateById(contents.getCid());
@@ -78,20 +91,16 @@ public class CommentsService {
      * @return
      */
     public Page<Comment> getComments(Integer cid, int page, int limit) {
-        if (null != cid) {
-            Page<Comments> cp = select().from(Comments.class).where(Comments::getCid, cid).and(Comments::getParent, 0).order(Comments::getCoid, OrderBy.DESC).page(page, limit);
-            return cp.map(parent -> {
-                Comment        comment  = new Comment(parent);
-                List<Comments> children = new ArrayList<>();
-                getChildren(children, comment.getCoid());
-                comment.setChildren(children);
-                if (BladeKit.isNotEmpty(children)) {
-                    comment.setLevels(1);
-                }
-                return comment;
-            });
+        if (null == cid) {
+            return null;
         }
-        return null;
+
+        Page<Comments> commentsPage = select().from(Comments.class)
+                .where(Comments::getCid, cid).and(Comments::getParent, 0)
+                .and(Comments::getStatus, COMMENT_APPROVED)
+                .order(Comments::getCoid, OrderBy.DESC).page(page, limit);
+
+        return commentsPage.map(this::apply);
     }
 
     /**
@@ -106,6 +115,24 @@ public class CommentsService {
             list.addAll(cms);
             cms.forEach(c -> getChildren(list, c.getCoid()));
         }
+    }
+
+    private Comment apply(Comments parent) {
+        Comment        comment  = new Comment(parent);
+        List<Comments> children = new ArrayList<>();
+        getChildren(children, comment.getCoid());
+        comment.setChildren(children);
+        if (BladeKit.isNotEmpty(children)) {
+            comment.setLevels(1);
+        }
+        return comment;
+    }
+
+    public Page<Comments> findComments(CommentParam commentParam) {
+        return select().from(Comments.class)
+                .where(Comments::getAuthorId).notEq(commentParam.getExcludeUID())
+                .order(Comments::getCoid, OrderBy.DESC)
+                .page(commentParam.getPage(), commentParam.getLimit());
     }
 
 }

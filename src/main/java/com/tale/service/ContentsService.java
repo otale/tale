@@ -143,6 +143,12 @@ public class ContentsService {
     }
 
     private Contents mapContent(Contents contents) {
+        if (StringKit.isNotEmpty(contents.getSlug())) {
+            String url = "/" + contents.getSlug();
+            contents.setUrl(url.replaceAll("[/]+", "/"));
+        } else {
+            contents.setUrl("/article/" + contents.getCid());
+        }
         contents.setContent(contents.getContent().replaceAll("\\\\\"", "\\\""));
         return contents;
     }
