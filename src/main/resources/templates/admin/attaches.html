@@ -91,6 +91,26 @@
             </div>
         </div>
 
+        <ul class="pagination m-b-5 pull-right">
+            <li v-if="attachPage.hasPrevPage">
+                <a @click="load(attachPage.prevPage)" aria-label="Previous">
+                    <i class="fa fa-angle-left"></i>&nbsp;上一页
+                </a>
+            </li>
+
+            <li class="page-item" v-for="num in attachPage.navPageNums" :class="{ active: attachPage.pageNum == num }">
+                <a @click="load(num)">
+                    {{ num }}</i>
+                </a>
+            </li>
+            <li v-if="attachPage.hasNextPage">
+                <a type="button" class="page-link" @click="load(attachPage.nextPage)">
+                    下一页&nbsp;<i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+            <li><span>共 {{attachPage.totalPages}} 页</span></li>
+        </ul>
+
     </div>
 </div>
 #include('./footer.html')
