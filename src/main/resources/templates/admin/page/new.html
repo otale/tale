@@ -19,7 +19,7 @@
             </div>
 
             <div class="form-group col-md-6" style="padding: 0 0 0 10px;">
-                <input class="form-control" placeholder="自定义访问路径，如：my-first-article  默认为文章id" v-model="article.slug"/>
+                <input class="form-control" placeholder="请输入页面访问路径，如：about" v-model="article.slug"/>
             </div>
 
             <div class="clearfix"></div>
@@ -68,7 +68,7 @@
             <div class="text-right">
                 <a class="btn btn-default waves-effect waves-light" href="/admin/pages">返回列表</a>
                 <button type="button" class="btn btn-primary waves-effect waves-light" @click="publish('publish')">
-                    发布文章
+                    发布页面
                 </button>
                 <button type="button" class="btn btn-warning waves-effect waves-light" @click="publish('draft')">
                     存为草稿

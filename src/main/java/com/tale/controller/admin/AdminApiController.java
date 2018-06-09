@@ -114,7 +114,7 @@ public class AdminApiController extends BaseController {
 
     @SysLog("发布页面")
     @PostRoute("page/new")
-    public RestResponse<?> newPage(Contents contents) {
+    public RestResponse<?> newPage(@BodyParam Contents contents) {
 
         CommonValidator.valid(contents);
 
@@ -129,7 +129,7 @@ public class AdminApiController extends BaseController {
 
     @SysLog("修改页面")
     @PostRoute("page/update")
-    public RestResponse<?> updatePage(Contents contents) {
+    public RestResponse<?> updatePage(@BodyParam Contents contents) {
         CommonValidator.valid(contents);
 
         if (null == contents.getCid()) {

@@ -89,7 +89,6 @@ var vm = new Vue({
                 url: '/admin/api/articles/' + cid,
                 success: function (data) {
                     $vm.article = data.payload;
-                    $vm.article.selected = data.payload.categories.split(',');
                     if ($vm.article.fmtType === 'markdown') {
                         mditor.value = data.payload.content;
                     } else {
@@ -182,21 +181,21 @@ var vm = new Vue({
             var content = this.article.fmtType === 'markdown' ? mditor.value : htmlEditor.summernote('code');
             var title = $vm.article.title;
             if (title === '') {
-                tale.alertWarn('请输入文章标题');
+                tale.alertWarn('请输入页面标题');
                 return;
             }
             if (content === '') {
-                tale.alertWarn('请输入文章内容');
+                tale.alertWarn('请输入页面内容');
                 return;
             }
             clearInterval(refreshIntervalId);
             $vm.article.status = status;
             $vm.autoSave(function () {
                 tale.alertOk({
-                    text: '文章保存成功',
+                    text: '页面保存成功',
                     then: function () {
                         setTimeout(function () {
-                            window.location.href = '/admin/articles';
+                            window.location.href = '/admin/pages';
                         }, 500);
                     }
                 });

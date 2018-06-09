@@ -190,6 +190,38 @@ $(document).ready(function () {
         defaultText: '请输入文章标签'
     });
 
+    $('#allowComment').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+
+    $('#allowPing').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+
+    $('#allowFeed').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+
+    $('#addThumb').toggles({
+        on: false,
+        text: {
+            on: '添加',
+            off: '取消'
+        }
+    });
+
     $('#allowComment').on('toggle', function (e, active) {
         vm.article.allowComment = active;
     });

@@ -32,7 +32,6 @@ var vm = new Vue({
             if ($vm.article.title !== '' && content !== '') {
                 $vm.article.content = content;
                 var params = tale.copy($vm.article);
-                params.selected = null;
                 params.created = moment($('#form_datetime').val(), "YYYY-MM-DD HH:mm").unix();
 
                 var url = $vm.article.cid !== '' ? '/admin/api/page/update' : '/admin/api/page/new';
@@ -90,22 +89,21 @@ var vm = new Vue({
             var content = this.article.fmtType === 'markdown' ? mditor.value : htmlEditor.summernote('code');
             var title = $vm.article.title;
             if (title === '') {
-                tale.alertWarn('请输入文章标题');
+                tale.alertWarn('请输入页面标题');
                 return;
             }
             if (content === '') {
-                tale.alertWarn('请输入文章内容');
+                tale.alertWarn('请输入页面内容');
                 return;
             }
             clearInterval(refreshIntervalId);
             $vm.article.status  = status;
-
             $vm.autoSave(function () {
                 tale.alertOk({
-                    text: '文章发布成功',
+                    text: '页面发布成功',
                     then: function () {
                         setTimeout(function () {
-                            window.location.href = '/admin/articles';
+                            window.location.href = '/admin/pages';
                         }, 500);
                     }
                 });
@@ -158,6 +156,22 @@ $(document).ready(function () {
                     }
                 });
             }
+        }
+    });
+
+    $('#allowComment').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+
+    $('#allowFeed').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
         }
     });
 
