@@ -11,10 +11,9 @@ import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Item;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
-import com.tale.controller.admin.AttachController;
+import com.tale.bootstrap.TaleConst;
 import com.tale.extension.Commons;
 import com.tale.extension.Theme;
-import com.tale.bootstrap.TaleConst;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Users;
 import org.commonmark.Extension;
@@ -387,7 +386,7 @@ public class TaleUtils {
         return '(' + sbuf.substring(1);
     }
 
-    public static final String UP_DIR = AttachController.CLASSPATH.substring(0, AttachController.CLASSPATH.length() - 1);
+    public static final String UP_DIR = CLASSPATH.substring(0, CLASSPATH.length() - 1);
 
     public static String getFileKey(String name) {
         String prefix = "/upload/" + DateKit.toString(new Date(), "yyyy/MM");

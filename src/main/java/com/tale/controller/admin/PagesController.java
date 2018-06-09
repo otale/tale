@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.tale.bootstrap.TaleConst.CLASSPATH;
+
 /**
  * @author biezhi
  * @date 2018/6/5
@@ -127,7 +129,7 @@ public class PagesController extends BaseController {
     @GetRoute("themes")
     public String themesHome(Request request) {
         // 读取主题
-        String         themesDir  = AttachController.CLASSPATH + "templates/themes";
+        String         themesDir  = CLASSPATH + "templates/themes";
         File[]         themesFile = new File(themesDir).listFiles();
         List<ThemeDto> themes     = new ArrayList<>(themesFile.length);
         for (File f : themesFile) {

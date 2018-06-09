@@ -4,29 +4,38 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.*;
 import com.tale.model.params.ArticleParam;
 import com.tale.model.params.CommentParam;
+import com.tale.model.params.MetaParam;
 import com.tale.model.params.PageParam;
 import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.validators.CommonValidator;
+import io.github.biezhi.anima.Anima;
 import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
+import static com.tale.bootstrap.TaleConst.CLASSPATH;
 import static io.github.biezhi.anima.Anima.select;
 
 /**
  * @author biezhi
  * @date 2018/6/9
  */
+@Slf4j
 @Path(value = "admin/api", restful = true)
 public class AdminApiController extends BaseController {
 
@@ -68,7 +77,7 @@ public class AdminApiController extends BaseController {
     }
 
     @PostRoute("article/delete/:cid")
-    public RestResponse<?> delete(@PathParam Integer cid) {
+    public RestResponse<?> deleteArticle(@PathParam Integer cid) {
         contentsService.delete(cid);
         siteService.cleanCache(Types.C_STATISTICS);
         return RestResponse.ok();
@@ -101,10 +110,55 @@ public class AdminApiController extends BaseController {
         return RestResponse.ok(articles);
     }
 
+    @SysLog("发布页面")
+    @PostRoute("page/publish")
+    public RestResponse<?> publishPage(Contents contents) {
+
+        CommonValidator.valid(contents);
+
+        Users users = this.user();
+        contents.setType(Types.PAGE);
+        contents.setAllowPing(true);
+        contents.setAuthorId(users.getUid());
+        contentsService.publish(contents);
+        siteService.cleanCache(Types.C_STATISTICS);
+        return RestResponse.ok();
+    }
+
+    @SysLog("修改页面")
+    @PostRoute("page/modify")
+    public RestResponse<?> modifyArticle(Contents contents) {
+        CommonValidator.valid(contents);
+
+        if (null == contents.getCid()) {
+            return RestResponse.fail("缺少参数，请重试");
+        }
+        Integer cid = contents.getCid();
+        contents.setType(Types.PAGE);
+        contentsService.updateArticle(contents);
+        return RestResponse.ok(cid);
+    }
+
     @GetRoute("categories")
     public RestResponse categories() {
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         return RestResponse.ok(categories);
+    }
+
+    @SysLog("保存分类")
+    @PostRoute("category/save")
+    public RestResponse<?> saveCategory(@BodyParam MetaParam metaParam) {
+        metasService.saveMeta(Types.CATEGORY, metaParam.getCname(), metaParam.getMid());
+        siteService.cleanCache(Types.C_STATISTICS);
+        return RestResponse.ok();
+    }
+
+    @SysLog("删除分类/标签")
+    @PostRoute("category/delete/:mid")
+    public RestResponse<?> deleteMeta(@PathParam Integer mid) {
+        metasService.delete(mid);
+        siteService.cleanCache(Types.C_STATISTICS);
+        return RestResponse.ok();
     }
 
     @GetRoute("comments")
@@ -124,6 +178,25 @@ public class AdminApiController extends BaseController {
                 .page(pageParam.getPage(), pageParam.getLimit());
 
         return RestResponse.ok(attachPage);
+    }
+
+    @SysLog("删除附件")
+    @PostRoute("attach/delete/:id")
+    public RestResponse<?> delete(@PathParam Integer id) throws IOException {
+        Attach attach = select().from(Attach.class).byId(id);
+        if (null == attach) {
+            return RestResponse.fail("不存在该附件");
+        }
+        String key = attach.getFkey();
+        siteService.cleanCache(Types.C_STATISTICS);
+        String             filePath = CLASSPATH.substring(0, CLASSPATH.length() - 1) + key;
+        java.nio.file.Path path     = Paths.get(filePath);
+        log.info("Delete attach: [{}]", filePath);
+        if (Files.exists(path)) {
+            Files.delete(path);
+        }
+        Anima.deleteById(Attach.class, id);
+        return RestResponse.ok();
     }
 
     @GetRoute("categories")

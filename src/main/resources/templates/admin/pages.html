@@ -86,7 +86,7 @@
             load: function () {
                 var $vm = this;
                 tale.get({
-                    url: '/admin/pages.json',
+                    url: '/admin/api/pages',
                     success: function (data) {
                         $vm.articlePage = data.payload
                     },
@@ -102,7 +102,7 @@
                     title:'确定删除这个页面吗?',
                     then: function () {
                         tale.post({
-                            url : '/admin/page/delete',
+                            url : '/admin/api/page/delete',
                             data: {cid: cid},
                             success: function (result) {
                                 if(result && result.success){

@@ -1,8 +1,8 @@
 package com.tale.extension;
 
 import com.blade.kit.*;
-import com.tale.controller.BaseController;
 import com.tale.bootstrap.TaleConst;
+import com.tale.controller.BaseController;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;

@@ -2,8 +2,10 @@ package com.tale.bootstrap;
 
 
 import com.blade.Environment;
+import com.tale.controller.admin.AdminApiController;
 import com.tale.model.dto.PluginMenu;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -12,6 +14,8 @@ import java.util.*;
  * @author biezhi
  */
 public class TaleConst {
+
+    public static final String CLASSPATH = new File(AdminApiController.class.getResource("/").getPath()).getPath() + File.separatorChar;
 
     public static final String      USER_IN_COOKIE    = "S_L_ID";
     public static       String      AES_SALT          = "0123456789abcdef";

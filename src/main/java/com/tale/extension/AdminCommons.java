@@ -1,7 +1,7 @@
 package com.tale.extension;
 
-import com.blade.kit.StringKit;
-import com.tale.model.entity.Metas;
+import com.tale.bootstrap.TaleConst;
+import com.tale.model.dto.Types;
 
 /**
  * 后台公共函数
@@ -10,29 +10,15 @@ import com.tale.model.entity.Metas;
  */
 public final class AdminCommons {
 
-    /**
-     * 判断category和cat的交集
-     *
-     * @param cats
-     * @return
-     */
-    public static boolean exist_cat(Metas category, String cats) {
-        String[] arr = null != cats ? cats.split(",") : null;
-        if (null != arr && arr.length > 0) {
-            for (String c : arr) {
-                if (c.trim().equals(category.getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public static String attachURL(){
+        return Commons.site_option(Types.ATTACH_URL, Commons.site_url());
     }
 
-    private static final String[] COLORS = {"default", "primary", "success", "info", "warning", "danger", "inverse", "purple", "pink"};
-
-    public static String rand_color() {
-        int r = StringKit.rand(0, COLORS.length - 1);
-        return COLORS[r];
+    public static int maxFileSize(){
+        return TaleConst.MAX_FILE_SIZE / 1024;
     }
 
+    public static String cdnURL(){
+        return Commons.site_option(Types.CDN_URL, "/static/admin");
+    }
 }

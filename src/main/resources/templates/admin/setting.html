@@ -1,5 +1,5 @@
 #include('./header.html',{active:'setting', title:'系统设置'})
-<link href="/static/admin/plugins/toggles/toggles.css" rel="stylesheet">
+<link href="${cdnURL()}/plugins/toggles/toggles.css" rel="stylesheet">
 <div class="row">
 
     <div class="col-sm-12">
@@ -128,7 +128,7 @@
 
 </div>
 #include('./footer.html')
-#call cdn_url('toggles')
+<script src="${cdnURL()}/plugins/jquery-toggles/2.0.4/toggles.min.js"></script>
 <script type="text/javascript">
 
     var tale = new $.tale();

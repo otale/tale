@@ -1,5 +1,5 @@
 #include('./header.html',{active:'attaches', title:'文件管理'})
-#call cdn_url('attach_head')
+<link href="${cdnURL()}/plugins/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
 <style>
     #dropzone {
         margin-bottom: 3rem;
@@ -51,7 +51,7 @@
                         <input name="file" type="file" multiple="multiple">
                     </div>
                     <div class="dz-message">
-                        <p>将文件拖至此处或点击上传.${attach_url}</p>
+                        <p>将文件拖至此处或点击上传.${attachURL()}</p>
                         <p>
                             <span style="font-size: 16px; color: #d0d0d0;">一次最多可以上传10个文件</span>
                         </p>
@@ -70,8 +70,8 @@
         </div>
 
         <div class="col-md-2 text-center m-t-10" v-for="item in attachPage.rows">
-            <a :href="'${attach_url}' + item.fkey" target="_blank">
-                <img v-if="item.ftype == 'image'" class="attach-img" :src="'${attach_url}' + item.fkey"
+            <a :href="'${attachURL()}' + item.fkey" target="_blank">
+                <img v-if="item.ftype == 'image'" class="attach-img" :src="'${attachURL()}' + item.fkey"
                      :title="item.fname"/>
                 <img v-if="item.ftype != 'image'" class="attach-img" src="/static/admin/images/attach.png"
                      :title="item.fname"/>
@@ -80,7 +80,7 @@
                 <span class="attach-text" data-toggle="tooltip" data-placement="top" :data-original-title="item.fname">{{item.fname}}</span>
             </div>
             <div class="clearfix">
-                <button url="${attach_url}item.fkey" type="button"
+                <button :url="'${attachURL()}' + item.fkey" type="button"
                         class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
                     <i class="fa fa-copy"></i> <span>复制</span>
                 </button>
@@ -114,7 +114,8 @@
     </div>
 </div>
 #include('./footer.html')
-#call cdn_url('attach_foot')
+<script src="${cdnURL()}/plugins/dropzone/4.3.0/min/dropzone.min.js"></script>
+<script src="${cdnURL()}/plugins/clipboard.js/1.6.0/clipboard.min.js"></script>
 <script type="text/javascript">
     var tale = new $.tale();
     var vm = new Vue({
@@ -169,7 +170,7 @@
         url: "/admin/api/attach/upload",
         filesizeBase: 1024,//定义字节算法 默认1000
         maxFiles: $.constant().MAX_FILES,//最大文件数量
-        maxFilesize: '${max_file_size}', //MB
+        maxFilesize: '${maxFileSize()}', //MB
         fallback: function () {
             tale.alertError('暂不支持您的浏览器上传!');
         },

@@ -13,7 +13,6 @@ public interface Types {
     String DRAFT = "draft";
     String IMAGE = "image";
     String FILE = "file";
-    String CSRF_TOKEN = "csrf_token";
     String COMMENTS_FREQUENCY = "comments:frequency";
 
     String RECENT_ARTICLE = "recent_article";
@@ -31,6 +30,7 @@ public interface Types {
      * 附件存放的URL，默认为网站地址，如集成第三方则为第三方CDN域名
      */
     String ATTACH_URL = "attach_url";
+    String CDN_URL = "cdn_url";
 
     /**
      * 网站要过滤，禁止访问的ip列表

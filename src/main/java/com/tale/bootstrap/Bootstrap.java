@@ -10,7 +10,6 @@ import com.blade.kit.StringKit;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
 import com.blade.validator.Validators;
 import com.tale.controller.BaseController;
-import com.tale.controller.admin.AttachController;
 import com.tale.extension.AdminCommons;
 import com.tale.extension.Commons;
 import com.tale.extension.JetTag;
@@ -28,6 +27,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.tale.bootstrap.TaleConst.CLASSPATH;
 
 /**
  * Tale初始化进程
@@ -68,7 +69,7 @@ public class Bootstrap implements BeanProcessor {
         List<String> macros = new ArrayList<>(8);
         macros.add(File.separatorChar + "comm" + File.separatorChar + "macros.html");
         // 扫描主题下面的所有自定义宏
-        String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
+        String themeDir = CLASSPATH + "templates" + File.separatorChar + "themes";
         File[] dir      = new File(themeDir).listFiles();
         if(null != dir){
             for (File f : dir) {
@@ -104,7 +105,7 @@ public class Bootstrap implements BeanProcessor {
         if (StringKit.isNotBlank(ips)) {
             TaleConst.BLOCK_IPS.addAll(Arrays.asList(ips.split(",")));
         }
-        if (Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"))) {
+        if (Files.exists(Paths.get(CLASSPATH + "install.lock"))) {
             TaleConst.INSTALLED = Boolean.TRUE;
         }
 

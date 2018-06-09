@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.tale.bootstrap.TaleConst.CLASSPATH;
+
 /**
  * 后台控制器
  * Created by biezhi on 2017/2/21.
@@ -149,7 +151,7 @@ public class SystemController extends BaseController {
             sleep = 10;
         }
         // sh tale.sh reload 10
-        String webHome = new File(AttachController.CLASSPATH).getParent();
+        String webHome = new File(CLASSPATH).getParent();
         String cmd     = "sh " + webHome + "/bin tale.sh reload " + sleep;
         log.info("execute shell: {}", cmd);
         ShellUtils.shell(cmd);

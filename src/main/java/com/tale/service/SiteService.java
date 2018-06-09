@@ -7,14 +7,12 @@ import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
 import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
-import com.tale.controller.admin.AttachController;
 import com.tale.bootstrap.SqliteJdbc;
 import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.*;
 import com.tale.model.entity.*;
 import com.tale.utils.MapCache;
 import com.tale.utils.TaleUtils;
-
 import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
 
@@ -24,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.tale.bootstrap.TaleConst.CLASSPATH;
 import static io.github.biezhi.anima.Anima.select;
 
 /**
@@ -205,8 +204,8 @@ public class SiteService {
             if (!Files.isDirectory(Paths.get(bkPath))) {
                 throw new ValidatorException("请输入一个存在的目录");
             }
-            String bkAttachDir = AttachController.CLASSPATH + "upload";
-            String bkThemesDir = AttachController.CLASSPATH + "templates/themes";
+            String bkAttachDir = CLASSPATH + "upload";
+            String bkThemesDir = CLASSPATH + "templates/themes";
 
             String fname = DateKit.toString(new Date(), fmt) + "_" + StringKit.rand(5) + ".zip";
 
@@ -219,7 +218,7 @@ public class SiteService {
         // 备份数据库
         if ("db".equals(bkType)) {
             String filePath = "upload/" + DateKit.toString(new Date(), "yyyyMMddHHmmss") + "_" + StringKit.rand(8) + ".db";
-            String cp       = AttachController.CLASSPATH + filePath;
+            String cp       = CLASSPATH + filePath;
             Files.createDirectory(Paths.get(cp));
             Files.copy(Paths.get(SqliteJdbc.DB_PATH), Paths.get(cp));
             backResponse.setSql_path("/" + filePath);

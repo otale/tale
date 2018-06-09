@@ -10,7 +10,6 @@ import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.bootstrap.TaleConst;
-import com.tale.controller.admin.AttachController;
 import com.tale.model.entity.Users;
 import com.tale.model.params.InstallParam;
 import com.tale.service.OptionsService;
@@ -21,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static com.tale.bootstrap.TaleConst.CLASSPATH;
 
 @Slf4j
 @Path("install")
@@ -37,7 +38,7 @@ public class InstallController extends BaseController {
      */
     @GetRoute
     public String index(Request request) {
-        boolean existInstall   = Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"));
+        boolean existInstall   = Files.exists(Paths.get(CLASSPATH + "install.lock"));
         int     allowReinstall = TaleConst.OPTIONS.getInt("allow_install", 0);
         request.attribute("is_install", allowReinstall != 1 && existInstall);
         return "install";
@@ -69,7 +70,7 @@ public class InstallController extends BaseController {
     }
 
     private boolean isRepeatInstall() {
-        return Files.exists(Paths.get(AttachController.CLASSPATH + "install.lock"))
+        return Files.exists(Paths.get(CLASSPATH + "install.lock"))
                 && TaleConst.OPTIONS.getInt("allow_install", 0) != 1;
     }
 

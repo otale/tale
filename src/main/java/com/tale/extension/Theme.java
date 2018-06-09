@@ -19,7 +19,10 @@ import jetbrick.template.runtime.InterpretContext;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static io.github.biezhi.anima.Anima.select;
 

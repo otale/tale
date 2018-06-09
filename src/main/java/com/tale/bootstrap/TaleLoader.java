@@ -1,7 +1,6 @@
 package com.tale.bootstrap;
 
 import com.blade.Blade;
-import com.tale.controller.admin.AttachController;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -9,6 +8,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static com.tale.bootstrap.TaleConst.CLASSPATH;
 
 
 /**
@@ -28,7 +29,7 @@ public final class TaleLoader {
     }
 
     public static void loadThemes() {
-        String themeDir = AttachController.CLASSPATH + "templates" + File.separatorChar + "themes";
+        String themeDir = CLASSPATH + "templates" + File.separatorChar + "themes";
         File[] dir      = new File(themeDir).listFiles();
         for (File f : dir) {
             if (f.isDirectory() && Files.isDirectory(Paths.get(f.getPath() + "/static"))) {
@@ -43,7 +44,7 @@ public final class TaleLoader {
     }
 
     public static void loadPlugins() {
-        File pluginDir = new File(AttachController.CLASSPATH + "plugins");
+        File pluginDir = new File(CLASSPATH + "plugins");
         if (pluginDir.exists() && pluginDir.isDirectory()) {
             File[] plugins = pluginDir.listFiles();
             for (File plugin : plugins) {
