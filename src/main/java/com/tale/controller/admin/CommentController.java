@@ -2,23 +2,17 @@ package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
-import com.blade.mvc.annotation.BodyParam;
-import com.blade.mvc.annotation.Param;
-import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.PostRoute;
+import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.annotation.SysLog;
 import com.tale.controller.BaseController;
-import com.tale.model.dto.Comment;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Users;
 import com.tale.service.CommentsService;
 import com.tale.service.SiteService;
-import com.tale.utils.TaleUtils;
 import com.tale.validators.CommonValidator;
-import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 
 import static io.github.biezhi.anima.Anima.select;
@@ -39,9 +33,9 @@ public class CommentController extends BaseController {
     private SiteService siteService;
 
     @SysLog("删除评论")
-    @PostRoute("delete")
-    public RestResponse<?> delete(@Param Integer coid) {
-        Comments comments = select().from(Comment.class).byId(coid);
+    @PostRoute("delete/:coid")
+    public RestResponse<?> delete(@PathParam Integer coid) {
+        Comments comments = select().from(Comments.class).byId(coid);
         if (null == comments) {
             return RestResponse.fail("不存在该评论");
         }
@@ -62,17 +56,15 @@ public class CommentController extends BaseController {
     }
 
     @SysLog("回复评论")
-    @PostRoute
+    @PostRoute("reply")
     public RestResponse<?> reply(@BodyParam Comments comments, Request request) {
         CommonValidator.validAdmin(comments);
 
-        Comments c = select().from(Comment.class).byId(comments.getCoid());
+        Comments c = select().from(Comments.class).byId(comments.getCoid());
         if (null == c) {
             return RestResponse.fail("不存在该评论");
         }
         Users users = this.user();
-        comments.setContent(TaleUtils.cleanXSS(comments.getContent()));
-        comments.setContent(EmojiParser.parseToAliases(comments.getContent()));
         comments.setAuthor(users.getUsername());
         comments.setAuthorId(users.getUid());
         comments.setCid(c.getCid());
@@ -81,9 +73,10 @@ public class CommentController extends BaseController {
 
         if (StringKit.isNotBlank(users.getEmail())) {
             comments.setMail(users.getEmail());
+        } else {
+            comments.setMail("");
         }
         comments.setParent(comments.getCoid());
-        comments.setCoid(null);
         commentsService.saveComment(comments);
         siteService.cleanCache(Types.C_STATISTICS);
         return RestResponse.ok();

@@ -130,7 +130,7 @@ public class CommentsService {
 
     public Page<Comments> findComments(CommentParam commentParam) {
         return select().from(Comments.class)
-                .where(Comments::getAuthorId).notEq(commentParam.getExcludeUID())
+//                .where(Comments::getAuthorId).notEq(commentParam.getExcludeUID())
                 .order(Comments::getCoid, OrderBy.DESC)
                 .page(commentParam.getPage(), commentParam.getLimit());
     }

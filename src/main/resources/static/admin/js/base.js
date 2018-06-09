@@ -108,9 +108,9 @@ window.axios.defaults.headers.common = {
 
 $.tale.prototype.get = function (options) {
     axios.get(options.url).then(function (response) {
-        options.success(response.data)
+        options.success && options.success(response.data)
     }).catch(function (error) {
-        options.error(error)
+        options.error && options.error(error)
     });
 };
 
@@ -125,7 +125,7 @@ $.tale.prototype.post = function (options) {
         self.hideLoading();
         options.success && options.success(response.data);
     }).catch(function (error) {
-        options.error(error)
+        options.error && options.error(error)
     });
 };
 

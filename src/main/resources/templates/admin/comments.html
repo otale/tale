@@ -26,13 +26,21 @@
                 <td>{{ item.mail }}</td>
                 <td>{{ item.url }}</td>
                 <td>
-                    <span v-show="item.status == 'approved'" class="label label-success">审核通过</span>
-                    <span v-show="item.status == 'not_audit'" class="label label-default">未审核</span>
+                    <span v-if="item.status == 'approved'" class="label label-success">
+                        <span v-if="item.authorId == ${login_user.uid}">后台回复</span>
+                        <span v-if="item.status == 'approved'">审核通过</span>
+                    </span>
+                    <span v-show="item.status == 'no_audit'" class="label label-default">
+                        <span v-if="item.authorId == ${login_user.uid}">后台回复</span>
+                        <span v-if="item.status == 'approved'">未审核</span>
+                    </span>
                 </td>
                 <td>
-                    <button class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="reply(item.coid)"><i class="fa fa-edit"></i> 回复</button>
-                    <button v-if="item.status == 'no_audit'" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="audit(item.coid, 'approved')"><i class="fa fa-trash-o"></i> 通过</button>
-                    <button class="btn btn-danger btn-sm waves-effect waves-light m-b-5" @click="reply(item.coid)"><i class="fa fa-trash-o"></i> 删除</button>
+                    <button v-if="item.authorId != ${login_user.uid}" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="reply(item.coid)"><i class="fa fa-edit"></i> 回复</button>
+                    <button v-if="item.status == 'no_audit && item.authorId != ${login_user.uid}'" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="audit(item.coid, 'approved')">
+                        <i class="fa fa-trash-o"></i> 通过</span>
+                    </button>
+                    <button class="btn btn-danger btn-sm waves-effect waves-light m-b-5" @click="deleteComment(item.coid)"><i class="fa fa-trash-o"></i> 删除</button>
                 </td>
             </tr>
             </tbody>
@@ -66,6 +74,7 @@
                 });
             },
             reply: function(coid){
+                var $vm = this;
                 swal({
                     title: "回复评论",
                     text: "请输入你要回复的内容:",
@@ -77,11 +86,12 @@
                     preConfirm: function (comment) {
                         return new Promise(function (resolve, reject) {
                             tale.post({
-                                url : '/admin/comments',
+                                url : '/admin/api/comment/reply',
                                 data: {coid: coid, content: comment},
                                 success: function (result) {
                                     if(result && result.success){
                                         tale.alertOk('已回复');
+                                        $vm.load();
                                     } else {
                                         tale.alertError(result.msg || '回复失败');
                                     }
@@ -93,12 +103,14 @@
                 });
             },
             audit: function(coid, status){
+                var $vm = this;
                 tale.post({
                     url : '/admin/comments/status',
                     data: {coid: coid, status: status},
                     success: function (result) {
                         if(result && result.success){
-                            tale.alertOkAndReload('评论状态设置成功');
+                            tale.alertOk('评论状态设置成功');
+                            $vm.load();
                         } else {
                             tale.alertError(result.msg || '评论设置失败');
                         }
