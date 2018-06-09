@@ -49,12 +49,15 @@ var vm = new Vue({
                     data.append('image_up', files[0]);
                     tale.showLoading();
                     $.ajax({
-                        url: '/admin/attach/upload',     //上传图片请求的路径
-                        method: 'POST',            //方法
-                        data: data,                 //数据
-                        processData: false,        //告诉jQuery不要加工数据
+                        url: '/admin/api/attach/upload',
+                        method: 'POST',
+                        data: data,
+                        processData: false,
                         dataType: 'json',
-                        contentType: false,        //<code class="javascript comments"> 告诉jQuery,在request head里不要设置Content-Type
+                        headers: {
+                            'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content
+                        },
+                        contentType: false,
                         success: function (result) {
                             tale.hideLoading();
                             if (result && result.success) {
@@ -124,7 +127,7 @@ var vm = new Vue({
                         }
                     });
 
-                    if($vm.article.thumb_img && $vm.article.thumb_img !== ''){
+                    if($vm.article.thumbImg && $vm.article.thumbImg !== ''){
                         $('#addThumb').toggles({
                             on: true,
                             text: {
@@ -133,9 +136,11 @@ var vm = new Vue({
                             }
                         });
 
-                        $('#dropzone').css('background-image', 'url(' + $vm.article.thumb_img + ')');
-                        $('#dropzone').css('background-size', 'cover');
+                        $('#dropzone-container').removeClass('hide');
                         $('#dropzone-container').show();
+                        $('.dz-image').hide();
+                        $('#dropzone').css('background-image', 'url(' + $vm.article.thumbImg + ')');
+                        $('#dropzone').css('background-size', 'cover');
                     } else {
                         $('#addThumb').toggles({
                             on: false,
@@ -248,6 +253,38 @@ $(document).ready(function () {
         defaultText: '请输入文章标签'
     });
 
+    $('#allowComment').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+
+    $('#allowPing').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+
+    $('#allowFeed').toggles({
+        on: true,
+        text: {
+            on: '开启',
+            off: '关闭'
+        }
+    });
+
+    $('#addThumb').toggles({
+        on: true,
+        text: {
+            on: '添加',
+            off: '取消'
+        }
+    });
+
     $('#allowComment').on('toggle', function (e, active) {
         vm.article.allowComment = active;
     });
@@ -271,7 +308,6 @@ $(document).ready(function () {
             }
         } else {
             $('#dropzone-container').addClass('hide');
-            $('#thumbImg').val('');
             vm.article.thumbImg = '';
         }
     });
@@ -303,11 +339,11 @@ $(document).ready(function () {
                 if (result && result.success) {
                     var url = attach_url + result.payload[0].fkey;
                     console.log('url => ' + url);
+
                     vm.article.thumbImg = url;
                     thumbdropzone.css('background-image', 'url(' + url + ')');
                     thumbdropzone.css('background-size', 'cover');
                     $('.dz-image').hide();
-                    $('#thumbImg').val(url);
                 }
             });
             this.on('error', function (a, errorMessage, result) {

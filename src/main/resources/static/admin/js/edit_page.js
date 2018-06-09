@@ -45,12 +45,15 @@ var vm = new Vue({
                     data.append('image_up', files[0]);
                     tale.showLoading();
                     $.ajax({
-                        url: '/admin/attach/upload',     //上传图片请求的路径
-                        method: 'POST',            //方法
-                        data: data,                 //数据
-                        processData: false,        //告诉jQuery不要加工数据
+                        url: '/admin/api/attach/upload',
+                        method: 'POST',
+                        data: data,
+                        processData: false,
                         dataType: 'json',
-                        contentType: false,        //<code class="javascript comments"> 告诉jQuery,在request head里不要设置Content-Type
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content
+                        },
                         success: function (result) {
                             tale.hideLoading();
                             if (result && result.success) {

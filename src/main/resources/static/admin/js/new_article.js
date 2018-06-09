@@ -16,6 +16,7 @@ var vm = new Vue({
             content: '',
             status: 'draft',
             fmtType: 'markdown',
+            thumbImg: '',
             allowComment: true,
             allowPing: true,
             allowFeed: true,
@@ -158,12 +159,15 @@ $(document).ready(function () {
                 data.append('image_up', files[0]);
                 tale.showLoading();
                 $.ajax({
-                    url: '/admin/attach/upload',     //上传图片请求的路径
-                    method: 'POST',            //方法
-                    data: data,                 //数据
-                    processData: false,        //告诉jQuery不要加工数据
+                    url: '/admin/api/attach/upload',
+                    method: 'POST',
+                    data: data,
+                    processData: false,
                     dataType: 'json',
-                    contentType: false,        //<code class="javascript comments"> 告诉jQuery,在request head里不要设置Content-Type
+                    headers: {
+                        'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content
+                    },
+                    contentType: false,
                     success: function (result) {
                         tale.hideLoading();
                         if (result && result.success) {
@@ -200,11 +204,16 @@ $(document).ready(function () {
 
     $('#addThumb').on('toggle', function (e, active) {
         if (active) {
-            $('#dropzone-container').addClass('hide');
-            $('#thumbImg').val('');
-        } else {
             $('#dropzone-container').removeClass('hide');
             $('#dropzone-container').show();
+            var thumbImage = $("#dropzone").css("backgroundImage");
+            if(thumbImage && thumbImage.indexOf('url') !== -1){
+                thumbImage = thumbImage.split("(")[1].split(")")[0];
+                vm.article.thumbImg = thumbImage.substring(1, thumbImage.length - 1);
+            }
+        } else {
+            $('#dropzone-container').addClass('hide');
+            vm.article.thumbImg = '';
         }
     });
 
@@ -212,35 +221,11 @@ $(document).ready(function () {
         width: '100%'
     });
 
-    if ($('#thumb-toggle').attr('thumb_url') != '') {
-        $('#thumb-toggle').toggles({
-            on: true,
-            text: {
-                on: '开启',
-                off: '关闭'
-            }
-        });
-        $('#thumb-toggle').attr('on', 'true');
-        $('#dropzone').css('background-image', 'url(' + $('#thumb-container').attr('thumb_url') + ')');
-        $('#dropzone').css('background-size', 'cover');
-        $('#dropzone-container').show();
-    } else {
-        $('#thumb-toggle').toggles({
-            off: true,
-            text: {
-                on: '开启',
-                off: '关闭'
-            }
-        });
-        $('#thumb-toggle').attr('on', 'false');
-        $('#dropzone-container').hide();
-    }
-
     var thumbdropzone = $('.dropzone');
 
     // 缩略图上传
     $("#dropzone").dropzone({
-        url: "/admin/attach/upload",
+        url: "/admin/api/attach/upload",
         filesizeBase: 1024,//定义字节算法 默认1000
         maxFilesize: '10', //MB
         fallback: function () {
@@ -249,6 +234,9 @@ $(document).ready(function () {
         acceptedFiles: 'image/*',
         dictFileTooBig: '您的文件超过10MB!',
         dictInvalidInputType: '不支持您上传的类型',
+        headers: {
+            'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content
+        },
         init: function () {
             this.on('success', function (files, result) {
                 console.log("upload success..");
@@ -256,10 +244,11 @@ $(document).ready(function () {
                 if (result && result.success) {
                     var url = attach_url + result.payload[0].fkey;
                     console.log('url => ' + url);
+
+                    vm.article.thumbImg = url;
                     thumbdropzone.css('background-image', 'url(' + url + ')');
                     thumbdropzone.css('background-size', 'cover');
                     $('.dz-image').hide();
-                    $('#thumbImg').val(url);
                 }
             });
             this.on('error', function (a, errorMessage, result) {
