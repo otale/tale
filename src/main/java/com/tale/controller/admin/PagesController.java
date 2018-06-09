@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.Blade;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
@@ -13,7 +12,6 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
-import com.tale.model.dto.ThemeDto;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.OptionsService;
@@ -24,13 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.tale.bootstrap.TaleConst.CLASSPATH;
 
 /**
  * @author biezhi
@@ -124,34 +119,10 @@ public class PagesController extends BaseController {
         }
     }
 
-    @GetRoute("themes")
-    public String themesHome(Request request) {
-        // 读取主题
-        String         themesDir  = CLASSPATH + "templates/themes";
-        File[]         themesFile = new File(themesDir).listFiles();
-        List<ThemeDto> themes     = new ArrayList<>(themesFile.length);
-        for (File f : themesFile) {
-            if (f.isDirectory()) {
-                ThemeDto themeDto = new ThemeDto(f.getName());
-                if (Files.exists(Paths.get(f.getPath() + "/setting.html"))) {
-                    themeDto.setHasSetting(true);
-                }
-                themes.add(themeDto);
-                try {
-                    Blade.me().addStatics("/templates/themes/" + f.getName() + "/screenshot.png");
-                } catch (Exception e) {
-                }
-            }
-        }
-        request.attribute("current_theme", Commons.site_theme());
-        request.attribute("themes", themes);
-        return "admin/themes";
-    }
-
     /**
      * 主题设置页面
      */
-    @GetRoute("themes/setting")
+    @GetRoute("theme/setting")
     public String setting(Request request) {
         String currentTheme = Commons.site_theme();
         String key          = "theme_" + currentTheme + "_options";

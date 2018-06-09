@@ -21,4 +21,9 @@ public final class AdminCommons {
     public static String cdnURL(){
         return Commons.site_option(Types.CDN_URL, "/static/admin");
     }
+
+    public static String siteTheme() {
+        return Commons.site_theme();
+    }
+
 }

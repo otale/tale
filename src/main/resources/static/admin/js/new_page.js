@@ -20,7 +20,11 @@ var vm = new Vue({
             allowFeed: true,
             created: moment().unix(),
             createdTime: moment().format('YYYY-MM-DD HH:mm')
-        }
+        },
+        isLoading: true
+    },
+    beforeCreate: function(){
+        vueLoding = this.$loading.show();
     },
     mounted: function () {
         refreshIntervalId = setInterval("vm.autoSave()", 10 * 1000);
@@ -182,5 +186,8 @@ $(document).ready(function () {
     $('#allowFeed').on('toggle', function (e, active) {
         vm.article.allowFeed = active;
     });
+
+    vm.isLoading = false;
+    vueLoding.hide();
 
 });

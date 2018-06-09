@@ -4,7 +4,9 @@
     <div class="col-sm-12">
         <h4 class="page-title">新建页面</h4>
     </div>
-    <div id="app" class="col-md-12">
+    <div id="app" class="col-md-12" v-cloak>
+
+        <loading :active.sync="isLoading" :can-cancel="true"></loading>
 
         <form id="articleForm">
             <input type="hidden" v-model="article.cid"/>

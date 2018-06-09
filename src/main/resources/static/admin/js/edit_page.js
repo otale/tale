@@ -19,7 +19,11 @@ var vm = new Vue({
             allowPing: true,
             allowFeed: true,
             createdTime: moment().format('YYYY-MM-DD HH:mm:ss')
-        }
+        },
+        isLoading: true
+    },
+    beforeCreate: function(){
+        vueLoding = this.$loading.show();
     },
     mounted: function () {
         var $vm = this;
@@ -202,4 +206,9 @@ var vm = new Vue({
             });
         }
     }
+});
+
+$(document).ready(function () {
+    vm.isLoading = false;
+    vueLoding.hide();
 });

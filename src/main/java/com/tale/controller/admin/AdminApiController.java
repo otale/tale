@@ -1,15 +1,20 @@
 package com.tale.controller.admin;
 
+import com.blade.Blade;
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
+import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
+import com.blade.mvc.Const;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
+import com.tale.bootstrap.TaleLoader;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
+import com.tale.model.dto.ThemeDto;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.*;
 import com.tale.model.params.*;
@@ -20,14 +25,14 @@ import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.tale.bootstrap.TaleConst.*;
+import static io.github.biezhi.anima.Anima.delete;
 import static io.github.biezhi.anima.Anima.select;
 
 /**
@@ -184,7 +189,7 @@ public class AdminApiController extends BaseController {
 
     @SysLog("删除附件")
     @PostRoute("attach/delete/:id")
-    public RestResponse<?> delete(@PathParam Integer id) throws IOException {
+    public RestResponse<?> deleteAttach(@PathParam Integer id) throws IOException {
         Attach attach = select().from(Attach.class).byId(id);
         if (null == attach) {
             return RestResponse.fail("不存在该附件");
@@ -275,6 +280,82 @@ public class AdminApiController extends BaseController {
         if (StringKit.isNotBlank(advanceParam.getAllowCommentAudit())) {
             optionsService.saveOption(OPTION_ALLOW_COMMENT_AUDIT, advanceParam.getAllowCommentAudit());
             TaleConst.OPTIONS.set(OPTION_ALLOW_COMMENT_AUDIT, advanceParam.getAllowCommentAudit());
+        }
+        return RestResponse.ok();
+    }
+
+    @GetRoute("themes")
+    public RestResponse getThemes() {
+        // 读取主题
+        String         themesDir  = CLASSPATH + "templates/themes";
+        File[]         themesFile = new File(themesDir).listFiles();
+        List<ThemeDto> themes     = new ArrayList<>(themesFile.length);
+        for (File f : themesFile) {
+            if (f.isDirectory()) {
+                ThemeDto themeDto = new ThemeDto(f.getName());
+                if (Files.exists(Paths.get(f.getPath() + "/setting.html"))) {
+                    themeDto.setHasSetting(true);
+                }
+                themes.add(themeDto);
+                try {
+                    Blade.me().addStatics("/templates/themes/" + f.getName() + "/screenshot.png");
+                } catch (Exception e) {
+                }
+            }
+        }
+        return RestResponse.ok(themes);
+    }
+
+    @SysLog("保存主题设置")
+    @PostRoute("theme/setting")
+    public RestResponse<?> saveSetting(Request request) {
+        Map<String, List<String>> query = request.parameters();
+
+        // theme_milk_options => {  }
+        String currentTheme = Commons.site_theme();
+        String key          = "theme_" + currentTheme + "_options";
+
+        Map<String, String> options = new HashMap<>();
+        query.forEach((k, v) -> options.put(k, v.get(0)));
+
+        optionsService.saveOption(key, JsonKit.toString(options));
+
+        TaleConst.OPTIONS = Environment.of(optionsService.getOptions());
+        return RestResponse.ok();
+    }
+
+    @SysLog("激活主题")
+    @PostRoute("theme/active")
+    public RestResponse<?> activeTheme(@BodyParam ThemeParam themeParam) {
+        optionsService.saveOption(OPTION_SITE_THEME, themeParam.getSiteTheme());
+        delete().from(Options.class).where(Options::getName).like("theme_option_%").execute();
+
+        TaleConst.OPTIONS.set(OPTION_SITE_THEME, themeParam.getSiteTheme());
+        BaseController.THEME = "themes/" + themeParam.getSiteTheme();
+
+        String themePath = "/templates/themes/" + themeParam.getSiteTheme();
+        try {
+            TaleLoader.loadTheme(themePath);
+        } catch (Exception e) {
+        }
+        return RestResponse.ok();
+    }
+
+    @SysLog("保存模板")
+    @PostRoute("template/save")
+    public RestResponse<?> saveTpl(@Param String fileName, @Param String content) throws IOException {
+        if (StringKit.isBlank(fileName)) {
+            return RestResponse.fail("缺少参数，请重试");
+        }
+        String themePath = Const.CLASSPATH + File.separatorChar + "templates" + File.separatorChar + "themes" + File.separatorChar + Commons.site_theme();
+        String filePath  = themePath + File.separatorChar + fileName;
+        if (Files.exists(Paths.get(filePath))) {
+            byte[] rf_wiki_byte = content.getBytes("UTF-8");
+            Files.write(Paths.get(filePath), rf_wiki_byte);
+        } else {
+            Files.createFile(Paths.get(filePath));
+            byte[] rf_wiki_byte = content.getBytes("UTF-8");
+            Files.write(Paths.get(filePath), rf_wiki_byte);
         }
         return RestResponse.ok();
     }
