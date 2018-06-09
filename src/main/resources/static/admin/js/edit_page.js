@@ -1,6 +1,5 @@
 var mditor, htmlEditor;
 var tale = new $.tale();
-var attach_url = $('#attach_url').val();
 // 每60秒自动保存一次草稿
 var refreshIntervalId;
 Dropzone.autoDiscover = false;
@@ -16,14 +15,11 @@ var vm = new Vue({
             content: '',
             status: 'draft',
             fmtType: 'markdown',
-            thumbImg: '',
             allowComment: true,
             allowPing: true,
             allowFeed: true,
-            createdTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-            selected: ['默认分类']
-        },
-        categories: []
+            createdTime: moment().format('YYYY-MM-DD HH:mm:ss')
+        }
     },
     mounted: function () {
         var $vm = this;
@@ -70,6 +66,14 @@ var vm = new Vue({
             }
         });
 
+        $('#allowComment').on('toggle', function (e, active) {
+            vm.article.allowComment = active;
+        });
+
+        $('#allowFeed').on('toggle', function (e, active) {
+            vm.article.allowFeed = active;
+        });
+
         $vm.load();
         refreshIntervalId = setInterval("vm.autoSave()", 10 * 1000);
     },
@@ -78,16 +82,6 @@ var vm = new Vue({
             var $vm = this;
             var pos = window.location.toString().lastIndexOf("/");
             var cid = window.location.toString().substring(pos + 1)
-            tale.get({
-                url: '/admin/api/categories',
-                success: function (data) {
-                    $vm.categories = data.payload
-                },
-                error: function (error) {
-                    console.log(error);
-                    alert(error || '数据加载失败');
-                }
-            });
             tale.get({
                 url: '/admin/api/articles/' + cid,
                 success: function (data) {
@@ -108,14 +102,6 @@ var vm = new Vue({
                         }
                     });
 
-                    $('#allowPing').toggles({
-                        on: $vm.article.allowPing,
-                        text: {
-                            on: '开启',
-                            off: '关闭'
-                        }
-                    });
-
                     $('#allowFeed').toggles({
                         on: $vm.article.allowFeed,
                         text: {
@@ -123,29 +109,6 @@ var vm = new Vue({
                             off: '关闭'
                         }
                     });
-
-                    if($vm.article.thumb_img && $vm.article.thumb_img !== ''){
-                        $('#addThumb').toggles({
-                            on: true,
-                            text: {
-                                on: '添加',
-                                off: '取消'
-                            }
-                        });
-
-                        $('#dropzone').css('background-image', 'url(' + $vm.article.thumb_img + ')');
-                        $('#dropzone').css('background-size', 'cover');
-                        $('#dropzone-container').show();
-                    } else {
-                        $('#addThumb').toggles({
-                            on: false,
-                            text: {
-                                on: '添加',
-                                off: '取消'
-                            }
-                        });
-                        $('#dropzone-container').hide();
-                    }
                 },
                 error: function (error) {
                     console.log(error);
@@ -158,20 +121,19 @@ var vm = new Vue({
             var content = $vm.article.fmtType === 'markdown' ? mditor.value : htmlEditor.summernote('code');
             if ($vm.article.title !== '' && content !== '') {
                 $vm.article.content = content;
-                $vm.article.categories = $vm.article.selected.join(',');
+
                 var params = tale.copy($vm.article);
                 params.selected = null;
                 params.created = moment($('#form_datetime').val(), "YYYY-MM-DD HH:mm").unix();
-                params.tags = $('#tags').val();
 
                 tale.post({
-                    url: '/admin/api/article/update',
+                    url: '/admin/api/page/update',
                     data: params,
                     success: function (result) {
                         if (result && result.success) {
                             callback && callback()
                         } else {
-                            tale.alertError(result.msg || '保存文章失败');
+                            tale.alertError(result.msg || '保存页面失败');
                         }
                     },
                     error: function (error) {
@@ -238,84 +200,4 @@ var vm = new Vue({
             });
         }
     }
-});
-
-$(document).ready(function () {
-    // Tags Input
-    $('#tags').tagsInput({
-        width: '100%',
-        height: '35px',
-        defaultText: '请输入文章标签'
-    });
-
-    $('#allowComment').on('toggle', function (e, active) {
-        vm.article.allowComment = active;
-    });
-
-    $('#allowPing').on('toggle', function (e, active) {
-        vm.article.allowPing = active;
-    });
-
-    $('#allowFeed').on('toggle', function (e, active) {
-        vm.article.allowFeed = active;
-    });
-
-    $('#addThumb').on('toggle', function (e, active) {
-        if (active) {
-            $('#dropzone-container').removeClass('hide');
-            $('#dropzone-container').show();
-            var thumbImage = $("#dropzone").css("backgroundImage");
-            if(thumbImage && thumbImage.indexOf('url') !== -1){
-                thumbImage = thumbImage.split("(")[1].split(")")[0];
-                vm.article.thumbImg = thumbImage.substring(1, thumbImage.length - 1);
-            }
-        } else {
-            $('#dropzone-container').addClass('hide');
-            $('#thumbImg').val('');
-            vm.article.thumbImg = '';
-        }
-    });
-
-    $("#multiple-sel").select2({
-        width: '100%'
-    });
-
-    var thumbdropzone = $('.dropzone');
-
-    // 缩略图上传
-    $("#dropzone").dropzone({
-        url: "/admin/api/attach/upload",
-        filesizeBase: 1024,//定义字节算法 默认1000
-        maxFilesize: '10', //MB
-        fallback: function () {
-            tale.alertError('暂不支持您的浏览器上传!');
-        },
-        acceptedFiles: 'image/*',
-        dictFileTooBig: '您的文件超过10MB!',
-        dictInvalidInputType: '不支持您上传的类型',
-        headers: {
-            'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content
-        },
-        init: function () {
-            this.on('success', function (files, result) {
-                console.log("upload success..");
-                console.log(" result => " + result);
-                if (result && result.success) {
-                    var url = attach_url + result.payload[0].fkey;
-                    console.log('url => ' + url);
-                    vm.article.thumbImg = url;
-                    thumbdropzone.css('background-image', 'url(' + url + ')');
-                    thumbdropzone.css('background-size', 'cover');
-                    $('.dz-image').hide();
-                    $('#thumbImg').val(url);
-                }
-            });
-            this.on('error', function (a, errorMessage, result) {
-                if (!result.success && result.msg) {
-                    tale.alertError(result.msg || '缩略图上传失败');
-                }
-            });
-        }
-    });
-
 });

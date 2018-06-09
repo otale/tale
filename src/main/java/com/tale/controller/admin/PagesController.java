@@ -14,7 +14,6 @@ import com.blade.mvc.http.Response;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
 import com.tale.model.dto.ThemeDto;
-import com.tale.model.dto.Types;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.OptionsService;
@@ -68,6 +67,11 @@ public class PagesController extends BaseController {
         return "admin/article/edit.html";
     }
 
+    @GetRoute("/page/edit/:cid")
+    public String editPage() {
+        return "admin/page/edit.html";
+    }
+
     @GetRoute("login")
     public String login(Response response) {
         if (null != this.user()) {
@@ -75,12 +79,6 @@ public class PagesController extends BaseController {
             return null;
         }
         return "admin/login";
-    }
-
-    @GetRoute("page/new")
-    public String newPage(Request request) {
-        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-        return "admin/page_edit";
     }
 
     @GetRoute("template")

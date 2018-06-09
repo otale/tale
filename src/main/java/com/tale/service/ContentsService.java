@@ -89,13 +89,11 @@ public class ContentsService {
         contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
         contents.setTags(contents.getTags() != null ? contents.getTags() : "");
         contents.setCategories(contents.getCategories() != null ? contents.getCategories() : "");
+        contents.update();
 
         String  tags       = contents.getTags();
         String  categories = contents.getCategories();
         Integer cid        = contents.getCid();
-
-        contents.updateById(cid);
-
         if (null != contents.getType() && !contents.getType().equals(Types.PAGE)) {
             Anima.delete().from(Relationships.class).where(Relationships::getCid, cid).execute();
         }
