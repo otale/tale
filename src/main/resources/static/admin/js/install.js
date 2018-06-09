@@ -40,9 +40,12 @@
                     isValid = false;
                     var params = $form_container.serialize();
                     tale.showLoading();
-                    tale.post({
+                    $.ajax({
                         url: '/install',
+                        type: 'POST',
+                        async: false,
                         data: params,
+                        dataType: 'json',
                         success: function (result) {
                             if (result && result.success) {
                                 isValid = true;
@@ -51,6 +54,9 @@
                                     tale.alertError(result.msg || '安装失败');
                                 }
                             }
+                        },
+                        error: function (e) {
+                            console.log('post异常', e);
                         }
                     });
                     return isValid;
@@ -77,4 +83,8 @@
         $.FormWizard = new FormWizard, $.FormWizard.Constructor = FormWizard
 }(window.jQuery), $.FormWizard.init();
 var siteUrl = document.location.protocol + '//' + document.location.host;
-document.getElementById('siteUrl').value = siteUrl;
+var el = document.getElementById('siteUrl');
+// noinspection JSAnnotator
+if(el){
+    el.value = siteUrl;
+}
