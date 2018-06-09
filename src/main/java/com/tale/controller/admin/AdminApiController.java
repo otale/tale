@@ -6,20 +6,21 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.Types;
-import com.tale.model.entity.Comments;
-import com.tale.model.entity.Contents;
-import com.tale.model.entity.Metas;
-import com.tale.model.entity.Users;
+import com.tale.model.entity.*;
 import com.tale.model.params.ArticleParam;
 import com.tale.model.params.CommentParam;
+import com.tale.model.params.PageParam;
 import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
 import com.tale.validators.CommonValidator;
+import io.github.biezhi.anima.enums.OrderBy;
 import io.github.biezhi.anima.page.Page;
 
 import java.util.List;
+
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * @author biezhi
@@ -112,6 +113,16 @@ public class AdminApiController extends BaseController {
 
         Page<Comments> commentsPage = commentsService.findComments(commentParam);
         return RestResponse.ok(commentsPage);
+    }
+
+    @GetRoute("attaches")
+    public RestResponse attachList(PageParam pageParam) {
+
+        Page<Attach>   attachPage   = select().from(Attach.class)
+                .order(Attach::getCreated, OrderBy.DESC)
+                .page(pageParam.getPage(), pageParam.getLimit());
+
+        return RestResponse.ok(attachPage);
     }
 
 }

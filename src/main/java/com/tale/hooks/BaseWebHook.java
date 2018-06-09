@@ -15,9 +15,6 @@ import com.tale.model.entity.Users;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import static io.github.biezhi.anima.Anima.select;
 
 @Bean
@@ -64,14 +61,17 @@ public class BaseWebHook implements WebHook {
                 logs.setAction(sysLog.value());
                 logs.setAuthorId(TaleUtils.getLoginUser().getUid());
                 logs.setIp(signature.request().address());
-                logs.setData(signature.request().bodyToString());
+                if(!signature.request().uri().contains("upload")){
+                    logs.setData(signature.request().bodyToString());
+                }
                 logs.setCreated(DateKit.nowUnix());
                 logs.save();
             }
         }
 
         signature.request().attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-        signature.request().attribute("now", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now()));
+        signature.request().attribute("max_file_size", TaleConst.MAX_FILE_SIZE / 1024);
+
         return true;
     }
 
