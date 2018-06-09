@@ -11,27 +11,25 @@ import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PathParam;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
-import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.extension.Commons;
 import com.tale.model.dto.ThemeDto;
 import com.tale.model.dto.Types;
-import com.tale.model.entity.*;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
-import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import static io.github.biezhi.anima.Anima.select;
 
 /**
  * @author biezhi
@@ -77,50 +75,11 @@ public class PagesController extends BaseController {
         return "admin/login";
     }
 
-    /**
-     * 附件页面
-     *
-     * @param request
-     * @param page
-     * @param limit
-     * @return
-     */
-    @GetRoute("attach")
-    public String attachHome(Request request, @Param(defaultValue = "1") Integer page,
-                             @Param(defaultValue = "12") Integer limit) {
-
-        Page<Attach> attachPage = select().from(Attach.class).page(page, limit);
-        request.attribute("attachs", attachPage);
-        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-        request.attribute("max_file_size", TaleConst.MAX_FILE_SIZE / 1024);
-        return "admin/attach";
-    }
-
-    @GetRoute("category")
-    public String categoryHome(Request request) {
-        List<Metas> categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
-        List<Metas> tags       = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
-        request.attribute("categories", categories);
-        request.attribute("tags", tags);
-        return "admin/category";
-    }
-
     @GetRoute("page/new")
     public String newPage(Request request) {
         request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
         return "admin/page_edit";
     }
-
-//    @GetRoute("page/:cid")
-//    public String editPage(@PathParam String cid, Request request) {
-//        Optional<Contents> contents = contentsService.getContents(cid);
-//        if (!contents.isPresent()) {
-//            return render_404();
-//        }
-//        request.attribute("contents", contents.get());
-//        request.attribute(Types.ATTACH_URL, Commons.site_option(Types.ATTACH_URL, Commons.site_url()));
-//        return "admin/page_edit";
-//    }
 
     @GetRoute("template")
     public String index(Request request) {

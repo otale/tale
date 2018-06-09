@@ -4,6 +4,7 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.*;
@@ -108,7 +109,7 @@ public class AdminApiController extends BaseController {
 
     @GetRoute("comments")
     public RestResponse commentList(CommentParam commentParam) {
-        Users          users       = this.user();
+        Users users = this.user();
         commentParam.setExcludeUID(users.getUid());
 
         Page<Comments> commentsPage = commentsService.findComments(commentParam);
@@ -118,11 +119,23 @@ public class AdminApiController extends BaseController {
     @GetRoute("attaches")
     public RestResponse attachList(PageParam pageParam) {
 
-        Page<Attach>   attachPage   = select().from(Attach.class)
+        Page<Attach> attachPage = select().from(Attach.class)
                 .order(Attach::getCreated, OrderBy.DESC)
                 .page(pageParam.getPage(), pageParam.getLimit());
 
         return RestResponse.ok(attachPage);
+    }
+
+    @GetRoute("categories")
+    public RestResponse categoryList() {
+        List<Metas> categories = siteService.getMetas(Types.RECENT_META, Types.CATEGORY, TaleConst.MAX_POSTS);
+        return RestResponse.ok(categories);
+    }
+
+    @GetRoute("tags")
+    public RestResponse tagList() {
+        List<Metas> tags = siteService.getMetas(Types.RECENT_META, Types.TAG, TaleConst.MAX_POSTS);
+        return RestResponse.ok(tags);
     }
 
 }

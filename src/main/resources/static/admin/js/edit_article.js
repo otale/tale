@@ -114,6 +114,7 @@ var vm = new Vue({
                 var params = tale.copy($vm.article);
                 params.selected = null;
                 params.created = moment($('#form_datetime').val(), "YYYY-MM-DD HH:mm").unix();
+                params.tags = $('#tags').val();
 
                 tale.post({
                     url: '/admin/api/article/update',

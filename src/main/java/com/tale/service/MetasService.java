@@ -175,7 +175,6 @@ public class MetasService {
             return;
         }
         Metas metas = select().from(Metas.class).where(Metas::getType, type).and(Metas::getName, name).one();
-
         if (null != metas) {
             throw new ValidatorException("已经存在该项");
         } else {

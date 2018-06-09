@@ -165,3 +165,9 @@ Vue.filter('formatUnix', function (value) {
     }
     return ''
 });
+
+var colors_ = ["default", "primary", "success", "info", "warning", "danger", "inverse", "purple", "pink"];
+Vue.prototype.randomColor = function (){
+    console.log('color..');
+    return colors_[Math.floor(Math.random()*colors_.length)];
+};
