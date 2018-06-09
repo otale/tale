@@ -3,7 +3,8 @@
     <div class="col-sm-12">
         <h4 class="page-title">文章管理</h4>
     </div>
-    <div id="app" class="col-md-12">
+    <div id="app" class="col-md-12" v-cloak>
+        <loading :active.sync="isLoading" :can-cancel="true"></loading>
         <div class="pull-right">
             <a href="/admin/page/new" class="btn btn-success waves-effect waves-light m-b-5">添加新页面</a>
         </div>
@@ -74,13 +75,14 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            articlePage: {}
+            articlePage: {},
+            isLoading: true
+        },
+        beforeCreate: function(){
+            vueLoding = this.$loading.show();
         },
         mounted: function () {
             this.load();
-        },
-        filters: {
-
         },
         methods: {
             load: function () {
@@ -99,8 +101,7 @@
             deleteArticle: function (cid) {
                 var $vm = this;
                 tale.alertConfirm({
-                    title:'确定删除这个页面吗?',
-                    then: function () {
+                    title:'确定删除这个页面吗?', then: function () {
                         tale.post({
                             url : '/admin/api/page/delete',
                             data: {cid: cid},
@@ -117,6 +118,11 @@
                 });
             }
         }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
     });
 </script>
 </body>

@@ -3,7 +3,9 @@
     <div class="col-sm-12">
         <h4 class="page-title">文章管理</h4>
     </div>
-    <div id="app" class="col-md-12">
+    <div id="app" class="col-md-12" v-cloak>
+        <loading :active.sync="isLoading" :can-cancel="true"></loading>
+
         <table class="table table-striped table-bordered">
             <thead>
             <tr>
@@ -70,7 +72,11 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            articlePage: {}
+            articlePage: {},
+            isLoading: true
+        },
+        beforeCreate: function(){
+            vueLoding = this.$loading.show();
         },
         mounted: function () {
             this.load();
@@ -111,6 +117,10 @@
         }
     });
 
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
 </script>
 
 </body>

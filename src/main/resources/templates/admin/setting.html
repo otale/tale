@@ -1,6 +1,7 @@
 #include('./header.html',{active:'setting', title:'系统设置'})
 <link href="${cdnURL()}/plugins/toggles/toggles.css" rel="stylesheet">
-<div id="app" class="row">
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
     <div class="col-sm-12">
         <h4 class="page-title">系统设置</h4>
     </div>
@@ -128,7 +129,11 @@
         data: {
             options: {},
             allowInstall: '',
-            allowCommentAudit: ''
+            allowCommentAudit: '',
+            isLoading: true
+        },
+        beforeCreate: function(){
+            vueLoding = this.$loading.show();
         },
         mounted: function () {
             this.load();
@@ -206,6 +211,11 @@
 
     $('#allowCommentAudit').on('toggle', function (e, active) {
         vm.allowCommentAudit = active;
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
     });
 
 </script>

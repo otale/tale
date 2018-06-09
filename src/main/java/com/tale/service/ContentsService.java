@@ -66,6 +66,7 @@ public class ContentsService {
         int time = DateKit.nowUnix();
         contents.setCreated(time);
         contents.setModified(time);
+        contents.setHits(0);
 
         String tags       = contents.getTags();
         String categories = contents.getCategories();

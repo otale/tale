@@ -38,7 +38,8 @@
         background-color: #f9f9f9;
     }
 </style>
-<div id="app" class="row">
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
     <div class="col-sm-12">
         <h4 class="page-title">文件管理</h4>
     </div>
@@ -123,7 +124,11 @@
         data: {
             attachPage: {
                 rows: []
-            }
+            },
+            isLoading: true
+        },
+        beforeCreate: function(){
+            vueLoding = this.$loading.show();
         },
         mounted: function () {
             this.load();
@@ -209,6 +214,11 @@
         console.info('Text:', e.text);
         console.info('Trigger:', e.trigger);
         e.clearSelection();
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
     });
 
 </script>

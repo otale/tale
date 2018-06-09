@@ -24,7 +24,11 @@ var vm = new Vue({
             createdTime: moment().format('YYYY-MM-DD HH:mm'),
             selected: ['默认分类']
         },
-        categories: []
+        categories: [],
+        isLoading: true
+    },
+    beforeCreate: function(){
+        vueLoding = this.$loading.show();
     },
     mounted: function () {
         var $vm = this;
@@ -291,4 +295,6 @@ $(document).ready(function () {
         }
     });
 
+    vm.isLoading = false;
+    vueLoding.hide();
 });

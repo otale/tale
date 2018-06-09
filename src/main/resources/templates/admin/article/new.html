@@ -4,7 +4,9 @@
     <div class="col-sm-12">
         <h4 class="page-title">发布文章</h4>
     </div>
-    <div id="app" class="col-md-12">
+    <div id="app" class="col-md-12" v-cloak>
+
+        <loading :active.sync="isLoading" :can-cancel="true"></loading>
 
         <input type="hidden" id="attach_url" value="${attachURL()}" />
 
