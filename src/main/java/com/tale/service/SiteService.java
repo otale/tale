@@ -90,7 +90,7 @@ public class SiteService {
         // 最新文章
         if (Types.RECENT_ARTICLE.equals(type)) {
             Page<Contents> contentsPage = select().from(Contents.class).where(Contents::getStatus, Types.PUBLISH)
-                    .and(Contents::getStatus, Types.ARTICLE)
+                    .and(Contents::getType, Types.ARTICLE)
                     .order(Contents::getCreated, OrderBy.DESC)
                     .page(1, limit);
 

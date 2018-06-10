@@ -9,6 +9,29 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12">
+                        <div class="row ">
+                            <form class="form-inline" role="form">
+                                <div class="form-group">
+                                    <label class="sr-only" for="exampleInputEmail2">Email address</label>
+                                    <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email">
+                                </div>
+
+                                <div class="form-group m-l-10">
+                                    <label class="sr-only" for="exampleInputPassword2">Password</label>
+                                    <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
+                                </div>
+                                <div class="form-group m-l-10">
+                                    <div class="checkbox checkbox-primary">
+                                        <input id="checkbox3" type="checkbox">
+                                        <label for="checkbox3">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success waves-effect waves-light m-l-10">Sign in</button>
+                            </form>
+                        </div>
+
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -42,7 +65,7 @@
                                         <i class="fa fa-trash-o"></i> <span>删除</span>
                                     </a>
                                     <a v-show="item.status == 'publish'"
-                                       class="btn btn-warning btn-sm waves-effect waves-light m-b-5" :href="item.url"
+                                       class="btn btn-warning btn-sm waves-effect waves-light m-b-5" :href="'${site_url()}' + item.url"
                                        target="_blank">
                                         <i class="fa fa-rocket"></i> <span>预览</span>
                                     </a>

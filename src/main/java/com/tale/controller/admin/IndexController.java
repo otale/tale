@@ -14,12 +14,12 @@ import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.model.dto.Statistics;
 import com.tale.model.dto.Types;
-import com.tale.model.entity.*;
-import com.tale.service.OptionsService;
+import com.tale.model.entity.Attach;
+import com.tale.model.entity.Comments;
+import com.tale.model.entity.Contents;
+import com.tale.model.entity.Users;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
-import io.github.biezhi.anima.enums.OrderBy;
-import io.github.biezhi.anima.page.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -28,8 +28,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 后台控制器
@@ -51,14 +49,10 @@ public class IndexController extends BaseController {
         List<Comments> comments   = siteService.recentComments(5);
         List<Contents> contents   = siteService.getContens(Types.RECENT_ARTICLE, 5);
         Statistics     statistics = siteService.getStatistics();
-        // 取最新的20条日志
-        Page<Logs> logsPage = select().from(Logs.class).order(Logs::getId, OrderBy.DESC).page(1, 20);
-        List<Logs> logs     = logsPage.getRows();
 
         request.attribute("comments", comments);
         request.attribute("articles", contents);
         request.attribute("statistics", statistics);
-        request.attribute("logs", logs);
         return "admin/index";
     }
 

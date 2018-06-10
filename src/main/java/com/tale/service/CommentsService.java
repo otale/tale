@@ -4,6 +4,7 @@ import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Bean;
 import com.blade.kit.BladeKit;
 import com.blade.kit.DateKit;
+import com.tale.bootstrap.TaleConst;
 import com.tale.extension.Commons;
 import com.tale.model.dto.Comment;
 import com.tale.model.entity.Comments;
@@ -53,8 +54,11 @@ public class CommentsService {
             comments.setCreated(DateKit.nowUnix());
             comments.setParent(null == comments.getCoid() ? 0 : comments.getCoid());
             comments.setCoid(null);
-            String status = Commons.site_option(OPTION_ALLOW_COMMENT_AUDIT, COMMENT_NO_AUDIT);
-            comments.setStatus(status);
+            if(TaleConst.OPTIONS.getBoolean(OPTION_ALLOW_COMMENT_AUDIT, true)){
+                comments.setStatus(COMMENT_NO_AUDIT);
+            } else {
+                comments.setStatus(COMMENT_APPROVED);
+            }
             comments.save();
 
             new Contents().set(Contents::getCommentsNum, contents.getCommentsNum() + 1).updateById(contents.getCid());

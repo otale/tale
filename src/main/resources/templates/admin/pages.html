@@ -23,9 +23,7 @@
                         </thead>
                         <tbody>
                         <tr v-for="item in articlePage.rows">
-                            <td>
-                                {{ item.title }}
-                            </td>
+                            <td>{{ item.title }}</td>
                             <td>{{ item.slug }}</td>
                             <td>{{ item.created | formatUnix }}</td>
                             <td>
@@ -39,7 +37,7 @@
                                 <a @click="deleteArticle(item.cid)" href="javascript:void(0)" class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
                                     <i class="fa fa-trash-o"></i> <span>删除</span>
                                 </a>
-                                <a class="btn btn-warning btn-sm waves-effect waves-light m-b-5" :href="'/' + item.slug"
+                                <a class="btn btn-warning btn-sm waves-effect waves-light m-b-5" :href="'${site_url()}/' + item.slug"
                                    target="_blank">
                                     <i class="fa fa-rocket"></i> <span>预览</span>
                                 </a>

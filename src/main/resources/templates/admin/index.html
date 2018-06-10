@@ -50,11 +50,11 @@
                             </div>
                             <div class="panel-body">
                                 <ul class="list-group">
-                                    #for(article : articles)
+                                    #for(item : articles)
                                     <li class="list-group-item">
                             <span class="badge badge-primary"
-                                  title="${article.commentsNum}条评论">${article.commentsNum}</span>
-                                        <a target="_blank" href="${site_url('/article/')}${article.cid}">${article.title}</a>
+                                  title="${item.commentsNum}条评论">${item.commentsNum}</span>
+                                        <a target="_blank" href="${site_url('/article/')}${item.cid}">${item.title}</a>
                                     </li>
                                     #end
                                 </ul>
@@ -72,18 +72,28 @@
                                     还没有收到留言.
                                 </div>
                                 #else
-                                <ul class="list-group">
-                                    #for(comment : comments)
-                                    <li class="list-group-item">
-                                        #if(null != comment.url && comment.url != '')
-                                        <a href="${comment.url}" target="_blank">${comment.author}</a>
-                                        #else
-                                        ${comment.author}
-                                        #end
-                                        于${fmtdate(comment.created,'MM月dd日HH:mm')} ：<a href="${site_url('/article/')}${comment.cid}#comments" target="_blank">${article(comment.content)}</a>
-                                    </li>
+                                <div class="inbox-widget nicescroll mx-box" tabindex="5000" style="overflow: hidden; outline: none;">
+                                    #for(item : comments)
+                                    <a href="index.html#">
+                                        <div class="inbox-item">
+                                            <div class="inbox-item-img">
+                                                <a href="${item.url}" target="_blank">
+                                                    <img src="${gravatar(item.mail)}" class="img-circle" alt="${item.author}">
+                                                </a>
+                                            </div>
+                                            <p class="inbox-item-author">
+                                                <a href="${item.url}" target="_blank">${item.author}</a>
+                                            </p>
+                                            <p class="inbox-item-text">
+                                                <a href="${site_url('/article/')}${item.cid}#comments" target="_blank">
+                                                    ${article(item.content)}
+                                                </a>
+                                            </p>
+                                            <p class="inbox-item-date">${fmtdate(item.created,'MM月dd日HH:mm')}</p>
+                                        </div>
+                                    </a>
                                     #end
-                                </ul>
+                                </div>
                                 #end
                             </div>
                         </div>
@@ -95,11 +105,17 @@
                             </div>
                             <div class="panel-body">
                                 <ul class="list-group">
-                                    #for(log : logs)
-                                    <li class="list-group-item">
-                                        <span>${fmtdate(log.created, 'yyyy-MM-dd HH:mm:ss')} => ${log.action}</span>
+                                    <li class="list-group-item" v-for="item in logPage.rows">
+                                        <span>{{item.created | formatUnix}} &nbsp;&nbsp;<kbd>{{item.action}}</kbd></span>
                                     </li>
-                                    #end
+                                </ul>
+                                <ul class="pager">
+                                    <li v-if="logPage.hasPrevPage">
+                                        <a @click="load(logPage.prevPage)"> <i class="fa fa-angle-double-left"></i> 上一页</a>
+                                    </li>
+                                    <li v-if="logPage.hasNextPage">
+                                        <a @click="load(logPage.nextPage)">下一页 <i class="fa fa-angle-double-right"></i> </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -116,28 +132,32 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            articlePage: {},
+            logPage: {},
             isLoading: true
         },
         beforeCreate: function () {
             vueLoding = this.$loading.show();
         },
         mounted: function () {
-            this.load();
+            this.load(1);
         },
         methods: {
-            load: function () {
+            load: function (page) {
                 var $vm = this;
-                // tale.get({
-                //     url: '/admin/api/articles',
-                //     success: function (data) {
-                //         $vm.articlePage = data.payload
-                //     },
-                //     error: function (error) {
-                //         console.log(error);
-                //         alert(error || '数据加载失败');
-                //     }
-                // });
+                tale.get({
+                    url: '/admin/api/logs',
+                    data: {
+                        page: page,
+                        limit: 8
+                    },
+                    success: function (data) {
+                        $vm.logPage = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
             }
         }
     });

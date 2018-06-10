@@ -107,7 +107,9 @@ window.axios.defaults.headers.common = {
 };
 
 $.tale.prototype.get = function (options) {
-    axios.get(options.url).then(function (response) {
+    axios.get(options.url, {
+        params: options.data || {}
+    }).then(function (response) {
         options.success && options.success(response.data)
     }).catch(function (error) {
         options.error && options.error(error)
@@ -177,7 +179,7 @@ $.tale.prototype.hideLoading = function () {
     $('#tale-loading') && $('#tale-loading').hide();
 };
 
-$.tale.prototype.copy = function(src) {
+$.tale.prototype.copy = function (src) {
     var dst = {};
     for (var prop in src) {
         if (src.hasOwnProperty(prop)) {
@@ -201,7 +203,7 @@ Vue.component('Loading', VueLoading)
 var vueLoding;
 
 var colors_ = ["default", "primary", "success", "info", "warning", "danger", "inverse", "purple", "pink"];
-Vue.prototype.randomColor = function (){
+Vue.prototype.randomColor = function () {
     console.log('color..');
-    return colors_[Math.floor(Math.random()*colors_.length)];
+    return colors_[Math.floor(Math.random() * colors_.length)];
 };

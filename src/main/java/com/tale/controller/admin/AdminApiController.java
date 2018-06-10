@@ -58,6 +58,11 @@ public class AdminApiController extends BaseController {
     @Inject
     private SiteService siteService;
 
+    @GetRoute("logs")
+    public RestResponse sysLogs(PageParam pageParam) {
+        return RestResponse.ok(select().from(Logs.class).order(Logs::getId, OrderBy.DESC).page(pageParam.getPage(), pageParam.getLimit()));
+    }
+
     @GetRoute("articles/:cid")
     public RestResponse article(@PathParam String cid) {
         Contents contents = contentsService.getContents(cid);
