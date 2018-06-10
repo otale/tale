@@ -54,11 +54,6 @@ public class CommentsService {
             comments.setCreated(DateKit.nowUnix());
             comments.setParent(null == comments.getCoid() ? 0 : comments.getCoid());
             comments.setCoid(null);
-            if(TaleConst.OPTIONS.getBoolean(OPTION_ALLOW_COMMENT_AUDIT, true)){
-                comments.setStatus(COMMENT_NO_AUDIT);
-            } else {
-                comments.setStatus(COMMENT_APPROVED);
-            }
             comments.save();
 
             new Contents().set(Contents::getCommentsNum, contents.getCommentsNum() + 1).updateById(contents.getCid());

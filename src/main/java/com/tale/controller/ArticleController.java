@@ -7,6 +7,7 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
 import com.blade.mvc.ui.RestResponse;
+import com.tale.bootstrap.TaleConst;
 import com.tale.extension.Commons;
 import com.tale.model.dto.ErrorCode;
 import com.tale.model.dto.Types;
@@ -19,6 +20,10 @@ import com.tale.validators.CommonValidator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLEncoder;
+
+import static com.tale.bootstrap.TaleConst.COMMENT_APPROVED;
+import static com.tale.bootstrap.TaleConst.COMMENT_NO_AUDIT;
+import static com.tale.bootstrap.TaleConst.OPTION_ALLOW_COMMENT_AUDIT;
 
 /**
  * @author biezhi
@@ -112,6 +117,12 @@ public class ArticleController extends BaseController {
         }
         comments.setIp(request.address());
         comments.setAgent(request.userAgent());
+
+        if (TaleConst.OPTIONS.getBoolean(OPTION_ALLOW_COMMENT_AUDIT, true)) {
+            comments.setStatus(COMMENT_NO_AUDIT);
+        } else {
+            comments.setStatus(COMMENT_APPROVED);
+        }
 
         try {
             commentsService.saveComment(comments);

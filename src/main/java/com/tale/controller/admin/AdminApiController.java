@@ -223,6 +223,7 @@ public class AdminApiController extends BaseController {
         } else {
             comments.setMail("");
         }
+        comments.setStatus(TaleConst.COMMENT_APPROVED);
         comments.setParent(comments.getCoid());
         commentsService.saveComment(comments);
         siteService.cleanCache(Types.C_STATISTICS);
