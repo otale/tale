@@ -198,6 +198,12 @@ Vue.filter('formatUnix', function (value) {
     }
     return ''
 });
+Vue.filter('truncate', function (value, size, append) {
+    if (value && value.length >= size) {
+        return value.substring(0, size) + (append || '...');
+    }
+    return value
+});
 Vue.use(VueLoading);
 Vue.component('Loading', VueLoading)
 var vueLoding;

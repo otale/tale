@@ -134,7 +134,20 @@ public class ContentsService {
 
     public Page<Contents> findArticles(ArticleParam articleParam) {
         AnimaQuery<Contents> query = select().from(Contents.class);
-        query.where(Contents::getType, articleParam.getType());
+
+        if (StringKit.isNotEmpty(articleParam.getStatus())) {
+            query.and(Contents::getStatus, articleParam.getStatus());
+        }
+
+        if (StringKit.isNotEmpty(articleParam.getTitle())) {
+            query.and(Contents::getTitle).like("%" + articleParam.getTitle() + "%");
+        }
+
+        if (StringKit.isNotEmpty(articleParam.getCategories())) {
+            query.and(Contents::getCategories).like("%" + articleParam.getCategories() + "%");
+        }
+
+        query.and(Contents::getType, articleParam.getType());
         query.order(articleParam.getOrderBy());
         Page<Contents> articles = query.page(articleParam.getPage(), articleParam.getLimit());
         return articles.map(this::mapContent);

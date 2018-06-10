@@ -13,6 +13,8 @@
 
     .dropzone .dz-message {
         font-weight: 400;
+        max-width: 100%;
+        overflow: hidden;
     }
 
     .dropzone .dz-message .note {
@@ -71,7 +73,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2 text-center m-t-10" v-for="item in attachPage.rows">
+                    <div class="col-md-2 col-xs-6 text-center m-t-10" v-for="item in attachPage.rows">
                         <a :href="'${attachURL()}' + item.fkey" target="_blank">
                             <img v-if="item.ftype == 'image'" class="attach-img" :src="'${attachURL()}' + item.fkey"
                                  :title="item.fname"/>
@@ -79,7 +81,7 @@
                                  :title="item.fname"/>
                         </a>
                         <div class="clearfix m-t-10">
-                            <span class="attach-text" data-toggle="tooltip" data-placement="top" :data-original-title="item.fname">{{item.fname}}</span>
+                            <span class="attach-text" data-toggle="tooltip" data-placement="top" :data-original-title="item.fname">{{item.fname | truncate(15)}}</span>
                         </div>
                         <div class="clearfix">
                             <button :url="'${attachURL()}' + item.fkey" type="button"
@@ -93,6 +95,7 @@
                         </div>
                     </div>
 
+                    <div class="clearfix"></div>
                     <ul class="pagination m-b-5 pull-right">
                         <li v-if="attachPage.hasPrevPage">
                             <a @click="load(attachPage.prevPage)" aria-label="Previous">

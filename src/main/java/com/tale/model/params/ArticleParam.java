@@ -11,6 +11,9 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ArticleParam extends PageParam {
 
+    private String title;
+    private String categories;
+    private String status;
     private String type;
     private String orderBy;
 
