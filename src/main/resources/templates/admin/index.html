@@ -67,34 +67,32 @@
                                 <h4 class="panel-title">最新留言</h4>
                             </div>
                             <div class="panel-body">
-                                #if(null == comments || comments.size() == 0)
-                                <div class="alert alert-warning">
+                                <div v-if="comments.length == 0" class="alert alert-warning">
                                     还没有收到留言.
                                 </div>
-                                #else
-                                <div class="inbox-widget nicescroll mx-box" tabindex="5000" style="overflow: hidden; outline: none;">
-                                    #for(item : comments)
-                                    <a href="index.html#">
-                                        <div class="inbox-item">
-                                            <div class="inbox-item-img">
-                                                <a href="${item.url}" target="_blank">
-                                                    <img src="${gravatar(item.mail)}" class="img-circle" alt="${item.author}">
-                                                </a>
-                                            </div>
-                                            <p class="inbox-item-author">
-                                                <a href="${item.url}" target="_blank">${item.author}</a>
-                                            </p>
-                                            <p class="inbox-item-text">
-                                                <a href="${site_url('/article/')}${item.cid}#comments" target="_blank">
-                                                    ${article(item.content)}
-                                                </a>
-                                            </p>
-                                            <p class="inbox-item-date">${fmtdate(item.created,'MM月dd日HH:mm')}</p>
+
+                                <div v-if="comments.length > 0" class="inbox-widget nicescroll mx-box" tabindex="5000" style="overflow: hidden; outline: none;">
+                                    <div class="inbox-item" v-for="item in comments">
+                                        <div class="inbox-item-img">
+                                            <a :href="item.url" target="_blank">
+                                                <img :src="item.mail | gravatar" class="img-circle" :alt="item.author">
+                                            </a>
                                         </div>
-                                    </a>
-                                    #end
+                                        <p class="inbox-item-author">
+                                            <a :href="item.url" target="_blank">{{item.author}}</a>
+                                        </p>
+                                        <p class="inbox-item-text">
+                                            <a :href="'${site_url('/article/')}' + item.cid + '#comments'" target="_blank">
+                                                ${article("{{item.content}}")}
+                                            </a>
+                                        </p>
+                                        <p class="inbox-item-date">{{item.created | formatUnix('MM月DD日 HH:mm')}}</p>
+                                        <p v-if="item.status == 'no_audit'" class="pull-right">
+                                            <button class="btn btn-sm btn-success" @click="audit(item.coid, 'approved')">通过</button>
+                                            <button class="btn btn-sm btn-danger" @click="deleteComment(item.coid)">删除</button>
+                                        </p>
+                                    </div>
                                 </div>
-                                #end
                             </div>
                         </div>
                     </div>
@@ -133,6 +131,7 @@
         el: '#app',
         data: {
             logPage: {},
+            comments:[],
             isLoading: true
         },
         beforeCreate: function () {
@@ -156,6 +155,50 @@
                     error: function (error) {
                         console.log(error);
                         alert(error || '数据加载失败');
+                    }
+                });
+                tale.get({
+                    url: '/admin/api/comments',
+                    success: function (data) {
+                        $vm.comments = data.payload.rows
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            audit: function(coid, status){
+                var $vm = this;
+                tale.post({
+                    url : '/admin/api/comment/status',
+                    data: {coid: coid, status: status},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOk('已通过');
+                            $vm.load();
+                        } else {
+                            tale.alertError(result.msg || '评论设置失败');
+                        }
+                    }
+                });
+            },
+            deleteComment: function (coid) {
+                var $vm = this;
+                tale.alertConfirm({
+                    title: '确定删除该评论吗?',
+                    then: function () {
+                        tale.post({
+                            url: '/admin/api/comment/delete/' + coid,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    tale.alertOk('评论删除成功');
+                                    $vm.load();
+                                } else {
+                                    tale.alertError(result.msg || '评论删除失败');
+                                }
+                            }
+                        });
                     }
                 });
             }

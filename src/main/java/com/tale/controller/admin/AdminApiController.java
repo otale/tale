@@ -182,6 +182,53 @@ public class AdminApiController extends BaseController {
         return RestResponse.ok(commentsPage);
     }
 
+    @SysLog("删除评论")
+    @PostRoute("comment/delete/:coid")
+    public RestResponse<?> deleteComment(@PathParam Integer coid) {
+        Comments comments = select().from(Comments.class).byId(coid);
+        if (null == comments) {
+            return RestResponse.fail("不存在该评论");
+        }
+        commentsService.delete(coid, comments.getCid());
+        siteService.cleanCache(Types.C_STATISTICS);
+        return RestResponse.ok();
+    }
+
+    @SysLog("修改评论状态")
+    @PostRoute("comment/status")
+    public RestResponse<?> updateStatus(@BodyParam Comments comments) {
+        comments.update();
+        siteService.cleanCache(Types.C_STATISTICS);
+        return RestResponse.ok();
+    }
+
+    @SysLog("回复评论")
+    @PostRoute("comment/reply")
+    public RestResponse<?> replyComment(@BodyParam Comments comments, Request request) {
+        CommonValidator.validAdmin(comments);
+
+        Comments c = select().from(Comments.class).byId(comments.getCoid());
+        if (null == c) {
+            return RestResponse.fail("不存在该评论");
+        }
+        Users users = this.user();
+        comments.setAuthor(users.getUsername());
+        comments.setAuthorId(users.getUid());
+        comments.setCid(c.getCid());
+        comments.setIp(request.address());
+        comments.setUrl(users.getHomeUrl());
+
+        if (StringKit.isNotBlank(users.getEmail())) {
+            comments.setMail(users.getEmail());
+        } else {
+            comments.setMail("");
+        }
+        comments.setParent(comments.getCoid());
+        commentsService.saveComment(comments);
+        siteService.cleanCache(Types.C_STATISTICS);
+        return RestResponse.ok();
+    }
+
     @GetRoute("attaches")
     public RestResponse attachList(PageParam pageParam) {
 
