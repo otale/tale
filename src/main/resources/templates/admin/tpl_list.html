@@ -1,21 +1,27 @@
 #include('./header.html',{has_sub:'other', active:'template', title:'编辑模板'})
-<div class="row">
-    <div class="col-sm-12">
-        <h4 class="page-title">编辑模板</h4>
-    </div>
-    <div class="col-md-12">
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">编辑模板</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <select id="tplSelect" onchange="showContent(this)">
+                        <option selected value="">请选择模板文件</option>
+                        #for(tpl : tpls)
+                        <option value="${tpl}">${tpl}</option>
+                        #end
+                    </select>
 
-        <select id="tplSelect" onchange="showContent(this)">
-            <option selected value="">请选择模板文件</option>
-            #for(tpl : tpls)
-            <option value="${tpl}">${tpl}</option>
-            #end
-        </select>
+                    <button class="btn btn-primary waves-effect waves-light m-b-5" onclick="saveTpl()">保存修改</button>
 
-        <button class="btn btn-primary waves-effect waves-light m-b-5" onclick="saveTpl()">保存修改</button>
-
-        <div>
-            <textarea id="tpl-preview" rows="20" cols="100%" placeholder="选择模板后进行修改"></textarea>
+                    <div>
+                        <textarea id="tpl-preview" rows="20" cols="100%" placeholder="选择模板后进行修改"></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -23,6 +29,41 @@
 #include('./footer.html')
 <script>
     var tale = new $.tale();
+
+    var tale = new $.tale();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            articlePage: {},
+            isLoading: true
+        },
+        beforeCreate: function () {
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function () {
+                var $vm = this;
+                tale.get({
+                    url: '/admin/api/articles',
+                    success: function (data) {
+                        $vm.articlePage = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
 
     function showContent(obj) {
         var fileName = obj.value;

@@ -40,78 +40,82 @@
 </style>
 <div id="app" class="row" v-cloak>
     <loading :active.sync="isLoading" :can-cancel="true"></loading>
-    <div class="col-sm-12">
-        <h4 class="page-title">文件管理</h4>
-    </div>
-    <div class="row">
-        <div class="col-md-12 portlets">
-            <!-- Your awesome content goes here -->
-            <div class="m-b-30">
-                <form action="#" class="dropzone" id="dropzone">
-                    <div class="fallback">
-                        <input name="file" type="file" multiple="multiple">
-                    </div>
-                    <div class="dz-message">
-                        <p>将文件拖至此处或点击上传.${attachURL()}</p>
-                        <p>
-                            <span style="font-size: 16px; color: #d0d0d0;">一次最多可以上传10个文件</span>
-                        </p>
-                    </div>
-                </form>
-            </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">附件管理</h3>
         </div>
-    </div>
-    <div class="col-md-12 attach">
-        <div v-if="attachPage.rows.length == 0" class="row">
-            <div class="col-md-4 text-center">
-                <div class="alert alert-warning">
-                    目前还没有一个附件呢，你可以上传试试!
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12 portlets">
+                    <!-- Your awesome content goes here -->
+                    <div class="m-b-30">
+                        <form action="#" class="dropzone" id="dropzone">
+                            <div class="fallback">
+                                <input name="file" type="file" multiple="multiple">
+                            </div>
+                            <div class="dz-message">
+                                <p>将文件拖至此处或点击上传.${attachURL()}</p>
+                                <p>
+                                    <span style="font-size: 16px; color: #d0d0d0;">一次最多可以上传10个文件</span>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-12 attach">
+                    <div v-if="attachPage.rows.length == 0" class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="alert alert-warning">
+                                目前还没有一个附件呢，你可以上传试试!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 text-center m-t-10" v-for="item in attachPage.rows">
+                        <a :href="'${attachURL()}' + item.fkey" target="_blank">
+                            <img v-if="item.ftype == 'image'" class="attach-img" :src="'${attachURL()}' + item.fkey"
+                                 :title="item.fname"/>
+                            <img v-if="item.ftype != 'image'" class="attach-img" src="/static/admin/images/attach.png"
+                                 :title="item.fname"/>
+                        </a>
+                        <div class="clearfix m-t-10">
+                            <span class="attach-text" data-toggle="tooltip" data-placement="top" :data-original-title="item.fname">{{item.fname}}</span>
+                        </div>
+                        <div class="clearfix">
+                            <button :url="'${attachURL()}' + item.fkey" type="button"
+                                    class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
+                                <i class="fa fa-copy"></i> <span>复制</span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5"
+                                    @click="deleteAttach(item.id)">
+                                <i class="fa fa-trash-o"></i> <span>删除</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <ul class="pagination m-b-5 pull-right">
+                        <li v-if="attachPage.hasPrevPage">
+                            <a @click="load(attachPage.prevPage)" aria-label="Previous">
+                                <i class="fa fa-angle-left"></i>&nbsp;上一页
+                            </a>
+                        </li>
+
+                        <li class="page-item" v-for="num in attachPage.navPageNums" :class="{ active: attachPage.pageNum == num }">
+                            <a @click="load(num)">
+                                {{ num }}</i>
+                            </a>
+                        </li>
+                        <li v-if="attachPage.hasNextPage">
+                            <a type="button" class="page-link" @click="load(attachPage.nextPage)">
+                                下一页&nbsp;<i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li><span>共 {{attachPage.totalPages}} 页</span></li>
+                    </ul>
+
                 </div>
             </div>
         </div>
-
-        <div class="col-md-2 text-center m-t-10" v-for="item in attachPage.rows">
-            <a :href="'${attachURL()}' + item.fkey" target="_blank">
-                <img v-if="item.ftype == 'image'" class="attach-img" :src="'${attachURL()}' + item.fkey"
-                     :title="item.fname"/>
-                <img v-if="item.ftype != 'image'" class="attach-img" src="/static/admin/images/attach.png"
-                     :title="item.fname"/>
-            </a>
-            <div class="clearfix m-t-10">
-                <span class="attach-text" data-toggle="tooltip" data-placement="top" :data-original-title="item.fname">{{item.fname}}</span>
-            </div>
-            <div class="clearfix">
-                <button :url="'${attachURL()}' + item.fkey" type="button"
-                        class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
-                    <i class="fa fa-copy"></i> <span>复制</span>
-                </button>
-                <button type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5"
-                        @click="deleteAttach(item.id)">
-                    <i class="fa fa-trash-o"></i> <span>删除</span>
-                </button>
-            </div>
-        </div>
-
-        <ul class="pagination m-b-5 pull-right">
-            <li v-if="attachPage.hasPrevPage">
-                <a @click="load(attachPage.prevPage)" aria-label="Previous">
-                    <i class="fa fa-angle-left"></i>&nbsp;上一页
-                </a>
-            </li>
-
-            <li class="page-item" v-for="num in attachPage.navPageNums" :class="{ active: attachPage.pageNum == num }">
-                <a @click="load(num)">
-                    {{ num }}</i>
-                </a>
-            </li>
-            <li v-if="attachPage.hasNextPage">
-                <a type="button" class="page-link" @click="load(attachPage.nextPage)">
-                    下一页&nbsp;<i class="fa fa-angle-right"></i>
-                </a>
-            </li>
-            <li><span>共 {{attachPage.totalPages}} 页</span></li>
-        </ul>
-
     </div>
 </div>
 #include('./footer.html')

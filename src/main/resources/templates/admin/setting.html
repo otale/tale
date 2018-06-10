@@ -1,124 +1,131 @@
 #include('./header.html',{active:'setting', title:'系统设置'})
 <link href="${cdnURL()}/plugins/toggles/toggles.css" rel="stylesheet">
+
 <div id="app" class="row" v-cloak>
     <loading :active.sync="isLoading" :can-cancel="true"></loading>
-    <div class="col-sm-12">
-        <h4 class="page-title">系统设置</h4>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-color panel-primary">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">站点设置</h3>
+                <h3 class="panel-title">系统设置</h3>
             </div>
             <div class="panel-body">
-                <form class="form-horizontal" role="form" id="global-form">
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">网站地址</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="options.site_url" class="form-control" placeholder="网站地址" required aria-required="true"/>
-                            <span class="help-block"><small>请和你当前访问的域名保持一致，否则会出现渲染错误。</small></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">站点标题</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" v-model="options.site_title" placeholder="站点子标题" required aria-required="true"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">站点子标题</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" v-model="options.site_subtitle" placeholder="站点子标题" required aria-required="true"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">站点描述</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" v-model="options.site_description" placeholder="站点描述" required aria-required="true"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">站点关键词</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" v-model="options.site_keywords" placeholder="站点关键词" required aria-required="true"/>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-color panel-inverse">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">站点设置</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form class="form-horizontal" role="form" id="global-form">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">网站地址</label>
+                                        <div class="col-md-9">
+                                            <input type="text" v-model="options.site_url" class="form-control" placeholder="网站地址" required aria-required="true"/>
+                                            <span class="help-block"><small>请和你当前访问的域名保持一致，否则会出现渲染错误。</small></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">站点标题</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" v-model="options.site_title" placeholder="站点子标题" required aria-required="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">站点子标题</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" v-model="options.site_subtitle" placeholder="站点子标题" required aria-required="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">站点描述</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" v-model="options.site_description" placeholder="站点描述" required aria-required="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">站点关键词</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" v-model="options.site_keywords" placeholder="站点关键词" required aria-required="true"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix pull-right">
+                                        <button type="button" class="btn btn-inverse waves-effect waves-light" @click="saveSetting">
+                                            保存设置
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="clearfix pull-right">
-                        <button type="button" class="btn btn-primary waves-effect waves-light" @click="saveSetting">
-                            保存设置
-                        </button>
+                    <div class="col-md-6">
+                        <div class="panel panel-color panel-inverse">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">高级选项设置</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form class="form-horizontal" role="form" id="advanced-form">
+
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">CND地址</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" name="cdnURL" placeholder="CDN地址" />
+                                            <span class="help-block"><small>该地址用于加载博客后台静态资源，不清楚请勿设置。</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">清理缓存</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" name="cacheKey" placeholder="请输入缓存前缀，输入*删除所有缓存"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">黑名单IP列表</label>
+                                        <div class="col-md-9">
+                                            <textarea rows="3" class="form-control" v-model="options.site_block_ips" name="blockIps" placeholder="请输入黑名单IP，如：123.123.33.23,123.123.33.24"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">卸载插件</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" name="pluginName" placeholder="请输入插件名，输入*卸载所有插件"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">允许重新安装</label>
+                                        <div class="col-md-9">
+                                            <div id="allowInstall" class="toggle toggle-success"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">评论需要审核</label>
+                                        <div class="col-md-9">
+                                            <div id="allowCommentAudit" class="toggle toggle-success"></div>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" name="allowInstall" v-model="allowInstall"/>
+                                    <input type="hidden" name="allowCommentAudit" v-model="allowCommentAudit"/>
+
+                                    <div class="clearfix pull-right">
+                                        <button type="button" class="btn btn-inverse waves-effect waves-light" @click="saveAdvanced">
+                                            保存设置
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-
-
-    <div class="col-md-6">
-        <div class="panel panel-color panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">高级选项设置</h3>
-            </div>
-            <div class="panel-body">
-                <form class="form-horizontal" role="form" id="advanced-form">
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">CND地址</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="cdnURL" placeholder="CDN地址" />
-                            <span class="help-block"><small>该地址用于加载博客后台静态资源，不清楚请勿设置。</small></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">清理缓存</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="cacheKey" placeholder="请输入缓存前缀，输入*删除所有缓存"/>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">黑名单IP列表</label>
-                        <div class="col-md-9">
-                            <textarea rows="3" class="form-control" v-model="options.site_block_ips" name="blockIps" placeholder="请输入黑名单IP，如：123.123.33.23,123.123.33.24"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">卸载插件</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="pluginName" placeholder="请输入插件名，输入*卸载所有插件"/>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">允许重新安装</label>
-                        <div class="col-md-9">
-                            <div id="allowInstall" class="toggle toggle-success"></div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">评论需要审核</label>
-                        <div class="col-md-9">
-                            <div id="allowCommentAudit" class="toggle toggle-success"></div>
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="allowInstall" v-model="allowInstall"/>
-                    <input type="hidden" name="allowCommentAudit" v-model="allowCommentAudit"/>
-
-                    <div class="clearfix pull-right">
-                        <button type="button" class="btn btn-primary waves-effect waves-light" @click="saveAdvanced">
-                            保存设置
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
 </div>
 #include('./footer.html')
 <script src="${cdnURL()}/plugins/jquery-toggles/2.0.4/toggles.min.js"></script>

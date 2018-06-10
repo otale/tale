@@ -1,72 +1,83 @@
 #include('./header.html',{active:'comments', title:'评论管理'})
-<div class="row">
-    <div class="col-sm-12">
-        <h4 class="page-title">评论管理</h4>
-    </div>
-    <div id="app" class="col-md-12" v-cloak>
-        <loading :active.sync="isLoading" :can-cancel="true"></loading>
-        <table class="table table-striped table-bordered">
-            <thead>
-            <tr>
-                <th>评论内容</th>
-                <th>评论人</th>
-                <th>评论时间</th>
-                <th>评论人邮箱</th>
-                <th>评论人网址</th>
-                <th>评论状态</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in commentPage.rows">
-                <td>
-                    {{ item.content }}
-                </td>
-                <td>{{ item.author }}</td>
-                <td>{{ item.created | formatUnix }}</td>
-                <td>{{ item.mail }}</td>
-                <td>{{ item.url }}</td>
-                <td>
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">评论管理</h3>
+            </div>
+            <div class="panel-body">
+                <div v-if="commentPage.rows.length == 0" class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="alert alert-warning">
+                            目前还没有评论哦！
+                        </div>
+                    </div>
+                </div>
+
+                <table v-if="commentPage.rows.length > 0" class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>评论内容</th>
+                        <th>评论人</th>
+                        <th>评论时间</th>
+                        <th>评论人邮箱</th>
+                        <th>评论人网址</th>
+                        <th>评论状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in commentPage.rows">
+                        <td>
+                            {{ item.content }}
+                        </td>
+                        <td>{{ item.author }}</td>
+                        <td>{{ item.created | formatUnix }}</td>
+                        <td>{{ item.mail }}</td>
+                        <td>{{ item.url }}</td>
+                        <td>
                     <span v-if="item.status == 'approved'" class="label label-success">
                         <span v-if="item.authorId == ${login_user.uid}">后台回复</span>
                         <span v-if="item.status == 'approved'">审核通过</span>
                     </span>
-                    <span v-show="item.status == 'no_audit'" class="label label-default">
+                            <span v-show="item.status == 'no_audit'" class="label label-default">
                         <span v-if="item.authorId == ${login_user.uid}">后台回复</span>
                         <span v-if="item.status == 'approved'">未审核</span>
                     </span>
-                </td>
-                <td>
-                    <button v-if="item.authorId != ${login_user.uid}" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="reply(item.coid)"><i class="fa fa-edit"></i> 回复</button>
-                    <button v-if="item.status == 'no_audit && item.authorId != ${login_user.uid}'" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="audit(item.coid, 'approved')">
-                        <i class="fa fa-trash-o"></i> 通过</span>
-                    </button>
-                    <button class="btn btn-danger btn-sm waves-effect waves-light m-b-5" @click="deleteComment(item.coid)"><i class="fa fa-trash-o"></i> 删除</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                        </td>
+                        <td>
+                            <button v-if="item.authorId != ${login_user.uid}" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="reply(item.coid)"><i class="fa fa-edit"></i> 回复</button>
+                            <button v-if="item.status == 'no_audit && item.authorId != ${login_user.uid}'" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="audit(item.coid, 'approved')">
+                                <i class="fa fa-trash-o"></i> 通过</span>
+                            </button>
+                            <button class="btn btn-danger btn-sm waves-effect waves-light m-b-5" @click="deleteComment(item.coid)"><i class="fa fa-trash-o"></i> 删除</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
-        <ul class="pagination m-b-5 pull-right">
-            <li v-if="commentPage.hasPrevPage">
-                <a @click="load(commentPage.prevPage)" aria-label="Previous">
-                    <i class="fa fa-angle-left"></i>&nbsp;上一页
-                </a>
-            </li>
+                <ul v-if="commentPage.rows.length > 0" class="pagination m-b-5 pull-right">
+                    <li v-if="commentPage.hasPrevPage">
+                        <a @click="load(commentPage.prevPage)" aria-label="Previous">
+                            <i class="fa fa-angle-left"></i>&nbsp;上一页
+                        </a>
+                    </li>
 
-            <li class="page-item" v-for="num in commentPage.navPageNums" :class="{ active: commentPage.pageNum == num }">
-                <a @click="load(num)">
-                    {{ num }}</i>
-                </a>
-            </li>
-            <li v-if="commentPage.hasNextPage">
-                <a type="button" class="page-link" @click="load(commentPage.nextPage)">
-                    下一页&nbsp;<i class="fa fa-angle-right"></i>
-                </a>
-            </li>
-            <li><span>共 {{commentPage.totalPages}} 页</span></li>
-        </ul>
-
+                    <li class="page-item" v-for="num in commentPage.navPageNums" :class="{ active: commentPage.pageNum == num }">
+                        <a @click="load(num)">
+                            {{ num }}</i>
+                        </a>
+                    </li>
+                    <li v-if="commentPage.hasNextPage">
+                        <a type="button" class="page-link" @click="load(commentPage.nextPage)">
+                            下一页&nbsp;<i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li><span>共 {{commentPage.totalPages}} 页</span></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 #include('./footer.html')
@@ -75,7 +86,9 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            commentPage: {},
+            commentPage: {
+                rows:[]
+            },
             isLoading: true
         },
         beforeCreate: function(){
