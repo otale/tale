@@ -48,9 +48,9 @@
                                 </div>
                             </td>
                             <td>
-                                <button v-if="item.authorId != ${login_user.uid}" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="reply(item.coid)"><i class="fa fa-edit"></i> 回复</button>
-                                <button v-if="item.status == 'no_audit && item.authorId != ${login_user.uid}'" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="audit(item.coid, 'approved')">
-                                    <i class="fa fa-trash-o"></i> 通过</span>
+                                <button v-if="item.authorId != ${login_user.uid}" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="reply(item.coid)"><i class="fa fa-reply"></i> 回复</button>
+                                <button v-if="item.status == 'no_audit' && item.authorId != ${login_user.uid}" class="btn btn-success btn-sm waves-effect waves-light m-b-5" @click="audit(item.coid, 'approved')">
+                                    <i class="fa fa-check-circle"></i> 通过</span>
                                 </button>
                                 <button class="btn btn-danger btn-sm waves-effect waves-light m-b-5" @click="deleteComment(item.coid)"><i class="fa fa-trash-o"></i> 删除</button>
                             </td>
