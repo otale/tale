@@ -133,7 +133,7 @@ public class ContentsService {
     }
 
     public Page<Contents> findArticles(ArticleParam articleParam) {
-        AnimaQuery<Contents> query = select().from(Contents.class);
+        AnimaQuery<Contents> query = select().from(Contents.class).exclude(Contents::getContent);
 
         if (StringKit.isNotEmpty(articleParam.getStatus())) {
             query.and(Contents::getStatus, articleParam.getStatus());
@@ -160,7 +160,9 @@ public class ContentsService {
         } else {
             contents.setUrl("/article/" + contents.getCid());
         }
-        contents.setContent(contents.getContent().replaceAll("\\\\\"", "\\\""));
+        if (StringKit.isNotEmpty(contents.getContent())) {
+            contents.setContent(contents.getContent().replaceAll("\\\\\"", "\\\""));
+        }
         return contents;
     }
 }
