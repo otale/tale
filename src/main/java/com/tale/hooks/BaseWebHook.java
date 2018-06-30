@@ -2,7 +2,7 @@ package com.tale.hooks;
 
 import com.blade.ioc.annotation.Bean;
 import com.blade.kit.DateKit;
-import com.blade.mvc.hook.Signature;
+import com.blade.mvc.RouteContext;
 import com.blade.mvc.hook.WebHook;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
@@ -20,9 +20,9 @@ import static io.github.biezhi.anima.Anima.select;
 public class BaseWebHook implements WebHook {
 
     @Override
-    public boolean before(Signature signature) {
-        Request  request  = signature.request();
-        Response response = signature.response();
+    public boolean before(RouteContext context) {
+        Request  request  = context.request();
+        Response response = context.response();
 
         String uri = request.uri();
         String ip  = request.address();
@@ -51,16 +51,16 @@ public class BaseWebHook implements WebHook {
     }
 
     @Override
-    public boolean after(Signature signature) {
+    public boolean after(RouteContext context) {
         if(null != TaleUtils.getLoginUser()){
-            SysLog sysLog = signature.getAction().getAnnotation(SysLog.class);
+            SysLog sysLog = context.routeAction().getAnnotation(SysLog.class);
             if (null != sysLog) {
                 Logs logs = new Logs();
                 logs.setAction(sysLog.value());
                 logs.setAuthorId(TaleUtils.getLoginUser().getUid());
-                logs.setIp(signature.request().address());
-                if(!signature.request().uri().contains("upload")){
-                    logs.setData(signature.request().bodyToString());
+                logs.setIp(context.request().address());
+                if(!context.request().uri().contains("upload")){
+                    logs.setData(context.request().bodyToString());
                 }
                 logs.setCreated(DateKit.nowUnix());
                 logs.save();

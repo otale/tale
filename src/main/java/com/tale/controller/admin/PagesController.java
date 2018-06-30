@@ -58,12 +58,12 @@ public class PagesController extends BaseController {
     }
 
     @GetRoute("/article/edit/:cid")
-    public String editArticle() {
+    public String editArticle(@PathParam String cid) {
         return "admin/article/edit.html";
     }
 
     @GetRoute("/page/edit/:cid")
-    public String editPage() {
+    public String editPage(@PathParam String cid) {
         return "admin/page/edit.html";
     }
 
