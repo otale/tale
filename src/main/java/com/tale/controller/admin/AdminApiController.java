@@ -360,7 +360,7 @@ public class AdminApiController extends BaseController {
     }
 
     @SysLog("保存主题设置")
-    @PostRoute("theme/setting")
+    @PostRoute("themes/setting")
     public RestResponse<?> saveSetting(Request request) {
         Map<String, List<String>> query = request.parameters();
 
@@ -378,7 +378,7 @@ public class AdminApiController extends BaseController {
     }
 
     @SysLog("激活主题")
-    @PostRoute("theme/active")
+    @PostRoute("themes/active")
     public RestResponse<?> activeTheme(@BodyParam ThemeParam themeParam) {
         optionsService.saveOption(OPTION_SITE_THEME, themeParam.getSiteTheme());
         delete().from(Options.class).where(Options::getName).like("theme_option_%").execute();
