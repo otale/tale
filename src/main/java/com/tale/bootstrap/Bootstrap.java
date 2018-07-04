@@ -7,6 +7,7 @@ import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.StringKit;
+import com.blade.loader.BladeLoader;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
 import com.blade.validator.Validators;
 import com.tale.controller.BaseController;
@@ -36,7 +37,7 @@ import static com.tale.bootstrap.TaleConst.CLASSPATH;
  * @author biezhi
  */
 @Bean
-public class Bootstrap implements BeanProcessor {
+public class Bootstrap implements BladeLoader {
 
     @Inject
     private OptionsService optionsService;
@@ -45,7 +46,7 @@ public class Bootstrap implements BeanProcessor {
     private Environment environment;
 
     @Override
-    public void preHandle(Blade blade) {
+    public void preLoad(Blade blade) {
         Ioc ioc = blade.ioc();
 
         Validators.useChinese();
@@ -63,7 +64,7 @@ public class Bootstrap implements BeanProcessor {
     }
 
     @Override
-    public void processor(Blade blade) {
+    public void load(Blade blade) {
         JetbrickTemplateEngine templateEngine = new JetbrickTemplateEngine();
 
         List<String> macros = new ArrayList<>(8);

@@ -6,6 +6,7 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.Const;
+import com.blade.mvc.WebContext;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
@@ -351,7 +352,7 @@ public class AdminApiController extends BaseController {
                 }
                 themes.add(themeDto);
                 try {
-                    Blade.me().addStatics("/templates/themes/" + f.getName() + "/screenshot.png");
+                    WebContext.blade().addStatics("/templates/themes/" + f.getName() + "/screenshot.png");
                 } catch (Exception e) {
                 }
             }
