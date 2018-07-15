@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tale.bootstrap.TaleConst.CLASSPATH;
+import static com.tale.bootstrap.TaleConst.COMMENT_APPROVED;
 import static io.github.biezhi.anima.Anima.select;
 
 /**
@@ -71,14 +72,18 @@ public class SiteService {
         if (limit < 0 || limit > 10) {
             limit = 10;
         }
-        Page<Comments> commentsPage = select().from(Comments.class).order(Comments::getCreated, OrderBy.DESC).page(1, limit);
+
+        Page<Comments> commentsPage = select().from(Comments.class)
+                                              .where(Comments::getStatus, COMMENT_APPROVED)
+                                              .order(Comments::getCreated, OrderBy.DESC)
+                                              .page(1, limit);
         return commentsPage.getRows();
     }
 
     /**
      * 根据类型获取文章列表
      *
-     * @param type  最新,随机
+     * @param type 最新,随机
      * @param limit 获取条数
      */
     public List<Contents> getContens(String type, int limit) {
@@ -89,17 +94,20 @@ public class SiteService {
 
         // 最新文章
         if (Types.RECENT_ARTICLE.equals(type)) {
-            Page<Contents> contentsPage = select().from(Contents.class).where(Contents::getStatus, Types.PUBLISH)
-                    .and(Contents::getType, Types.ARTICLE)
-                    .order(Contents::getCreated, OrderBy.DESC)
-                    .page(1, limit);
+            Page<Contents> contentsPage = select().from(Contents.class)
+                                                  .where(Contents::getStatus, Types.PUBLISH)
+                                                  .and(Contents::getType, Types.ARTICLE)
+                                                  .order(Contents::getCreated, OrderBy.DESC)
+                                                  .page(1, limit);
 
             return contentsPage.getRows();
         }
 
         // 随机文章
         if (Types.RANDOM_ARTICLE.equals(type)) {
-            List<Integer> cids = select().bySQL(Integer.class, "select cid from t_contents where type = ? and status = ? order by random() * cid limit ?", Types.ARTICLE, Types.PUBLISH, limit).all();
+            List<Integer> cids = select().bySQL(Integer.class,
+                                                "select cid from t_contents where type = ? and status = ? order by random() * cid limit ?",
+                                                Types.ARTICLE, Types.PUBLISH, limit).all();
             if (BladeKit.isNotEmpty(cids)) {
                 return select().from(Contents.class).in(Contents::getCid, cids).all();
             }
@@ -119,8 +127,10 @@ public class SiteService {
 
         statistics = new Statistics();
 
-        long articles   = select().from(Contents.class).where(Contents::getType, Types.ARTICLE).and(Contents::getStatus, Types.PUBLISH).count();
-        long pages      = select().from(Contents.class).where(Contents::getType, Types.PAGE).and(Contents::getStatus, Types.PUBLISH).count();
+        long articles = select().from(Contents.class).where(Contents::getType, Types.ARTICLE)
+                                .and(Contents::getStatus, Types.PUBLISH).count();
+        long pages = select().from(Contents.class).where(Contents::getType, Types.PAGE)
+                             .and(Contents::getStatus, Types.PUBLISH).count();
         long comments   = select().from(Comments.class).count();
         long attachs    = select().from(Attach.class).count();
         long tags       = select().from(Metas.class).where(Metas::getType, Types.TAG).count();
@@ -141,21 +151,23 @@ public class SiteService {
      * 查询文章归档
      */
     public List<Archive> getArchives() {
-        String sql = "select strftime('%Y年%m月', datetime(created, 'unixepoch') ) as date_str, count(*) as count  from t_contents " +
+        String sql =
+            "select strftime('%Y年%m月', datetime(created, 'unixepoch') ) as date_str, count(*) as count  from t_contents "
+                +
                 "where type = 'post' and status = 'publish' group by date_str order by date_str desc";
 
         List<Archive> archives = select().bySQL(Archive.class, sql).all();
         if (null != archives) {
             return archives.stream()
-                    .map(this::parseArchive)
-                    .collect(Collectors.toList());
+                           .map(this::parseArchive)
+                           .collect(Collectors.toList());
         }
         return new ArrayList<>(0);
     }
 
     private Archive parseArchive(Archive archive) {
         String dateStr = archive.getDateStr();
-        Date   sd       = DateKit.toDate(dateStr + "01", "yyyy年MM月dd");
+        Date   sd      = DateKit.toDate(dateStr + "01", "yyyy年MM月dd");
         archive.setDate(sd);
         int      start    = DateKit.toUnix(sd);
         Calendar calender = Calendar.getInstance();
@@ -165,12 +177,12 @@ public class SiteService {
         int  end   = DateKit.toUnix(endSd) - 1;
 
         List<Contents> contents = select().from(Contents.class)
-                .where(Contents::getType, Types.ARTICLE)
-                .and(Contents::getStatus, Types.PUBLISH)
-                .and(Contents::getCreated).gt(start)
-                .and(Contents::getCreated).lt(end)
-                .order(Contents::getCreated, OrderBy.DESC)
-                .all();
+                                          .where(Contents::getType, Types.ARTICLE)
+                                          .and(Contents::getStatus, Types.PUBLISH)
+                                          .and(Contents::getCreated).gt(start)
+                                          .and(Contents::getCreated).lt(end)
+                                          .order(Contents::getCreated, OrderBy.DESC)
+                                          .all();
 
         archive.setArticles(contents);
         return archive;
@@ -190,10 +202,6 @@ public class SiteService {
 
     /**
      * 系统备份
-     *
-     * @param bkType
-     * @param bkPath
-     * @param fmt
      */
     public BackResponse backup(String bkType, String bkPath, String fmt) throws Exception {
         BackResponse backResponse = new BackResponse();
@@ -217,8 +225,9 @@ public class SiteService {
         }
         // 备份数据库
         if ("db".equals(bkType)) {
-            String filePath = "upload/" + DateKit.toString(new Date(), "yyyyMMddHHmmss") + "_" + StringKit.rand(8) + ".db";
-            String cp       = CLASSPATH + filePath;
+            String filePath = "upload/" + DateKit.toString(new Date(), "yyyyMMddHHmmss") + "_"
+                + StringKit.rand(8) + ".db";
+            String cp = CLASSPATH + filePath;
             Files.createDirectory(Paths.get(cp));
             Files.copy(Paths.get(SqliteJdbc.DB_PATH), Paths.get(cp));
             backResponse.setSql_path("/" + filePath);
@@ -235,11 +244,6 @@ public class SiteService {
 
     /**
      * 获取分类/标签列表
-     *
-     * @param searchType
-     * @param type
-     * @param limit
-     * @return
      */
     public List<Metas> getMetas(String searchType, String type, int limit) {
 
@@ -253,7 +257,9 @@ public class SiteService {
 
         // 获取最新的项目
         if (Types.RECENT_META.equals(searchType)) {
-            String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
+            String sql =
+                "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid "
+                    +
                     "where a.type = ? group by a.mid order by count desc, a.mid desc limit ?";
 
             return select().bySQL(Metas.class, sql, type, limit).all();
@@ -261,10 +267,14 @@ public class SiteService {
 
         // 随机获取项目
         if (Types.RANDOM_META.equals(searchType)) {
-            List<Integer> mids = select().bySQL(Integer.class, "select mid from t_metas where type = ? order by random() * mid limit ?", type, limit).all();
+            List<Integer> mids = select().bySQL(Integer.class,
+                                                "select mid from t_metas where type = ? order by random() * mid limit ?",
+                                                type, limit).all();
             if (BladeKit.isNotEmpty(mids)) {
                 String in = TaleUtils.listToInSql(mids);
-                String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
+                String sql =
+                    "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid "
+                        +
                         "where a.mid in " + in + "group by a.mid order by count desc, a.mid desc";
 
                 return select().bySQL(Metas.class, sql).all();
@@ -276,16 +286,20 @@ public class SiteService {
     /**
      * 获取相邻的文章
      *
-     * @param type    上一篇:prev | 下一篇:next
+     * @param type 上一篇:prev | 下一篇:next
      * @param created 当前文章创建时间
      */
     public Contents getNhContent(String type, Integer created) {
         Contents contents = null;
         if (Types.NEXT.equals(type)) {
-            contents = select().bySQL(Contents.class, "SELECT * FROM t_contents WHERE type = ? AND status = ? AND created > ? ORDER BY created ASC LIMIT 1", Types.ARTICLE, Types.PUBLISH, created).one();
+            contents = select().bySQL(Contents.class,
+                                      "SELECT * FROM t_contents WHERE type = ? AND status = ? AND created > ? ORDER BY created ASC LIMIT 1",
+                                      Types.ARTICLE, Types.PUBLISH, created).one();
         }
         if (Types.PREV.equals(type)) {
-            contents = select().bySQL(Contents.class, "SELECT * FROM t_contents WHERE type = ? AND status = ? AND created < ? ORDER BY created DESC LIMIT 1", Types.ARTICLE, Types.PUBLISH, created).one();
+            contents = select().bySQL(Contents.class,
+                                      "SELECT * FROM t_contents WHERE type = ? AND status = ? AND created < ? ORDER BY created DESC LIMIT 1",
+                                      Types.ARTICLE, Types.PUBLISH, created).one();
         }
         return contents;
     }
@@ -293,8 +307,8 @@ public class SiteService {
     /**
      * 获取文章的评论
      *
-     * @param cid   文章id
-     * @param page  页码
+     * @param cid 文章id
+     * @param page 页码
      * @param limit 每页条数
      */
     public Page<Comment> getComments(Integer cid, int page, int limit) {

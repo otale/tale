@@ -12,7 +12,7 @@ import com.tale.bootstrap.TaleLoader;
 public class Application {
 
     public static void main(String[] args) {
-        Blade blade = Blade.me();
+        Blade blade = Blade.of();
         TaleLoader.init(blade);
         blade.use(new CsrfMiddleware()).start(Application.class, args);
     }
