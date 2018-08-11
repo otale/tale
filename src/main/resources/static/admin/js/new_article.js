@@ -4,6 +4,7 @@ var attach_url = $('#attach_url').val();
 // 每60秒自动保存一次草稿
 var refreshIntervalId;
 Dropzone.autoDiscover = false;
+Vue.component('v-select', VueSelect.VueSelect);
 
 var vm = new Vue({
     el: '#app',
@@ -41,7 +42,9 @@ var vm = new Vue({
             tale.get({
                 url: '/admin/api/categories',
                 success: function (data) {
-                    $vm.categories = data.payload
+                    for(item in data.payload){
+                        $vm.categories.push(data.payload[item].name);
+                    }
                 },
                 error: function (error) {
                     console.log(error);
@@ -56,6 +59,7 @@ var vm = new Vue({
 
                 $vm.article.content = content;
                 $vm.article.categories = $vm.article.selected.join(',');
+
                 var params = tale.copy($vm.article);
                 params.selected = null;
                 params.created = moment($('#form_datetime').val(), "YYYY-MM-DD HH:mm").unix();
@@ -251,10 +255,6 @@ $(document).ready(function () {
             $('#dropzone-container').addClass('hide');
             vm.article.thumbImg = '';
         }
-    });
-
-    $("#multiple-sel").select2({
-        width: '100%'
     });
 
     var thumbdropzone = $('.dropzone');

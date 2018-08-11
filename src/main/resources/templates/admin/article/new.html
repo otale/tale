@@ -32,11 +32,7 @@
                     </div>
 
                     <div class="form-group col-md-6">
-                        <select id="multiple-sel" v-model="article.selected" class="select2 form-control" multiple="multiple" data-placeholder="请选择分类...">
-                            <option v-for="item in categories" :value="item.name">
-                                {{ item.name }}
-                            </option>
-                        </select>
+                        <v-select multiple v-model="article.selected" :options="categories"></v-select>
                     </div>
 
                     <div class="clearfix"></div>

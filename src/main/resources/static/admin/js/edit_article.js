@@ -4,6 +4,7 @@ var attach_url = $('#attach_url').val();
 // 每60秒自动保存一次草稿
 var refreshIntervalId;
 Dropzone.autoDiscover = false;
+Vue.component('v-select', VueSelect.VueSelect);
 
 var vm = new Vue({
     el: '#app',
@@ -21,7 +22,7 @@ var vm = new Vue({
             allowPing: true,
             allowFeed: true,
             createdTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-            selected: ['默认分类']
+            selected: []
         },
         categories: [],
         isLoading: true
@@ -88,7 +89,9 @@ var vm = new Vue({
             tale.get({
                 url: '/admin/api/categories',
                 success: function (data) {
-                    $vm.categories = data.payload
+                    for(item in data.payload){
+                        $vm.categories.push(data.payload[item].name);
+                    }
                 },
                 error: function (error) {
                     console.log(error);
@@ -99,7 +102,13 @@ var vm = new Vue({
                 url: '/admin/api/articles/' + cid,
                 success: function (data) {
                     $vm.article = data.payload;
-                    $vm.article.selected = data.payload.categories.split(',');
+                    $vm.article.selected = [];
+
+                    var selected = data.payload.categories.split(',');
+                    for(item in selected){
+                        $vm.article.selected.push(selected[item]);
+                    }
+
                     if ($vm.article.fmtType === 'markdown') {
                         mditor.value = data.payload.content;
                     } else {
@@ -257,6 +266,9 @@ $(document).ready(function () {
         defaultText: '请输入文章标签'
     });
 
+    // $("#multiple-sel").select2().val('默认分类').trigger("change");
+    // $("#multiple-sel").select2().change();
+
     $('#allowComment').toggles({
         on: true,
         text: {
@@ -316,9 +328,8 @@ $(document).ready(function () {
         }
     });
 
-    $("#multiple-sel").select2({
-        width: '100%'
-    });
+    // console.log(vm.article.selected);
+    // console.log(vm.categories);
 
     var thumbdropzone = $('.dropzone');
 
