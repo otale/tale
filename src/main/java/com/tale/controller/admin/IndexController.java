@@ -24,6 +24,7 @@ import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -93,14 +94,18 @@ public class IndexController extends BaseController {
             if ((fileItem.getLength() / 1024) <= TaleConst.MAX_FILE_SIZE) {
                 String fkey = TaleUtils.getFileKey(fname);
 
-                String ftype             = fileItem.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
-                String filePath          = TaleUtils.UP_DIR + fkey;
-                String newFileName       = TaleUtils.getFileName(fkey);
-                String thumbnailFilePath = TaleUtils.UP_DIR + fkey.replace(newFileName, "thumbnail_" + newFileName);
+                String ftype    = fileItem.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
+                String filePath = TaleUtils.UP_DIR + fkey;
+
 
                 try {
                     Files.write(Paths.get(filePath), fileItem.getData());
-                    ImageUtils.cutCenterImage(CLASSPATH + fkey, thumbnailFilePath, 270, 380);
+                    if (TaleUtils.isImage(new File(filePath))) {
+                        String newFileName       = TaleUtils.getFileName(fkey);
+                        String thumbnailFilePath = TaleUtils.UP_DIR + fkey.replace(newFileName, "thumbnail_" + newFileName);
+                        ImageUtils.cutCenterImage(CLASSPATH + fkey, thumbnailFilePath, 270, 380);
+
+                    }
                 } catch (IOException e) {
                     log.error("", e);
                 }
