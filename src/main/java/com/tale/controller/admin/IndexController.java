@@ -19,15 +19,19 @@ import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Users;
 import com.tale.service.SiteService;
+import com.tale.utils.ImageUtils;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.tale.bootstrap.TaleConst.CLASSPATH;
 
 /**
  * 后台控制器
@@ -89,11 +93,14 @@ public class IndexController extends BaseController {
             if ((fileItem.getLength() / 1024) <= TaleConst.MAX_FILE_SIZE) {
                 String fkey = TaleUtils.getFileKey(fname);
 
-                String ftype    = fileItem.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
-                String filePath = TaleUtils.UP_DIR + fkey;
+                String ftype             = fileItem.getContentType().contains("image") ? Types.IMAGE : Types.FILE;
+                String filePath          = TaleUtils.UP_DIR + fkey;
+                String newFileName       = TaleUtils.getFileName(fkey);
+                String thumbnailFilePath = TaleUtils.UP_DIR + fkey.replace(newFileName, "thumbnail_" + newFileName);
 
                 try {
                     Files.write(Paths.get(filePath), fileItem.getData());
+                    ImageUtils.cutCenterImage(CLASSPATH + fkey, thumbnailFilePath, 270, 380);
                 } catch (IOException e) {
                     log.error("", e);
                 }
