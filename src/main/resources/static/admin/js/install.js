@@ -29,20 +29,23 @@
             onStepChanging: function (event, currentIndex, newIndex) {
                 tale.showLoading();
                 $form_container.validate().settings.ignore = ":disabled,:hidden";
-                if(currentIndex == 1 && newIndex == 0){
+                if(currentIndex === 1 && newIndex === 0){
                     return true;
                 }
                 var isValid = $form_container.valid();
                 if(!isValid){
                     tale.hideLoading();
                 }
-                if (isValid && currentIndex == 0) {
+                if (isValid && currentIndex === 0) {
                     isValid = false;
                     var params = $form_container.serialize();
                     tale.showLoading();
-                    tale.post({
+                    $.ajax({
                         url: '/install',
+                        type: 'POST',
+                        async: false,
                         data: params,
+                        dataType: 'json',
                         success: function (result) {
                             if (result && result.success) {
                                 isValid = true;
@@ -51,6 +54,9 @@
                                     tale.alertError(result.msg || '安装失败');
                                 }
                             }
+                        },
+                        error: function (e) {
+                            console.log('post异常', e);
                         }
                     });
                     return isValid;
@@ -76,5 +82,9 @@
         //init
         $.FormWizard = new FormWizard, $.FormWizard.Constructor = FormWizard
 }(window.jQuery), $.FormWizard.init();
-var site_url = document.location.protocol + '//' + document.location.host;
-document.getElementById('site_url').value = site_url;
+var siteUrl = document.location.protocol + '//' + document.location.host;
+var el = document.getElementById('siteUrl');
+// noinspection JSAnnotator
+if(el){
+    el.value = siteUrl;
+}

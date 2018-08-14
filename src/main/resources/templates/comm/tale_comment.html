@@ -13,9 +13,17 @@
                     data: $('#comment-form').serialize(),
                     async: false,
                     dataType: 'json',
+                    error: function (jqXHR, status, error) {
+                        if(status === 'error' && jqXHR.status === 400){
+                            alert('非法的请求');
+                        } else {
+                            console.log('Request Error:', error)
+                        }
+                    },
                     success: function (result) {
                         $('#comment-form input[name=coid]').val('');
                         if (result && result.success) {
+                            alert('评论成功');
                             window.location.reload();
                         } else {
                             if (result.msg) {
@@ -32,10 +40,11 @@
 
     function getCommentCookie(name) {
         var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-        if (arr = document.cookie.match(reg))
+        if (arr = document.cookie.match(reg)) {
             return unescape(decodeURI(arr[2]));
-        else
+        } else {
             return null;
+        }
     }
 
     function addCommentInputValue() {
@@ -43,6 +52,5 @@
         document.getElementById('mail').value = getCommentCookie('tale_remember_mail');
         document.getElementById('url').value = getCommentCookie('tale_remember_url');
     }
-
     addCommentInputValue();
 </script>

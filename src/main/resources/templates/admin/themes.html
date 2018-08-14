@@ -1,57 +1,87 @@
-#include('./header.html',{active:'themes', title:'主题'})
-<div class="row">
-    <div class="col-sm-12">
-        <h4 class="page-title">主题管理</h4>
-    </div>
-    <div class="col-md-12">
-        #for(theme : themes)
-        <div class="col-md-3 text-center m-t-10">
-            <img class="attach-img bx-shadow" src="/templates/themes/${theme.name}/screenshot.png" width="200" height="200" title="${theme.name}"/>
-            <div class="clearfix m-t-10">
-                主题：<span>${theme.name}</span> #if(theme.name == current_theme) <mark>（当前主题）</mark> #end
+#include('./header.html',{active:'themes', title:'主题管理'})
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">主题管理</h3>
             </div>
-            <div class="clearfix m-t-10">
-                #if(theme.name == current_theme && theme.hasSetting)
-                <a class="btn btn-info" href="/admin/themes/setting"><span>主题设置</span></a>
-                #end
-                #if(theme.name != current_theme)
-                <button onclick="activeTheme('${theme.name}');" type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5">
-                    <i class="fa fa-check-circle"></i> <span>启用该主题</span>
-                </button>
-                #end
+            <div class="panel-body">
+                <div class="col-md-3 text-center m-t-10" v-for="item in themes">
+                    <img class="attach-img bx-shadow" :src="'/templates/themes/' + item.name + '/screenshot.png'" width="200" height="200" :title="item.name"/>
+                    <div class="clearfix m-t-10">
+                        主题：<span>{{item.name}}</span> <mark v-if="item.name == '${siteTheme()}'">（当前主题）</mark>
+                    </div>
+                    <div class="clearfix m-t-10">
+
+                        <a v-if="item.name == '${siteTheme()}' && item.hasSetting" class="btn btn-info" href="/admin/theme/setting"><span>主题设置</span></a>
+
+                        <button v-if="item.name != '${siteTheme()}'" @click="active(item.name)" type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5">
+                            <i class="fa fa-check-circle"></i> <span>启用该主题</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-        #end
     </div>
 </div>
 
 #include('./footer.html')
 <script type="text/javascript">
-
     var tale = new $.tale();
-
-    /**
-     * 启用主题
-     * @param themeName
-     */
-    function activeTheme(themeName) {
-        tale.alertConfirm({
-            title:'确定启用该主题吗?',
-            then: function () {
-                tale.post({
-                    url : '/admin/themes/active',
-                    data: {site_theme: themeName},
-                    success: function (result) {
-                        if(result && result.success){
-                            tale.alertOkAndReload('主题启用成功');
-                        } else {
-                            tale.alertError(result.msg || '主题启用失败');
-                        }
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            themes: [],
+            isLoading: true
+        },
+        beforeCreate: function(){
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function(){
+                var $vm = this;
+                tale.get({
+                    url: '/admin/api/themes',
+                    success: function (data) {
+                        $vm.themes = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            active: function (name) {
+                var $vm = this;
+                tale.alertConfirm({
+                    title:'确定启用该主题吗?',
+                    then: function () {
+                        tale.post({
+                            url : '/admin/api/themes/active',
+                            data: {siteTheme: name},
+                            success: function (result) {
+                                if(result && result.success){
+                                    tale.alertOk('主题启用成功');
+                                    $vm.load();
+                                } else {
+                                    tale.alertError(result.msg || '主题启用失败');
+                                }
+                            }
+                        });
                     }
                 });
             }
-        });
-    }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
 
 </script>
 </body>

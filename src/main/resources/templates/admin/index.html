@@ -1,102 +1,214 @@
 #include('./header.html',{active:'home', title:'管理中心'})
-<div class="row">
-    <div class="col-sm-12">
-        <h4 class="page-title">Tale仪表盘</h4>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-6 col-lg-3">
-            <div class="mini-stat clearfix bx-shadow bg-info">
-                <span class="mini-stat-icon"><i class="fa fa-quote-right" aria-hidden="true"></i></span>
-                <div class="mini-stat-info text-right">
-                    发表了<span class="counter">${statistics.articles}</span>篇文章
-                </div>
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Tale仪表盘</h3>
             </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="mini-stat clearfix bg-purple bx-shadow">
-                <span class="mini-stat-icon"><i class="fa fa-comments-o" aria-hidden="true"></i></span>
-                <div class="mini-stat-info text-right">
-                    收到了<span class="counter">${statistics.comments}</span>条留言
-                </div>
-            </div>
-        </div>
+            <div class="panel-body">
 
-        <div class="col-sm-6 col-lg-3">
-            <div class="mini-stat clearfix bg-success bx-shadow">
-                <span class="mini-stat-icon"><i class="fa fa-cloud-upload" aria-hidden="true"></i></span>
-                <div class="mini-stat-info text-right">
-                    上传了<span class="counter">${statistics.attachs}</span>个附件
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">最新文章</h4>
-                </div>
-                <div class="panel-body">
-                    <ul class="list-group">
-                        #for(article : articles)
-                        <li class="list-group-item">
-                            <span class="badge badge-primary"
-                                  title="${article.commentsNum}条评论">${article.commentsNum}</span>
-                            <a target="_blank" href="${site_url('/article/')}${article.cid}">${article.title}</a>
-                        </li>
-                        #end
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">最新留言</h4>
-                </div>
-                <div class="panel-body">
-                    #if(null == comments || comments.size() == 0)
-                    <div class="alert alert-warning">
-                        还没有收到留言.
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mini-stat clearfix bx-shadow bg-info">
+                            <a href="/admin/articles" class="text-white">
+                                <span class="mini-stat-icon"><i class="fa fa-quote-right" aria-hidden="true"></i></span>
+                            </a>
+                            <div class="mini-stat-info text-right">
+                                发表了<span class="counter">${statistics.articles}</span>篇文章
+                            </div>
+                        </div>
                     </div>
-                    #else
-                    <ul class="list-group">
-                        #for(comment : comments)
-                        <li class="list-group-item">
-                            #if(null != comment.url && comment.url != '')
-                            <a href="${comment.url}" target="_blank">${comment.author}</a>
-                            #else
-                            ${comment.author}
-                            #end
-                            于${fmtdate(comment.created,'MM月dd日HH:mm')} ：<a href="${site_url('/article/')}${comment.cid}#comments" target="_blank">${article(comment.content)}</a>
-                        </li>
-                        #end
-                    </ul>
-                    #end
+                    <div class="col-md-4">
+                        <div class="mini-stat clearfix bg-purple bx-shadow">
+                            <a href="/admin/comments" class="text-white">
+                                <span class="mini-stat-icon"><i class="fa fa-comments-o" aria-hidden="true"></i></span>
+                            </a>
+                            <div class="mini-stat-info text-right">
+                                收到了<span class="counter">${statistics.comments}</span>条留言
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mini-stat clearfix bg-success bx-shadow">
+                            <a href="/admin/attaches" class="text-white">
+                                <span class="mini-stat-icon"><i class="fa fa-cloud-upload" aria-hidden="true"></i></span>
+                            </a>
+                            <div class="mini-stat-info text-right">
+                                上传了<span class="counter">${statistics.attachs}</span>个附件
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">系统日志</h4>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">最新文章</h4>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    #for(item : articles)
+                                    <li class="list-group-item">
+                            <span class="badge badge-primary"
+                                  title="${item.commentsNum}条评论">${item.commentsNum}</span>
+                                        <a target="_blank" href="${site_url('/article/')}${item.cid}">${item.title}</a>
+                                    </li>
+                                    #end
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">最新留言</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div v-if="comments.length == 0" class="alert alert-warning">
+                                    还没有收到留言.
+                                </div>
+
+                                <div v-if="comments.length > 0" class="inbox-widget nicescroll mx-box" tabindex="5000" style="overflow: hidden; outline: none;">
+                                    <div class="inbox-item" v-for="item in comments">
+                                        <div class="inbox-item-img">
+                                            <a :href="item.url" target="_blank">
+                                                <img :src="item.mail | gravatar" class="img-circle" :alt="item.author">
+                                            </a>
+                                        </div>
+                                        <p class="inbox-item-author">
+                                            <a :href="item.url" target="_blank">{{item.author}}</a>
+                                        </p>
+                                        <p class="inbox-item-text">
+                                            <a :href="'${site_url('/article/')}' + item.cid + '#comments'" target="_blank">
+                                                ${article("{{item.content}}")}
+                                            </a>
+                                        </p>
+                                        <p class="inbox-item-date">{{item.created | formatUnix('MM月DD日 HH:mm')}}</p>
+                                        <p v-if="item.status == 'no_audit'" class="pull-right">
+                                            <button class="btn btn-sm btn-success" @click="audit(item.coid, 'approved')">通过</button>
+                                            <button class="btn btn-sm btn-danger" @click="deleteComment(item.coid)">删除</button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">系统日志</h4>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item" v-for="item in logPage.rows">
+                                        <span>{{item.created | formatUnix}} &nbsp;&nbsp;<kbd>{{item.action}}</kbd></span>
+                                    </li>
+                                </ul>
+                                <ul class="pager">
+                                    <li v-if="logPage.hasPrevPage">
+                                        <a @click="load(logPage.prevPage)"> <i class="fa fa-angle-double-left"></i> 上一页</a>
+                                    </li>
+                                    <li v-if="logPage.hasNextPage">
+                                        <a @click="load(logPage.nextPage)">下一页 <i class="fa fa-angle-double-right"></i> </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body">
-                    <ul class="list-group">
-                        #for(log : logs)
-                        <li class="list-group-item">
-                            <span>${fmtdate(log.created, 'yyyy-MM-dd HH:mm:ss')} => ${log.action}</span>
-                        </li>
-                        #end
-                    </ul>
-                </div>
+
             </div>
         </div>
     </div>
 </div>
 #include('./footer.html')
+<script type="text/javascript">
+    var tale = new $.tale();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            logPage: {},
+            comments:[],
+            isLoading: true
+        },
+        beforeCreate: function () {
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods: {
+            load: function (page) {
+                var $vm = this;
+                tale.get({
+                    url: '/admin/api/logs',
+                    data: {
+                        page: page,
+                        limit: 8
+                    },
+                    success: function (data) {
+                        $vm.logPage = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+                tale.get({
+                    url: '/admin/api/comments',
+                    success: function (data) {
+                        $vm.comments = data.payload.rows
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            audit: function(coid, status){
+                var $vm = this;
+                tale.post({
+                    url : '/admin/api/comment/status',
+                    data: {coid: coid, status: status},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOk('已通过');
+                            $vm.load();
+                        } else {
+                            tale.alertError(result.msg || '评论设置失败');
+                        }
+                    }
+                });
+            },
+            deleteComment: function (coid) {
+                var $vm = this;
+                tale.alertConfirm({
+                    title: '确定删除该评论吗?',
+                    then: function () {
+                        tale.post({
+                            url: '/admin/api/comment/delete/' + coid,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    tale.alertOk('评论删除成功');
+                                    $vm.load();
+                                } else {
+                                    tale.alertError(result.msg || '评论删除失败');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+</script>
 </body>
 </html>

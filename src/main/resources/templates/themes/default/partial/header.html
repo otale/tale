@@ -9,12 +9,13 @@
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <meta name="keywords" content="${meta_keywords()}"/>
     <meta name="description" content="${meta_description()}"/>
+    <meta content="${_csrf_token}" name="csrf_token"/>
     <link rel="shortcut icon" href="${theme_url('/static/img/favicon.png')}"/>
     <link rel="apple-touch-icon" href="${theme_url('/static/img/apple-touch-icon.png')}"/>
     <title>${head_title()}</title>
     <link href="${theme_url('/static/css/xcode.min.css')}" rel="stylesheet">
     <link href="${theme_url('/static/css/style.min.css')}" rel="stylesheet">
-    #call cdn_url("jquery")
+    <script src="/static/admin/plugins/jquery/3.2.1/jquery.min.js"></script>
 
     <!--[if lt IE 9]>
     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>

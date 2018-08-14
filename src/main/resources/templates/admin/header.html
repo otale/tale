@@ -5,14 +5,19 @@
     <title>${title ?! '博客后台'} - Tale</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta content="biezhi" name="author"/>
+    <meta content="${_csrf_token}" name="csrf_token"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
-    #call cdn_url('header')
-    <link href="/static/admin/css/style.min.css?v=${version}" rel="stylesheet" type="text/css">
+    <link href="${cdnURL()}/plugins/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="${cdnURL()}/plugins/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="${cdnURL()}/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+    <link href="${cdnURL()}/plugins/vue-loading/vue-loading.min.css" rel="stylesheet">
+    <link href="${cdnURL()}/css/style.min.css?v=${version}" rel="stylesheet" type="text/css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    #call cdn_url('html5_respond')
+    <script src="${cdnURL()}/plugins/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="${cdnURL()}/plugins/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
 </head>
 <body class="fixed-left">
@@ -25,7 +30,7 @@
                         <img src="/static/admin/images/unicorn.png" width="50" height="50"/>
                     </a>
                 </div>
-                <div class="pull-left" style="padding-left: 10px;">
+                <div class="pull-left admin-title" style="padding-left: 10px;">
                     <span style="font-size: 28px; color: #2f353f; line-height: 50px;">Tale Blog</span>
                 </div>
             </div>
@@ -45,7 +50,7 @@
                             <a href="index.html" class="dropdown-toggle profile" data-toggle="dropdown"
                                aria-expanded="true"><img src="${gravatar(login_user.email)}" alt="user-img" class="img-circle"> </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${site_url()}" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i> 查看网站</a></li>
+                                <li><a href="${site_url()}" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i> 预览站点</a></li>
                                 <li><a href="/admin/profile"><i class="fa fa-sun-o"></i> 个人设置</a></li>
                                 <li><a href="/logout"><i class="fa fa-sign-out"></i> 注销</a></li>
                             </ul>
@@ -63,18 +68,18 @@
                         <a href="/admin/index" class="waves-effect #if(active=='home') active #end"><i class="fa fa-dashboard" aria-hidden="true"></i><span> 仪表盘 </span></a>
                     </li>
                     <li #if(active=='publish') class="active" #end>
-                        <a href="/admin/article/publish" class="waves-effect #if(active=='publish') active #end"><i class="fa fa-pencil-square-o" aria-hidden="true"></i><span> 发布文章 </span></a>
+                        <a href="/admin/article/new" class="waves-effect #if(active=='publish') active #end"><i class="fa fa-pencil-square-o" aria-hidden="true"></i><span> 发布文章 </span></a>
                     </li>
-                    <li #if(active=='article') class="active" #end>
-                        <a href="/admin/article" class="waves-effect #if(active=='article') active #end"><i class="fa fa-list" aria-hidden="true"></i><span> 文章管理 </span></a>
-                    </li>
-
-                    <li #if(active=='page') class="active" #end>
-                        <a href="/admin/page" class="waves-effect #if(active=='page') active #end"><i class="fa fa-file-text" aria-hidden="true"></i><span> 页面管理 </span></a>
+                    <li #if(active=='articles') class="active" #end>
+                        <a href="/admin/articles" class="waves-effect #if(active=='articles') active #end"><i class="fa fa-list" aria-hidden="true"></i><span> 文章管理 </span></a>
                     </li>
 
-                    <li #if(active=='attach') class="active" #end>
-                        <a href="/admin/attach" class="waves-effect #if(active=='attach') active #end"><i class="fa fa-cloud-upload" aria-hidden="true"></i><span> 文件管理 </span></a>
+                    <li #if(active=='pages') class="active" #end>
+                        <a href="/admin/pages" class="waves-effect #if(active=='pages') active #end"><i class="fa fa-file-text" aria-hidden="true"></i><span> 页面管理 </span></a>
+                    </li>
+
+                    <li #if(active=='attaches') class="active" #end>
+                        <a href="/admin/attaches" class="waves-effect #if(active=='attaches') active #end"><i class="fa fa-cloud-upload" aria-hidden="true"></i><span> 文件管理 </span></a>
                     </li>
 
                     <li class="has_sub">
@@ -83,8 +88,8 @@
                             <li #if(active=='comments') class="active" #end>
                                 <a href="/admin/comments" class="waves-effect #if(active=='comments') active #end"><i class="fa fa-comments" aria-hidden="true"></i><span> 评论管理 </span></a>
                             </li>
-                            <li #if(active=='category') class="active" #end>
-                                <a href="/admin/category" class="waves-effect #if(active=='category') active #end"><i class="fa fa-tags" aria-hidden="true"></i><span> 分类/标签 </span></a>
+                            <li #if(active=='categories') class="active" #end>
+                                <a href="/admin/categories" class="waves-effect #if(active=='categories') active #end"><i class="fa fa-tags" aria-hidden="true"></i><span> 分类/标签 </span></a>
                             </li>
                             <li #if(active=='template') class="active" #end>
                                 <a href="/admin/template" class="waves-effect #if(active=='template') active #end"><i class="fa fa-hashtag"></i><span> 编辑模板 </span></a>

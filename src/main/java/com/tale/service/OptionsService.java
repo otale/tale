@@ -22,17 +22,6 @@ import static io.github.biezhi.anima.Anima.select;
 public class OptionsService {
 
     /**
-     * 保存一组配置
-     *
-     * @param options 配置字典表
-     */
-    public void saveOptions(Map<String, List<String>> options) {
-        if (null != options && !options.isEmpty()) {
-            options.forEach((k, v) -> saveOption(k, v.get(0)));
-        }
-    }
-
-    /**
      * 保存配置
      *
      * @param key   配置key
@@ -62,21 +51,8 @@ public class OptionsService {
      * 获取系统配置
      */
     public Map<String, String> getOptions() {
-        return getOptions(null);
-    }
-
-    /**
-     * 根据key前缀查找配置项
-     *
-     * @param key 配置key
-     */
-    public Map<String, String> getOptions(String key) {
         Map<String, String> options = new HashMap<>();
-
         AnimaQuery<Options> animaQuery = select().from(Options.class);
-        if (StringKit.isNotBlank(key)) {
-            animaQuery.and(Options::getName).like(key + "%");
-        }
         List<Options> optionsList = animaQuery.all();
         if (null != optionsList) {
             optionsList.forEach(option -> options.put(option.getName(), option.getValue()));

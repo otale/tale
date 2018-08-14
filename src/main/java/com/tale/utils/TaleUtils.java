@@ -11,10 +11,9 @@ import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Item;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
-import com.tale.controller.admin.AttachController;
+import com.tale.bootstrap.TaleConst;
 import com.tale.extension.Commons;
 import com.tale.extension.Theme;
-import com.tale.init.TaleConst;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Users;
 import org.commonmark.Extension;
@@ -36,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.tale.init.TaleConst.*;
+import static com.tale.bootstrap.TaleConst.*;
 
 /**
  * Tale工具类
@@ -387,7 +386,7 @@ public class TaleUtils {
         return '(' + sbuf.substring(1);
     }
 
-    public static final String UP_DIR = AttachController.CLASSPATH.substring(0, AttachController.CLASSPATH.length() - 1);
+    public static final String UP_DIR = CLASSPATH.substring(0, CLASSPATH.length() - 1);
 
     public static String getFileKey(String name) {
         String prefix = "/upload/" + DateKit.toString(new Date(), "yyyy/MM");
@@ -396,5 +395,15 @@ public class TaleUtils {
             new File(dir).mkdirs();
         }
         return prefix + "/" + com.blade.kit.UUID.UU32() + "." + StringKit.fileExt(name);
+    }
+
+    public static String buildURL(String url){
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+        if (!url.startsWith("http")) {
+            url = "http://".concat(url);
+        }
+        return url;
     }
 }

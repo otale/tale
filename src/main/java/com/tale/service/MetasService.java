@@ -1,8 +1,8 @@
 package com.tale.service;
 
+import com.blade.exception.ValidatorException;
 import com.blade.ioc.annotation.Bean;
 import com.blade.kit.StringKit;
-import com.tale.exception.TipException;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
@@ -13,6 +13,7 @@ import io.github.biezhi.anima.enums.OrderBy;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.tale.bootstrap.TaleConst.SQL_QUERY_METAS;
 import static io.github.biezhi.anima.Anima.select;
 
 /**
@@ -61,9 +62,8 @@ public class MetasService {
         if (null == relationships || relationships.size() == 0) {
             return new ArrayList<>();
         }
-        List<Integer>  cidList  = relationships.stream().map(Relationships::getCid).collect(Collectors.toList());
-        List<Contents> contents = select().from(Contents.class).in(Contents::getCid, cidList).order(Contents::getCreated, OrderBy.DESC).all();
-        return contents;
+        List<Integer> cidList = relationships.stream().map(Relationships::getCid).collect(Collectors.toList());
+        return select().from(Contents.class).in(Contents::getCid, cidList).order(Contents::getCreated, OrderBy.DESC).all();
     }
 
     /**
@@ -74,9 +74,7 @@ public class MetasService {
      */
     public Metas getMeta(String type, String name) {
         if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
-            String sql = "select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid " +
-                    "where a.type = ? and a.name = ? group by a.mid";
-            return select().bySQL(Metas.class, sql, type, name).one();
+            return select().bySQL(Metas.class, SQL_QUERY_METAS, type, name).one();
         }
         return null;
     }
@@ -90,7 +88,7 @@ public class MetasService {
      */
     public void saveMetas(Integer cid, String names, String type) {
         if (null == cid) {
-            throw new TipException("项目关联id不能为空");
+            throw new ValidatorException("项目关联id不能为空");
         }
         if (StringKit.isNotBlank(names) && StringKit.isNotBlank(type)) {
             String[] nameArr = names.split(",");
@@ -138,29 +136,31 @@ public class MetasService {
         String name = metas.getName();
         Anima.deleteById(Metas.class, mid);
 
-        List<Relationships> relationships = select().from(Relationships.class).where(Relationships::getMid, mid).all();
-        if (null != relationships) {
-            relationships.stream()
+        List<Relationships> list = select().from(Relationships.class).where(Relationships::getMid, mid).all();
+        if (null != list) {
+            list.stream()
                     .map(r -> select().from(Contents.class).byId(r.getCid()))
                     .filter(Objects::nonNull)
-                    .forEach(contents -> {
-                        Integer  cid      = contents.getCid();
-                        boolean  isUpdate = false;
-                        Contents temp     = new Contents();
-                        if (type.equals(Types.CATEGORY)) {
-                            temp.setCategories(reMeta(name, contents.getCategories()));
-                            isUpdate = true;
-                        }
-                        if (type.equals(Types.TAG)) {
-                            temp.setTags(reMeta(name, contents.getTags()));
-                            isUpdate = true;
-                        }
-                        if (isUpdate) {
-                            temp.updateById(cid);
-                        }
-                    });
+                    .forEach(contents -> exec(type, name, contents));
         }
         Anima.delete().from(Relationships.class).where(Relationships::getMid, mid).execute();
+    }
+
+    private void exec(String type, String name, Contents contents) {
+        Integer  cid      = contents.getCid();
+        boolean  isUpdate = false;
+        Contents temp     = new Contents();
+        if (type.equals(Types.CATEGORY)) {
+            temp.setCategories(reMeta(name, contents.getCategories()));
+            isUpdate = true;
+        }
+        if (type.equals(Types.TAG)) {
+            temp.setTags(reMeta(name, contents.getTags()));
+            isUpdate = true;
+        }
+        if (isUpdate) {
+            temp.updateById(cid);
+        }
     }
 
     /**
@@ -171,21 +171,20 @@ public class MetasService {
      * @param mid
      */
     public void saveMeta(String type, String name, Integer mid) {
-        if (StringKit.isNotBlank(type) && StringKit.isNotBlank(name)) {
-            Metas metas = select().from(Metas.class).where(Metas::getType, type).and(Metas::getName, name).one();
-            if (null != metas) {
-                throw new TipException("已经存在该项");
+        if (StringKit.isEmpty(type) || StringKit.isEmpty(name)) {
+            return;
+        }
+        Metas metas = select().from(Metas.class).where(Metas::getType, type).and(Metas::getName, name).one();
+        if (null != metas) {
+            throw new ValidatorException("已经存在该项");
+        } else {
+            metas = new Metas();
+            metas.setName(name);
+            if (null != mid) {
+                metas.updateById(mid);
             } else {
-                if (null != mid) {
-                    metas = new Metas();
-                    metas.setName(name);
-                    metas.updateById(mid);
-                } else {
-                    metas = new Metas();
-                    metas.setType(type);
-                    metas.setName(name);
-                    metas.save();
-                }
+                metas.setType(type);
+                metas.save();
             }
         }
     }

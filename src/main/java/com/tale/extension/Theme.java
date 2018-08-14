@@ -5,7 +5,7 @@ import com.blade.kit.StringKit;
 import com.blade.kit.json.Ason;
 import com.blade.mvc.WebContext;
 import com.blade.mvc.http.Request;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.Comment;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
@@ -19,7 +19,10 @@ import jetbrick.template.runtime.InterpretContext;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static io.github.biezhi.anima.Anima.select;
 
@@ -619,7 +622,8 @@ public final class Theme {
         if (null != value) {
             page = (int) value;
         }
-        return siteService.getComments(contents.getCid(), page, limit);
+        Page<Comment> comments = siteService.getComments(contents.getCid(), page, limit);
+        return comments;
     }
 
     /**

@@ -6,7 +6,7 @@ import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PathParam;
 import com.blade.mvc.http.Request;
-import com.tale.init.TaleConst;
+import com.tale.bootstrap.TaleConst;
 import com.tale.model.dto.Types;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
@@ -61,6 +61,7 @@ public class CategoryController extends BaseController {
     @GetRoute(value = {"category/:keyword/:page", "category/:keyword/:page.html"})
     public String categories(Request request, @PathParam String keyword,
                              @PathParam int page, @Param(defaultValue = "12") int limit) {
+
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         Metas metaDto = metasService.getMeta(Types.CATEGORY, keyword);
         if (null == metaDto) {
