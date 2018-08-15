@@ -7,12 +7,12 @@
     <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
     <title>Tale - 用户登录</title>
     <link href="${cdnURL()}/plugins/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="${cdnURL()}/plugins/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="${cdnURL()}/plugins/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <link href="${cdnURL()}/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
-    <link href="${cdnURL()}/plugins/vue-loading/vue-loading.min.css" rel="stylesheet" type="text/css">
-    <link href="${cdnURL()}/css/style.min.css?v=${version}" rel="stylesheet" type="text/css">
+    <link href="${cdnURL()}/plugins/vue-loading/vue-loading.min.css" rel="stylesheet" >
+    <link href="${cdnURL()}/css/style.min.css?v=${version}" rel="stylesheet" >
 
-    <style type="text/css">
+    <style >
         body,html {
             background: url("${cdnURL()}/images/bg/${random(5, '.png')}") no-repeat;
             background-size: cover;
@@ -108,7 +108,7 @@
 <script src="${cdnURL()}/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.js"></script>
 <script src="${cdnURL()}/plugins/axios/axios.min.js"></script>
 <script src="${cdnURL()}/js/base.js"></script>
-<script type="text/javascript">
+<script >
     var tale = new $.tale();
     function checkForm() {
         tale.post({

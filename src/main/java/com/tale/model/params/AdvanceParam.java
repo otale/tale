@@ -15,5 +15,6 @@ public class AdvanceParam {
     private String cdnURL;
     private String allowInstall;
     private String allowCommentAudit;
+    private String allowCloudCDN;
 
 }
