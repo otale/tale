@@ -397,7 +397,14 @@ public class TaleUtils {
         return prefix + "/" + com.blade.kit.UUID.UU32() + "." + StringKit.fileExt(name);
     }
 
-    public static String buildURL(String url){
+    public static String getFileName(String path) {
+        File tempFile = new File(path.trim());
+        String fileName = tempFile.getName();
+
+        return fileName;
+    }
+
+    public static String buildURL(String url) {
         if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
         }
