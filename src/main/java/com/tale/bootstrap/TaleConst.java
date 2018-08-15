@@ -113,4 +113,5 @@ public class TaleConst {
     public static final String OPTION_SITE_THEME          = "site_theme";
     public static final String OPTION_ALLOW_INSTALL       = "allow_install";
     public static final String OPTION_ALLOW_COMMENT_AUDIT = "allow_comment_audit";
+    public static final String OPTION_ALLOW_CLOUD_CDN     = "allow_cloud_CDN";
 }

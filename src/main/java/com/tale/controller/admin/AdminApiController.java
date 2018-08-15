@@ -335,6 +335,12 @@ public class AdminApiController extends BaseController {
             optionsService.saveOption(OPTION_ALLOW_COMMENT_AUDIT, advanceParam.getAllowCommentAudit());
             TaleConst.OPTIONS.set(OPTION_ALLOW_COMMENT_AUDIT, advanceParam.getAllowCommentAudit());
         }
+
+        // 是否允许公共资源CDN
+        if (StringKit.isNotBlank(advanceParam.getAllowCloudCDN())) {
+            optionsService.saveOption(OPTION_ALLOW_CLOUD_CDN, advanceParam.getAllowCloudCDN());
+            TaleConst.OPTIONS.set(OPTION_ALLOW_CLOUD_CDN, advanceParam.getAllowCloudCDN());
+        }
         return RestResponse.ok();
     }
 
