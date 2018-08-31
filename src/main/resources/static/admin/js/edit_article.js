@@ -102,6 +102,7 @@ var vm = new Vue({
                 url: '/admin/api/articles/' + cid,
                 success: function (data) {
                     $vm.article = data.payload;
+                    $vm.article.tags = data.payload.tags;
                     $vm.article.selected = [];
 
                     var selected = data.payload.categories.split(',');
@@ -115,6 +116,11 @@ var vm = new Vue({
                         htmlEditor.summernote("code", data.payload.content);
                     }
                     $vm.article.createdTime = moment.unix($vm.article.created).format('YYYY-MM-DD HH:mm')
+
+                    var tags = data.payload.tags.split(',');
+                    for(i in tags){
+                        $('#tags').addTag(tags[i]);
+                    }
 
                     $('#allowComment').toggles({
                         on: $vm.article.allowComment,
@@ -259,15 +265,13 @@ var vm = new Vue({
 });
 
 $(document).ready(function () {
+
     // Tags Input
     $('#tags').tagsInput({
         width: '100%',
         height: '35px',
         defaultText: '请输入文章标签'
     });
-
-    // $("#multiple-sel").select2().val('默认分类').trigger("change");
-    // $("#multiple-sel").select2().change();
 
     $('#allowComment').toggles({
         on: true,
