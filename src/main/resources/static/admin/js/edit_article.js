@@ -98,11 +98,12 @@ var vm = new Vue({
                     alert(error || '数据加载失败');
                 }
             });
+
             tale.get({
                 url: '/admin/api/articles/' + cid,
                 success: function (data) {
                     $vm.article = data.payload;
-                    $vm.article.tags = data.payload.tags;
+                    $vm.article.tags = data.payload.tags || "";
                     $vm.article.selected = [];
 
                     var selected = data.payload.categories.split(',');
@@ -110,11 +111,6 @@ var vm = new Vue({
                         $vm.article.selected.push(selected[item]);
                     }
 
-                    if ($vm.article.fmtType === 'markdown') {
-                        mditor.value = data.payload.content;
-                    } else {
-                        htmlEditor.summernote("code", data.payload.content);
-                    }
                     $vm.article.createdTime = moment.unix($vm.article.created).format('YYYY-MM-DD HH:mm')
 
                     var tags = data.payload.tags.split(',');
@@ -176,6 +172,18 @@ var vm = new Vue({
                     alert(error || '数据加载失败');
                 }
             });
+
+            tale.get({
+                url: '/admin/api/articles/content/' + cid,
+                success: function (data) {
+                    if ($vm.article.fmtType === 'markdown') {
+                        mditor.value = data;
+                    } else {
+                        htmlEditor.summernote("code", data);
+                    }
+                }
+            });
+
         },
         autoSave: function (callback) {
             var $vm = this;

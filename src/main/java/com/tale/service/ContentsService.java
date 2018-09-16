@@ -160,8 +160,10 @@ public class ContentsService {
         } else {
             contents.setUrl("/article/" + contents.getCid());
         }
-        if (StringKit.isNotEmpty(contents.getContent())) {
-            contents.setContent(contents.getContent().replaceAll("\\\\\"", "\\\""));
+        String content = contents.getContent();
+        if (StringKit.isNotEmpty(content)) {
+            content = content.replaceAll("\\\\\"", "\\\"");
+            contents.setContent(content);
         }
         return contents;
     }
