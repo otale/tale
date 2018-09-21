@@ -141,10 +141,13 @@
             this.load();
         },
         methods: {
-            load: function () {
+            load: function (page) {
                 var $vm = this;
                 tale.get({
                     url: '/admin/api/attaches',
+                    data: {
+                        page: page
+                    },
                     success: function (data) {
                         $vm.attachPage = data.payload
                     },
