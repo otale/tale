@@ -146,7 +146,8 @@
                 tale.get({
                     url: '/admin/api/attaches',
                     data: {
-                        page: page
+                        page: page,
+                        limit: 12
                     },
                     success: function (data) {
                         $vm.attachPage = data.payload
