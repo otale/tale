@@ -104,7 +104,7 @@ upgrade(){
     mkdir upgrade_tmp
     tar -zxvf $APP_NAME.tar.gz -C upgrade_tmp
     sh tool stop
-    rm -rf lib tale-latest.jar tool resources/static resources/templates/admin resources/templates/*.html resources/*.properties
+    rm -rf lib tale-latest.jar tool resources/static resources/templates/admin resources/templates/comm resources/templates/*.html resources/*.properties
 
     if [ "$REMOVE_LOCAL_THEME" -eq "1" ]; then
         rm -rf resources/templates/themes
@@ -118,14 +118,13 @@ upgrade(){
     mv upgrade_tmp/resources/static ./resources
     mv upgrade_tmp/resources/*.properties ./resources
     mv upgrade_tmp/resources/templates/admin ./resources/templates
+    mv upgrade_tmp/resources/templates/comm ./resources/templates
     mv upgrade_tmp/resources/templates/*.html ./resources/templates
 
-    echo '升级完毕'
+    echo '升级完毕, 请执行 sh tool restart 重启博客系统!'
 
     rm -rf upgrade_tmp
     rm -rf tale.tar.gz
-
-    start
 }
 
 case "$1" in
