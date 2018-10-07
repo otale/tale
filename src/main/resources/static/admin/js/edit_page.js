@@ -93,11 +93,6 @@ var vm = new Vue({
                 url: '/admin/api/articles/' + cid,
                 success: function (data) {
                     $vm.article = data.payload;
-                    if ($vm.article.fmtType === 'markdown') {
-                        mditor.value = data.payload.content;
-                    } else {
-                        htmlEditor.summernote("code", data.payload.content);
-                    }
                     $vm.article.createdTime = moment.unix($vm.article.created).format('YYYY-MM-DD HH:mm')
 
                     $('#allowComment').toggles({
@@ -121,6 +116,18 @@ var vm = new Vue({
                     alert(error || '数据加载失败');
                 }
             });
+
+            tale.get({
+                url: '/admin/api/articles/content/' + cid,
+                success: function (data) {
+                    if ($vm.article.fmtType === 'markdown') {
+                        mditor.value = data;
+                    } else {
+                        htmlEditor.summernote("code", data);
+                    }
+                }
+            });
+
         },
         autoSave: function (callback) {
             var $vm = this;
