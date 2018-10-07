@@ -89,10 +89,10 @@
             vueLoding = this.$loading.show();
         },
         mounted: function () {
-            this.load();
+            this.load(1);
         },
         methods: {
-            load: function () {
+            load: function (page) {
                 var $vm = this;
                 tale.get({
                     url: '/admin/api/pages',
@@ -118,7 +118,7 @@
                             success: function (result) {
                                 if (result && result.success) {
                                     tale.alertOk('页面删除成功');
-                                    $vm.load();
+                                    $vm.load(1);
                                 } else {
                                     tale.alertError(result.msg || '页面删除失败');
                                 }
