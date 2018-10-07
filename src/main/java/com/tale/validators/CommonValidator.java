@@ -56,7 +56,7 @@ public class CommonValidator {
         Validators.lessThan(MAX_TEXT_COUNT).test(param.getContent()).throwIfInvalid("文章内容");
 
         if (StringKit.isNotEmpty(param.getSlug())) {
-            if (param.getSlug().length() < 5) {
+            if (param.getSlug().length() < 2) {
                 throw new ValidatorException("路径太短了");
             }
             if (!TaleUtils.isPath(param.getSlug())) {
