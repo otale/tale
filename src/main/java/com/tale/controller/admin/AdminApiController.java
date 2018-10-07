@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.Blade;
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.JsonKit;
@@ -65,6 +64,14 @@ public class AdminApiController extends BaseController {
         return RestResponse.ok(select().from(Logs.class).order(Logs::getId, OrderBy.DESC).page(pageParam.getPage(), pageParam.getLimit()));
     }
 
+    @SysLog("删除页面")
+    @PostRoute("page/delete/:cid")
+    public RestResponse<?> deletePage(@PathParam Integer cid) {
+        contentsService.delete(cid);
+        siteService.cleanCache(Types.SYS_STATISTICS);
+        return RestResponse.ok();
+    }
+
     @GetRoute("articles/:cid")
     public RestResponse article(@PathParam String cid) {
         Contents contents = contentsService.getContents(cid);
@@ -93,14 +100,14 @@ public class AdminApiController extends BaseController {
             contents.setCategories("默认分类");
         }
         Integer cid = contentsService.publish(contents);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok(cid);
     }
 
     @PostRoute("article/delete/:cid")
     public RestResponse<?> deleteArticle(@PathParam Integer cid) {
         contentsService.delete(cid);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -142,7 +149,7 @@ public class AdminApiController extends BaseController {
         contents.setAllowPing(true);
         contents.setAuthorId(users.getUid());
         contentsService.publish(contents);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -170,7 +177,7 @@ public class AdminApiController extends BaseController {
     @PostRoute("category/save")
     public RestResponse<?> saveCategory(@BodyParam MetaParam metaParam) {
         metasService.saveMeta(Types.CATEGORY, metaParam.getCname(), metaParam.getMid());
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -178,7 +185,7 @@ public class AdminApiController extends BaseController {
     @PostRoute("category/delete/:mid")
     public RestResponse<?> deleteMeta(@PathParam Integer mid) {
         metasService.delete(mid);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -199,7 +206,7 @@ public class AdminApiController extends BaseController {
             return RestResponse.fail("不存在该评论");
         }
         commentsService.delete(coid, comments.getCid());
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -207,7 +214,7 @@ public class AdminApiController extends BaseController {
     @PostRoute("comment/status")
     public RestResponse<?> updateStatus(@BodyParam Comments comments) {
         comments.update();
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -235,7 +242,7 @@ public class AdminApiController extends BaseController {
         comments.setStatus(TaleConst.COMMENT_APPROVED);
         comments.setParent(comments.getCoid());
         commentsService.saveComment(comments);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -257,7 +264,7 @@ public class AdminApiController extends BaseController {
             return RestResponse.fail("不存在该附件");
         }
         String key = attach.getFkey();
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         String             filePath = CLASSPATH.substring(0, CLASSPATH.length() - 1) + key;
         java.nio.file.Path path     = Paths.get(filePath);
         log.info("Delete attach: [{}]", filePath);

@@ -23,7 +23,6 @@ import com.tale.utils.ImageUtils;
 import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -119,7 +118,7 @@ public class IndexController extends BaseController {
                 attach.save();
 
                 urls.add(attach);
-                siteService.cleanCache(Types.C_STATISTICS);
+                siteService.cleanCache(Types.SYS_STATISTICS);
             } else {
                 Attach attach = new Attach();
                 attach.setFname(fname);
