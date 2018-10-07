@@ -96,6 +96,10 @@
                 var $vm = this;
                 tale.get({
                     url: '/admin/api/pages',
+                    data: {
+                        page: page,
+                        limit: 12
+                    },
                     success: function (data) {
                         $vm.articlePage = data.payload
                     },
