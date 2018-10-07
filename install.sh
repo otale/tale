@@ -16,3 +16,5 @@ echo '下载完毕'
 mkdir $APP_NAME
 tar -zxvf $APP_NAME.tar.gz -C $APP_NAME && cd $APP_NAME
 chmod +x tool
+
+echo '安装成功，请进入 tale 目录执行 sh tool start 启动'
