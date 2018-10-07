@@ -2,10 +2,10 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-    <id>customAssembly</id>
-    <!-- dir -->
+    <id>bin</id>
     <formats>
-        <format>dir</format>
+        <format>tar.gz</format>
+        <format>zip</format>
     </formats>
 
     <includeBaseDirectory>false</includeBaseDirectory>
@@ -18,6 +18,10 @@
         <fileSet>
             <directory>src/main/plugins/</directory>
             <outputDirectory>/plugins</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>bin/</directory>
+            <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>
 
