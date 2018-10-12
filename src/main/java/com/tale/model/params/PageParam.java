@@ -3,6 +3,8 @@ package com.tale.model.params;
 import lombok.Data;
 
 /**
+ * 分页基础参数
+ *
  * @author biezhi
  * @date 2018/6/5
  */

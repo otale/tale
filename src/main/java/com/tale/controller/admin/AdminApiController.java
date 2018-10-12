@@ -418,12 +418,13 @@ public class AdminApiController extends BaseController {
 
     @SysLog("保存模板")
     @PostRoute("template/save")
-    public RestResponse<?> saveTpl(@Param String fileName, @Param String content) throws IOException {
-        if (StringKit.isBlank(fileName)) {
+    public RestResponse<?> saveTpl(@BodyParam TemplateParam templateParam) throws IOException {
+        if (StringKit.isBlank(templateParam.getFileName())) {
             return RestResponse.fail("缺少参数，请重试");
         }
+        String content   = templateParam.getContent();
         String themePath = Const.CLASSPATH + File.separatorChar + "templates" + File.separatorChar + "themes" + File.separatorChar + Commons.site_theme();
-        String filePath  = themePath + File.separatorChar + fileName;
+        String filePath  = themePath + File.separatorChar + templateParam.getFileName();
         if (Files.exists(Paths.get(filePath))) {
             byte[] rf_wiki_byte = content.getBytes("UTF-8");
             Files.write(Paths.get(filePath), rf_wiki_byte);
