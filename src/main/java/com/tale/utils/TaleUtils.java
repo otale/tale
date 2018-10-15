@@ -183,6 +183,9 @@ public class TaleUtils {
             if (node instanceof Link) {
                 attributes.put("target", "_blank");
             }
+            if(node instanceof org.commonmark.node.Image){
+                attributes.put("title", attributes.get("alt"));
+            }
         }
     }
 
