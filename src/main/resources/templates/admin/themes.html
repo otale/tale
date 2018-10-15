@@ -8,7 +8,7 @@
             </div>
             <div class="panel-body">
                 <div class="col-md-3 text-center m-t-10" v-for="item in themes">
-                    <img class="attach-img bx-shadow" :src="'/templates/themes/' + item.name + '/screenshot.png'" width="200" height="200" :title="item.name"/>
+                    <img class="attach-img bx-shadow" :src="'/templates/themes/' + item.name + '/screenshot.png'" width="300" height="200" :title="item.name"/>
                     <div class="clearfix m-t-10">
                         主题：<span>{{item.name}}</span> <mark v-if="item.name == '${siteTheme()}'">（当前主题）</mark>
                     </div>
