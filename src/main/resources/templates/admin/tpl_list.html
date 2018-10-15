@@ -80,7 +80,7 @@
         var fileName = $('#tplSelect').val();
         if (fileName && fileName != '') {
             tale.post({
-                url: '/admin/template/save',
+                url: '/admin/api/template/save',
                 data: {
                     fileName: fileName,
                     content: $('#tpl-preview').val()

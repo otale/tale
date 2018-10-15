@@ -92,6 +92,15 @@ public final class Commons {
     }
 
     /**
+     * 是否允许使用云公共静态资源
+     *
+     * @return
+     */
+    public static String allow_cloud_CDN() {
+        return site_option("allow_cloud_CDN");
+    }
+
+    /**
      * 网站配置项
      *
      * @param key

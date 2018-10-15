@@ -120,7 +120,7 @@ public class SiteService {
      */
     public Statistics getStatistics() {
 
-        Statistics statistics = mapCache.get(Types.C_STATISTICS);
+        Statistics statistics = mapCache.get(Types.SYS_STATISTICS);
         if (null != statistics) {
             return statistics;
         }
@@ -143,7 +143,7 @@ public class SiteService {
         statistics.setTags(tags);
         statistics.setCategories(categories);
 
-        mapCache.set(Types.C_STATISTICS, statistics);
+        mapCache.set(Types.SYS_STATISTICS, statistics);
         return statistics;
     }
 

@@ -13,10 +13,16 @@
     <link rel="shortcut icon" href="${theme_url('/static/img/favicon.png')}"/>
     <link rel="apple-touch-icon" href="${theme_url('/static/img/apple-touch-icon.png')}"/>
     <title>${head_title()}</title>
-    <link href="${theme_url('/static/css/xcode.min.css')}" rel="stylesheet">
+    <link href="${theme_url('/static/css/default.min.css')}" rel="stylesheet">
     <link href="${theme_url('/static/css/style.min.css')}" rel="stylesheet">
+    #if(allow_cloud_CDN() == "true")
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    #else
     <script src="/static/admin/plugins/jquery/3.2.1/jquery.min.js"></script>
+    #end
 
+    <script src="${theme_url('/static/js/highlight.min.js')}"></script>
+    <script src="${theme_url('/static/js/instantclick.min.js')}"></script>
     <!--[if lt IE 9]>
     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
     <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>

@@ -1,6 +1,5 @@
 package com.tale.controller.admin;
 
-import com.blade.Blade;
 import com.blade.Environment;
 import com.blade.ioc.annotation.Inject;
 import com.blade.kit.JsonKit;
@@ -9,6 +8,7 @@ import com.blade.mvc.Const;
 import com.blade.mvc.WebContext;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
+import com.blade.mvc.http.Response;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.annotation.SysLog;
 import com.tale.bootstrap.TaleConst;
@@ -64,10 +64,25 @@ public class AdminApiController extends BaseController {
         return RestResponse.ok(select().from(Logs.class).order(Logs::getId, OrderBy.DESC).page(pageParam.getPage(), pageParam.getLimit()));
     }
 
+    @SysLog("删除页面")
+    @PostRoute("page/delete/:cid")
+    public RestResponse<?> deletePage(@PathParam Integer cid) {
+        contentsService.delete(cid);
+        siteService.cleanCache(Types.SYS_STATISTICS);
+        return RestResponse.ok();
+    }
+
     @GetRoute("articles/:cid")
     public RestResponse article(@PathParam String cid) {
         Contents contents = contentsService.getContents(cid);
+        contents.setContent("");
         return RestResponse.ok(contents);
+    }
+
+    @GetRoute("articles/content/:cid")
+    public void articleContent(@PathParam String cid, Response response) {
+        Contents contents = contentsService.getContents(cid);
+        response.text(contents.getContent());
     }
 
     @PostRoute("article/new")
@@ -85,14 +100,14 @@ public class AdminApiController extends BaseController {
             contents.setCategories("默认分类");
         }
         Integer cid = contentsService.publish(contents);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok(cid);
     }
 
     @PostRoute("article/delete/:cid")
     public RestResponse<?> deleteArticle(@PathParam Integer cid) {
         contentsService.delete(cid);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -134,7 +149,7 @@ public class AdminApiController extends BaseController {
         contents.setAllowPing(true);
         contents.setAuthorId(users.getUid());
         contentsService.publish(contents);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -162,7 +177,7 @@ public class AdminApiController extends BaseController {
     @PostRoute("category/save")
     public RestResponse<?> saveCategory(@BodyParam MetaParam metaParam) {
         metasService.saveMeta(Types.CATEGORY, metaParam.getCname(), metaParam.getMid());
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -170,7 +185,7 @@ public class AdminApiController extends BaseController {
     @PostRoute("category/delete/:mid")
     public RestResponse<?> deleteMeta(@PathParam Integer mid) {
         metasService.delete(mid);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -191,7 +206,7 @@ public class AdminApiController extends BaseController {
             return RestResponse.fail("不存在该评论");
         }
         commentsService.delete(coid, comments.getCid());
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -199,7 +214,7 @@ public class AdminApiController extends BaseController {
     @PostRoute("comment/status")
     public RestResponse<?> updateStatus(@BodyParam Comments comments) {
         comments.update();
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -227,7 +242,7 @@ public class AdminApiController extends BaseController {
         comments.setStatus(TaleConst.COMMENT_APPROVED);
         comments.setParent(comments.getCoid());
         commentsService.saveComment(comments);
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         return RestResponse.ok();
     }
 
@@ -249,7 +264,7 @@ public class AdminApiController extends BaseController {
             return RestResponse.fail("不存在该附件");
         }
         String key = attach.getFkey();
-        siteService.cleanCache(Types.C_STATISTICS);
+        siteService.cleanCache(Types.SYS_STATISTICS);
         String             filePath = CLASSPATH.substring(0, CLASSPATH.length() - 1) + key;
         java.nio.file.Path path     = Paths.get(filePath);
         log.info("Delete attach: [{}]", filePath);
@@ -335,6 +350,12 @@ public class AdminApiController extends BaseController {
             optionsService.saveOption(OPTION_ALLOW_COMMENT_AUDIT, advanceParam.getAllowCommentAudit());
             TaleConst.OPTIONS.set(OPTION_ALLOW_COMMENT_AUDIT, advanceParam.getAllowCommentAudit());
         }
+
+        // 是否允许公共资源CDN
+        if (StringKit.isNotBlank(advanceParam.getAllowCloudCDN())) {
+            optionsService.saveOption(OPTION_ALLOW_CLOUD_CDN, advanceParam.getAllowCloudCDN());
+            TaleConst.OPTIONS.set(OPTION_ALLOW_CLOUD_CDN, advanceParam.getAllowCloudCDN());
+        }
         return RestResponse.ok();
     }
 
@@ -397,12 +418,13 @@ public class AdminApiController extends BaseController {
 
     @SysLog("保存模板")
     @PostRoute("template/save")
-    public RestResponse<?> saveTpl(@Param String fileName, @Param String content) throws IOException {
-        if (StringKit.isBlank(fileName)) {
+    public RestResponse<?> saveTpl(@BodyParam TemplateParam templateParam) throws IOException {
+        if (StringKit.isBlank(templateParam.getFileName())) {
             return RestResponse.fail("缺少参数，请重试");
         }
+        String content   = templateParam.getContent();
         String themePath = Const.CLASSPATH + File.separatorChar + "templates" + File.separatorChar + "themes" + File.separatorChar + Commons.site_theme();
-        String filePath  = themePath + File.separatorChar + fileName;
+        String filePath  = themePath + File.separatorChar + templateParam.getFileName();
         if (Files.exists(Paths.get(filePath))) {
             byte[] rf_wiki_byte = content.getBytes("UTF-8");
             Files.write(Paths.get(filePath), rf_wiki_byte);

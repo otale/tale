@@ -1,6 +1,8 @@
 package com.tale.model.dto;
 
 /**
+ * Types
+ *
  * Created by biezhi on 2017/2/21.
  */
 public interface Types {
@@ -21,7 +23,7 @@ public interface Types {
     String RECENT_META = "recent_meta";
     String RANDOM_META = "random_meta";
 
-    String C_STATISTICS = "sys:statistics";
+    String SYS_STATISTICS = "sys:statistics";
 
     String NEXT = "next";
     String PREV = "prev";

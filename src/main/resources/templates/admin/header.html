@@ -8,17 +8,31 @@
     <meta content="${_csrf_token}" name="csrf_token"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
-    <link href="${cdnURL()}/plugins/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    #if(allow_cloud_CDN() == "true")
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
+    <link href="${cdnURL()}/plugins/vue-loading/vue-loading.min.css" rel="stylesheet">
+    <link href="${cdnURL()}/css/style.min.css?v=${version}" rel="stylesheet" >
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.0/respond.min.js"></script>
+    <![endif]-->
+    #else
+    <link href="${cdnURL()}/plugins/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <link href="${cdnURL()}/plugins/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="${cdnURL()}/plugins/limonte-sweetalert2/6.4.1/sweetalert2.min.css" rel="stylesheet">
     <link href="${cdnURL()}/plugins/vue-loading/vue-loading.min.css" rel="stylesheet">
-    <link href="${cdnURL()}/css/style.min.css?v=${version}" rel="stylesheet" type="text/css">
+    <link href="${cdnURL()}/css/style.min.css?v=${version}" rel="stylesheet" >
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="${cdnURL()}/plugins/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="${cdnURL()}/plugins/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+    #end
 </head>
 <body class="fixed-left">
 <div id="wrapper">

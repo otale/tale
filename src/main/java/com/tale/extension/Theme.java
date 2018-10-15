@@ -284,6 +284,25 @@ public final class Theme {
     }
 
     /**
+     * 截取文章摘要(返回HTML)
+     *
+     * @param value 文章内容
+     * @return 转换 markdown 为 html
+     */
+    public static String intro(String value) {
+        if (StringKit.isBlank(value)) {
+            return null;
+        }
+        int pos = value.indexOf("<!--more-->");
+        if (pos != -1) {
+            String html = value.substring(0, pos);
+            return TaleUtils.mdToHtml(html);
+        } else {
+            return TaleUtils.mdToHtml(value);
+        }
+    }
+
+    /**
      * 截取文章摘要
      *
      * @param value 文章内容
@@ -328,7 +347,9 @@ public final class Theme {
             return "";
         }
         if (StringKit.isNotBlank(contents.getThumbImg())) {
-            return contents.getThumbImg();
+            String newFileName       = TaleUtils.getFileName(contents.getThumbImg());
+            String thumbnailImgUrl = (contents.getThumbImg()).replace(newFileName, "thumbnail_" + newFileName);
+            return thumbnailImgUrl;
         }
         String content = article(contents.getContent());
         String img     = Commons.show_thumb(content);

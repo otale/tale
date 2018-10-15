@@ -71,7 +71,7 @@
                                         <label class="col-md-3 control-label">CND地址</label>
                                         <div class="col-md-9">
                                             <input type="text" class="form-control" name="cdnURL" placeholder="CDN地址" />
-                                            <span class="help-block"><small>该地址用于加载博客后台静态资源，不清楚请勿设置。</small></span>
+                                            <span class="help-block"><small>该地址用于加载博客后台静态资源，不清楚请勿设置。开启公共CDN选项时此配置无效</small></span>
                                         </div>
                                     </div>
 
@@ -110,8 +110,17 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">云公共CDN资源</label>
+                                        <div class="col-md-9">
+                                            <div id="allowCloudCDN" class="toggle toggle-success"></div>
+                                            <span class="help-block"><small>启用该选项后后台静态资源则使用<code>cdn.bootcss.com</code>加载</small></span>
+                                        </div>
+                                    </div>
+
                                     <input type="hidden" name="allowInstall" v-model="allowInstall"/>
                                     <input type="hidden" name="allowCommentAudit" v-model="allowCommentAudit"/>
+                                    <input type="hidden" name="allowCloudCDN" v-model="allowCloudCDN"/>
 
                                     <div class="clearfix pull-right">
                                         <button type="button" class="btn btn-inverse waves-effect waves-light" @click="saveAdvanced">
@@ -129,7 +138,7 @@
 </div>
 #include('./footer.html')
 <script src="${cdnURL()}/plugins/jquery-toggles/2.0.4/toggles.min.js"></script>
-<script type="text/javascript">
+<script >
     var tale = new $.tale();
     var vm = new Vue({
         el: '#app',
@@ -137,6 +146,7 @@
             options: {},
             allowInstall: '',
             allowCommentAudit: '',
+            allowCloudCDN: '',
             isLoading: true
         },
         beforeCreate: function(){
@@ -154,6 +164,7 @@
                         $vm.options = data.payload;
                         $vm.allowInstall = data.payload.allow_install;
                         $vm.allowCommentAudit = data.payload.allow_comment_audit;
+                        $vm.allowCloudCDN = data.payload.allow_cloud_CDN;
 
                         $('#allowInstall').toggles({
                             on: $vm.allowInstall === 'true',
@@ -165,6 +176,14 @@
 
                         $('#allowCommentAudit').toggles({
                             on: $vm.allowCommentAudit === 'true',
+                            text: {
+                                on: '开启',
+                                off: '关闭'
+                            }
+                        });
+
+                        $('#allowCloudCDN').toggles({
+                            on: $vm.allowCloudCDN === 'true',
                             text: {
                                 on: '开启',
                                 off: '关闭'
@@ -218,6 +237,10 @@
 
     $('#allowCommentAudit').on('toggle', function (e, active) {
         vm.allowCommentAudit = active;
+    });
+
+    $('#allowCloudCDN').on('toggle', function (e, active) {
+        vm.allowCloudCDN = active;
     });
 
     $(document).ready(function () {

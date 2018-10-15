@@ -28,7 +28,7 @@
                                     <option value="draft">草稿</option>
                                 </select>
                                 <button type="button" class="btn btn-success waves-effect waves-light m-l-10"
-                                        @click="load()">查询
+                                        @click="load(1)">查询
                                 </button>
                             </form>
                         </div>
@@ -105,7 +105,7 @@
     </div>
 </div>
 #include('./footer.html')
-<script type="text/javascript">
+<script >
     var tale = new $.tale();
     var vm = new Vue({
         el: '#app',
@@ -116,7 +116,8 @@
                 type: 'post',
                 title:'',
                 status: '',
-                categories: ''
+                categories: '',
+                page: 1
             },
             categories:[]
         },
@@ -125,7 +126,7 @@
         },
         mounted: function () {
             this.loadOnce();
-            this.load();
+            this.load(1);
         },
         methods: {
             loadOnce: function(){
@@ -141,8 +142,10 @@
                     }
                 });
             },
-            load: function () {
+            load: function (page) {
                 var $vm = this;
+                $vm.search.page = page;
+
                 tale.get({
                     url: '/admin/api/articles',
                     data: $vm.search,
@@ -165,7 +168,7 @@
                             success: function (result) {
                                 if (result && result.success) {
                                     tale.alertOk('文章删除成功');
-                                    $vm.load();
+                                    $vm.load(1);
                                 } else {
                                     tale.alertError(result.msg || '文章删除失败');
                                 }

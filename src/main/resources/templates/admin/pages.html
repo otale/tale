@@ -77,7 +77,7 @@
 
 #include('./footer.html')
 
-<script type="text/javascript">
+<script >
     var tale = new $.tale();
     var vm = new Vue({
         el: '#app',
@@ -89,13 +89,17 @@
             vueLoding = this.$loading.show();
         },
         mounted: function () {
-            this.load();
+            this.load(1);
         },
         methods: {
-            load: function () {
+            load: function (page) {
                 var $vm = this;
                 tale.get({
                     url: '/admin/api/pages',
+                    data: {
+                        page: page,
+                        limit: 12
+                    },
                     success: function (data) {
                         $vm.articlePage = data.payload
                     },
@@ -110,12 +114,11 @@
                 tale.alertConfirm({
                     title: '确定删除这个页面吗?', then: function () {
                         tale.post({
-                            url: '/admin/api/page/delete',
-                            data: {cid: cid},
+                            url: '/admin/api/page/delete/' + cid,
                             success: function (result) {
                                 if (result && result.success) {
                                     tale.alertOk('页面删除成功');
-                                    $vm.load();
+                                    $vm.load(1);
                                 } else {
                                     tale.alertError(result.msg || '页面删除失败');
                                 }

@@ -58,7 +58,7 @@ public class TaleUtils {
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern SLUG_REGEX = Pattern.compile("^[A-Za-z0-9_-]{5,100}$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SLUG_REGEX = Pattern.compile("^[A-Za-z0-9_-]{3,50}$", Pattern.CASE_INSENSITIVE);
 
     /**
      * 设置记住密码cookie
@@ -397,7 +397,14 @@ public class TaleUtils {
         return prefix + "/" + com.blade.kit.UUID.UU32() + "." + StringKit.fileExt(name);
     }
 
-    public static String buildURL(String url){
+    public static String getFileName(String path) {
+        File tempFile = new File(path.trim());
+        String fileName = tempFile.getName();
+
+        return fileName;
+    }
+
+    public static String buildURL(String url) {
         if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
         }

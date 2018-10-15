@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
-                        <input name="tags" id="tags" type="text" class="form-control" placeholder="请填写文章标签" v-model="article.tags"/>
+                        <input id="tags" type="text" class="form-control" placeholder="请填写文章标签" v-model="article.tags"/>
                     </div>
 
                     <div class="form-group col-md-6">
@@ -38,9 +38,9 @@
 
                     <div class="form-group col-xs-12">
                         <div class="pull-right">
-                            <button class="btn btn-purple btn-sm waves-effect waves-light switch-editor" @click="switchEditor">
+                            <a class="btn btn-purple btn-sm waves-effect waves-light switch-editor" @click="switchEditor">
                                 切换为富文本编辑器
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -116,6 +116,6 @@
     </div>
 </div>
 #include('./_footer.html')
-<script src="/static/admin/js/edit_article.js?v=${version}" type="text/javascript"></script>
+<script src="/static/admin/js/edit_article.js?v=${version}" ></script>
 </body>
 </html>

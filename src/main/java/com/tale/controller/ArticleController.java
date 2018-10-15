@@ -134,7 +134,7 @@ public class ArticleController extends BaseController {
 
             // 设置对每个文章30秒可以评论一次
             cache.hset(Types.COMMENTS_FREQUENCY, val, 1, 30);
-            siteService.cleanCache(Types.C_STATISTICS);
+            siteService.cleanCache(Types.SYS_STATISTICS);
 
             return RestResponse.ok();
         } catch (Exception e) {

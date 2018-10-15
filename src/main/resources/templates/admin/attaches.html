@@ -124,7 +124,7 @@
 #include('./footer.html')
 <script src="${cdnURL()}/plugins/dropzone/4.3.0/min/dropzone.min.js"></script>
 <script src="${cdnURL()}/plugins/clipboard.js/1.6.0/clipboard.min.js"></script>
-<script type="text/javascript">
+<script >
     var tale = new $.tale();
     var vm = new Vue({
         el: '#app',
@@ -138,13 +138,17 @@
             vueLoding = this.$loading.show();
         },
         mounted: function () {
-            this.load();
+            this.load(1);
         },
         methods: {
-            load: function () {
+            load: function (page) {
                 var $vm = this;
                 tale.get({
                     url: '/admin/api/attaches',
+                    data: {
+                        page: page,
+                        limit: 12
+                    },
                     success: function (data) {
                         $vm.attachPage = data.payload
                     },
@@ -164,7 +168,7 @@
                             success: function (result) {
                                 if (result && result.success) {
                                     tale.alertOk('附件删除成功');
-                                    $vm.load();
+                                    $vm.load(1);
                                 } else {
                                     tale.alertError(result.msg || '附件删除失败');
                                 }
@@ -196,7 +200,7 @@
         init: function () {
             this.on('queuecomplete', function (files) {
                 tale.alertOk('上传成功');
-                vm.load();
+                vm.load(1);
             });
             this.on('error', function (a, errorMessage, result) {
                 if (!result.success && result.msg) {

@@ -133,7 +133,7 @@ public class PagesController extends BaseController {
             if (StringKit.isNotBlank(option)) {
                 map = (Map<String, Object>) JsonKit.toAson(option);
             }
-            request.attribute("theme_options", map);
+            request.attribute("options", map);
         } catch (Exception e) {
             log.error("解析主题设置出现异常", e);
         }
