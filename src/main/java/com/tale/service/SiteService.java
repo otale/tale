@@ -316,6 +316,15 @@ public class SiteService {
     }
 
     /**
+     * 获取文章的评论总数
+     *
+     * @param cid 文章id
+     */
+    public long getCommentCount(Integer cid) {
+        return commentsService.getCommentCount(cid);
+    }
+
+    /**
      * 清楚缓存
      *
      * @param key 缓存key
