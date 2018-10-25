@@ -2,10 +2,10 @@ package com.tale.bootstrap;
 
 import com.blade.Blade;
 import com.blade.Environment;
-import com.blade.event.BeanProcessor;
 import com.blade.ioc.Ioc;
 import com.blade.ioc.annotation.Bean;
 import com.blade.ioc.annotation.Inject;
+import com.blade.kit.JsonKit;
 import com.blade.kit.StringKit;
 import com.blade.loader.BladeLoader;
 import com.blade.mvc.view.template.JetbrickTemplateEngine;
@@ -15,6 +15,7 @@ import com.tale.extension.AdminCommons;
 import com.tale.extension.Commons;
 import com.tale.extension.JetTag;
 import com.tale.extension.Theme;
+import com.tale.model.dto.RememberMe;
 import com.tale.model.dto.Types;
 import com.tale.service.OptionsService;
 import com.tale.service.SiteService;
@@ -30,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.tale.bootstrap.TaleConst.CLASSPATH;
+import static com.tale.bootstrap.TaleConst.OPTION_SAFE_REMEMBER_ME;
 
 /**
  * Tale初始化进程
@@ -72,7 +74,7 @@ public class Bootstrap implements BladeLoader {
         // 扫描主题下面的所有自定义宏
         String themeDir = CLASSPATH + "templates" + File.separatorChar + "themes";
         File[] dir      = new File(themeDir).listFiles();
-        if(null != dir){
+        if (null != dir) {
             for (File f : dir) {
                 if (f.isDirectory() && Files.exists(Paths.get(f.getPath() + File.separatorChar + "macros.html"))) {
                     String macroName = File.separatorChar + "themes" + File.separatorChar + f.getName() + File.separatorChar + "macros.html";
@@ -100,7 +102,6 @@ public class Bootstrap implements BladeLoader {
         TaleConst.ENABLED_CDN = environment.getBoolean("app.enableCdn", false);
         TaleConst.MAX_FILE_SIZE = environment.getInt("app.max-file-size", 20480);
 
-        TaleConst.AES_SALT = environment.get("app.salt", "012c456789abcdef");
         TaleConst.OPTIONS.addAll(optionsService.getOptions());
         String ips = TaleConst.OPTIONS.get(Types.BLOCK_IPS, "");
         if (StringKit.isNotBlank(ips)) {
@@ -108,6 +109,12 @@ public class Bootstrap implements BladeLoader {
         }
         if (Files.exists(Paths.get(CLASSPATH + "install.lock"))) {
             TaleConst.INSTALLED = Boolean.TRUE;
+        }
+
+        String rememberToken = optionsService.getOption(OPTION_SAFE_REMEMBER_ME);
+        if (StringKit.isNotEmpty(rememberToken)) {
+            RememberMe rememberMe = JsonKit.formJson(rememberToken, RememberMe.class);
+            TaleConst.REMEMBER_TOKEN = rememberMe.getToken();
         }
 
         BaseController.THEME = "themes/" + Commons.site_option("site_theme");

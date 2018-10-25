@@ -6,9 +6,9 @@ import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.Param;
 import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PostRoute;
-import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.annotation.SysLog;
+import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
@@ -31,7 +31,7 @@ public class SystemController extends BaseController {
 
     @SysLog("保存个人信息")
     @PostRoute("profile")
-    public RestResponse saveProfile(@Param String screenName, @Param String email, Request request) {
+    public RestResponse saveProfile(@Param String screenName, @Param String email) {
         Users users = this.user();
         if (StringKit.isNotBlank(screenName) && StringKit.isNotBlank(email)) {
             Users temp = new Users();
@@ -44,7 +44,7 @@ public class SystemController extends BaseController {
 
     @SysLog("修改登录密码")
     @PostRoute("password")
-    public RestResponse upPwd(@Param String old_password, @Param String password, Request request) {
+    public RestResponse upPwd(@Param String old_password, @Param String password) {
         Users users = this.user();
         if (StringKit.isBlank(old_password) || StringKit.isBlank(password)) {
             return RestResponse.fail("请确认信息输入完整");
@@ -61,6 +61,7 @@ public class SystemController extends BaseController {
         String pwd  = EncryptKit.md5(users.getUsername() + password);
         temp.setPassword(pwd);
         temp.updateById(users.getUid());
+        optionsService.deleteOption(TaleConst.OPTION_SAFE_REMEMBER_ME);
         return RestResponse.ok();
     }
 
