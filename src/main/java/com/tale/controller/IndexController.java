@@ -1,6 +1,7 @@
 package com.tale.controller;
 
 import com.blade.ioc.annotation.Inject;
+import com.blade.mvc.RouteContext;
 import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.http.Response;
@@ -162,13 +163,10 @@ public class IndexController extends BaseController {
 
     /**
      * 注销
-     *
-     * @param session
-     * @param response
      */
     @Route(value = "logout")
-    public void logout(Session session, Response response) {
-        TaleUtils.logout(session, response);
+    public void logout(RouteContext context) {
+        TaleUtils.logout(context);
     }
 
 }

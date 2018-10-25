@@ -1,10 +1,9 @@
 package com.tale.utils;
 
-import com.blade.kit.DateKit;
-import com.blade.kit.Hashids;
-import com.blade.kit.StringKit;
-import com.blade.mvc.http.Request;
-import com.blade.mvc.http.Response;
+import com.blade.kit.UUID;
+import com.blade.kit.*;
+import com.blade.mvc.RouteContext;
+import com.blade.mvc.http.Cookie;
 import com.blade.mvc.http.Session;
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
@@ -14,7 +13,9 @@ import com.sun.syndication.io.WireFeedOutput;
 import com.tale.bootstrap.TaleConst;
 import com.tale.extension.Commons;
 import com.tale.extension.Theme;
+import com.tale.model.dto.RememberMe;
 import com.tale.model.entity.Contents;
+import com.tale.model.entity.Options;
 import com.tale.model.entity.Users;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
@@ -29,13 +30,16 @@ import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
 import java.util.List;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.tale.bootstrap.TaleConst.*;
+import static io.github.biezhi.anima.Anima.select;
+import static io.github.biezhi.anima.Anima.update;
 
 /**
  * Tale工具类
@@ -45,12 +49,9 @@ import static com.tale.bootstrap.TaleConst.*;
 public class TaleUtils {
 
     /**
-     * 一个月
+     * 一周
      */
-    private static final int     ONE_MONTH   = 30 * 24 * 60 * 60;
-    private static final Random  R           = new Random();
-    private static final Hashids HASH_IDS    = new Hashids(TaleConst.AES_SALT);
-    private static final long[]  HASH_PREFIX = {-1, 2, 0, 1, 7, 0, 9};
+    private static final int ONE_MONTH = 7 * 24 * 60 * 60;
 
     /**
      * 匹配邮箱正则
@@ -61,28 +62,66 @@ public class TaleUtils {
     private static final Pattern SLUG_REGEX = Pattern.compile("^[A-Za-z0-9_-]{3,50}$", Pattern.CASE_INSENSITIVE);
 
     /**
-     * 设置记住密码cookie
-     *
-     * @param response
-     * @param uid
+     * 设置记住密码 cookie
      */
-    public static void setCookie(Response response, Integer uid) {
-        try {
-            HASH_PREFIX[0] = uid;
-            String val = HASH_IDS.encode(HASH_PREFIX);
-            HASH_PREFIX[0] = -1;
-//            String  val   = new String(EncrypKit.encryptAES(uid.toString().getBytes(), TaleConst.AES_SALT.getBytes()));
-            boolean isSSL = Commons.site_url().startsWith("https");
-            response.cookie("/", TaleConst.USER_IN_COOKIE, val, ONE_MONTH, isSSL);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void setCookie(RouteContext context, Integer uid) {
+        boolean isSSL = Commons.site_url().startsWith("https");
+
+        String     token      = EncryptKit.md5(UUID.UU64());
+        RememberMe rememberMe = new RememberMe();
+        rememberMe.setUid(uid);
+        rememberMe.setExpires(DateKit.nowUnix() + ONE_MONTH);
+        rememberMe.setRecentIp(Collections.singletonList(context.address()));
+        rememberMe.setToken(token);
+
+        long count = select().from(Options.class).where(Options::getName, OPTION_SAFE_REMEMBER_ME).count();
+        if (count == 0) {
+            Options options = new Options();
+            options.setName(OPTION_SAFE_REMEMBER_ME);
+            options.setValue(JsonKit.toString(rememberMe));
+            options.setDescription("记住我 Token");
+            options.save();
+        } else {
+            update().from(Options.class).set(Options::getValue, JsonKit.toString(rememberMe))
+                    .where(Options::getName, OPTION_SAFE_REMEMBER_ME)
+                    .execute();
         }
+
+        Cookie cookie = new Cookie();
+        cookie.name(REMEMBER_IN_COOKIE);
+        cookie.value(token);
+        cookie.httpOnly(true);
+        cookie.secure(isSSL);
+        cookie.maxAge(ONE_MONTH);
+        cookie.path("/");
+
+        context.response().cookie(cookie);
+    }
+
+    public static Integer getCookieUid(RouteContext context) {
+        String rememberToken = context.cookie(REMEMBER_IN_COOKIE);
+        if (null == rememberToken || rememberToken.isEmpty() || REMEMBER_TOKEN.isEmpty()) {
+            return null;
+        }
+        if (!REMEMBER_TOKEN.equals(rememberToken)) {
+            return null;
+        }
+        Options options = select().from(Options.class).where(Options::getName, OPTION_SAFE_REMEMBER_ME).one();
+        if (null == options) {
+            return null;
+        }
+        RememberMe rememberMe = JsonKit.formJson(options.getValue(), RememberMe.class);
+        if (rememberMe.getExpires() < DateKit.nowUnix()) {
+            return null;
+        }
+        if (!rememberMe.getRecentIp().contains(context.address())) {
+            return null;
+        }
+        return rememberMe.getUid();
     }
 
     /**
      * 返回当前登录用户
-     *
-     * @return
      */
     public static Users getLoginUser() {
         Session session = com.blade.mvc.WebContext.request().session();
@@ -95,68 +134,23 @@ public class TaleUtils {
 
     /**
      * 退出登录状态
-     *
-     * @param session
-     * @param response
      */
-    public static void logout(Session session, Response response) {
-        session.removeAttribute(TaleConst.LOGIN_SESSION_KEY);
-        response.removeCookie(TaleConst.USER_IN_COOKIE);
-        response.redirect(Commons.site_url());
-    }
-
-    /**
-     * 获取cookie中的用户id
-     *
-     * @param request
-     * @return
-     */
-    public static Integer getCookieUid(Request request) {
-        if (null != request) {
-            String value = request.cookie(TaleConst.USER_IN_COOKIE);
-            if (StringKit.isNotBlank(value)) {
-                try {
-                    long[] ids = HASH_IDS.decode(value);
-                    if (null != ids && ids.length > 0) {
-                        return Long.valueOf(ids[0]).intValue();
-                    }
-                } catch (Exception e) {
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 重新拼接字符串
-     *
-     * @param arr
-     * @return
-     */
-    public static String rejoin(String[] arr) {
-        if (null == arr) {
-            return "";
-        }
-        if (arr.length == 1) {
-            return "'" + arr[0] + "'";
-        }
-        String a = String.join("','", arr);
-        a = a.substring(2) + "'";
-        return a;
+    public static void logout(RouteContext context) {
+        TaleConst.REMEMBER_TOKEN = "";
+        context.session().remove(TaleConst.LOGIN_SESSION_KEY);
+        context.response().removeCookie(TaleConst.REMEMBER_IN_COOKIE);
+        context.redirect(Commons.site_url());
     }
 
     /**
      * markdown转换为html
-     *
-     * @param markdown
-     * @return
      */
     public static String mdToHtml(String markdown) {
         if (StringKit.isBlank(markdown)) {
             return "";
         }
 
-        List<Extension> extensions = Arrays.asList(TablesExtension.create());
+        List<Extension> extensions = Collections.singletonList(TablesExtension.create());
         Parser          parser     = Parser.builder().extensions(extensions).build();
         Node            document   = parser.parse(markdown);
         HtmlRenderer renderer = HtmlRenderer.builder()
@@ -183,14 +177,14 @@ public class TaleUtils {
             if (node instanceof Link) {
                 attributes.put("target", "_blank");
             }
+            if (node instanceof org.commonmark.node.Image) {
+                attributes.put("title", attributes.get("alt"));
+            }
         }
     }
 
     /**
      * 提取html中的文字
-     *
-     * @param html
-     * @return
      */
     public static String htmlToText(String html) {
         if (StringKit.isNotBlank(html)) {
@@ -201,9 +195,6 @@ public class TaleUtils {
 
     /**
      * 判断文件是否是图片类型
-     *
-     * @param imageFile
-     * @return
      */
     public static boolean isImage(File imageFile) {
         if (!imageFile.exists()) {
@@ -222,9 +213,6 @@ public class TaleUtils {
 
     /**
      * 判断是否是邮箱
-     *
-     * @param emailStr
-     * @return
      */
     public static boolean isEmail(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
@@ -233,9 +221,6 @@ public class TaleUtils {
 
     /**
      * 判断是否是合法路径
-     *
-     * @param slug
-     * @return
      */
     public static boolean isPath(String slug) {
         if (StringKit.isNotBlank(slug)) {
@@ -250,10 +235,6 @@ public class TaleUtils {
 
     /**
      * 获取RSS输出
-     *
-     * @param articles
-     * @return
-     * @throws FeedException
      */
     public static String getRssXml(java.util.List<Contents> articles) throws FeedException {
         Channel channel = new Channel("rss_2.0");
@@ -331,9 +312,6 @@ public class TaleUtils {
 
     /**
      * 替换HTML脚本
-     *
-     * @param value
-     * @return
      */
     public static String cleanXSS(String value) {
         //You'll need to remove the spaces from the html entities below
@@ -361,8 +339,8 @@ public class TaleUtils {
         }
         //随机交换values.length次
         for (int i = 0; i < values.length; i++) {
-            temp1 = Math.abs(R.nextInt()) % (values.length - 1); //随机产生一个位置
-            temp2 = Math.abs(R.nextInt()) % (values.length - 1); //随机产生另一个位置
+            temp1 = Math.abs(ThreadLocalRandom.current().nextInt()) % (values.length - 1); //随机产生一个位置
+            temp2 = Math.abs(ThreadLocalRandom.current().nextInt()) % (values.length - 1); //随机产生另一个位置
             if (temp1 != temp2) {
                 temp3 = values[temp1];
                 values[temp1] = values[temp2];
@@ -398,7 +376,7 @@ public class TaleUtils {
     }
 
     public static String getFileName(String path) {
-        File tempFile = new File(path.trim());
+        File   tempFile = new File(path.trim());
         String fileName = tempFile.getName();
 
         return fileName;

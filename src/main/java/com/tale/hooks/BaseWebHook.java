@@ -21,31 +21,28 @@ public class BaseWebHook implements WebHook {
 
     @Override
     public boolean before(RouteContext context) {
-        Request  request  = context.request();
-        Response response = context.response();
-
-        String uri = request.uri();
-        String ip  = request.address();
+        String uri = context.uri();
+        String ip  = context.address();
 
         // 禁止该ip访问
         if (TaleConst.BLOCK_IPS.contains(ip)) {
-            response.text("You have been banned, brother");
+            context.text("You have been banned, brother");
             return false;
         }
 
-        log.info("IP: {}, UserAgent: {}", ip, request.userAgent());
+        log.info("IP: {}, UserAgent: {}", ip, context.userAgent());
 
         if (uri.startsWith(TaleConst.STATIC_URI)) {
             return true;
         }
 
         if (!TaleConst.INSTALLED && !uri.startsWith(TaleConst.INSTALL_URI)) {
-            response.redirect(TaleConst.INSTALL_URI);
+            context.redirect(TaleConst.INSTALL_URI);
             return false;
         }
 
         if (TaleConst.INSTALLED) {
-            return isRedirect(request, response);
+            return isRedirect(context);
         }
         return true;
     }
@@ -69,22 +66,24 @@ public class BaseWebHook implements WebHook {
         return true;
     }
 
-    private boolean isRedirect(Request request, Response response) {
+    private boolean isRedirect(RouteContext context) {
         Users  user = TaleUtils.getLoginUser();
-        String uri  = request.uri();
-        if (null == user) {
-            Integer uid = TaleUtils.getCookieUid(request);
+        String uri  = context.uri();
+        if (uri.startsWith(TaleConst.ADMIN_URI) && !uri.startsWith(TaleConst.LOGIN_URI)) {
+            context.attribute(TaleConst.PLUGINS_MENU_NAME, TaleConst.PLUGIN_MENUS);
+            if(null != user){
+                return true;
+            }
+
+            Integer uid = TaleUtils.getCookieUid(context);
             if (null != uid) {
                 user = select().from(Users.class).byId(uid);
-                request.session().attribute(TaleConst.LOGIN_SESSION_KEY, user);
+                context.session().attribute(TaleConst.LOGIN_SESSION_KEY, user);
             }
-        }
-        if (uri.startsWith(TaleConst.ADMIN_URI) && !uri.startsWith(TaleConst.LOGIN_URI)) {
             if (null == user) {
-                response.redirect(TaleConst.LOGIN_URI);
+                context.redirect(TaleConst.LOGIN_URI);
                 return false;
             }
-            request.attribute(TaleConst.PLUGINS_MENU_NAME, TaleConst.PLUGIN_MENUS);
         }
         return true;
     }
