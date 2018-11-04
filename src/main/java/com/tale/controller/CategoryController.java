@@ -119,6 +119,8 @@ public class CategoryController extends BaseController {
         return this.render("tag");
     }
 
+    /************************************************************************/
+
     /**
      * 分类列表页
      *
