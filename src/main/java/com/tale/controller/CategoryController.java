@@ -38,28 +38,29 @@ public class CategoryController extends BaseController {
      *
      * @since 1.3.1
      */
-    @GetRoute(value = {"categories", "categories.html"})
-    public String categories(Request request) {
+    @GetRoute(value = {"category", "category.html"})
+    public String category(Request request) {
         Map<String, List<Contents>> mapping    = metasService.getMetaMapping(Types.CATEGORY);
         Set<String>                 categories = mapping.keySet();
         request.attribute("categories", categories);
         request.attribute("mapping", mapping);
-        return this.render("categories");
+        request.attribute("is_category", true);
+        return this.render("category");
     }
 
     /**
      * 某个分类详情页
      */
     @GetRoute(value = {"category/:keyword", "category/:keyword.html"})
-    public String categories(Request request, @PathParam String keyword, @Param(defaultValue = "12") int limit) {
-        return this.categories(request, keyword, 1, limit);
+    public String category(Request request, @PathParam String keyword, @Param(defaultValue = "12") int limit) {
+        return this.categoryPage(request, keyword, 1, limit);
     }
 
     /**
      * 某个分类详情页分页
      */
     @GetRoute(value = {"category/:keyword/:page", "category/:keyword/:page.html"})
-    public String categories(Request request, @PathParam String keyword,
+    public String categoryPage(Request request, @PathParam String keyword,
                              @PathParam int page, @Param(defaultValue = "12") int limit) {
 
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
@@ -76,7 +77,7 @@ public class CategoryController extends BaseController {
         request.attribute("is_category", true);
         request.attribute("page_prefix", "/category/" + keyword);
 
-        return this.render("page-category");
+        return this.render("category");
     }
 
     /**
@@ -86,13 +87,14 @@ public class CategoryController extends BaseController {
      *
      * @since 1.3.1
      */
-    @GetRoute(value = {"tags", "tags.html"})
-    public String tags(Request request) {
+    @GetRoute(value = {"tag", "tag.html"})
+    public String tag(Request request) {
         Map<String, List<Contents>> mapping = metasService.getMetaMapping(Types.TAG);
         Set<String>                 tags    = mapping.keySet();
         request.attribute("tags", tags);
         request.attribute("mapping", mapping);
-        return this.render("tags");
+        request.attribute("is_tag", true);
+        return this.render("tag");
     }
 
     /**
@@ -101,15 +103,15 @@ public class CategoryController extends BaseController {
      * @param name 标签名
      */
     @GetRoute(value = {"tag/:name", "tag/:name.html"})
-    public String tagPage(Request request, @PathParam String name, @Param(defaultValue = "12") int limit) {
-        return this.tags(request, name, 1, limit);
+    public String tag(Request request, @PathParam String name, @Param(defaultValue = "12") int limit) {
+        return this.tagPage(request, name, 1, limit);
     }
 
     /**
      * 标签下文章分页
      */
     @GetRoute(value = {"tag/:name/:page", "tag/:name/:page.html"})
-    public String tags(Request request, @PathParam String name, @PathParam int page, @Param(defaultValue = "12") int limit) {
+    public String tagPage(Request request, @PathParam String name, @PathParam int page, @Param(defaultValue = "12") int limit) {
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
         Metas metaDto = metasService.getMeta(Types.TAG, name);
         if (null == metaDto) {
@@ -124,7 +126,7 @@ public class CategoryController extends BaseController {
         request.attribute("is_tag", true);
         request.attribute("page_prefix", "/tag/" + name);
 
-        return this.render("page-category");
+        return this.render("tag");
     }
 
 }
