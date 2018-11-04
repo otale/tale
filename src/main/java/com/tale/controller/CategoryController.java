@@ -44,6 +44,7 @@ public class CategoryController extends BaseController {
         Set<String>                 categories = mapping.keySet();
         request.attribute("categories", categories);
         request.attribute("mapping", mapping);
+        request.attribute("is_category", true);
         return this.render("categories");
     }
 
@@ -52,6 +53,7 @@ public class CategoryController extends BaseController {
      */
     @GetRoute(value = {"category/:keyword", "category/:keyword.html"})
     public String categories(Request request, @PathParam String keyword, @Param(defaultValue = "12") int limit) {
+        request.attribute("is_category", true);
         return this.categories(request, keyword, 1, limit);
     }
 
@@ -92,6 +94,7 @@ public class CategoryController extends BaseController {
         Set<String>                 tags    = mapping.keySet();
         request.attribute("tags", tags);
         request.attribute("mapping", mapping);
+        request.attribute("is_tag", true);
         return this.render("tags");
     }
 
@@ -102,6 +105,7 @@ public class CategoryController extends BaseController {
      */
     @GetRoute(value = {"tag/:name", "tag/:name.html"})
     public String tagPage(Request request, @PathParam String name, @Param(defaultValue = "12") int limit) {
+        request.attribute("is_tag", true);
         return this.tags(request, name, 1, limit);
     }
 
