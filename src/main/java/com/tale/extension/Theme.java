@@ -661,6 +661,18 @@ public final class Theme {
     }
 
     /**
+     * 统计所有文章数量
+     *
+     * @return 所有文章数量
+     */
+    public static long articleCount() {
+        return select().from(Contents.class)
+                .where(Contents::getType, Types.ARTICLE)
+                .and("status", Types.PUBLISH)
+                .count();
+    }
+
+    /**
      * 分页
      *
      * @param limit
