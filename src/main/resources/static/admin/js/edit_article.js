@@ -166,24 +166,24 @@ var vm = new Vue({
                         });
                         $('#dropzone-container').hide();
                     }
+
+                    tale.get({
+                        url: '/admin/api/articles/content/' + cid,
+                        success: function (data) {
+                            if ($vm.article.fmtType === 'markdown') {
+                                mditor.value = data;
+                            } else {
+                                htmlEditor.summernote("code", data);
+                            }
+                        }
+                    });
+
                 },
                 error: function (error) {
                     console.log(error);
                     alert(error || '数据加载失败');
                 }
             });
-
-            tale.get({
-                url: '/admin/api/articles/content/' + cid,
-                success: function (data) {
-                    if ($vm.article.fmtType === 'markdown') {
-                        mditor.value = data;
-                    } else {
-                        htmlEditor.summernote("code", data);
-                    }
-                }
-            });
-
         },
         autoSave: function (callback) {
             var $vm = this;
