@@ -110,6 +110,9 @@
                     },
                     success: function (data) {
                         $vm.commentPage = data.payload
+                        if(!data.payload.rows){
+                            $vm.commentPage.rows = []
+                        }
                     },
                     error: function (error) {
                         console.log(error);
