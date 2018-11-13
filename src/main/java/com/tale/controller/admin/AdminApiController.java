@@ -167,11 +167,13 @@ public class AdminApiController extends BaseController {
         return RestResponse.ok(cid);
     }
 
+    /*
     @GetRoute("categories")
     public RestResponse categories() {
         List<Metas> categories = metasService.getMetas(Types.CATEGORY);
         return RestResponse.ok(categories);
     }
+    */
 
     @SysLog("保存分类")
     @PostRoute("category/save")
