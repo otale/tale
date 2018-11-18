@@ -117,4 +117,12 @@ public class TaleConst {
     public static final String OPTION_ALLOW_CLOUD_CDN     = "allow_cloud_CDN";
     public static final String OPTION_SAFE_REMEMBER_ME    = "safe_remember_me";
 
+    /**
+     * 邮件发送相关常量
+     */
+    //收件人邮箱地址，这里建议和发件邮箱地址相同，即将邮件转发给自己，这样就不会被邮件服务器识别为垃圾邮件而退信了
+    public static final String TO_MAIL_ADDRESS = "";
+    public static final String FROM_ADDRESS = ""; //发件人邮箱地址
+    public static final String USER = ""; //发件人称号，同邮箱地址
+    public static final String PSW = ""; //发件人邮箱客户端授权码
 }

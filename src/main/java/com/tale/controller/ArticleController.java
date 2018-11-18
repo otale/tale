@@ -15,6 +15,7 @@ import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.service.CommentsService;
 import com.tale.service.ContentsService;
+import com.tale.service.MailService;
 import com.tale.service.SiteService;
 import com.tale.validators.CommonValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,8 @@ public class ArticleController extends BaseController {
     @Inject
     private SiteService siteService;
 
+    @Inject
+    private MailService mailService;
     /**
      * 自定义页面
      */
@@ -126,6 +129,15 @@ public class ArticleController extends BaseController {
 
         try {
             commentsService.saveComment(comments);
+            //当有浏览者评论时发送邮件通知博主
+            StringBuilder context = new StringBuilder("您收到：" + comments.getAuthor() + "的评论<br>");
+            context.append("内容：" + comments.getContent() + "<br>");
+            context.append("评论者邮箱：" + comments.getMail() + "<br>");
+            context.append("评论者网址：" + comments.getUrl() + "<br>");
+            String titile = "Tale博客系统评论通知";
+            if (comments.getMail() != TaleConst.TO_MAIL_ADDRESS) {
+                mailService.sendMail(TaleConst.TO_MAIL_ADDRESS, context.toString(), titile);
+            }
             response.cookie("tale_remember_author", URLEncoder.encode(comments.getAuthor(), "UTF-8"), 7 * 24 * 60 * 60);
             response.cookie("tale_remember_mail", URLEncoder.encode(comments.getMail(), "UTF-8"), 7 * 24 * 60 * 60);
             if (StringKit.isNotBlank(comments.getUrl())) {
