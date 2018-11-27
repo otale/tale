@@ -160,7 +160,11 @@
                 tale.get({
                     url: '/admin/api/comments',
                     success: function (data) {
-                        $vm.comments = data.payload.rows
+                        if(!data.payload.rows){
+                            $vm.comments = [];
+                        }else{
+                            $vm.comments = data.payload.rows;
+                        }
                     },
                     error: function (error) {
                         console.log(error);
