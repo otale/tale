@@ -74,12 +74,12 @@ public class CommonValidator {
 
     public static void valid(LoginParam param) {
         Validators.notEmpty().test(param.getUsername()).throwIfInvalid("用户名");
-        Validators.notEmpty().test(param.getPassword()).throwIfInvalid("密码");
+        Validators.notEmpty().test(param.getPassword()).throwIfInvalid("登录密码");
 
         Validators.moreThan(4).test(param.getUsername()).throwIfInvalid("用户名");
         Validators.lessThan(20).test(param.getUsername()).throwIfInvalid("用户名");
-        Validators.moreThan(6).test(param.getPassword()).throwIfInvalid("用户名");
-        Validators.lessThan(14).test(param.getPassword()).throwIfInvalid("用户名");
+        Validators.moreThan(6).test(param.getPassword()).throwIfInvalid("登录密码");
+        Validators.lessThan(14).test(param.getPassword()).throwIfInvalid("登录密码");
     }
 
     public static void valid(InstallParam param) {
