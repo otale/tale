@@ -100,6 +100,18 @@ public class CommentsService {
     }
 
     /**
+     * 获取文章下的评论统计
+     *
+     * @param cid 文章ID
+     */
+    public long getCommentCount(Integer cid) {
+        if (null == cid) {
+            return 0;
+        }
+        return select().from(Comments.class).where(Comments::getCid, cid).count();
+    }
+
+    /**
      * 获取该评论下的追加评论
      *
      * @param coid

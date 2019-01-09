@@ -648,6 +648,19 @@ public final class Theme {
     }
 
     /**
+     * 获取当前文章/页面的评论数量
+     *
+     * @return 当前页面的评论数量
+     */
+    public static long commentsCount() {
+        Contents contents = current_article();
+        if (null == contents) {
+            return 0;
+        }
+        return siteService.getCommentCount(contents.getCid());
+    }
+
+    /**
      * 分页
      *
      * @param limit

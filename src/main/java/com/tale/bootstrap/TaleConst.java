@@ -17,13 +17,14 @@ public class TaleConst {
 
     public static final String CLASSPATH = new File(AdminApiController.class.getResource("/").getPath()).getPath() + File.separatorChar;
 
-    public static final String      USER_IN_COOKIE    = "S_L_ID";
-    public static       String      AES_SALT          = "0123456789abcdef";
-    public static       String      LOGIN_SESSION_KEY = "login_user";
-    public static       Environment OPTIONS           = Environment.of(new HashMap<>());
-    public static       Boolean     INSTALLED         = false;
-    public static       Boolean     ENABLED_CDN       = true;
-    public static       Environment BCONF             = null;
+    public static final String      REMEMBER_IN_COOKIE = "remember_me";
+    public static final String      LOGIN_ERROR_COUNT  = "login_error_count";
+    public static       String      LOGIN_SESSION_KEY  = "login_user";
+    public static       String      REMEMBER_TOKEN     = "";
+    public static       Environment OPTIONS            = Environment.of(new HashMap<>());
+    public static       Boolean     INSTALLED          = false;
+    public static       Boolean     ENABLED_CDN        = true;
+    public static       Environment BCONF              = null;
 
     /**
      * 最大页码
@@ -114,4 +115,6 @@ public class TaleConst {
     public static final String OPTION_ALLOW_INSTALL       = "allow_install";
     public static final String OPTION_ALLOW_COMMENT_AUDIT = "allow_comment_audit";
     public static final String OPTION_ALLOW_CLOUD_CDN     = "allow_cloud_CDN";
+    public static final String OPTION_SAFE_REMEMBER_ME    = "safe_remember_me";
+
 }
