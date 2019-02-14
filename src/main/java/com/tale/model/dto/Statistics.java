@@ -13,17 +13,29 @@ import java.io.Serializable;
 public class Statistics implements Serializable {
 
     private static final long serialVersionUID = 2329863829741481287L;
-	// 文章数
+    /**
+     * 文章数
+     */
     private long articles;
-    // 页面数
+    /**
+     * 页面数
+     */
     private long pages;
-    // 评论数
+    /**
+     * 评论数
+     */
     private long comments;
-    // 分类数
+    /**
+     * 分类数
+     */
     private long categories;
-    // 标签数
+    /**
+     * 标签数
+     */
     private long tags;
-    // 附件数
+    /**
+     * 附件数
+     */
     private long attachs;
 
 }
