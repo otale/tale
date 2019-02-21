@@ -41,7 +41,8 @@ public class ImageUtils {
         param.setSourceRegion(rect);
         BufferedImage bi = reader.read(0, param);
         ImageIO.write(bi, imgExt, new File(dist));
-
+        iis.close();
+        in.close();
     }
 
 }
