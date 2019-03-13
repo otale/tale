@@ -34,7 +34,7 @@ public final class TaleLoader {
         for (File f : dir) {
             if (f.isDirectory() && Files.isDirectory(Paths.get(f.getPath() + "/static"))) {
                 String themePath = "/templates/themes/" + f.getName();
-                blade.addStatics(themePath + "/style.css", themePath + "/screenshot.png", themePath + "/static/");
+                loadTheme(themePath);
             }
         }
     }
