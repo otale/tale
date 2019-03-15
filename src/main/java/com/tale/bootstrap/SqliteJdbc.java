@@ -42,13 +42,12 @@ public final class SqliteJdbc {
         try {
 
             DB_PATH = Const.CLASSPATH + File.separatorChar + DB_NAME;
-            DB_SRC = "jdbc:sqlite://" + DB_PATH;
 
             if (devMode) {
                 DB_PATH = System.getProperty("user.dir") + "/" + DB_NAME;
-                DB_SRC = "jdbc:sqlite://" + DB_PATH;
             }
 
+            DB_SRC = "jdbc:sqlite://" + DB_PATH;
             log.info("blade dev mode: {}", devMode);
             log.info("load sqlite database path [{}]", DB_PATH);
             log.info("load sqlite database src [{}]", DB_SRC);
@@ -58,7 +57,7 @@ public final class SqliteJdbc {
             ResultSet  rs        = statement.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='t_options'");
             int        count     = rs.getInt(1);
             if (count == 0) {
-                String            cp  = SqliteJdbc.class.getClassLoader().getResource("").getPath();
+                String            cp  = TaleConst.CLASSPATH;
                 InputStreamReader isr = new InputStreamReader(new FileInputStream(cp + "schema.sql"), "UTF-8");
 
                 String sql = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
