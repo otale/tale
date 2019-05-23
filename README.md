@@ -15,7 +15,7 @@ demo website：https://tale.biezhi.me
 
 [QuickStart](https://github.com/otale/tale/wiki/QuickStart)&nbsp; | &nbsp;[Contribution](https://github.com/otale/tale/issues/new)&nbsp; | &nbsp;[Donate](https://github.com/otale/tale/wiki/9.-%E6%8D%90%E8%B5%A0%E6%88%91%E4%BB%AC)&nbsp; | &nbsp;[Video](https://github.com/otale/tale/wiki/%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B)&nbsp; | &nbsp;[中文](README_ZH.md)
 
-Here is a throughput graph of the repository for the last few weeks:
+Test Here is a throughput graph of the repository for the last few weeks:
 
 [![Throughput Graph](https://graphs.waffle.io/otale/tale/throughput.svg)](https://waffle.io/otale/tale/metrics/throughput)
 
