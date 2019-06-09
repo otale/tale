@@ -60,6 +60,7 @@ public class TaleUtils {
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern SLUG_REGEX = Pattern.compile("^[A-Za-z0-9_-]{3,50}$", Pattern.CASE_INSENSITIVE);
+    public static MapCache cache = MapCache.single();
 
     /**
      * 设置记住密码 cookie
@@ -149,6 +150,11 @@ public class TaleUtils {
         if (StringKit.isBlank(markdown)) {
             return "";
         }
+        
+        String cacheContent =  cache.get(String.valueOf(markdown.hashCode()));
+        if(cacheContent != null){
+            return cacheContent;
+        }
 
         List<Extension> extensions = Collections.singletonList(TablesExtension.create());
         Parser          parser     = Parser.builder().extensions(extensions).build();
@@ -168,6 +174,7 @@ public class TaleUtils {
         if (TaleConst.BCONF.getBoolean(ENV_SUPPORT_GIST, true) && content.contains(GIST_PREFIX_URL)) {
             content = content.replaceAll(GIST_REG_PATTERN, GIST_REPLATE_PATTERN);
         }
+        cache.set(String.valueOf(markdown.hashCode()),content,-1);
         return content;
     }
 
