@@ -10,6 +10,7 @@ import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Relationships;
 import com.tale.model.params.ArticleParam;
+import com.tale.utils.TaleUtils;
 import com.vdurmont.emoji.EmojiParser;
 import io.github.biezhi.anima.Anima;
 import io.github.biezhi.anima.core.AnimaQuery;
@@ -104,6 +105,8 @@ public class ContentsService {
 
         metasService.saveMetas(cid, tags, Types.TAG);
         metasService.saveMetas(cid, categories, Types.CATEGORY);
+        //clear cache
+        TaleUtils.cache.clean();
     }
 
     /**
@@ -117,6 +120,8 @@ public class ContentsService {
             deleteById(Contents.class, cid);
             Anima.delete().from(Relationships.class).where(Relationships::getCid, cid).execute();
             Anima.delete().from(Comments.class).where(Comments::getCid, cid).execute();
+            //clear cache
+            TaleUtils.cache.clean();
         }
     }
 
