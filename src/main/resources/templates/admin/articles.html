@@ -1,0 +1,190 @@
+#include('./header.html',{active:'articles', title:'文章管理'})
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">文章管理</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row p-b-10 m-l-10">
+                            <form class="form-inline" role="form">
+                                <div class="form-group">
+                                    <input v-model="search.title" type="text" class="form-control" placeholder="文章名称">
+                                </div>
+
+                                <select v-model="search.categories" class="form-control">
+                                    <option value="" selected>所属分类</option>
+                                    <option v-for="item in categories" :value="item.name">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
+
+                                <select v-model="search.status" class="form-control">
+                                    <option value="" selected>发布状态</option>
+                                    <option value="publish">已发布</option>
+                                    <option value="draft">草稿</option>
+                                </select>
+                                <button type="button" class="btn btn-success waves-effect waves-light m-l-10"
+                                        @click="load(1)">查询
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th width="35%">文章标题</th>
+                                    <th width="15%">发布时间</th>
+                                    <th>浏览量</th>
+                                    <th>所属分类</th>
+                                    <th width="8%">发布状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in articlePage.rows">
+                                    <td>
+                                        <a :href="'/admin/article/edit/' + item.cid">{{ item.title }}</a>
+                                    </td>
+                                    <td>{{ item.created | formatUnix }}</td>
+                                    <td>{{ item.hits }}</td>
+                                    <td>{{ item.categories }}</td>
+                                    <td>
+                                        <span v-show="item.status == 'publish'" class="label label-success">已发布</span>
+                                        <span v-show="item.status == 'draft'" class="label label-default">草稿</span>
+                                    </td>
+                                    <td>
+                                        <a :href="'/admin/article/edit/' + item.cid"
+                                           class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
+                                            <i class="fa fa-edit"></i> <span>编辑</span>
+                                        </a>
+                                        <a @click="deleteArticle(item.cid)" href="javascript:void(0)"
+                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
+                                            <i class="fa fa-trash-o"></i> <span>删除</span>
+                                        </a>
+                                        <a v-show="item.status == 'publish'"
+                                           class="btn btn-warning btn-sm waves-effect waves-light m-b-5"
+                                           :href="'${site_url()}' + item.url"
+                                           target="_blank">
+                                            <i class="fa fa-rocket"></i> <span>预览</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <ul class="pagination m-b-5 pull-right">
+                            <li v-if="articlePage.hasPrevPage">
+                                <a @click="load(articlePage.prevPage)" aria-label="Previous">
+                                    <i class="fa fa-angle-left"></i>&nbsp;上一页
+                                </a>
+                            </li>
+
+                            <li class="page-item" v-for="num in articlePage.navPageNums"
+                                :class="{ active: articlePage.pageNum == num }">
+                                <a @click="load(num)">
+                                    {{ num }}</i>
+                                </a>
+                            </li>
+                            <li v-if="articlePage.hasNextPage">
+                                <a type="button" class="page-link" @click="load(articlePage.nextPage)">
+                                    下一页&nbsp;<i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li><span>共 {{articlePage.totalPages}} 页</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#include('./footer.html')
+<script >
+    var tale = new $.tale();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            articlePage: {},
+            isLoading: true,
+            search: {
+                type: 'post',
+                title:'',
+                status: '',
+                categories: '',
+                page: 1
+            },
+            categories:[]
+        },
+        beforeCreate: function () {
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.loadOnce();
+            this.load(1);
+        },
+        methods: {
+            loadOnce: function(){
+                var $vm = this;
+                tale.get({
+                    url: '/admin/api/categories',
+                    success: function (data) {
+                        $vm.categories = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(result.msg || '数据加载失败');
+                    }
+                });
+            },
+            load: function (page) {
+                var $vm = this;
+                $vm.search.page = page;
+
+                tale.get({
+                    url: '/admin/api/articles',
+                    data: $vm.search,
+                    success: function (data) {
+                        $vm.articlePage = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            deleteArticle: function (cid) {
+                var $vm = this;
+                tale.alertConfirm({
+                    title: '确定删除该文章吗?',
+                    then: function () {
+                        tale.post({
+                            url: '/admin/api/article/delete/' + cid,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    tale.alertOk('文章删除成功');
+                                    $vm.load(1);
+                                } else {
+                                    tale.alertError(result.msg || '文章删除失败');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+</script>
+
+</body>
+</html>

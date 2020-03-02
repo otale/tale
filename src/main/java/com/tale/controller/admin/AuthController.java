@@ -1,93 +1,88 @@
 package com.tale.controller.admin;
 
-import com.blade.ioc.annotation.Inject;
+import com.blade.exception.ValidatorException;
 import com.blade.kit.DateKit;
+import com.blade.kit.EncryptKit;
 import com.blade.kit.StringKit;
-import com.blade.kit.json.JSONKit;
-import com.blade.mvc.annotation.Controller;
-import com.blade.mvc.annotation.JSON;
-import com.blade.mvc.annotation.QueryParam;
-import com.blade.mvc.annotation.Route;
-import com.blade.mvc.http.HttpMethod;
-import com.blade.mvc.http.Request;
-import com.blade.mvc.http.Response;
-import com.blade.mvc.http.wrapper.Session;
-import com.blade.mvc.view.RestResponse;
+import com.blade.mvc.RouteContext;
+import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.PostRoute;
+import com.blade.mvc.ui.RestResponse;
+import com.tale.annotation.SysLog;
+import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
-import com.tale.dto.LogActions;
-import com.tale.exception.TipException;
-import com.tale.init.TaleConst;
-import com.tale.model.Users;
-import com.tale.service.LogService;
-import com.tale.service.UsersService;
+import com.tale.model.entity.Users;
+import com.tale.model.params.LoginParam;
 import com.tale.utils.TaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tale.validators.CommonValidator;
+import lombok.extern.slf4j.Slf4j;
+
+import static com.tale.bootstrap.TaleConst.LOGIN_ERROR_COUNT;
+import static io.github.biezhi.anima.Anima.select;
 
 /**
  * 登录，退出
+ * <p>
  * Created by biezhi on 2017/2/21.
  */
-@Controller("admin")
+@Slf4j
+@Path(value = "admin", restful = true)
 public class AuthController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+    @SysLog("登录后台")
+    @PostRoute("login")
+    public RestResponse<?> doLogin(LoginParam loginParam, RouteContext context) {
 
-    @Inject
-    private UsersService usersService;
+        CommonValidator.valid(loginParam);
 
-    @Inject
-    private LogService logService;
-
-    @Route(value = "login", method = HttpMethod.GET)
-    public String login(Response response) {
-        if(null != this.user()){
-            response.go("/admin/index");
-            return null;
-        }
-        return "admin/login";
-    }
-
-    @Route(value = "login", method = HttpMethod.POST)
-    @JSON
-    public RestResponse doLogin(@QueryParam String username,
-                                @QueryParam String password,
-                                @QueryParam String remeber_me,
-                                Request request,
-                                Session session, Response response) {
-
-        Integer error_count = cache.get("login_error_count");
+        Integer errorCount = cache.get(LOGIN_ERROR_COUNT);
         try {
-            error_count = null == error_count ? 0 : error_count;
-
-            if(null != error_count && error_count > 3){
+            errorCount = null == errorCount ? 0 : errorCount;
+            if (errorCount > 3) {
                 return RestResponse.fail("您输入密码已经错误超过3次，请10分钟后尝试");
             }
 
-            Users user = usersService.login(username, password);
-            session.attribute(TaleConst.LOGIN_SESSION_KEY, user);
-            if (StringKit.isNotBlank(remeber_me)) {
-                TaleUtils.setCookie(response, user.getUid());
+            long count = new Users().where("username", loginParam.getUsername()).count();
+            if (count < 1) {
+                errorCount += 1;
+                return RestResponse.fail("不存在该用户");
             }
+            String pwd = EncryptKit.md5(loginParam.getUsername(), loginParam.getPassword());
+
+            Users user = select().from(Users.class)
+                    .where(Users::getUsername, loginParam.getUsername())
+                    .and(Users::getPassword, pwd).one();
+
+            if (null == user) {
+                errorCount += 1;
+                return RestResponse.fail("用户名或密码错误");
+            }
+            context.session().attribute(TaleConst.LOGIN_SESSION_KEY, user);
+
+            if (StringKit.isNotBlank(loginParam.getRememberMe())) {
+                TaleUtils.setCookie(context, user.getUid());
+            }
+
             Users temp = new Users();
-            temp.setUid(user.getUid());
-            temp.setLogged(DateKit.getCurrentUnixTime());
-            usersService.update(temp);
-            LOGGER.info("登录成功：{}", JSONKit.toJSONString(request.querys()));
-            cache.set("login_error_count", 0);
-            logService.save(LogActions.LOGIN, JSONKit.toJSONString(request.querys()), request.address(), user.getUid());
+            temp.setLogged(DateKit.nowUnix());
+            temp.updateById(user.getUid());
+            log.info("登录成功：{}", loginParam.getUsername());
+
+            cache.set(LOGIN_ERROR_COUNT, 0);
+
+            return RestResponse.ok();
+
         } catch (Exception e) {
-            error_count+=1;
-            cache.set("login_error_count", error_count, 10 * 60);
+            errorCount += 1;
+            cache.set(LOGIN_ERROR_COUNT, errorCount, 10 * 60);
             String msg = "登录失败";
-            if (e instanceof TipException) {
+            if (e instanceof ValidatorException) {
                 msg = e.getMessage();
             } else {
-                LOGGER.error(msg, e);
+                log.error(msg, e);
             }
             return RestResponse.fail(msg);
         }
-        return RestResponse.ok();
     }
 
 }

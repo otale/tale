@@ -1,0 +1,237 @@
+#include('./header.html',{active:'attaches', title:'文件管理'})
+<link href="${cdnURL()}/plugins/dropzone/4.3.0/min/dropzone.min.css" rel="stylesheet">
+<style>
+    #dropzone {
+        margin-bottom: 3rem;
+    }
+
+    .dropzone {
+        border: 2px dashed #0087F7;
+        border-radius: 5px;
+        background: white;
+    }
+
+    .dropzone .dz-message {
+        font-weight: 400;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .dropzone .dz-message .note {
+        font-size: 0.8em;
+        font-weight: 200;
+        display: block;
+        margin-top: 1.4rem;
+    }
+
+    .attach-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 8px #333;
+    }
+
+    .attach-text {
+        font-size: 12px;
+        font-weight: 300;
+    }
+
+    .attach-img:hover {
+        background-color: #f9f9f9;
+    }
+</style>
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">附件管理</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12 portlets">
+                    <!-- Your awesome content goes here -->
+                    <div class="m-b-30">
+                        <form action="#" class="dropzone" id="dropzone">
+                            <div class="fallback">
+                                <input name="file" type="file" multiple="multiple">
+                            </div>
+                            <div class="dz-message">
+                                <p>将文件拖至此处或点击上传.${attachURL()}</p>
+                                <p>
+                                    <span style="font-size: 16px; color: #d0d0d0;">一次最多可以上传10个文件</span>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-12 attach">
+                    <div v-if="attachPage.rows.length == 0" class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="alert alert-warning">
+                                目前还没有一个附件呢，你可以上传试试!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-xs-6 text-center m-t-10" v-for="item in attachPage.rows">
+                        <a :href="'${attachURL()}' + item.fkey" target="_blank">
+                            <img v-if="item.ftype == 'image'" class="attach-img" :src="'${attachURL()}' + item.fkey"
+                                 :title="item.fname"/>
+                            <img v-if="item.ftype != 'image'" class="attach-img" src="/static/admin/images/attach.png"
+                                 :title="item.fname"/>
+                        </a>
+                        <div class="clearfix m-t-10">
+                            <span class="attach-text" data-toggle="tooltip" data-placement="top" :data-original-title="item.fname">{{item.fname | truncate(15)}}</span>
+                        </div>
+                        <div class="clearfix">
+                            <button :url="'${attachURL()}' + item.fkey" type="button"
+                                    class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
+                                <i class="fa fa-copy"></i> <span>复制</span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5"
+                                    @click="deleteAttach(item.id)">
+                                <i class="fa fa-trash-o"></i> <span>删除</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <ul class="pagination m-b-5 pull-right">
+                        <li v-if="attachPage.hasPrevPage">
+                            <a @click="load(attachPage.prevPage)" aria-label="Previous">
+                                <i class="fa fa-angle-left"></i>&nbsp;上一页
+                            </a>
+                        </li>
+
+                        <li class="page-item" v-for="num in attachPage.navPageNums" :class="{ active: attachPage.pageNum == num }">
+                            <a @click="load(num)">
+                                {{ num }}</i>
+                            </a>
+                        </li>
+                        <li v-if="attachPage.hasNextPage">
+                            <a type="button" class="page-link" @click="load(attachPage.nextPage)">
+                                下一页&nbsp;<i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li><span>共 {{attachPage.totalPages}} 页</span></li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#include('./footer.html')
+<script src="${cdnURL()}/plugins/dropzone/4.3.0/min/dropzone.min.js"></script>
+<script src="${cdnURL()}/plugins/clipboard.js/1.6.0/clipboard.min.js"></script>
+<script >
+    var tale = new $.tale();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            attachPage: {
+                rows: []
+            },
+            isLoading: true
+        },
+        beforeCreate: function(){
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods: {
+            load: function (page) {
+                var $vm = this;
+                tale.get({
+                    url: '/admin/api/attaches',
+                    data: {
+                        page: page,
+                        limit: 12
+                    },
+                    success: function (data) {
+                        $vm.attachPage = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            deleteAttach: function (id) {
+                var $vm = this;
+                tale.alertConfirm({
+                    title: '确定删除该附件吗?',
+                    then: function () {
+                        tale.post({
+                            url: '/admin/api/attach/delete/' + id,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    tale.alertOk('附件删除成功');
+                                    $vm.load(1);
+                                } else {
+                                    tale.alertError(result.msg || '附件删除失败');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    Dropzone.autoDiscover = false;
+
+    $("#dropzone").dropzone({
+        url: "/admin/api/attach/upload",
+        filesizeBase: 1024,//定义字节算法 默认1000
+        maxFiles: $.constant().MAX_FILES,//最大文件数量
+        maxFilesize: '${maxFileSize()}', //MB
+        fallback: function () {
+            tale.alertError('暂不支持您的浏览器上传!');
+        },
+        uploadMultiple: true,
+        dictFileTooBig: '您的文件超过' + ${max_file_size} +'MB!',
+        dictInvalidInputType: '不支持您上传的类型',
+        dictMaxFilesExceeded: '您的文件超过' + $.constant().MAX_FILES + '个!',
+        headers: {
+            'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content
+        },
+        init: function () {
+            this.on('queuecomplete', function (files) {
+                tale.alertOk('上传成功');
+                vm.load(1);
+            });
+            this.on('error', function (a, errorMessage, result) {
+                if (!result.success && result.msg) {
+                    tale.alertError(result.msg || '上传失败');
+                }
+            });
+            this.on('maxfilesreached', function () {
+                this.removeAllFiles(true);
+                tale.alertWarn('文件数量超出限制');
+            });
+        }
+    });
+
+    var clipboard = new Clipboard('button.copy', {
+        text: function (trigger) {
+            return $(trigger).attr('url');
+        }
+    });
+
+    clipboard.on('success', function (e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+
+</script>
+</body>
+</html>

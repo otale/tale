@@ -3,8 +3,7 @@
 ${bodyContent}
 </div>
 #include('/admin/footer.html')
-#include('/comm/tale_comment.html')
-<script type="text/javascript">
+<script >
 
     var tale = new $.tale();
 
@@ -14,7 +13,7 @@ ${bodyContent}
     function saveThemeOptions(formId) {
         var param = $('#' + formId).serialize();
         tale.post({
-            url : '/admin/themes/setting',
+            url : '/admin/api/themes/setting',
             data: param,
             success: function (result) {
                 if(result && result.success){
@@ -32,7 +31,7 @@ ${bodyContent}
     function saveIndiviSetting() {
         var param = $('#indivi-form').serialize();
         tale.post({
-            url : '/admin/setting',
+            url : '/admin/api/themes/setting',
             data: param,
             success: function (result) {
                 if(result && result.success){

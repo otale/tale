@@ -1,0 +1,197 @@
+#include('./header.html',{active:'comments', title:'评论管理'})
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">评论管理</h3>
+            </div>
+            <div class="panel-body">
+                <div v-if="commentPage.rows.length == 0" class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="alert alert-warning">
+                            目前还没有评论哦！
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table v-if="commentPage.rows.length > 0" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>评论内容</th>
+                            <th>评论人</th>
+                            <th>评论时间</th>
+                            <th>评论人邮箱</th>
+                            <th>评论人网址</th>
+                            <th>评论状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in commentPage.rows">
+                            <td>
+                                {{ item.content }}
+                            </td>
+                            <td>{{ item.author }}</td>
+                            <td>{{ item.created | formatUnix }}</td>
+                            <td>{{ item.mail }}</td>
+                            <td>{{ item.url }}</td>
+                            <td>
+                                <div v-if="item.status == 'approved'">
+                                    <span v-if="item.authorId == ${login_user.uid}" class="label label-success">后台回复</span>
+                                    <span v-if="item.status == 'approved'" class="label label-success">审核通过</span>
+                                </div>
+                                <div v-show="item.status == 'no_audit'">
+                                    <span v-if="item.authorId == ${login_user.uid}" class="label label-default">后台回复</span>
+                                    <span v-if="item.status == 'no_audit'" class="label label-default">未审核</span>
+                                </div>
+                            </td>
+                            <td>
+                                <button v-if="item.authorId != ${login_user.uid}" class="btn btn-primary btn-sm waves-effect waves-light m-b-5" @click="reply(item.coid)"><i class="fa fa-reply"></i> 回复</button>
+                                <button v-if="item.status == 'no_audit' && item.authorId != ${login_user.uid}" class="btn btn-success btn-sm waves-effect waves-light m-b-5" @click="audit(item.coid, 'approved')">
+                                    <i class="fa fa-check-circle"></i> 通过</span>
+                                </button>
+                                <button class="btn btn-danger btn-sm waves-effect waves-light m-b-5" @click="deleteComment(item.coid)"><i class="fa fa-trash-o"></i> 删除</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <ul v-if="commentPage.rows.length > 0" class="pagination m-b-5 pull-right">
+                    <li v-if="commentPage.hasPrevPage">
+                        <a @click="load(commentPage.prevPage)" aria-label="Previous">
+                            <i class="fa fa-angle-left"></i>&nbsp;上一页
+                        </a>
+                    </li>
+
+                    <li class="page-item" v-for="num in commentPage.navPageNums" :class="{ active: commentPage.pageNum == num }">
+                        <a @click="load(num)">
+                            {{ num }}</i>
+                        </a>
+                    </li>
+                    <li v-if="commentPage.hasNextPage">
+                        <a type="button" class="page-link" @click="load(commentPage.nextPage)">
+                            下一页&nbsp;<i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li><span>共 {{commentPage.totalPages}} 页</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+#include('./footer.html')
+<script >
+    var tale = new $.tale();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            commentPage: {
+                rows:[]
+            },
+            isLoading: true
+        },
+        beforeCreate: function(){
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods: {
+            load: function (page) {
+                var $vm = this;
+                tale.get({
+                    url: '/admin/api/comments',
+                    data: {
+                        page: page,
+                        limit: 12
+                    },
+                    success: function (data) {
+                        $vm.commentPage = data.payload
+                        if(!data.payload.rows){
+                            $vm.commentPage.rows = []
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            reply: function(coid){
+                var $vm = this;
+                swal({
+                    title: "回复评论",
+                    text: "请输入你要回复的内容:",
+                    input: 'text',
+                    showCancelButton: true,
+                    confirmButtonText: '回复',
+                    cancelButtonText: '取消',
+                    showLoaderOnConfirm: true,
+                    preConfirm: function (comment) {
+                        return new Promise(function (resolve, reject) {
+                            tale.post({
+                                url : '/admin/api/comment/reply',
+                                data: {coid: coid, content: comment},
+                                success: function (result) {
+                                    if(result && result.success){
+                                        tale.alertOk('已回复');
+                                        $vm.load();
+                                    } else {
+                                        tale.alertError(result.msg || '回复失败');
+                                    }
+                                }
+                            });
+                        })
+                    },
+                    allowOutsideClick: false
+                });
+            },
+            audit: function(coid, status){
+                var $vm = this;
+                tale.post({
+                    url : '/admin/api/comment/status',
+                    data: {coid: coid, status: status},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOk('评论状态设置成功');
+                            $vm.load();
+                        } else {
+                            tale.alertError(result.msg || '评论设置失败');
+                        }
+                    }
+                });
+            },
+            deleteComment: function (coid) {
+                var $vm = this;
+                tale.alertConfirm({
+                    title: '确定删除该评论吗?',
+                    then: function () {
+                        tale.post({
+                            url: '/admin/api/comment/delete/' + coid,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    tale.alertOk('评论删除成功');
+                                    $vm.load();
+                                } else {
+                                    tale.alertError(result.msg || '评论删除失败');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,8 +1,8 @@
-#include('./header.html', {title: '文章归档'})
+#include('./partial/header.html', {title: '文章归档'})
 <div class="main-content archive-page clearfix">
     <div class="categorys-item">
         #for(archive : archives)
-        <div class="categorys-title">${archive.date_str}</div>
+        <div class="categorys-title">${archive.dateStr}</div>
         <div class="post-lists">
             <div class="post-lists-body">
                 #for(article : archive.articles)
@@ -24,4 +24,4 @@
         #end
     </div>
 </div>
-#include('./footer.html')
+#include('./partial/footer.html')

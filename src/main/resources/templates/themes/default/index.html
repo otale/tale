@@ -1,8 +1,8 @@
-#include('./header.html',{home_page:1})
+#include('./partial/header.html',{home_page:1})
 <div class="main-content index-page clearfix">
     <div class="post-lists">
         <div class="post-lists-body">
-            #for(article : articles.list)
+            #for(article : articles(12).rows)
             <div class="post-list-item">
                 <div class="post-list-item-container">
                     <div class="item-thumb bg-deepgrey" style="background-image:url(${show_thumb(article)});"></div>
@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="lists-navigator clearfix">
-        #call pageNav(articles,'←','→','page')
+        #call pageNav(articles(12),'←','→','page')
     </div>
 </div>
-#include('./footer.html')
+#include('./partial/footer.html')

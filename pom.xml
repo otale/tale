@@ -4,25 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.junicorn</groupId>
+    <groupId>io.github.otale</groupId>
     <artifactId>tale</artifactId>
-    <version>1.2.15</version>
+    <version>latest</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sqlite.version>3.15.1</sqlite.version>
-        <blade.version>1.7.2-alpha</blade.version>
-        <blade-jdbc.version>0.1.6-beta</blade-jdbc.version>
-        <blade-tpl.verion>0.0.9</blade-tpl.verion>
-        <blade-embed-jetty.version>0.1.3</blade-embed-jetty.version>
+        <sqlite.version>3.21.0.1</sqlite.version>
+        <blade-mvc.version>2.0.14.RELEASE</blade-mvc.version>
+        <anima.version>0.2.5</anima.version>
+        <blade-tpl.verion>0.1.3</blade-tpl.verion>
+        <commonmark.version>0.11.0</commonmark.version>
+        <rome.version>1.0</rome.version>
+        <emoji.version>4.0.0</emoji.version>
     </properties>
 
     <dependencies>
         <!-- mvc -->
         <dependency>
             <groupId>com.bladejava</groupId>
-            <artifactId>blade-core</artifactId>
-            <version>${blade.version}</version>
+            <artifactId>blade-mvc</artifactId>
+            <version>${blade-mvc.version}</version>
         </dependency>
 
         <!-- 数据库操作 -->
@@ -31,10 +33,11 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>${sqlite.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.bladejava</groupId>
-            <artifactId>blade-jdbc</artifactId>
-            <version>${blade-jdbc.version}</version>
+            <groupId>io.github.biezhi</groupId>
+            <artifactId>anima</artifactId>
+            <version>${anima.version}</version>
         </dependency>
 
         <!-- 模板引擎 -->
@@ -48,35 +51,55 @@
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
-            <version>0.8.0</version>
+            <version>${commonmark.version}</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark-ext-gfm-tables</artifactId>
-            <version>0.8.0</version>
+            <version>${commonmark.version}</version>
         </dependency>
-        <!--web容器-->
-        <dependency>
-            <groupId>com.bladejava</groupId>
-            <artifactId>blade-embed-jetty</artifactId>
-            <version>${blade-embed-jetty.version}</version>
-        </dependency>
+
         <!--RSS输出-->
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
-            <version>1.0</version>
+            <version>${rome.version}</version>
         </dependency>
-        <!--过滤emoji字符-->
+
+        <!--过滤 emoji 字符-->
         <dependency>
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
-            <version>3.2.0</version>
+            <version>${emoji.version}</version>
         </dependency>
 
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.18</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
+        <repository>
+            <id>oss-releases</id>
+            <url>https://oss.sonatype.org/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>oss-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -92,6 +115,9 @@
     <profiles>
         <profile>
             <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
             <build>
                 <resources>
                     <resource>
@@ -106,6 +132,13 @@
         </profile>
         <profile>
             <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <activation>
+                <!-- Set to activate this configuration by default -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <resources>
                     <resource>
@@ -140,16 +173,24 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--mvn clean package assembly:single -Pprod -Dmaven.test.skip=true-->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
-                        <descriptor>assembly.xml</descriptor>
+                        <descriptor>package.xml</descriptor>
                     </descriptors>
                     <outputDirectory>${project.build.directory}/dist/</outputDirectory>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -163,7 +204,6 @@
                             <addClasspath>true</addClasspath>
                         </manifest>
                         <manifestEntries>
-                            <!-- 在Class-Path下添加配置文件的路径 -->
                             <Class-Path>resources/</Class-Path>
                         </manifestEntries>
                     </archive>

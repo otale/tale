@@ -1,7 +1,7 @@
 package com.tale.controller;
 
 import com.blade.mvc.http.Request;
-import com.tale.model.Users;
+import com.tale.model.entity.Users;
 import com.tale.utils.MapCache;
 import com.tale.utils.TaleUtils;
 
