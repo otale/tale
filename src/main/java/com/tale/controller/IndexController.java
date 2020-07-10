@@ -247,7 +247,6 @@ public class IndexController extends BaseController {
         comments.setAuthor(EmojiParser.parseToAliases(comments.getAuthor()));
         comments.setContent(EmojiParser.parseToAliases(comments.getContent()));
         comments.setIp(request.address());
-        comments.setParent(comments.getCoid());
 
         try {
             commentsService.saveComment(comments);
