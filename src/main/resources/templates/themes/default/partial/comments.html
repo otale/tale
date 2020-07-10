@@ -2,19 +2,21 @@
 <div id="${article.cid ?! 0}" class="comment-container">
     <div id="comments" class="clearfix">
         #if(article.allowComment)
-        <span class="response">#if(null!=login_user) Hi，<a href="${login_user.home_url}" data-no-instant>${login_user.username}</a>
+        <span class="response">#if(null!=login_user) Hi，<a href="${login_user.homeUrl}" data-no-instant>${login_user.username}</a>
             如果你想 <a href="/logout" title="注销" data-no-instant>注销</a> ? #end</span>
 
         <form method="post" id="comment-form" class="comment-form" onsubmit="return TaleComment.subComment();">
             <input type="hidden" name="coid" id="coid"/>
             <input type="hidden" name="cid" id="cid" value="${article.cid}"/>
             <input type="hidden" name="csrf_token" value="${csrf_token}"/>
-            <input name="author" maxlength="12" id="author" class="form-control input-control clearfix"
+            <input type="hidden" name="parent" value="${parent}"/>
+            <input type="hidden" name="author_id" value="${login_user.uid ?! '1'}"/>
+            <input name="author" maxlength="12"  class="form-control input-control clearfix"
                    placeholder="姓名 (*)" value="${login_user.username ?! ''}" required/>
             <input type="email" name="mail" id="mail" class="form-control input-control clearfix" placeholder="邮箱 (*)"
                    value="${login_user.email ?! ''}" required/>
             <input type="url" name="url" id="url" class="form-control input-control clearfix" placeholder="网址 (http://)"
-                   value="${login_user.home_url ?! ''}"/>
+                   value="${login_user.homeUrl ?! ''}"/>
             <textarea name="content" id="textarea" class="form-control" placeholder="基佬，留下你的评论." required minlength="5" maxlength="2000"></textarea>
             <button class="submit" id="misubmit">提交</button>
         </form>
@@ -43,7 +45,7 @@
                             <p>${article(comment.content)}</p>
                         </div>
                         <div class="comment-meta">
-                            <time class="comment-time">${fmtdate(comment.created)}</time>
+                            <time class="comment-time">${fmtdate(comment.created,'yyyy-MM-dd HH:mm:ss')}</time>
                             <span class="comment-reply">
                                 <a rel="nofollow" onclick="TaleComment.reply('${comment.coid}');">回复</a>
                             </span>
@@ -71,7 +73,7 @@
                                         <p>${article(child.content)}</p>
                                     </div>
                                     <div class="comment-meta">
-                                        <time class="comment-time">${fmtdate(child.created)}</time>
+                                        <time class="comment-time">${fmtdate(child.created,'yyyy-MM-dd HH:mm:ss')}</time>
                                         <span class="comment-reply">
                                             <a rel="nofollow" onclick="TaleComment.reply('${child.coid}');">回复</a>
                                         </span>

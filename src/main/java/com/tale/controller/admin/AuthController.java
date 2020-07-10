@@ -60,6 +60,9 @@ public class AuthController extends BaseController {
             if (null == user) {
                 return RestResponse.fail("用户名或密码错误");
             }
+            if(user.getState() != 1) {
+                return RestResponse.fail("用户已被封禁，请联系管理员");
+            }
             session.attribute(TaleConst.LOGIN_SESSION_KEY, user);
             if (StringKit.isNotBlank(loginParam.getRemeberMe())) {
                 TaleUtils.setCookie(response, user.getUid());

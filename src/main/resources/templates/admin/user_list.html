@@ -48,9 +48,13 @@
                 </td>
                 <td>
                     #if(item.groupName != 'ADMIN')
-                    <button class="btn btn-warning" onclick="updateState(${item.uid}, 0)">禁用</button>
-                    <button class="btn btn-danger" onclick="updateState(${item.uid}, -1)">删除</button>
-                    <button class="btn btn-info" onclick="updatePassword(${item.uid})">修改密码</button>
+                        #if(item.state == 1)
+                        <button class="btn btn-warning" onclick="updateState(${item.uid}, 0)">禁用</button>
+                        #elseif(item.state == 0)
+                        <button class="btn btn-success" onclick="updateState(${item.uid}, 1)">启用</button>
+                        #end
+                    <button class="btn btn-danger" onclick="deleteUser(${item.uid})">删除</button>
+                    <button class="btn btn-info" onclick="updatePassword(${item.uid},'${item.username}')">修改密码</button>
                     #end
                 </td>
             </tr>
@@ -75,7 +79,7 @@
         <div class="form-group">
             <label class="col-md-3 control-label">用户邮箱</label>
             <div class="col-md-9">
-                <input type="text" class="form-control" name="email" placeholder="请输入用户邮箱" />
+                <input type="text" class="form-control" name="email" placeholder="请输入用户邮箱"/>
             </div>
         </div>
         <div class="form-group">
@@ -112,6 +116,7 @@
 <script src="/static/admin/plugins/jquery-validate/1.15.1/jquery.validate.min.js"></script>
 <script src="/static/admin/plugins/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
 <script type="text/javascript">
+
     var tale = new $.tale();
     function addNewUser() {
         swal({
@@ -122,59 +127,70 @@
             showCancelButton: true,
             preConfirm: function () {
                 return new Promise(function (resolve, reject) {
-                    $('.swal2-container #createUserForm').validate({
-                        rules: {
-                            username: {
-                                required: true,
-                                minlength: 2
-                            },
-                            password: {
-                                required: true,
-                                minlength: 5
-                            },
-                            confirm_password: {
-                                required: true,
-                                minlength: 5,
-                                equalTo: "#password"
-                            },
-                            email: {
-                                required: true,
-                                email: true
-                            }
-                        },
-                        messages: {
-                            username: {
-                                required: "请输入用户名",
-                                minlength: "用户名必需由两个字母组成"
-                            },
-                            password: {
-                                required: "请输入密码",
-                                minlength: "密码长度不能小于 5 个字母"
-                            },
-                            confirm_password: {
-                                required: "请输入密码",
-                                minlength: "密码长度不能小于 5 个字母",
-                                equalTo: "两次密码输入不一致"
-                            },
-                            email: "请输入一个正确的邮箱"
-                        },
-                        submitHandler: function () {
-                            tale.post({
-                                url: '/admin/users/create',
-                                data: $('.swal2-container form').serialize(),
-                                success: function (result) {
-                                    if (result && result.success) {
-                                        tale.alertOkAndReload('新增成功');
-                                    } else {
-                                        tale.alertError(result.msg || '新增失败');
-                                    }
+                    if (!checkUserValid()) {
+                        reject();
+                    } else {
+                        tale.post({
+                            url: '/admin/users/create',
+                            data: $('.swal2-container form').serialize(),
+                            success: function (result) {
+                                if (result && result.success) {
+                                    tale.alertOkAndReload('新增成功');
+                                } else {
+                                    tale.alertError(result.msg || '新增失败');
                                 }
-                            });
-                        }
-                    });
+                            }
+                        })
+                    }
                 })
             }
         }).catch(swal.noop);
+
+        var validator = $('.swal2-container #createUserForm').validate({
+            rules: {
+                username: {
+                    required: true,
+                    minlength: 2
+                },
+                password: {
+                    required: true,
+                    minlength: 5
+                },
+                confirm_password: {
+                    required: true,
+                    minlength: 5,
+                    equalTo: "#password"
+                },
+                email: {
+                    required: true,
+                    email: true
+                }
+            },
+            messages: {
+                username: {
+                    required: "请输入用户名",
+                    minlength: "用户名必需由两个字母组成"
+                },
+                password: {
+                    required: "请输入密码",
+                    minlength: "密码长度不能小于 5 个字母"
+                },
+                confirm_password: {
+                    required: "请输入密码",
+                    minlength: "密码长度不能小于 5 个字母",
+                    equalTo: "两次密码输入不一致"
+                },
+                email: "请输入一个正确的邮箱"
+            }
+        });
+
+        function checkUserValid() {
+            var username = $('.swal2-container [name="username"]').val();
+            var email = $('.swal2-container [name="email"]').val();
+            var password = $('.swal2-container [name="password"]').val();
+            if (!username || !email || !password) return false;
+            return validator.valid();
+        }
     }
 
     function updateState(uid, state) {
@@ -196,31 +212,51 @@
         });
     }
 
-    function updatePassword(username) {
+    function deleteUser(uid) {
+        tale.alertConfirm({
+            title: '确定操作吗?',
+            then: function () {
+                tale.post({
+                    url: '/admin/users/delete',
+                    data: {uid: uid},
+                    success: function (result) {
+                        if (result && result.success) {
+                            tale.alertOkAndReload('操作成功');
+                        } else {
+                            tale.alertError(result.msg || '操作失败');
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function updatePassword(uid, username) {
         swal({
-            title: '修改 ['+ username +'] 的密码',
+            title: '修改 [' + username + '] 的密码',
             html: $('#update-pass-model').html(),
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             showCancelButton: true,
             preConfirm: function () {
                 return new Promise(function (resolve, reject) {
-                    $('.swal2-container form').validate({
-
-                        submitHandler: function () {
-                            tale.post({
-                                url: '/admin/users/create',
-                                data: $('.swal2-container form').serialize(),
-                                success: function (result) {
-                                    if (result && result.success) {
-                                        tale.alertOkAndReload('新增成功');
-                                    } else {
-                                        tale.alertError(result.msg || '新增失败');
-                                    }
+                    var p = $('.swal2-container [name="password"]');
+                    if ($(p[0]).val() != $(p[1]).val()) {
+                        swal("密码输入不一致，请重新输入");
+                        reject();
+                    } else {
+                        tale.post({
+                            url: '/admin/users/update',
+                            data: $('.swal2-container form').serialize() + "&uid=" + uid + "&username=" + username,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    tale.alertOkAndReload('操作成功');
+                                } else {
+                                    tale.alertError(result.msg || '操作失败');
                                 }
-                            });
-                        }
-                    });
+                            }
+                        });
+                    }
                 })
             }
         }).then(function (e) {
