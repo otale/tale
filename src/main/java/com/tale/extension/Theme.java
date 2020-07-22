@@ -656,7 +656,8 @@ public final class Theme {
             return new Users();
         }
         Integer authorId = contents.getAuthorId();
-        return siteService.getUser(authorId);
+        Users users = siteService.getUser(authorId);
+        return users == null ? new Users() : users;
     }
 
     /**
