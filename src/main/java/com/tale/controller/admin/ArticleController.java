@@ -8,6 +8,7 @@ import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.blade.validator.annotation.Valid;
 import com.tale.controller.BaseController;
+import com.tale.enums.GroupName;
 import com.tale.exception.TipException;
 import com.tale.extension.Commons;
 import com.tale.model.dto.LogActions;
@@ -19,6 +20,7 @@ import com.tale.model.entity.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
+import com.tale.utils.TaleUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -52,8 +54,12 @@ public class ArticleController extends BaseController {
     @GetRoute(value = "")
     public String index(@Param(defaultValue = "1") int page, @Param(defaultValue = "15") int limit,
                         Request request) {
-
-        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).page(page, limit, "created desc");
+        Users users = TaleUtils.getLoginUser();
+        Contents contents = new Contents().where("type", Types.ARTICLE);
+        if (users != null && !GroupName.ADMIN.toString().equals(users.getGroupName())) {
+            contents = contents.where("author_id", users.getUid());
+        }
+        Page<Contents> articles = contents.page(page, limit, "created desc");
         request.attribute("articles", articles);
         return "admin/article_list";
     }

@@ -47,7 +47,7 @@
 </div>
 <script>
     $('#directory').html('');
-    var postDirectoryBuild = function() {
+    var postDirectoryBuild = function () {
         var postChildren = function children(childNodes, reg) {
                 var result = [],
                     isReg = typeof reg === 'object',
@@ -64,12 +64,12 @@
                 }
                 return result;
             },
-            createPostDirectory = function(article, directory, isDirNum) {
+            createPostDirectory = function (article, directory, isDirNum) {
                 var contentArr = [],
                     titleId = [],
                     levelArr, root, level,
                     currentList, list, li, link, i, len;
-                levelArr = (function(article, contentArr, titleId) {
+                levelArr = (function (article, contentArr, titleId) {
                     var titleElem = postChildren(article.childNodes, /^h\d$/),
                         levelArr = [],
                         lastNum = 1,
@@ -126,13 +126,13 @@
                     link = document.createElement('a');
                     link.href = '#' + titleId[i];
                     link.innerHTML = !isDirNum ? contentArr[i] :
-                        dirNum.join('.') + ' ' + contentArr[i] ;
+                        dirNum.join('.') + ' ' + contentArr[i];
                     li.appendChild(link);
                     currentList.appendChild(li);
                 }
                 directory.appendChild(root);
             };
-        createPostDirectory(document.getElementById('post-content'),document.getElementById('directory'), true);
+        createPostDirectory(document.getElementById('post-content'), document.getElementById('directory'), true);
     };
     postDirectoryBuild();
 </script>
@@ -141,20 +141,22 @@
 <script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="${theme_url('/static/js/instantclick.min.js')}"></script>
 <script type="text/javascript">
-    #if(is_post)
+    #
+    if (is_post)
         var postDirectory = new Headroom(document.getElementById("directory-content"), {
             tolerance: 0,
-            offset : 100,
+            offset: 100,
             classes: {
                 initial: "initial",
                 pinned: "pinned",
                 unpinned: "unpinned"
             }
         });
-    #end
+    #
+    end
     var header = new Headroom(document.getElementById("header"), {
         tolerance: 10,
-        offset : 80,
+        offset: 80,
         classes: {
             initial: "animated",
             pinned: "slideDown",

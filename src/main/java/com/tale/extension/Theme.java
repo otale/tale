@@ -12,6 +12,7 @@ import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
+import com.tale.model.entity.Users;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import jetbrick.template.runtime.InterpretContext;
@@ -41,8 +42,8 @@ public final class Theme {
      * @return
      */
     public static String meta_keywords() {
-        InterpretContext ctx   = InterpretContext.current();
-        Object           value = ctx.getValueStack().getValue("keywords");
+        InterpretContext ctx = InterpretContext.current();
+        Object value = ctx.getValueStack().getValue("keywords");
         if (null != value) {
             return value.toString();
         }
@@ -55,8 +56,8 @@ public final class Theme {
      * @return
      */
     public static String meta_description() {
-        InterpretContext ctx   = InterpretContext.current();
-        Object           value = ctx.getValueStack().getValue("description");
+        InterpretContext ctx = InterpretContext.current();
+        Object value = ctx.getValueStack().getValue("description");
         if (null != value) {
             return value.toString();
         }
@@ -69,8 +70,8 @@ public final class Theme {
      * @return
      */
     public static String head_title() {
-        InterpretContext ctx   = InterpretContext.current();
-        Object           value = ctx.getValueStack().getValue("title");
+        InterpretContext ctx = InterpretContext.current();
+        Object value = ctx.getValueStack().getValue("title");
 
         String p = "首页";
         if (null != value) {
@@ -197,7 +198,7 @@ public final class Theme {
      */
     public static String show_categories(String categories) throws UnsupportedEncodingException {
         if (StringKit.isNotBlank(categories)) {
-            String[]     arr  = categories.split(",");
+            String[] arr = categories.split(",");
             StringBuffer sbuf = new StringBuffer();
             for (String c : arr) {
                 sbuf.append("<a href=\"/category/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
@@ -216,7 +217,7 @@ public final class Theme {
     public static String show_tags(String split) throws UnsupportedEncodingException {
         Contents contents = current_article();
         if (StringKit.isNotBlank(contents.getTags())) {
-            String[]     arr  = contents.getTags().split(",");
+            String[] arr = contents.getTags().split(",");
             StringBuffer sbuf = new StringBuffer();
             for (String c : arr) {
                 sbuf.append(split).append("<a href=\"/tag/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
@@ -327,11 +328,11 @@ public final class Theme {
             return contents.getThumbImg();
         }
         String content = article(contents.getContent());
-        String img     = Commons.show_thumb(content);
+        String img = Commons.show_thumb(content);
         if (StringKit.isNotBlank(img)) {
             return img;
         }
-        int cid  = contents.getCid();
+        int cid = contents.getCid();
         int size = cid % 20;
         size = size == 0 ? 1 : size;
         return "/templates/themes/default/static/img/rand/" + size + ".jpg";
@@ -612,9 +613,9 @@ public final class Theme {
         if (null == contents) {
             return new Page<>();
         }
-        InterpretContext ctx   = InterpretContext.current();
-        Object           value = ctx.getValueStack().getValue("cp");
-        int              page  = 1;
+        InterpretContext ctx = InterpretContext.current();
+        Object value = ctx.getValueStack().getValue("cp");
+        int page = 1;
         if (null != value) {
             page = (int) value;
         }
@@ -629,7 +630,7 @@ public final class Theme {
      */
     public static Page<Contents> articles(int limit) {
         Request request = WebContext.request();
-        Integer page    = request.attribute("page_num");
+        Integer page = request.attribute("page_num");
         page = null == page ? request.queryInt("page", 1) : page;
         page = page < 0 || page > TaleConst.MAX_PAGE ? 1 : page;
 
@@ -645,13 +646,28 @@ public final class Theme {
     }
 
     /**
+     * 获取当前文章的作者
+     *
+     * @return
+     */
+    public static Users current_author() {
+        Contents contents = current_article();
+        if (null == contents) {
+            return new Users();
+        }
+        Integer authorId = contents.getAuthorId();
+        Users users = siteService.getUser(authorId);
+        return users == null ? new Users() : users;
+    }
+
+    /**
      * 获取当前上下文的文章对象
      *
      * @return
      */
     private static Contents current_article() {
-        InterpretContext ctx   = InterpretContext.current();
-        Object           value = ctx.getValueStack().getValue("article");
+        InterpretContext ctx = InterpretContext.current();
+        Object value = ctx.getValueStack().getValue("article");
         if (null != value) {
             return (Contents) value;
         }

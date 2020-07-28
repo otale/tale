@@ -2,7 +2,7 @@
     (function () {
         window.TaleComment = {
             reply: function (coid) {
-                $('#comment-form input[name=coid]').val(coid);
+                $('#comment-form input[name=parent]').val(coid);
                 $("html,body").animate({scrollTop: $('div.comment-container').offset().top}, 500);
                 $('#comment-form #textarea').focus();
             },

@@ -39,8 +39,21 @@ public class SiteService {
 
     @Inject
     private CommentsService commentsService;
+    @Inject
+    private UsersService usersService;
 
     public MapCache mapCache = new MapCache();
+
+
+    /**
+     * 获取用户
+     *
+     * @param uid
+     * @return
+     */
+    public Users getUser(Integer uid) {
+        return usersService.findUser(uid);
+    }
 
     /**
      * 初始化站点
@@ -58,8 +71,8 @@ public class SiteService {
         Integer uid = users.save();
 
         try {
-            String cp   = SiteService.class.getClassLoader().getResource("").getPath();
-            File   lock = new File(cp + "install.lock");
+            String cp = SiteService.class.getClassLoader().getResource("").getPath();
+            File lock = new File(cp + "install.lock");
             lock.createNewFile();
             TaleConst.INSTALL = Boolean.TRUE;
             new Logs(LogActions.INIT_SITE, null, "", uid.intValue()).save();
@@ -126,11 +139,11 @@ public class SiteService {
 
         statistics = new Statistics();
 
-        long articles   = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).count();
-        long pages      = new Contents().where("type", Types.PAGE).and("status", Types.PUBLISH).count();
-        long comments   = new Comments().count();
-        long attachs    = new Attach().count();
-        long tags       = new Metas().where("type", Types.TAG).count();
+        long articles = new Contents().where("type", Types.ARTICLE).and("status", Types.PUBLISH).count();
+        long pages = new Contents().where("type", Types.PAGE).and("status", Types.PUBLISH).count();
+        long comments = new Comments().count();
+        long attachs = new Attach().count();
+        long tags = new Metas().where("type", Types.TAG).count();
         long categories = new Metas().where("type", Types.CATEGORY).count();
 
         statistics.setArticles(articles);
@@ -161,14 +174,14 @@ public class SiteService {
 
     private Archive parseArchive(Archive archive) {
         String date_str = archive.getDate_str();
-        Date   sd       = DateKit.toDate(date_str + "01", "yyyy年MM月dd");
+        Date sd = DateKit.toDate(date_str + "01", "yyyy年MM月dd");
         archive.setDate(sd);
-        int      start    = DateKit.toUnix(sd);
+        int start = DateKit.toUnix(sd);
         Calendar calender = Calendar.getInstance();
         calender.setTime(sd);
         calender.add(Calendar.MONTH, 1);
         Date endSd = calender.getTime();
-        int  end   = DateKit.toUnix(endSd) - 1;
+        int end = DateKit.toUnix(endSd) - 1;
         List<Contents> contents = new Contents().where("type", Types.ARTICLE)
                 .and("status", Types.PUBLISH)
                 .and("created", ">", start)
@@ -224,7 +237,7 @@ public class SiteService {
         // 备份数据库
         if ("db".equals(bkType)) {
             String filePath = "upload/" + DateKit.toString(new Date(), "yyyyMMddHHmmss") + "_" + StringKit.rand(8) + ".db";
-            String cp       = AttachController.CLASSPATH + filePath;
+            String cp = AttachController.CLASSPATH + filePath;
             Files.createDirectory(Paths.get(cp));
             Files.copy(Paths.get(SqliteJdbc.DB_PATH), Paths.get(cp));
             backResponse.setSql_path("/" + filePath);
